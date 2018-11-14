@@ -137,9 +137,10 @@ by more than one tool. This Precedence is subjective to the user.
                         will be run behind the scenes
                          
 
------
+--- 
 
-##vcfMerge2 requirements
+
+## vcfMerge2 requirements
 
 - linux system 
 - grep, awk 
