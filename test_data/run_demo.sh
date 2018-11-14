@@ -83,7 +83,7 @@ else
 	echo "vcfMerger2.py FOUND"
 fi
 
-echo "BASH `data` ---> Starting vcfMerger2 ..."
+echo "BASH `date` ---> Starting vcfMerger2 ..."
 
 python ../../bin/vcfMerger2.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "../raw_tool_vcfs/strelka2.raw.vcf|../raw_tool_vcfs/mutect2.raw.vcf|../raw_tool_vcfs/lancet.raw.vcf|../raw_tool_vcfs/octopus.raw.vcf" -a "SLK|MUT|LAN|OCT"  -g ../ref_genome/grch37.22.fa --prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" --normal-sname NORMAL  --tumor-sname TUMOR -o merged.vcf --contigs-file "||../contigs/contigs.txt|../contigs/contigs.txt"
 
