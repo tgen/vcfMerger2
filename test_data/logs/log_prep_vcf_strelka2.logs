@@ -1,0 +1,45 @@
+
+
++------------------------------------------------+
+RECAP_INPUTS_USED:
+DIR_WORK=="."
+TOOLNAME=="strelka2"
+NORMAL_SNAME=="NORMAL"
+TUMOR_SNAME=="TUMOR"
+VCF_ALL_CALLS=="raw_tool_vcfs/strelka2.raw.vcf"
+REF_GENOME_FASTA=="ref_genome/grch37.22.fa"
+VCF_FINAL_USER_GIVEN_NAME=="strelka2.prepped.vcf"
+VCF_INDELS_FILE=="''"
+VCF_SNVS_FILE=="''"
+BAM_FILE=="''"
+CONTIGS_FILE=="''"
+CURR_DIR=="./vcfMerger2/test_data"
++------------------------------------------------+
+
+
+## Checking inputs ...
+CREATING SYMLINK in CURR DIR ./vcfMerger2/test_data
+processing vcf:  strelka2.raw.vcf
+ in  :  strelka2.raw.vcf strelka2 NORMAL TUMOR 
+## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )
+	sample name in column 10 is  NORMAL and column 11 is named TUMOR
+	we are updating the sample names appropriately here with the ones given by the user
+## prep vcf for vcfMerger2 ...
+python ./vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py -i strelka2.raw.vcf --normal_column 10 --tumor_column 11 --outfilename strelka2.raw.prep.vcf
+INFO 2018-11-14 10:50:20,432 strelka2.somatic.addFieldsForVcfMerger 65	 [('-i', 'strelka2.raw.vcf'), ('--normal_column', '10'), ('--tumor_column', '11'), ('--outfilename', 'strelka2.raw.prep.vcf')]
+INFO 2018-11-14 10:50:20,453 strelka2.somatic.addFieldsForVcfMerger 340	 looping over records ...
+INFO 2018-11-14 10:50:22,036 strelka2.somatic.addFieldsForVcfMerger 351	 work completed
+INFO 2018-11-14 10:50:22,036 strelka2.somatic.addFieldsForVcfMerger 352	 new vcf is << strelka2.raw.prep.vcf >>
+in :  strelka2.raw.prep.vcf and refgenome is ref_genome/grch37.22.fa
+## Normalizing vcf ...
+## bcftools sort -O v strelka2.raw.prep.vcf | bcftools norm -c e -f ref_genome/grch37.22.fa -O v - > strelka2.raw.prep.norm.vcf
+Writing to /tmp/bcftools-sort.5ZnrVm
+Merging 1 temporary files
+Cleaning
+Done
+Lines   total/split/realigned/skipped:	5318/0/0/0
+
+##---------------------------------------------------------------------------##
+Extension should represent the steps performed on the given input VCF
+vcfMerger-compatible vcf file : << strelka2.raw.prep.norm.vcf >>
+copy/renamed to: strelka2.prepped.vcf 

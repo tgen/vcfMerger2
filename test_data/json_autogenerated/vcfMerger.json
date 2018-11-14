@@ -1,0 +1,58 @@
+{
+    "strelka2": {
+        "tool_acronym": "SLK",
+        "dir_work": ".",
+        "normal": "NORMAL",
+        "tumor": "TUMOR",
+        "vcf": "raw_tool_vcfs/strelka2.raw.vcf",
+        "ref_genome_fasta": "ref_genome/grch37.22.fa",
+        "prepped_vcf_outfilename": "strelka2.prepped.vcf",
+        "vcf_indels": "",
+        "vcf_snvs": "",
+        "bam": "",
+        "contigs_file": "",
+        "lossy": false
+    },
+    "mutect2": {
+        "tool_acronym": "MUT",
+        "dir_work": ".",
+        "normal": "NORMAL",
+        "tumor": "TUMOR",
+        "vcf": "raw_tool_vcfs/mutect2.raw.vcf",
+        "ref_genome_fasta": "ref_genome/grch37.22.fa",
+        "prepped_vcf_outfilename": "mutect2.prepped.vcf",
+        "vcf_indels": "",
+        "vcf_snvs": "",
+        "bam": "",
+        "contigs_file": "",
+        "lossy": false
+    },
+    "lancet": {
+        "tool_acronym": "LAN",
+        "dir_work": ".",
+        "normal": "NORMAL",
+        "tumor": "TUMOR",
+        "vcf": "raw_tool_vcfs/lancet.raw.vcf",
+        "ref_genome_fasta": "ref_genome/grch37.22.fa",
+        "prepped_vcf_outfilename": "lancet.prepped.vcf",
+        "vcf_indels": "",
+        "vcf_snvs": "",
+        "bam": "",
+        "contigs_file": "contigs/contigs.txt",
+        "lossy": false
+    },
+    "octopus": {
+        "tool_acronym": "OCT",
+        "dir_work": ".",
+        "normal": "NORMAL",
+        "tumor": "TUMOR",
+        "vcf": "raw_tool_vcfs/octopus.raw.vcf",
+        "ref_genome_fasta": "ref_genome/grch37.22.fa",
+        "prepped_vcf_outfilename": "octopus.prepped.vcf",
+        "vcf_indels": "",
+        "vcf_snvs": "",
+        "bam": "",
+        "contigs_file": "contigs/contigs.txt",
+        "lossy": false
+    }
+}

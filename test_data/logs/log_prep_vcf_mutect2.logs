@@ -1,0 +1,62 @@
+
+
++------------------------------------------------+
+RECAP_INPUTS_USED:
+DIR_WORK=="."
+TOOLNAME=="mutect2"
+NORMAL_SNAME=="NORMAL"
+TUMOR_SNAME=="TUMOR"
+VCF_ALL_CALLS=="raw_tool_vcfs/mutect2.raw.vcf"
+REF_GENOME_FASTA=="ref_genome/grch37.22.fa"
+VCF_FINAL_USER_GIVEN_NAME=="mutect2.prepped.vcf"
+VCF_INDELS_FILE=="''"
+VCF_SNVS_FILE=="''"
+BAM_FILE=="''"
+CONTIGS_FILE=="''"
+CURR_DIR=="./vcfMerger2/test_data"
++------------------------------------------------+
+
+
+## Checking inputs ...
+CREATING SYMLINK in CURR DIR ./vcfMerger2/test_data
+processing vcf:  mutect2.raw.vcf
+ in  :  mutect2.raw.vcf mutect2 NORMAL TUMOR 
+## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )
+	sample name in column 10 is  NORMAL and column 11 is named TUMOR
+	we are updating the sample names appropriately here with the ones given by the user
+## vt decompose for somatic calls of mutect2's vcf ...
+decompose v0.5
+
+options:     input VCF file        mutect2.raw.vcf
+         [s] smart decomposition   true (experimental)
+         [o] output VCF file       mutect2.raw.decomp.vcf
+
+
+stats: no. variants                 : 59
+       no. biallelic variants       : 59
+       no. multiallelic variants    : 0
+
+       no. additional biallelics    : 0
+       total no. of biallelics      : 59
+
+Time elapsed: 0.00s
+
+## prep vcf for vcfMerger2 ...
+python ./vcfMerger2/prep_vcfs/mutect2/mutect2.somatic.addFieldsForVcfMerger.py -i mutect2.raw.decomp.vcf --normal_column 10 --tumor_column 11 --outfilename mutect2.raw.decomp.prep.vcf
+INFO 2018-11-14 10:50:22,755 mutect2.somatic.addFieldsForVcfMerger 86	 [('-i', 'mutect2.raw.decomp.vcf'), ('--normal_column', '10'), ('--tumor_column', '11'), ('--outfilename', 'mutect2.raw.decomp.prep.vcf')]
+INFO 2018-11-14 10:50:22,772 mutect2.somatic.addFieldsForVcfMerger 299	 looping on records ...
+INFO 2018-11-14 10:50:22,812 mutect2.somatic.addFieldsForVcfMerger 307	 work completed
+INFO 2018-11-14 10:50:22,812 mutect2.somatic.addFieldsForVcfMerger 308	 new vcf is << mutect2.raw.decomp.prep.vcf >>
+in :  mutect2.raw.decomp.prep.vcf and refgenome is ref_genome/grch37.22.fa
+## Normalizing vcf ...
+## bcftools sort -O v mutect2.raw.decomp.prep.vcf | bcftools norm -c e -f ref_genome/grch37.22.fa -O v - > mutect2.raw.decomp.prep.norm.vcf
+Writing to /tmp/bcftools-sort.TPQQam
+Merging 1 temporary files
+Cleaning
+Done
+Lines   total/split/realigned/skipped:	59/0/0/0
+
+##---------------------------------------------------------------------------##
+Extension should represent the steps performed on the given input VCF
+vcfMerger-compatible vcf file : << mutect2.raw.decomp.prep.norm.vcf >>
+copy/renamed to: mutect2.prepped.vcf 
