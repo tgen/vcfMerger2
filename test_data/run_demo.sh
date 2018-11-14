@@ -66,9 +66,6 @@ if [[ ! -e grch37.22.fa || ! -e grch37.22.fa.fai  ]] ; then echo -e "ERROR: grch
 cd ..
 
 
-exit
-
-
 mkdir demo_out
 cd demo_out
 
