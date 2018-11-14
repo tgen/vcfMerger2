@@ -164,14 +164,14 @@ You can run the script from anywwhere, and the results will be outputted into a 
 
 ----
 ----
-### For advanced users
+# For advanced users
 vcfMerger2 is composed of two main steps:
 1. Preparing vcf to specs
 2. Merging vcfs
 
 Users can run these two steps independently if needed, even though this can be achieved by using the `--skip-prep-vcfs` or `--skip-merge` optional arguments from the `all-in-one` way. 
 
-#### How to _**only**_ prepare the vcf files using vcfMerger2
+#### How to _**only**_ prepare the vcf files using vcfMerger2?
 Users can prepare tool-specific vcf by only running the sub-step of vcfMerger2 called `prep_vcf` independently of the `all-in-one` way described above. 
 The script called `prep_vcf.sh` allows you to specifically bring up to vcfMerger2 specs vcfs for the supported tools *(see list of supported tools below)*.
 This script can be called directly and run independently for each vcf and tool. 
@@ -186,7 +186,8 @@ Example_2:
 _**HINT**_: if you already have the command line from `all-in-one` way style, you can just add the option `--skip-merge` to that command and only the `prep` step will be performed for all the given vcfs instead of running one by one the `prep_vcf.sh` script
 
 
-#### How to **only** merge vcfs
+#### How to **_only_** merge vcfs? 
+
 The script called `vcfMerger.py` allows you to merge the data of several already ready-prepped-vcf files .
 This script can be called and run independently.  
 vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic vcfs;  
