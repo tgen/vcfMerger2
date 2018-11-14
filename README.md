@@ -96,10 +96,12 @@ _**Note_4**: The given command line example uses 4 input vcfs. [ you may also te
                         default order given by the `--toolnames` list 
    
    ---                      
-   **NOTE**: What does `PRECEDENCE` mean here?  A vcf contains information in INFO and FORMAT columns. Unfortunately, redundant information exist from one tools to another in a vcf.
-   For instance, the AR field may exist in ALL the given vcf in the FORMAT columns, but the values may vary from one tool to another. Unfortunately, only one value can be kept in the AR field within the merged vcf. 
-   So which one would the user preferably keep in the merged vcf? What tool does have our "liking" the most. This is where the precedence is used. It gives an order of preference for the tool when the vairant is called 
-   by more than one tool. This Precedence is subjective to the user.   
+
+**NOTE**: What does `PRECEDENCE` mean here?  A vcf contains information in INFO and FORMAT columns. Unfortunately, redundant information exist from one tools to another in a vcf.
+For instance, the AR field may exist in ALL the given vcf in the FORMAT columns, but the values may vary from one tool to another. Unfortunately, only one value can be kept in the AR field within the merged vcf. 
+So which one would the user preferably keep in the merged vcf? What tool does have our "liking" the most. This is where the precedence is used. It gives an order of preference for the tool when the vairant is called 
+by more than one tool. This Precedence is subjective to the user.   
+
    ---                       
 
   `--bams BAMS`          List of bams necessary for capturing contigs if not
