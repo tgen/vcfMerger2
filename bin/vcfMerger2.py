@@ -407,8 +407,8 @@ def main(args, cmdline):
 	TH_AR = 0.90
 	if args['threshold_AR']:
 		TH_AR = args['threshold_AR']
-		if not float(TH_AR) or not int(TH_AR):
-			raise "Threshold-AR must be a float or integer value between 0 and 1. Check your inputs."
+		if isinstance(TH_AR, (int, long, float, complex)):
+			raise "Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs."
 		log.info("given threshold for AR:" + str(TH_AR))
 
 	dryrun = False
