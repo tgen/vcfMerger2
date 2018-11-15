@@ -221,7 +221,7 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 		# capture threshold AR found in json
 		TH_AR = data[tool]['threshold_AR']
 		if TH_AR is not None and TH_AR != "" and TH_AR != 0.9:
-			cmdLine = ' '.join([cmdLine, "--threshold_AR", TH_AR])
+			cmdLine = ' '.join([cmdLine, "--threshold-AR", TH_AR])
 
 		# display the command line for log purposes
 		log.info(prep_script_path + " " + cmdLine)
