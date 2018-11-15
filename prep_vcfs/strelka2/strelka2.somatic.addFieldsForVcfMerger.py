@@ -97,6 +97,8 @@ def parseArgs(scriptname, argv):
 			if not os.path.exists(fvcf):
 				sys.exit("ERROR: FNF --> " +fvcf)
 
+
+
 	log.debug(AR_threshold_for_GT)
 	log.debug("normal_column = {} and tumor_column = {}".format( str(column_normal), str(column_tumor) ))
 
@@ -316,7 +318,11 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 #@#########
 if __name__ == "__main__":
 
-	vcf_path, new_vcf_name, column_tumor , column_normal, generate_vcf_pass_calls = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
+	vcf_path, new_vcf_name, column_tumor, column_normal, generate_vcf_pass_calls = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
+
+
+	print(AR_threshold_for_GT)
+	sys.exit()
 
 	vcf = VCFReader(vcf_path)
 	filebasename = str(os.path.splitext(vcf_path)[0])
