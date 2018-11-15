@@ -37,15 +37,17 @@ vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants vcfs.
  
 Example:  
 ``` 
-python vcfMerger2.py \   
+python vcfMerger2.py    
+-g hs37d5.fa  
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "./raw_tool_vcfs/strelka2.raw.vcf|./raw_tool_vcfs/mutect2.raw.vcf|./raw_tool_vcfs/lancet.raw.vcf|./raw_tool_vcfs/octopus.raw.vcf" 
--a "SLK|MUT|LAN|OCT"  
--g hs37d5.fa \ 
 --prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" 
 --normal-sname NORMAL  
---tumor-sname TUMOR -o merged.vcf 
---contigs-file "||contigs/contigs.txt|contigs/contigs.txt"  
+--tumor-sname TUMOR 
+-o merged.vcf 
+--contigs-file "||contigs/contigs.txt|contigs/contigs.txt"
+-a "SLK|MUT|LAN|OCT"
+--precedence "MUT|LAN|SLK|OCT"    
 ```
  
 ##  
@@ -133,6 +135,9 @@ by more than one tool. This Precedence is subjective to the user.
   `--skip-merge`          enabling this flag prevents doing the merging step
                         [useful if only the prep step needs to be done ]
                         
+  `--threshold-AR`        Threshold Allele Ratio (AR) to assign genotype GT value with 0/1 or 1/1 ; 
+                          GT=0/1 if below threshold, GT=1/1 if equal or above threshold [ default is 0.90 ; range ]0,1] ] 
+                           
   `-n, --dry-run`         perform a dry run to just see the commands lines that
                         will be run behind the scenes
                          
