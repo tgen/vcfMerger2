@@ -113,7 +113,8 @@ def make_data_for_json(lvcfs,
                        lacronyms=None,
                        lprepped_vcf_outfilenames=None,
                        lbams=None,
-                       lcontigs=None):
+                       lcontigs=None,
+                       TH_AR=TH_AR):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -163,6 +164,7 @@ def make_data_for_json(lvcfs,
 		# lossy do not need to be added to the json file because it applies to vcfMerger not prep
 		# we keep it here just in case we use the json file as a reminder of what was run
 		data[ltoolnames[tool_idx]]['lossy'] = lossy
+		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 
 	return data
 
@@ -215,6 +217,9 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 
 			]
 		)
+
+		if TH_AR is not None and TH_AR != 0.9:
+			cmdLine = ' '.join([cmdLine, "--threshold_AR", TH_AR])
 
 		# display the command line for log purposes
 		log.info(prep_script_path + " " + cmdLine)
@@ -398,6 +403,11 @@ def main(args, cmdline):
 		skip_merge = args["skip_merge"]
 		log.info("skip_merge:" + str(skip_merge))
 
+	TH_AR = 0.90
+	if args["threshold_AR"]:
+		TH_AR=args["threshold_AR"]
+		log.info("given threshold for AR:" + str(TH_AR))
+
 	dryrun = False
 	if args["dry_run"]:
 		dryrun = args["dry_run"]
@@ -420,7 +430,8 @@ def main(args, cmdline):
 	                          lacronyms=lacronyms,
 	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
 	                          lbams=lbams,
-	                          lcontigs=lcontigs)
+	                          lcontigs=lcontigs,
+	                          TH_AR=TH_AR)
 	json_filename = "vcfMerger.json"
 	inFileJson = make_json(data, json_filename)
 	data = read_json(inFileJson)
@@ -505,6 +516,11 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='delimiter which will be use to create the arguments value for the vcfMerger2.0 tool ; default is "|" (a.k.a pipe character)')
+
+	optional.add_argument('--th-AR','--threshold-AR',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help='AlleRatio threshold value to assign genotype; 0/1 if less than threshold, 1/1 if equal or above threshold; default is 0.90 ; range ]0,1] ')
 
 	optional.add_argument('--lossy',
 	                      help='This will create a lossy merged vcf by only keeping the infromation from the tool with precedence',
