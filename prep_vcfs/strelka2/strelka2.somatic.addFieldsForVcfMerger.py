@@ -35,7 +35,7 @@ import logging as log
 import warnings
 
 global AR_threshold_for_GT
-AR_threshold_for_GT = 0.90  ;  ##  het_0/1 < 90%  and   homalt_1/1 >= 90%
+AR_threshold_for_GT = 0.90  ;  ##  value HARDCODED het_0/1 < 90%  and   homalt_1/1 >= 90%
 
 def usage(scriptname):
 	print("USAGE: \n" + scriptname + ' \n\t-i <VCF file [M]> \n\t' + ' \n\t-t <comma-separated thresholds values for nDP, tDP, nAR and tAR respectively [O]> \n\t' + '\n\n')
@@ -162,8 +162,10 @@ def get_GT_value_from_AR(AR_value):
 		return [int(4),int(4)] ; --> 1/1
 
 		'''
+	log.debug("AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
+
 	try:
-		log.info(str(AR_value) + " --- " + str(AR_threshold_for_GT))
+
 		if AR_value < AR_threshold_for_GT:
 			return [2,4]
 		if AR_value >= AR_threshold_for_GT:
@@ -172,7 +174,7 @@ def get_GT_value_from_AR(AR_value):
 		print("ERROR: AR value not a number")
 	except TypeError:
 		print("ERROR: AR value not of type Float")
-	sys.exit()
+
 
 def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	'''

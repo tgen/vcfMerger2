@@ -37,7 +37,7 @@ import warnings
 from math import isnan
 
 global AR_threshold_for_GT
-AR_threshold_for_GT = 0.90  ## default value HARDCODED
+AR_threshold_for_GT = 0.90  ## value HARDCODED
 
 class Genotype(object):
     __slots__ = ('alleles', 'phased')
@@ -145,7 +145,7 @@ def is_obj_nan(obj):
 		return True
 	return False
 
-def get_GT_value_from_AR(AR_value, AR_threshold_for_GT = AR_threshold_for_GT):
+def get_GT_value_from_AR(AR_value):
 	'''
 		return the GT value according to AR threshold values
 		This is based off TGen's current thresholds of assigning the genotype
@@ -177,6 +177,8 @@ def get_GT_value_from_AR(AR_value, AR_threshold_for_GT = AR_threshold_for_GT):
 		return [int(4),int(4)] ; --> 1/1
 
 		'''
+	log.debug("AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
+
 	try:
 		if AR_value < AR_threshold_for_GT:
 			return [2,4]
