@@ -161,6 +161,7 @@ def get_GT_value_from_AR(AR_value, AR_threshold_for_GT = AR_threshold_for_GT):
 
 		'''
 	try:
+		log.info(str(AR_value) + " --- " + str(AR_threshold_for_GT))
 		if AR_value < AR_threshold_for_GT:
 			return [2,4]
 		if AR_value >= AR_threshold_for_GT:
