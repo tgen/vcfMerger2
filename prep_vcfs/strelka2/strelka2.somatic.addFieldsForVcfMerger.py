@@ -35,7 +35,7 @@ import logging as log
 import warnings
 
 global AR_threshold_for_GT
-AR_threshold_for_GT = 0.90  ;  ## HARDCODED for TGen  ; ##  het_0/1 < 90%  and   homalt_1/1 >= 90%
+AR_threshold_for_GT = 0.90  ;  ##  het_0/1 < 90%  and   homalt_1/1 >= 90%
 
 def usage(scriptname):
 	print("USAGE: \n" + scriptname + ' \n\t-i <VCF file [M]> \n\t' + ' \n\t-t <comma-separated thresholds values for nDP, tDP, nAR and tAR respectively [O]> \n\t' + '\n\n')
@@ -130,7 +130,7 @@ def update_header(vcf):
 
 	return vcf
 
-def get_GT_value_from_AR(AR_value, AR_threshold_for_GT = AR_threshold_for_GT):
+def get_GT_value_from_AR(AR_value):
 	'''
 		return the GT value according to AR threshold values
 		This is based off TGen's current thresholds of assigning the genotype
@@ -172,6 +172,7 @@ def get_GT_value_from_AR(AR_value, AR_threshold_for_GT = AR_threshold_for_GT):
 		print("ERROR: AR value not a number")
 	except TypeError:
 		print("ERROR: AR value not of type Float")
+	sys.exit()
 
 def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	'''
@@ -322,7 +323,7 @@ if __name__ == "__main__":
 
 
 	print(AR_threshold_for_GT)
-	sys.exit()
+
 
 	vcf = VCFReader(vcf_path)
 	filebasename = str(os.path.splitext(vcf_path)[0])
