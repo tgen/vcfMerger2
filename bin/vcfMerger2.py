@@ -114,7 +114,7 @@ def make_data_for_json(lvcfs,
                        lprepped_vcf_outfilenames=None,
                        lbams=None,
                        lcontigs=None,
-                       TH_AR=TH_AR):
+                       TH_AR=0.9):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
