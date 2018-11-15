@@ -77,6 +77,7 @@ def parseArgs(scriptname, argv):
 			try:
 				global AR_threshold_for_GT
 				AR_threshold_for_GT = float(arg)
+				log.info("threshold AR reassigned by user: "+str(AR_threshold_for_GT))
 			except TypeValueError:
 				log.info("ERROR: threshold values MUST be integer or float")
 				sys.exit(2)
