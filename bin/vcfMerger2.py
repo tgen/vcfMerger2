@@ -404,8 +404,8 @@ def main(args, cmdline):
 		log.info("skip_merge:" + str(skip_merge))
 
 	TH_AR = 0.90
-	if args["threshold_AR"]:
-		TH_AR=args["threshold_AR"]
+	if args['threshold_AR']:
+		TH_AR = args['threshold_AR']
 		log.info("given threshold for AR:" + str(TH_AR))
 
 	dryrun = False
@@ -517,7 +517,7 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='delimiter which will be use to create the arguments value for the vcfMerger2.0 tool ; default is "|" (a.k.a pipe character)')
 
-	optional.add_argument('--th-AR','--threshold-AR',
+	optional.add_argument('--threshold-AR',
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='AlleRatio threshold value to assign genotype; 0/1 if less than threshold, 1/1 if equal or above threshold; default is 0.90 ; range ]0,1] ')
