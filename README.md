@@ -36,22 +36,22 @@ The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bi
 vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants vcfs. 
  
 Example:  
-`
-python vcfMerger2.py 
+``` 
+python vcfMerger2.py \   
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "./raw_tool_vcfs/strelka2.raw.vcf|./raw_tool_vcfs/mutect2.raw.vcf|./raw_tool_vcfs/lancet.raw.vcf|./raw_tool_vcfs/octopus.raw.vcf" 
 -a "SLK|MUT|LAN|OCT"  
--g hs37d5.fa 
+-g hs37d5.fa \ 
 --prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" 
 --normal-sname NORMAL  
 --tumor-sname TUMOR -o merged.vcf 
 --contigs-file "||contigs/contigs.txt|contigs/contigs.txt"  
-`
+```
  
 ##  
 _**Note_1**: empty string information for the value of `--contigs-file` is necessary to match the number of values given to the `--vcfs` option even though the information for the 1st and 2nd tools is absent in this case._  
 _**Note_2**: run command above from top folder vcfMerger2._  
-_**Note_3**: hs37d5.fa filename for the reference genome should be replaces with your own version of the GRCh37. The contigs from 1 to 22, +X and +Y should be present in the reference file_  
+_**Note_3**: hs37d5.fa filename for the reference genome should be replaced with your own version of the GRCh37._  
 _**Note_4**: The given command line example uses 4 input vcfs. [ you may also test it using only 2, or 3 input vcfs ; for instance, run the same command by removing lancet and octopus tool from the lists ]_  
 
 [ run `python vcfMerger2.py --help` for more options ]
@@ -71,7 +71,7 @@ _**Note_4**: The given command line example uses 4 input vcfs. [ you may also te
                         using --delim option
                         
   `-g REFGENOME, --refgenome REFGENOME` 
-                        reference genome used with bcftools norm ; must match
+                        reference genome `.fa` and its `.fai` index are used with bcftools norm ; must match
                         reference used for alignment
                         
   `--normal-sname NORMAL_SNAME` 
@@ -140,7 +140,9 @@ by more than one tool. This Precedence is subjective to the user.
 --- 
 
 
-## vcfMerge2 requirements
+## vcfMerger2 requirements
+
+All the following tools **must** be in your `PATH` before running `vcfMerger2` scripts 
 
 - linux system 
 - grep, awk 
@@ -155,8 +157,7 @@ by more than one tool. This Precedence is subjective to the user.
 - samtools 1.7 or up
 - bcftools 1.7 or up
 - vt v0.57721 or up (tests done with v0.57721)
-- appropriate `.fa` reference genome and its `.fai` index 
-All these tools **must** be in your `PATH` before running `vcfMerger2` scripts
+
 
 ## Running demo
 Once all the requiremetns are available, it is advised to run the **demo** script.  

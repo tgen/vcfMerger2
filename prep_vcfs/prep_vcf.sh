@@ -56,6 +56,7 @@ function usage(){
 --contigs-file    	FILE_WITH_CONTIGS FORMATTED AS IT IS IN VCF HEADERS (Optional; depend on tool ; use the script 'convert_contig_list_from_bam_to_vcf_format.sh' located in utils directory to create the appropriate file ) [default is null ] \\
 --do-not-normalize	disable normalization [default is enable] \\
 --bam			BAM file to provide to generate intermediate contig file in case --contigs-file option is not provided but needed for current tool's vcf in process
+--th-AR|--threshold-AR      AR value (float from 0.000001 to 1 ). Based on that value, the GT flag (genotype) will be assigned to 0/1 if below that threshold or 1/1 if equal or above that threshold [default value is 0.900 ] ;
 
 "
 }
@@ -86,6 +87,29 @@ function checkFileName(){
 	fi
 }
 
+function checkIntegerOrFloat(){
+    ## Check if a number is a Float or Integer ;
+    local N=$1
+    if [[ ! ${N} =~ ^[0-9]*$ && ! ${N} =~ ^[0-9]*\.?[0-9]*$  ]] ;
+    then
+        echo -e "ERROR: AR threshold MUST be a Float or an Integer value; Check your input ; Aborting."
+        fexit
+    fi
+}
+
+function checkIfRangeZeroOne(){
+    local N=$1
+    test_gtZero=$(bc -l <<< "${N} > 0.000")
+    test_leOne=$(bc -l <<< "${N} <= 1.000")
+    if [[ ( ${test_gtZero} -eq 1 && ${test_leOne} -eq 1 ) ]] ;
+    then
+        echo -e "AR interval ]0,1] check: PASSED"
+    else
+        echo  -e "ERROR: AR threshold MUST be in interval ]0,1] (0 exclude and 1 included) ; Check your input ; Aborting."
+        fexit
+    fi
+}
+
 function check_contig_file(){
 	local TN="$1" 
 	local F="$2"
@@ -108,6 +132,7 @@ function init_some_vars(){
 	TARGETS_BED_FILE_FTT=""
 	CONTIGS_FILE=""
 	VCF_FINAL_USER_GIVEN_NAME=""
+	TH_AR=""
 }
 
 
@@ -138,7 +163,8 @@ if ! options=`getopt -o :hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,no
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file 
 		--print-default-toolnames) echo ${VALID_TOOLNAMES} ; exit ;;
-		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;  
+		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
+		--th-AR|--threshold-AR) export TH_AR=$2 ; checkIntegerOrFloat ${TH_AR} ; checkIfRangeZeroOne ${TH_AR} ; LI="${LI}\nTH_AR==\"${TH_AR}\"";  shift ;;
 		-h|--help) usage ; exit ;;
 		(--) shift ;;
 		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
@@ -297,7 +323,11 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	local VCF=$1
 	echo -e "## prep vcf for vcfMerger2 ..." 1>&2
 	fout_name=${VCF%.*}.prep.vcf
-	mycmd="python ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}" 
+	mycmd="python ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
+	if [[ ${TH_AR} != "" ]] ;
+	then
+	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
+	fi
 	echo ${mycmd} 1>&2 ; 
 	eval ${mycmd} 1>&2 ; 
 	check_ev $? "${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} " 1>&2
