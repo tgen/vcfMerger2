@@ -218,7 +218,9 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			]
 		)
 
-		if TH_AR is not None and TH_AR != 0.9:
+		# capture threshold AR found in json
+		TH_AR = data[tool]['threshold_AR']
+		if TH_AR is not None and TH_AR != "" and TH_AR != 0.9:
 			cmdLine = ' '.join([cmdLine, "--threshold_AR", TH_AR])
 
 		# display the command line for log purposes
@@ -297,7 +299,6 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	:param lprepped_vcf_outfilenames:
 	:return:
 	"""
-	pass
 	if len(lvcfs) != len(ltoolnames):
 		log.info("Found {} vcfs provided and {} tools given ".format(len(lvcfs), len(ltoolnames)))
 		sys.exit(
@@ -406,6 +407,8 @@ def main(args, cmdline):
 	TH_AR = 0.90
 	if args['threshold_AR']:
 		TH_AR = args['threshold_AR']
+		if not float(TH_AR) or not int(TH_AR):
+			raise "Threshold-AR must be a float or integer value between 0 and 1. Check your inputs."
 		log.info("given threshold for AR:" + str(TH_AR))
 
 	dryrun = False
