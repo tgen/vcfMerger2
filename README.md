@@ -1,3 +1,5 @@
+![logo](/vcfMerger2.logo.png)
+
 # vcfMerger2 
 Description : Dynamic vcfMerger for 2 to N somatic variants vcf files. 
 
