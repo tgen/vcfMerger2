@@ -231,8 +231,12 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	if is_obj_nan(DP_tumor): DP_tumor = 0.00
 	if is_obj_nan(DP_normal): DP_normal = 0.00
 
-	ARs = [ float(AR_normal), float(AR_tumor) ]
-	ADs = [ (0,0), (0,0) ]
+	if idxT == 0:
+		ARs = [float(AR_tumor), float(AR_normal)]
+	else:
+		ARs = [ float(AR_normal), float(AR_tumor) ]
+	ADs = [ (0,0), (0,0) ] ## as Ocotpus does not provide enough information to calculate AD, we assign default
+	# values of 0,0 ## can be discussed and modify if users think differently
 
 	log.debug("\t".join([ str(x) for x  in [ idxT, idxN , AR_tumor, AR_normal, DP_tumor, DP_normal ] ] ))
 	v.set_format('AR', np.array(ARs))
@@ -248,7 +252,7 @@ if __name__ == "__main__":
 	vcf_path, column_tumor, column_normal, new_vcf_name = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
 	vcf = VCF(vcf_path)
 	if new_vcf_name is None:
-		new_vcf = '.'.join([str(vcf_path), "AR.flt_AR_DP.vcf"])
+		new_vcf = '.'.join([str(vcf_path), "AR_AD.vcf"])
 	else:
 		new_vcf = new_vcf_name
 
