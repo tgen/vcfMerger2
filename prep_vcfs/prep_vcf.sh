@@ -521,8 +521,8 @@ function main(){
 type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting."; exit
 1; } || python -V
 python_main_version_number=`python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
-if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting "
-; exit 1 ; fi
+if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ; exit 1
+fi
 type vt >/dev/null 2>&1 || { echo >&2 "Require \"vt\" executable but it's not in the PATH.  Aborting."; exit 1; } ||
 # vt --version
 type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
