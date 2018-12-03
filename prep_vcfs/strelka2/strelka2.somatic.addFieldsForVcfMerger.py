@@ -330,7 +330,7 @@ if __name__ == "__main__":
 	vcf = VCFReader(vcf_path)
 	filebasename = str(os.path.splitext(vcf_path)[0])
 	if new_vcf_name is None:
-		new_vcf = '.'.join([filebasename, "mod.vcf.gz"])
+		new_vcf = '.'.join([filebasename, "AR.vcf"])
 	else:
 		new_vcf = new_vcf_name
 
