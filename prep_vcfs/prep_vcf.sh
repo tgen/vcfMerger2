@@ -139,8 +139,7 @@ function init_some_vars(){
 
 function getOptions(){ 
     # options may be followed by one colon to indicate they have a required argument
-    if [[ ! options=`getopt -o :hd:b:g:o:t: -l :help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,
-    vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,threshold-AR: -- "$@" ` ]]
+    if [[ ! options=`getopt -o :hd:b:g:o:t: -l :help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,threshold-AR: -- "$@" ` ]]
 	then
 	# if something went wrong, getopt will put out an error message for us
 		echo "ERROR in Arguments" ; usage
