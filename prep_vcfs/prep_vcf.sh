@@ -37,13 +37,14 @@ DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, or these abbreviations, LAN|LCT, MUT, OCT, SLK, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
+VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or these abbreviations, LAN|LCT, MUT, OCT, SLK,
+VDJ|VDT, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
 
 
 function usage(){
 	echo -e "\nUSAGE:"
 	echo -e "`basename $0` \\
--d|--dir-work    	DIR_WORK_\ directory where outputs will be written (needs to exist))  \\
+-d|--dir-work    	DIR_WORK \\ directory where outputs will be written (needs to exist))  \\
 -g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] \\
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --print-defaults in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
@@ -56,7 +57,7 @@ function usage(){
 --contigs-file    	FILE_WITH_CONTIGS FORMATTED AS IT IS IN VCF HEADERS (Optional; depend on tool ; use the script 'convert_contig_list_from_bam_to_vcf_format.sh' located in utils directory to create the appropriate file ) [default is null ] \\
 --do-not-normalize	disable normalization [default is enable] \\
 --bam			BAM file to provide to generate intermediate contig file in case --contigs-file option is not provided but needed for current tool's vcf in process
---th-AR|--threshold-AR      AR value (float from 0.000001 to 1 ). Based on that value, the GT flag (genotype) will be assigned to 0/1 if below that threshold or 1/1 if equal or above that threshold [default value is 0.900 ] ;
+--th-AR|--threshold-AR      AR value (float from 0.000001 to 1 ). Based on that value, the GT flag (genotype) will be assigned to 0/1 if below that threshold or 1/1 if equal or above that threshold [default value is 0.90 ] ;
 
 "
 }
@@ -140,9 +141,12 @@ function getOptions(){
 
 
 # options may be followed by one colon to indicate they have a required argument
-if ! options=`getopt -o :hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,threshold-AR: -- "$@" `
+    options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,threshold-AR: -- "$@" `
+    echo "${options}"
+
+    if [[ ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,threshold-AR: -- "$@" ` ]]
 	then
-	# something went wrong, getopt will put out an error message for us
+	# if something went wrong, getopt will put out an error message for us
 		echo "ERROR in Arguments" ; usage
 		fexit
 	fi
@@ -399,7 +403,6 @@ function process_octopus_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( add_Contigs ${VCF} )
-	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
 	VCF=$( decompose ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
@@ -407,31 +410,48 @@ function process_octopus_vcf(){
 	final_msg ${VCF}
 }
 
+function process_vardictjava_vcf(){
+	local VCF=$1
+	VCF=$( check_and_update_sample_names ${VCF} )
+	VCF=$( add_Contigs ${VCF} )
+	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+	VCF=$( normalize_vcf ${VCF})
+	final_msg ${VCF}
+}
+
+
+
 
 
 function run_tool(){
-	local TOOLNAME=$1 
+	local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]')
 	local VCF=$2
 	local DIR_PATH_TO_SCRIPTS="${DIR_PATH_TO_SCRIPTS}"
+
 	case $TOOLNAME in
-		strelka2|SLK)
+		strelka2|slk)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/strelka2/strelka2.somatic.addFieldsForVcfMerger.py"
 			process_strelka2_vcf ${VCF}
 			;;
-		mutect2|MTC)
+		mutect2|mtc)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/mutect2/mutect2.somatic.addFieldsForVcfMerger.py"
 			process_mutect2_vcf ${VCF}
 			;; 
-		lancet|LCT|LAN)	
+		lancet|lct|lan)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/lancet/lancet.somatic.addFieldsForVcfMerger.py"	
 			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_lancet_vcf ${VCF} 
 			;;
-		octopus|OCT)	
+		octopus|oct)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.addFieldsForVcfMerger.py"
 			PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py"
 			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_octopus_vcf ${VCF}
+			;;
+		vardict|vdt|vdj)
+			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic
+			.addFieldsForVcfMerger.py"
+			process_vardictjava_vcf ${VCF}
 			;;
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
 	esac
@@ -481,16 +501,26 @@ function main(){
 
 
 
-
-
-
 ##@@@@@@@@@@@@@@
 ## START HERE
 ##@@@@@@@@@@@@@@
-type python >/dev/null 2>&1 || { echo >&2 "Require \"\python\" executable but it's not in the PATH.  Aborting."; exit 1; } || python -V 
-if [[ ! `python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 ` == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ; exit 1 ; fi 
-type vt >/dev/null 2>&1 || { echo >&2 "Require \"\vt\" executable but it's not in the PATH.  Aborting."; exit 1; } || vt --version 
-type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"\nbcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
+if [[ `uname -s` == "Darwin" ]] ;
+then
+    type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable in MacOSX bash but it's not in the
+    PATH.  Aborting.";
+ exit 1; } || python3 -V
+else
+    type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting.";
+ exit 1; } || python -V
+    python_main_version_number=`python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
+    echo "python main version number captured: ${python_main_version_number}"
+    if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ;
+ exit 1 ; fi
+fi
+
+type vt >/dev/null 2>&1 || { echo >&2 "Require \"vt\" executable but it's not in the PATH.  Aborting."; exit 1; } ||
+# vt --version
+type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
 if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi 
 
 ## init variables
