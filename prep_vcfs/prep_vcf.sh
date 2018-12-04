@@ -346,7 +346,7 @@ function prepare_input_file_for_Venn(){
     local VCF="$1"
     local INPUT_FILE_FOR_VENN=$( basename ${VCF} ".vcf" ).intervene.bed
     echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
-    grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN}
+    grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${INPUT_FILE_FOR_VENN}
     check_ev $? "prepare_input_file_for_Venn"
 }
 
@@ -417,7 +417,6 @@ function process_vardictjava_vcf(){
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
 }
-
 
 
 function run_tool(){
@@ -493,7 +492,6 @@ function main(){
 	fi
 
 }
-
 
 
 ###@@@@@@@@@@@@@@

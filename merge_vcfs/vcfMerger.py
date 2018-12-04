@@ -26,8 +26,6 @@
 ### Minor Contributors:
 
 
-
-
 # from multiprocessing import Process, Queue, cpu_count
 import argparse
 from sys import exit
@@ -158,7 +156,6 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	# correct columns or with the same names across ALL the vcf files ;
 	dvm.compareTuples(l_contigs, " CONTIGS ")  ## we may add an option to skip that check ; even though we do not know
 	# what could be the consequences of having different contigs ; we cannot think any so far.
-
 
 	"""
 	### we check here the presence of the expected MANDATORY fields in the FORMAT columns ;
@@ -307,6 +304,16 @@ def main(args, cmdline):
 		merge_vcf_outfilename = str(args["outfilename"])
 		log.info("name output vcf filename is: " + merge_vcf_outfilename)
 
+	lbeds = ""
+	if args["beds"]:
+		lbeds = str(args["beds"]).split(delim)
+		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
+
+	do_venn = False
+	if args["do_venn"]:
+		do_venn = True
+		log.info("make venn enabled")
+
 	# CHECK POINTS
 	if lossy and lossless:
 		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
@@ -316,6 +323,11 @@ def main(args, cmdline):
 		exit("ERROR: number of acronyms should match number of toolnames; Aborting.")
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		exit("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
+	if do_venn:
+		if lbeds == "":
+			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
+		make_venn(lbeds, ltoolnames, delim, saveOverlapsBool=False, upsetBool=False)
+		sys.exit()
 
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline)
 
@@ -358,6 +370,12 @@ def make_parser_args():
 	                      action='store_true')
 	optional.add_argument('--lossy',
 	                      help='This will create a merged vcf with FORMAT information kept from only the tool having precedence at the dealt position. lossless and lossy are mutually exclusive',
+	                      action='store_true')
+	optional.add_argument('--beds',
+	                      help='list of bed files to be used to make Venns or Upset plots; requires to enable --do-venn as well to validate making Venn/upset plots ; list MUST be delimited by DELIM character (--delim or default delim)',
+	                      action=UniqueStore)
+	optional.add_argument('--do-venn',
+	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
 	                      action='store_true')
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',

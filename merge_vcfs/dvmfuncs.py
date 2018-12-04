@@ -578,4 +578,78 @@ def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 2 ):
 
 	return '\t'.join(elements)
 
+def get_colors_for_venns(number):
+	dictColors = {
+		2: ("#d8b365", "#5ab4ac"),
+		3: ("#dfc27d", "#80cdc1", "#018571"),
+		4: ("#a6611a", "#dfc27d", "#80cdc1", "#018571"),
+		5: ("#d8b365", "#f6e8c3", "#c7eae5", "#5ab4ac", "#01665e"),
+		6: ("#8c510a", "#d8b365", "#f6e8c3", "#c7eae5", "#5ab4ac", "#01665e"),
+		7: ("#bf812d", "#dfc27d", "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f", "#01665e"),
+		8: ("#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f", "#01665e"),
+		9: ("#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f", "#01665e", "#003c30"),
+		10: ("#543005", "#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f", "#01665e", "#003c30")
+	}
+	try:
+		return dictColors(number)
+	except KeyError:
+		log.info("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
+		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
+
+def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False):
+	#TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
+	names = ltoolnames.replace(delim, ",")
+	vcfs = lbeds.replace(delim, ",")
+	numberOfTools = len(names.split(","))
+	type = "genomic"
+	colors = get_colors_for_venns(numberOfTools)
+	title = str("Venn using " + numberOfTools + " variant callers")
+	figtype = "png"
+	dpi = 300
+	bordercolors = ','.join(["black"]*numberOfTools)
+	fontsize = 20
+
+	output_name = "upsetPlot_"+numberOfTools+"_tools.png" if upsetBool else "venn_"+numberOfTools+"_tools.png"
+
+	# Define command and arguments
+	command = 'intervene'
+	# Define the type of venn
+	if numberOfTools >= 5:
+		upsetBool = True
+	if upsetBool:
+		vtype = "upset"
+		additional_args = " ".join(["--ninter", 150,
+		                            "--sbcolor", "#d8b365",
+		                            "--mbcolor", "#5ab4ac",
+		                            "--showzero",
+		                            "--showsize",
+		                            "--order", "freq"
+		                            ])
+	else
+		vtype = "venn"
+		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
+		additional_args = " ".join(["--bordercolors", bordercolors,
+		                            "--colors", colors,
+		                            saveOverlaps
+		                            ])
+
+	args = " ".join(["--type", type,
+	                 "-i", vcfs,
+	                 "--names", names,
+	                 "--title", title,
+	                 "--figtype", figtype,
+	                 "--dpi", dpi,
+	                 "--fontsize", fontsize,
+	                 "--project", project,
+	                 "--output", output_name,
+	                 additional_args
+	                 ])
+
+	# Build subprocess command
+	cmd = [command, vtype, args]
+	print(cmd)
+	# check_output will run the command and store to result
+	import subprocess
+	subprocess.call(cmd)
+
 
