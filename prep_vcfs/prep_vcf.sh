@@ -37,20 +37,19 @@ DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or these abbreviations, LAN|LCT, MUT, OCT, SLK,
-VDJ|VDT, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
+VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or these abbreviations, LAN|LCT, MUT, OCT, SLK, VDJ|VDT, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
 
 
 function usage(){
 	echo -e "\nUSAGE:"
 	echo -e "`basename $0` \\
--d|--dir-work    	DIR_WORK \\ directory where outputs will be written (needs to exist))  \\
+-d|--dir-work    	DIR_WORK directory where outputs will be written (needs to exist))  \\
 -g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] \\
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --print-defaults in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
 --print-defaults	Print default valid toolnames accepted so far \\
 --vcf			vcf having all types of variants already (no need to concatenate) \\
---vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\	
+--vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
 --vcf-snvs		tool's VCF with snvs (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
 --tumor-sname    	TUMOR SAMPLE NAME [Required]\\
 --normal-sname   	NORMAL SAMPLE NAME [Required] \\
@@ -64,6 +63,7 @@ function usage(){
 
 function fexit(){
 	kill -s TERM ${TOP_PID}
+	exit -1
 }
 
 function check_ev(){
@@ -74,6 +74,7 @@ function checkDir(){
 	local D=$1
 	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >>; Aborting!" ; fexit; fi ;
 }
+
 function checkFile(){
 	local F=$1
 	if [[ ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >>; Aborting!" ; fexit ; fi ;
@@ -112,13 +113,12 @@ function checkIfRangeZeroOne(){
 }
 
 function check_contig_file(){
-	local TN="$1" 
+	local TN="$1"
 	local F="$2"
-	echo -e "Checking if Contig Files has been provided for tool $( echo ${TN} | tr '[a-z]' '[A-Z]' ) ; provided contig file in check is: << ${F} >> or if not, BAM file should have been provided; if so, BAM_file == << >> if provided. if not error is generated." 1>&2
+	echo -e "Checking if Contig Files has been provided for tool $( echo ${TN} | tr '[a-z]' '[A-Z]' ) ; provided contig file in check is: << ${F} >> or if not, BAM file should have been provided; if so, BAM_file == << ${F} >>. if not error is generated. please use options --contigs-file or --bam " 1>&2
 	checkFileName "${F}" 1>&2
 	checkFile "${F}" 1>&2
 }
-
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
@@ -136,12 +136,11 @@ function init_some_vars(){
 	TH_AR=""
 }
 
-
-function getOptions(){ 
-    # options may be followed by one colon to indicate they have a required argument
-    if [[ ! options=`getopt -o :hd:b:g:o:t: -l :help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,threshold-AR: -- "$@" ` ]]
+function getOptions(){
+# options may be followed by one colon to indicate they have a required argument
+if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize -- "$@" `
 	then
-	# if something went wrong, getopt will put out an error message for us
+	# something went wrong, getopt will put out an error message for us
 		echo "ERROR in Arguments" ; usage
 		fexit
 	fi
@@ -153,17 +152,16 @@ function getOptions(){
 		-d|--dir-work) export DIR_WORK=$2 ; LI="${LI}\nDIR_WORK==\"${DIR_WORK}\"" ;  shift ;;
 		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
 		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
-		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;; 
+		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
 		--vcf-indels)	export VCF_INDELS_FILE="$2"  ; LI="${LI}\nVCF_INDELS_FILE==\"${VCF_INDELS_FILE}\"";  shift ;;
-		--vcf-snvs) export VCF_SNVS_FILE="$2"  ; LI="${LI}\nVCF_SNVS_FILE==\"${VCF_SNVS_FILE}\"";  shift ;; 
+		--vcf-snvs) export VCF_SNVS_FILE="$2"  ; LI="${LI}\nVCF_SNVS_FILE==\"${VCF_SNVS_FILE}\"";  shift ;;
 		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
 		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
-		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
+		--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
-		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file 
+		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
 		--print-default-toolnames) echo ${VALID_TOOLNAMES} ; exit ;;
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
-		--th-AR|--threshold-AR) export TH_AR=$2 ; checkIntegerOrFloat ${TH_AR} ; checkIfRangeZeroOne ${TH_AR} ; LI="${LI}\nTH_AR==\"${TH_AR}\"";  shift ;;
 		-h|--help) usage ; exit ;;
 		(--) shift ;;
 		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
@@ -171,7 +169,6 @@ function getOptions(){
 		esac
 		shift
 	done
-
 }
 
 function recap_input(){
@@ -179,7 +176,6 @@ function recap_input(){
 	LI="${LI}\nCURR_DIR==\"${PWD}\""
 	echo -e "\n\n+------------------------------------------------+\n${LI[@]}\n+------------------------------------------------+\n\n"
 }
- 
 
 function concatenate_snvs_indels(){
 	local TOOLNAME=$1
@@ -196,15 +192,14 @@ function concatenate_snvs_indels(){
 	echo "${VCF}"
 }
 
-
 function check_and_update_sample_names(){
 	##@@@@@@@@@@@@@@@@@@@@@@@
 	## CHECK SAMPLES NAMES
 	##@@@@@@@@@@@@@@@@@@@@@@@
-	## so far the sample name should be NORMAL, TUMOR or the SM tag from BAM file ; 
-	## if not ##TODO revise the way we handle the sample names to make it much more generic; 
-	## will need discussion to do so, and will need to capture all the use cases possible ; 
-	
+	## so far the sample name should be NORMAL, TUMOR or the SM tag from BAM file ;
+	## if not ##TODO revise the way we handle the sample names to make it much more generic;
+	## will need discussion to do so, and will need to capture all the use cases possible ;
+
 	local VCF=$1
 	echo " in ${funcname} :  ${VCF} ${TOOLNAME} ${NORMAL_SNAME} ${TUMOR_SNAME} " 1>&2
 
@@ -217,7 +212,7 @@ function check_and_update_sample_names(){
 		echo -e "\tsample name in column 10 is  NORMAL and column 11 is named TUMOR" 1>&2
 		echo -e "\twe are updating the sample names appropriately here with the ones given by the user" 1>&2
 		sed -i "/^#CHROM/ s/NORMAL/${NORMAL_SNAME}/ ; /^#CHROM/ s/TUMOR/${TUMOR_SNAME}/" ${VCF}
-	
+
 	elif [[ "${COL11_VALUE}" == "NORMAL" && "${COL10_VALUE}" == "TUMOR"  ]] ;
 	then
 		echo -e "\tsample name in column 10 is  TUMOR and column 11 is named NORMAL" 1>&2
@@ -226,7 +221,7 @@ function check_and_update_sample_names(){
 		cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; continue} ; if($1~/^CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print }  }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
 		check_ev $? "swap column 10 and 11"  1>&2
 		mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VCF}
-	
+
 	elif [[ ( "${COL11_VALUE}" == "${TUMOR_SNAME}" && "${COL10_VALUE}" == "${NORMAL_SNAME}" ) || ( "${COL10_VALUE}" == "${TUMOR_SNAME}" && "${COL11_VALUE}" == "${NORMAL_SNAME}" )   ]] ;
 	then
 		echo -e "At least the sample name in column 10 is either Tumor or Normal; As we want normal sample in Column 10, we check if it is the case ..." 1>&2
@@ -234,7 +229,7 @@ function check_and_update_sample_names(){
 		then
 			echo "## we swap column 10 and 11 as we found that sample name in column 10 is the Tumor sample" 1>&2
 			(grep -E "^##" ${VCF} ; grep -vE "^##" ${VCF} | awk -F"\t" '{OFS="\t" ; TEMP=$10 ; $10=$11 ; $11=TEMP ; print }' ) > temp_swap_samples_column.${TOOLNAME}.vcf
-			if [[ $? -ne 0 ]] ; then echo -e "ERROR in swapping column; please check logs and your inputs to understand why it failed; Aborting LANCET post-processing; " ; fexit ; fi 
+			if [[ $? -ne 0 ]] ; then echo -e "ERROR in swapping column; please check logs and your inputs to understand why it failed; Aborting LANCET post-processing; " ; fexit ; fi
 			mv temp_swap_samples_column.${TOOLNAME}.vcf ${VCF}
 		else
 			echo -e "## We found that sample in column 10 is the NORMAL sample; we do not swap the columns" 1>&2
@@ -252,17 +247,17 @@ function get_contigs_file(){
 	local TN=$1
 	local BAMF="$2"
 	local CONTIGSF="$3"
-	
-	if [[ ${BAMF} == "" ]] ; 
-	then 
+
+	if [[ ${BAMF} == "" ]] ;
+	then
 		check_contig_file "${TN}" "${CONTIGSF}"
-	elif [[ ${BAMF} != "" ]] ; 
+	elif [[ ${BAMF} != "" ]] ;
 	then
 		if [[ ! -e "${BAMF}" ]]
 		then
 			if [[ "${CONTIGSF}" == "" || ! -e "${CONTIGSF}"  ]]
 			then
-				echo -e "ERROR: at least one of the option --bam or --contigs-file has to be provided; Check your inputs; Aborting" ; 
+				echo -e "ERROR: at least one of the option --bam or --contigs-file has to be provided; Check your inputs; Aborting" ;
 				fexit
 			else
 				export CONTIGS_FILE="${CONTIGSF}"
@@ -274,11 +269,10 @@ function get_contigs_file(){
 			export CONTIGS_FILE="${CONTIGSF}"
 		fi
 	fi
-	
+
 }
 
-
-function add_Contigs(){ 
+function add_Contigs(){
 	local VCF=$1
 	## Add missing Contigs lines to VCF Header
 	fout_name=${VCF%.*}.contigs.vcf
@@ -290,7 +284,6 @@ function add_Contigs(){
 	echo "${VCF}"
 }
 
-
 function look_for_block_substitution_in_octopus(){
 	## Octopus Specific function ; collapse variants if they form a block-substitution
 	local VCF=$1
@@ -298,7 +291,7 @@ function look_for_block_substitution_in_octopus(){
 	fout_name=${VCF%.*}.blocs.vcf
 	mycmd="python ${PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION} --normal_column 10 --tumor_column 11 -i ${VCF} -o ${fout_name}"
 	echo ${mycmd} 1>&2 ;
-	eval ${mycmd} 1>&2 ; 
+	eval ${mycmd} 1>&2 ;
 	check_ev $? " python look_for_bloc_substitution_in_${TOOLNAME} " 2>&1
 	VCF=${fout_name}
 	echo ${VCF}
@@ -327,13 +320,12 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
 	fi
-	echo ${mycmd} 1>&2 ; 
-	eval ${mycmd} 1>&2 ; 
+	echo ${mycmd} 1>&2 ;
+	eval ${mycmd} 1>&2 ;
 	check_ev $? "${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} " 1>&2
 	VCF=${fout_name}
 	echo "${VCF}"
 }
-
 
 function normalize_vcf(){
 	## normalize the VCF using bcftools
@@ -341,18 +333,16 @@ function normalize_vcf(){
 	echo "in ${funcname}:  ${VCF} and refgenome is ${REF_GENOME_FASTA}" 1>&2
 	echo "## Normalizing vcf ..."  1>&2
 	fout_name=${VCF%.*}.norm.vcf
-	echo -e "## bcftools sort -O v ${VCF} | bcftools norm -c e -f ${REF_GENOME_FASTA} -O v - > ${fout_name}" 1>&2
-	bcftools sort -O v ${VCF} | bcftools norm -c e -f ${REF_GENOME_FASTA} -O v - > ${fout_name} 
+	echo -e "## bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}" 1>&2
+	bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}
 	check_ev $? "bcftools with ${VCF} " 1>&2
 	VCF=${fout_name}
 	echo "${VCF}"
 }
 
-
-
 function final_msg(){
 	local VCF=$1
-	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ; 
+	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
 	then
 		VCF_FINAL=${VCF_FINAL_USER_GIVEN_NAME}
 	else
@@ -365,8 +355,6 @@ function final_msg(){
 	echo -e "copy/renamed to: ${VCF_FINAL} " 1>&2
 	exit
 }
-
-
 
 function process_strelka2_vcf(){
 	local VCF=$1
@@ -416,8 +404,6 @@ function process_vardictjava_vcf(){
 
 
 
-
-
 function run_tool(){
 	local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]')
 	local VCF=$2
@@ -431,11 +417,11 @@ function run_tool(){
 		mutect2|mtc)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/mutect2/mutect2.somatic.addFieldsForVcfMerger.py"
 			process_mutect2_vcf ${VCF}
-			;; 
+			;;
 		lancet|lct|lan)
-			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/lancet/lancet.somatic.addFieldsForVcfMerger.py"	
+			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/lancet/lancet.somatic.addFieldsForVcfMerger.py"
 			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
-			process_lancet_vcf ${VCF} 
+			process_lancet_vcf ${VCF}
 			;;
 		octopus|oct)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.addFieldsForVcfMerger.py"
@@ -444,8 +430,8 @@ function run_tool(){
 			process_octopus_vcf ${VCF}
 			;;
 		vardict|vdt|vdj)
-			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic
-			.addFieldsForVcfMerger.py"
+			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py"
+			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_vardictjava_vcf ${VCF}
 			;;
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
@@ -453,15 +439,13 @@ function run_tool(){
 	echo "${SCRIPT_FP}" ## we return the full path of the script
 }
 
-
-
 function main(){
 
 	##@@@@@@@@@@@@@@@@@##
 	##  check inputs   ##
 	##@@@@@@@@@@@@@@@@@##
 	echo -e "## Checking inputs ..."
-	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi 
+	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
 	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
 	if [[ ${TUMOR_SNAME} == ""  ]] ; then echo -e "ERROR: TUMOR Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
@@ -469,10 +453,10 @@ function main(){
 
 	## check files and folders if exist
 	checkDir ${DIR_WORK}
-	checkFile ${REF_GENOME_FASTA} 
+	checkFile ${REF_GENOME_FASTA}
 
 	cd ${DIR_WORK}
-	
+
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
@@ -496,9 +480,9 @@ function main(){
 
 
 
-##@@@@@@@@@@@@@@
-## START HERE
-##@@@@@@@@@@@@@@
+###@@@@@@@@@@@@@@
+### START HERE
+###@@@@@@@@@@@@@@
 #if [[ `uname -s` == "Darwin" ]] ;
 #then
 #    type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable in MacOSX bash but it's not in the
@@ -519,9 +503,9 @@ python_main_version_number=`python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 
 if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ; exit 1
 fi
 type vt >/dev/null 2>&1 || { echo >&2 "Require \"vt\" executable but it's not in the PATH.  Aborting."; exit 1; } ||
-# vt --version
+vt --version
 type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
-if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi 
+if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi
 
 ## init variables
 init_some_vars
@@ -530,6 +514,6 @@ getOptions $@
 ## recap inputs
 recap_input
 ## now we have all our inputs set up, let's process data ...
-main 
+main
 check_ev $? "main function "
 exit
