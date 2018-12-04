@@ -103,18 +103,21 @@ def read_json(f):
 	log.debug(str(data) + '\n')
 	return data
 
+
 def make_data_for_json(lvcfs,
                        ltoolnames,
                        normal_sname,
                        tumor_sname,
                        ref_genome_fasta,
+                       lbeds,
                        lossy,
                        ltpo=None,
                        lacronyms=None,
                        lprepped_vcf_outfilenames=None,
                        lbams=None,
                        lcontigs=None,
-                       TH_AR=0.9):
+                       TH_AR=0.9,
+                       do_venn=False):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -140,7 +143,8 @@ def make_data_for_json(lvcfs,
 		# 	sys.exit("ERROR: vcf pathname is INVALID '{}'\npathname must be the basename, relative path or full path to the vcf file".format(lvcfs[tool_idx]))
 		data[ltoolnames[tool_idx]]['normal'] = normal_sname
 		data[ltoolnames[tool_idx]]['tumor'] = tumor_sname
-		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[tool_idx] ; # manages where ever is the vcf (relative of full path to the current directory)
+		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[tool_idx] ; # manages wherever is the vcf (relative of full path to the current directory)
+		data[ltoolnames[tool_idx]]['bed'] = lbeds[tool_idx];  # manages wherever is the bed (relative of full path to the current directory)
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
 		if lprepped_vcf_outfilenames is not None:
@@ -165,6 +169,7 @@ def make_data_for_json(lvcfs,
 		# we keep it here just in case we use the json file as a reminder of what was run
 		data[ltoolnames[tool_idx]]['lossy'] = lossy
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
+		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
 
 	return data
 
@@ -200,7 +205,7 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 				                                                     os.path.basename(
 					                                                     data[tool]['prepped_vcf_outfilename']))
 
-		# make string from all options for the futire bash command line
+		# make string from all options for the future bash command line
 		cmdLine = ' '.join(
 			[
 				"-d", quote_str(data[tool]['dir_work']),
@@ -217,6 +222,10 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 
 			]
 		)
+
+		## capture if user wants to make the Venn/upset plots later on before merging vcfs
+		if data[tool]['do_venn']:
+			cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
 
 		# capture threshold AR found in json
 		TH_AR = data[tool]['threshold_AR']
@@ -273,9 +282,18 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun):
 	if lossy:
 		my_command = my_command + " --lossy"
 
+	if do_venn:
+		for tool in data.keys():
+			list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs ]) ## extension interveen.bed defined in prep_vcf.sh
+		if len(list_beds) == 0:
+			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you input or contact your IT/HPC admin")
+		if len(list_beds) != len(list_tools):
+			sys.exit("ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin".format(list_beds,list_tools))
+		my_command = my_command + " --do-venn --beds " + double_quote_str(list_beds)
 
 	log.info(double_quote_str(list_tools))
 	log.info(double_quote_str(list_vcfs))
+	log.info(double_quote_str(list_beds))
 	log.info(my_command)
 
 	if not dryrun:
@@ -411,6 +429,16 @@ def main(args, cmdline):
 			raise "Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs."
 		log.info("user given threshold for AR: " + str(TH_AR))
 
+	lbeds = ""
+	if args["beds"]:
+		lbeds = str(args["beds"]).split(delim)
+		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
+
+	do_venn = False
+	if args["do_venn"]:
+		do_venn = True
+		log.info("make venn enabled")
+
 	dryrun = False
 	if args["dry_run"]:
 		dryrun = args["dry_run"]
@@ -434,7 +462,8 @@ def main(args, cmdline):
 	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
 	                          lbams=lbams,
 	                          lcontigs=lcontigs,
-	                          TH_AR=TH_AR)
+	                          TH_AR=TH_AR,
+	                          do_venn=do_venn)
 	json_filename = "vcfMerger.json"
 	inFileJson = make_json(data, json_filename)
 	data = read_json(inFileJson)
@@ -538,6 +567,13 @@ def make_parser_args():
 	                      required=False,
 	                      action='store_true',
 	                      help='enabling this flag prevents doing the merging step [useful if only the prep step needs to be done ]')
+
+	optional.add_argument('--beds',
+	                      help='list of bed files to be used to make Venns or Upset plots; requires to enable --do-venn as well to validate making Venn/upset plots ; list MUST be delimited by DELIM character (--delim or default delim)',
+	                      action=UniqueStore)
+	optional.add_argument('--do-venn',
+	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
+	                      action='store_true')
 
 	optional.add_argument('-n', '--dry-run',
 	                      required=False,

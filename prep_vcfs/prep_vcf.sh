@@ -47,6 +47,7 @@ function usage(){
 -g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] \\
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --print-defaults in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
+--make-bed-for-venn   enable making BED file for the Intervene python tool [default is disable] \\
 --print-defaults	Print default valid toolnames accepted so far (case insensitive) \\
 --vcf			vcf having all types of variants already (no need to concatenate) \\
 --vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
