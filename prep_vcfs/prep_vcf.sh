@@ -47,7 +47,7 @@ function usage(){
 -g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] \\
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --print-defaults in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
---print-defaults	Print default valid toolnames accepted so far \\
+--print-defaults	Print default valid toolnames accepted so far (case insensitive) \\
 --vcf			vcf having all types of variants already (no need to concatenate) \\
 --vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
 --vcf-snvs		tool's VCF with snvs (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
@@ -134,6 +134,7 @@ function init_some_vars(){
 	CONTIGS_FILE=""
 	VCF_FINAL_USER_GIVEN_NAME=""
 	TH_AR=""
+	MAKE_BED_FOR_VENN="no"
 }
 
 function getOptions(){
@@ -160,8 +161,9 @@ if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,nor
 		--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-default-toolnames) echo ${VALID_TOOLNAMES} ; exit ;;
+		--print-default-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the --toolname option (case insensitive)
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
+		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
 		-h|--help) usage ; exit ;;
 		(--) shift ;;
 		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
@@ -340,6 +342,14 @@ function normalize_vcf(){
 	echo "${VCF}"
 }
 
+function prepare_input_file_for_Venn(){
+    local VCF="$1"
+    local INPUT_FILE_FOR_VENN=$( basename ${VCF} ".vcf" ).intervene.bed
+    echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
+    grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN}
+    check_ev $? "prepare_input_file_for_Venn"
+}
+
 function final_msg(){
 	local VCF=$1
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
@@ -349,6 +359,12 @@ function final_msg(){
 		VCF_FINAL=${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
 	cp ${VCF} ${VCF_FINAL}
+	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
+	then
+	    echo -e "preparing input file for intervene python module to make Venns" 1>&2
+	    prepare_input_file_for_Venn ${VCF_FINAL}
+	fi
+
 	echo -e "\n##---------------------------------------------------------------------------##" 1>&2
 	echo -e "Extension should represent the steps performed on the given input VCF" 1>&2
 	echo -e "vcfMerger-compatible vcf file : << ${VCF} >>" 1>&2
@@ -483,19 +499,6 @@ function main(){
 ###@@@@@@@@@@@@@@
 ### START HERE
 ###@@@@@@@@@@@@@@
-#if [[ `uname -s` == "Darwin" ]] ;
-#then
-#    type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable in MacOSX bash but it's not in the
-#    PATH.  Aborting.";
-# exit 1; } || python3 -V
-#else
-#    type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting.";
-# exit 1; } || python -V
-#    python_main_version_number=`python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
-#    echo "python main version number captured: ${python_main_version_number}"
-#    if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ;
-# exit 1 ; fi
-#fi
 
 type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting."; exit
 1; } || python -V
