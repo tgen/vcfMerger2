@@ -625,7 +625,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		                            "--showsize",
 		                            "--order", "freq"
 		                            ])
-	else
+	else:
 		vtype = "venn"
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
 		additional_args = " ".join(["--bordercolors", bordercolors,
