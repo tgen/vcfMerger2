@@ -109,7 +109,6 @@ def make_data_for_json(lvcfs,
                        normal_sname,
                        tumor_sname,
                        ref_genome_fasta,
-                       lbeds,
                        lossy,
                        ltpo=None,
                        lacronyms=None,
@@ -144,7 +143,6 @@ def make_data_for_json(lvcfs,
 		data[ltoolnames[tool_idx]]['normal'] = normal_sname
 		data[ltoolnames[tool_idx]]['tumor'] = tumor_sname
 		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[tool_idx] ; # manages wherever is the vcf (relative of full path to the current directory)
-		data[ltoolnames[tool_idx]]['bed'] = lbeds[tool_idx];  # manages wherever is the bed (relative of full path to the current directory)
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
 		if lprepped_vcf_outfilenames is not None:
