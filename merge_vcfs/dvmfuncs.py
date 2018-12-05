@@ -658,7 +658,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 #	subprocess.call(cmd, shell=True, universal_newlines=True)
 	process = subprocess.Popen(cmd,
 	                           shell=False,
-	                           universal_newlines=True)
+	                           universal_newlines=False)
 	process.wait()
 	print(str(process.returncode))
 	if process.returncode is not 0:
