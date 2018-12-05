@@ -606,7 +606,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	title = str("Venn using " + str(numberOfTools) + " variant callers")
 	figtype = "png"
 	dpi = 300
-	bordercolors = ','.join(["black"]*numberOfTools)
+	bordercolors = ','.join(["\"black\""]*numberOfTools)
 	fontsize = 20
 	project = "vcfMerger2"
 
@@ -620,8 +620,8 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	if upsetBool:
 		vtype = "upset"
 		additional_args = " ".join(["--ninter", 150,
-		                            "--sbcolor", "#d8b365",
-		                            "--mbcolor", "#5ab4ac",
+		                            "--sbcolor", "\"#d8b365\"",
+		                            "--mbcolor", "\"#5ab4ac\"",
 		                            "--showzero",
 		                            "--showsize",
 		                            "--order", "freq"
@@ -630,7 +630,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		vtype = "venn"
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
 		additional_args = " ".join(["--bordercolors", bordercolors,
-		                            "--colors", ','.join([ str(color) for color in colors ]),
+		                            "--colors", ','.join([ "\""+color+"\"" for color in colors ]),
 		                            saveOverlaps
 		                            ])
 

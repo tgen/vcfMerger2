@@ -327,7 +327,7 @@ def main(args, cmdline):
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
 		dvm.make_venn(lbeds, ltoolnames, delim, saveOverlapsBool=False, upsetBool=False)
-		sys.exit()
+		exit()
 
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline)
 
