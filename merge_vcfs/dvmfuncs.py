@@ -650,7 +650,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	# Build subprocess command
 	cmd = [command, vtype, args, additional_args]
 	cmd = [command, vtype, args]
-	cmd = [ "intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2", "--title", "\"Venn using 2 variant callers\"", " --dpi", "300" ] ## THAT LINE WORKED
+	cmd = [ "intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2", "--title", "\"Venn using 2 variant callers\"", "--dpi", "300" ] ## THAT LINE WORKED
 	log.info(str(cmd))
 	log.info(" ".join([x for x in cmd]))
 	# check_output will run the command and store to result
