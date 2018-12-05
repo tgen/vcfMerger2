@@ -661,6 +661,6 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	process.wait()
 	print(str(process.returncode))
 	if process.returncode is not 0:
-		sys.exit("Venn Creation FAILED for tool {} ".format(tool))
+		sys.exit("Venn Creation FAILED")
 
 
