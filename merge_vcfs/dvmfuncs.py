@@ -648,7 +648,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 
 	# Build subprocess command
 	cmd = [command, vtype, args, str(additional_args)]
-	cmd = [command, vtype, args]
+	cmd = ["intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2" ]
 	log.info(str(cmd))
 	log.info(" ".join([x for x in cmd]))
 	# check_output will run the command and store to result
