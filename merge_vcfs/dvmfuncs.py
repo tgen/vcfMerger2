@@ -629,7 +629,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	else:
 		vtype = "venn"
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
-		additional_args = " ".join(["--bordercolors", bordercolors,
+		additional_args = " ".join(["--bordercolors", ','.join([(str(color)) for color in bordercolors]),
 		                            "--colors", ','.join([ str(color) for color in colors ]),
 		                            saveOverlaps
 		                            ])
@@ -641,8 +641,8 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	                 "--names", names,
 	                 "--title", title,
 	                 "--figtype", figtype,
-	                 "--dpi", dpi,
-	                 "--fontsize", fontsize,
+	                 "--dpi", str(dpi),
+	                 "--fontsize", str(fontsize),
 	                 "--project", project,
 	                 "--output", output_name
 	                 ])
