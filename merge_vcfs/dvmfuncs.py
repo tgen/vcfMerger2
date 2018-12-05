@@ -648,7 +648,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 
 	# Build subprocess command
 	cmd = [command, vtype, args, str(additional_args)]
-	#cmd = [command, vtype, "--help"]
+	cmd = [command, vtype, args]
 	log.info(str(cmd))
 	log.info(" ".join([x for x in cmd]))
 	# check_output will run the command and store to result
@@ -656,10 +656,10 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	print("*"*50)
 	print("full command run intervene")
 #	subprocess.call(cmd, shell=True, universal_newlines=True)
-	process = subprocess.call(cmd,
+	process = subprocess.run(cmd,
 	                           shell=False,
 	                           universal_newlines=False)
-	process.wait()
+	#process.wait()
 	print(str(process.returncode))
 	if process.returncode is not 0:
 		sys.exit("Venn Creation FAILED")
