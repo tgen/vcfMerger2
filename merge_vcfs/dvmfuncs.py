@@ -651,10 +651,8 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	print(cmd)
 	# check_output will run the command and store to result
 	import subprocess
-	print('help: ')
-	subprocess.call(command + " "
-	                          "--help", shell=True, universal_newlines=True)
-	print("full command run")
-	subprocess.call(cmd , shell=True, universal_newlines=True)
+	print("*"*50)
+	print("full command run intervene")
+	subprocess.call(cmd, shell=True, universal_newlines=False)
 
 
