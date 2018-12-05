@@ -608,6 +608,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	dpi = 300
 	bordercolors = ','.join(["black"]*numberOfTools)
 	fontsize = 20
+	project = "vcfMerger2"
 
 	output_name = "upsetPlot_"+str(numberOfTools)+"_tools.png" if upsetBool else "venn_"+str(numberOfTools)+"_tools.png"
 
