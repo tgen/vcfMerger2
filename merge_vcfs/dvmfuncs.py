@@ -618,7 +618,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	if numberOfTools >= 5:
 		upsetBool = True
 	if upsetBool:
-		vtype = " upset "
+		vtype = "upset"
 		additional_args = ",".join(["--ninter", "150",
 		                            "--sbcolor", "\"#d8b365\"",
 		                            "--mbcolor", "\"#5ab4ac\"",
@@ -636,7 +636,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 
 	log.info(str(additional_args))
 
-	args = ",".join(["--input", ','.join([bed for bed in beds]),
+	args = ",".join(["--input", "\""+beds+"\""),
 	                 "--type", type,
 	                 "--names", names,
 	                 "--title", title,
@@ -648,7 +648,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	                 ])
 
 	# Build subprocess command
-	cmd = [command, vtype, args, str(additional_args)]
+	cmd = [command, vtype, args, additional_args]
 	#cmd = ["intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2" ] ## THAT LINE WORKED
 	log.info(str(cmd))
 	log.info(" ".join([x for x in cmd]))
