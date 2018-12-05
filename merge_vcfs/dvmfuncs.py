@@ -591,7 +591,7 @@ def get_colors_for_venns(number):
 		10: ("#543005", "#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f", "#01665e", "#003c30")
 	}
 	try:
-		return dictColors(number)
+		return dictColors[number]
 	except KeyError:
 		log.info("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
