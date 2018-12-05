@@ -608,9 +608,8 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	dpi = 300
 	bordercolors = ','.join(["\"black\""]*numberOfTools)
 	fontsize = 20
-	project = "vcfMerger2"
-
-	output_name = "upsetPlot_"+str(numberOfTools)+"_tools.png" if upsetBool else "venn_"+str(numberOfTools)+"_tools.png"
+	project = "vcfMerger2_"+str(numberOfTools)+"_tools"+str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
+	output_name = "upsetPlot_"+str(numberOfTools)+"_tools" if upsetBool else "venn_"+str(numberOfTools)+"_tools"
 
 	# Define command and arguments
 	command = 'intervene'
