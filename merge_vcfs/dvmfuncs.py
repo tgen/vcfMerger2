@@ -611,8 +611,9 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	project = "vcfMerger2_"+str(numberOfTools)+"_tools."+str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 	output_name = "upsetPlot_"+str(numberOfTools)+"_tools" if upsetBool else "venn_"+str(numberOfTools)+"_tools"
 
+
 	# Define command and arguments
-	command = 'intervene '
+	command = 'intervene'
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
@@ -656,9 +657,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	print("*"*50)
 	print("full command run intervene")
 #	subprocess.call(cmd, shell=True, universal_newlines=True)
-	process = subprocess.run(cmd,
-	                           shell=False,
-	                           universal_newlines=False)
+	process = subprocess.run(cmd, shell=False, universal_newlines=False)
 	#process.wait()
 	print(str(process.returncode))
 	if process.returncode is not 0:
