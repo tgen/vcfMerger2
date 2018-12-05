@@ -650,7 +650,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	cmd = [command, vtype, args, str(additional_args)]
 	#cmd = [command, vtype, "--help"]
 	log.info(str(cmd))
-	log.info(" ".join([cmd]))
+	log.info(" ".join([x for x in cmd]))
 	# check_output will run the command and store to result
 	import subprocess
 	print("*"*50)
