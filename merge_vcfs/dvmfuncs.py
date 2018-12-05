@@ -603,7 +603,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	numberOfTools = len(ltoolnames)
 	type = "genomic"
 	colors = get_colors_for_venns(numberOfTools)
-	title = str("Venn using " + str(numberOfTools) + " variant callers")
+	title = "\"Venn using " + str(numberOfTools) + " variant callers\""
 	figtype = "png"
 	dpi = 300
 	bordercolors = ','.join(["\"black\""]*numberOfTools)
