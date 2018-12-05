@@ -619,7 +619,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		upsetBool = True
 	if upsetBool:
 		vtype = " upset "
-		additional_args = " ".join(["--ninter", 150,
+		additional_args = ",".join(["--ninter", "150",
 		                            "--sbcolor", "\"#d8b365\"",
 		                            "--mbcolor", "\"#5ab4ac\"",
 		                            "--showzero",
@@ -629,26 +629,27 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	else:
 		vtype = "venn"
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
-		additional_args = " ".join(["--bordercolors", bordercolors,
+		additional_args = ",".join(["--bordercolors", bordercolors,
 		                            "--colors", ','.join([ "\""+color+"\"" for color in colors ]),
 		                            saveOverlaps
 		                            ])
 
 	log.info(str(additional_args))
 
-	args = " ".join(["--input", str(beds),
-	                 "--type", type, "--names", str(names)
-	                 # "--title", title,
-	                 # "--figtype", figtype,
-	                 # "--dpi", str(dpi),
-	                 # "--fontsize", str(fontsize),
-	                 # "--project", project,
-	                 # "--output", output_name
+	args = ",".join(["--input", ','.join([bed for bed in beds]),
+	                 "--type", type,
+	                 "--names", names,
+	                 "--title", title,
+	                 "--figtype", figtype,
+	                 "--dpi", str(dpi),
+	                 "--fontsize", str(fontsize),
+	                 "--project", project,
+	                 "--output", output_name
 	                 ])
 
 	# Build subprocess command
 	cmd = [command, vtype, args, str(additional_args)]
-	cmd = ["intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2" ]
+	#cmd = ["intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2" ] ## THAT LINE WORKED
 	log.info(str(cmd))
 	log.info(" ".join([x for x in cmd]))
 	# check_output will run the command and store to result
