@@ -599,7 +599,7 @@ def get_colors_for_venns(number):
 def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False):
 	#TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join(ltoolnames)
-	vcfs = ','.join(lbeds)
+	beds = ','.join(lbeds)
 	numberOfTools = len(ltoolnames)
 	type = "genomic"
 	colors = get_colors_for_venns(numberOfTools)
@@ -637,7 +637,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	log.info(str(additional_args))
 
 	args = " ".join(["--type", type,
-	                 "-i", vcfs,
+	                 "-i", beds,
 	                 "--names", names,
 	                 "--title", title,
 	                 "--figtype", figtype,
