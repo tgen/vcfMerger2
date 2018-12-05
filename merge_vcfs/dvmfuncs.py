@@ -629,7 +629,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		vtype = "venn"
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
 		additional_args = " ".join(["--bordercolors", bordercolors,
-		                            "--colors", colors,
+		                            "--colors", ','.join([ str(color) for color in colors ]),
 		                            saveOverlaps
 		                            ])
 
