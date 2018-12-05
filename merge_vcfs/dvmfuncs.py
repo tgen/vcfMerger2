@@ -603,13 +603,13 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	numberOfTools = len(ltoolnames)
 	type = "genomic"
 	colors = get_colors_for_venns(numberOfTools)
-	title = str("Venn using " + numberOfTools + " variant callers")
+	title = str("Venn using " + str(numberOfTools) + " variant callers")
 	figtype = "png"
 	dpi = 300
 	bordercolors = ','.join(["black"]*numberOfTools)
 	fontsize = 20
 
-	output_name = "upsetPlot_"+numberOfTools+"_tools.png" if upsetBool else "venn_"+numberOfTools+"_tools.png"
+	output_name = "upsetPlot_"+str(numberOfTools)+"_tools.png" if upsetBool else "venn_"+str(numberOfTools)+"_tools.png"
 
 	# Define command and arguments
 	command = 'intervene'
