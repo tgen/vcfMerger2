@@ -656,7 +656,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	print("*"*50)
 	print("full command run intervene")
 #	subprocess.call(cmd, shell=True, universal_newlines=True)
-	process = subprocess.Popen(cmd,
+	process = subprocess.call(cmd,
 	                           shell=False,
 	                           universal_newlines=False)
 	process.wait()
