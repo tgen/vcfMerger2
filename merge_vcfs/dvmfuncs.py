@@ -597,73 +597,72 @@ def get_colors_for_venns(number):
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 
 def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False):
-	#TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
-	names = "\""+','.join([name for name in ltoolnames])+"\""
+	# TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
+	names = ','.join([name for name in ltoolnames])
 	beds = ' '.join([name for name in lbeds])
 	numberOfTools = len(ltoolnames)
-	type = "\"genomic\""
-	colors = get_colors_for_venns(numberOfTools)
+	type = "genomic"
+	colors = list(get_colors_for_venns(numberOfTools))
 	title = "\"Venn using " + str(numberOfTools) + " variant callers\""
 	figtype = "png"
 	dpi = 300
-	bordercolors = ','.join(["\"black\""]*numberOfTools)
+	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
-	project = "vcfMerger2_"+str(numberOfTools)+"_tools."+str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
-	output_name = "upsetPlot_"+str(numberOfTools)+"_tools" if upsetBool else "venn_"+str(numberOfTools)+"_tools"
-
-
-	# Define command and arguments
-	command = 'intervene'
+	project = "vcfMerger2_" + str(numberOfTools) + "_tools." + str(
+		figtype);  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
+	output_name = "upsetPlot_" + str(numberOfTools) + "_tools" if upsetBool else "venn_" + str(numberOfTools) + "_tools"
+
+	# Define command and arguments
+	command = 'intervene'
+
+	## common arguments
+	common_args = ["--type", type,
+	        "--names", names,
+	        "--figtype", figtype,
+	        "--dpi", str(dpi),
+	        "--project", project,
+	        "--output", output_name
+	        ]
+
+
 	if upsetBool:
 		vtype = "upset"
-		additional_args = " ".join(["--ninter", "150",
-		                            "--sbcolor", "\"#d8b365\"",
-		                            "--mbcolor", "\"#5ab4ac\"",
-		                            "--showzero",
-		                            "--showsize",
-		                            "--order", "freq"
-		                            ])
+		type_specific_additional_args = ["--ninter", "5",
+		                                 "--sbcolor", "#d8b365",
+		                                 "--mbcolor", "#5ab4ac",
+		                                 "--showzero",
+		                                 "--showsize",
+		                                 "--order", "freq"]
+		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
+
 	else:
 		vtype = "venn"
-		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
-		additional_args = ' '.join(["--bordercolors", bordercolors,
-		                            "--colors", ','.join([ "\""+color+"\"" for color in colors ]),
-		                            saveOverlaps
-		                            ])
+		type_specific_additional_args = ["--bordercolors",  ",".join([color for color in bordercolors]),
+		                                  "--colors", ','.join([color for color in colors]),
+		                                 "--fontsize", str(fontsize),
+		                                 "--title", title]
+		if saveOverlapsBool:
+			type_specific_additional_args = type_specific_additional_args + ["--save-overlaps"]
 
-	log.info(str(additional_args))
-	log.info(str(beds))
-	print(str(type(beds)))
 
-	args = ' '.join(["--input", beds,
-	                 "--type", type,
-	                 "--names", names,
-	                 "--title", title,
-	                 "--figtype", figtype,
-	                 "--dpi", str(dpi),
-	                 "--fontsize", str(fontsize),
-	                 "--project", project,
-	                 "--output", output_name
-	                 ])
+
+
 
 	# Build subprocess command
-	cmd = [command, vtype, args, additional_args]
-	cmd = [command, vtype, args]
-	#cmd = [ "intervene", "venn", "--input", "SLK.prepped.intervene.bed", "MUT.prepped.intervene.bed", "--type", "genomic", "--names", "STRELKA2,MUTECT2", "--title", "\"Venn using 2 variant callers\"", "--dpi", "300" ] ## THAT LINE WORKED
-	log.info(str(cmd))
-	log.info(" ".join([x for x in cmd]))
+	mycmd = [command, vtype]
+	mycmd = mycmd + common_args + type_specific_additional_args
+	mycmd = mycmd + ["--input"] + lbeds
+	log.info(str(mycmd))
+	log.info(" ".join([x for x in mycmd]))
 	# check_output will run the command and store to result
 	import subprocess
-	print("*"*50)
+	print("*" * 50)
 	print("full command run intervene")
-#	subprocess.call(cmd, shell=True, universal_newlines=True)
-	process = subprocess.run(cmd, shell=False, universal_newlines=False)
-	#process.wait()
+	process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
+	process.wait()
 	print(str(process.returncode))
 	if process.returncode is not 0:
 		sys.exit("Venn Creation FAILED")
-
-
