@@ -636,7 +636,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 
 	log.info(str(additional_args))
 	log.info(str(beds))
-	print(class(beds))
+	print(str(type(beds)))
 
 	args = ' '.join(["--input", beds,
 	                 "--type", type,
