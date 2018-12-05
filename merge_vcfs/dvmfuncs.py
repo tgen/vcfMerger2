@@ -653,6 +653,13 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	import subprocess
 	print("*"*50)
 	print("full command run intervene")
-	subprocess.call(cmd, shell=True, universal_newlines=True)
+#	subprocess.call(cmd, shell=True, universal_newlines=True)
+	process = subprocess.Popen(cmd,
+	                           shell=True,
+	                           universal_newlines=True)
+	process.wait()
+	print(str(process.returncode))
+	if process.returncode is not 0:
+		sys.exit("Venn Creation FAILED for tool {} ".format(tool))
 
 
