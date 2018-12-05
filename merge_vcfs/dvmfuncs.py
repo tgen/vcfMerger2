@@ -646,6 +646,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	                 "--output", output_name
 	                 ])
 
+	subprocess.call(command + "--help")
 	# Build subprocess command
 	cmd = [command, vtype, args, str(additional_args)]
 	print(cmd)
