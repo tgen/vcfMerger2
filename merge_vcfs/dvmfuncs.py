@@ -627,7 +627,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		                            "--order", "freq"
 		                            ])
 	else:
-		vtype = " venn "
+		vtype = "venn"
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
 		additional_args = " ".join(["--bordercolors", bordercolors,
 		                            "--colors", ','.join([ "\""+color+"\"" for color in colors ]),
@@ -638,7 +638,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 
 	args = " ".join(["--type", type,
 	                 "-i", beds,
-	                 "--names", names,
+	                 "--names", names
 	                 # "--title", title,
 	                 # "--figtype", figtype,
 	                 # "--dpi", str(dpi),
