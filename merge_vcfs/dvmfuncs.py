@@ -634,6 +634,8 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		                            saveOverlaps
 		                            ])
 
+	log.info(str(additional_args))
+
 	args = " ".join(["--type", type,
 	                 "-i", vcfs,
 	                 "--names", names,
@@ -642,12 +644,11 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	                 "--dpi", dpi,
 	                 "--fontsize", fontsize,
 	                 "--project", project,
-	                 "--output", output_name,
-	                 additional_args
+	                 "--output", output_name
 	                 ])
 
 	# Build subprocess command
-	cmd = [command, vtype, args]
+	cmd = [command, vtype, args, str(additional_args)]
 	print(cmd)
 	# check_output will run the command and store to result
 	import subprocess
