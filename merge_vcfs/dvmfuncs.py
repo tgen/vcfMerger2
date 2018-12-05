@@ -638,12 +638,12 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	args = " ".join(["--type", type,
 	                 "-i", beds,
 	                 "--names", names,
-	                 "--title", title,
-	                 "--figtype", figtype,
-	                 "--dpi", str(dpi),
-	                 "--fontsize", str(fontsize),
-	                 "--project", project,
-	                 "--output", output_name
+	                 # "--title", title,
+	                 # "--figtype", figtype,
+	                 # "--dpi", str(dpi),
+	                 # "--fontsize", str(fontsize),
+	                 # "--project", project,
+	                 # "--output", output_name
 	                 ])
 
 	# Build subprocess command
