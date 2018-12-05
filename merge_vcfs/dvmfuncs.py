@@ -599,9 +599,9 @@ def get_colors_for_venns(number):
 def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False):
 	#TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join(["\""+name+"\"" for name in ltoolnames])
-	beds = ' '.join(lbeds)
+	beds = ' '.join(["\""+name+"\"" for name in lbeds])
 	numberOfTools = len(ltoolnames)
-	type = "genomic"
+	type = "\"genomic\""
 	colors = get_colors_for_venns(numberOfTools)
 	title = "\"Venn using " + str(numberOfTools) + " variant callers\""
 	figtype = "png"
@@ -612,12 +612,12 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	output_name = "upsetPlot_"+str(numberOfTools)+"_tools" if upsetBool else "venn_"+str(numberOfTools)+"_tools"
 
 	# Define command and arguments
-	command = 'intervene'
+	command = 'intervene '
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
 	if upsetBool:
-		vtype = "upset"
+		vtype = " upset "
 		additional_args = " ".join(["--ninter", 150,
 		                            "--sbcolor", "\"#d8b365\"",
 		                            "--mbcolor", "\"#5ab4ac\"",
@@ -626,7 +626,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		                            "--order", "freq"
 		                            ])
 	else:
-		vtype = "venn"
+		vtype = " venn "
 		saveOverlaps = "--save-overlaps" if saveOverlapsBool else ""
 		additional_args = " ".join(["--bordercolors", bordercolors,
 		                            "--colors", ','.join([ "\""+color+"\"" for color in colors ]),
