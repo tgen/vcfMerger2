@@ -672,13 +672,13 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		scriptname = project +  "_upset.R"
 		filepath = output_name + "/" + scriptname
 		print("Running Sed command")
-		process = subprocess.Popen("sed", "-i", "'s/"+pattern+"/"+replacement+"/'", filepath,  shell=False, universal_newlines=False)
+		process = subprocess.Popen("sed", "-i", "'s/"+pattern+"/"+replacement+"/'", filepath,  shell=True, universal_newlines=False)
 		process.wait()
 		print(str(process.returncode))
 		if process.returncode is not 0:
 			sys.exit("Upset Creation FAILED")
 		log.info("Running Rscript Command")
-		process = subprocess.Popen("Rscript", filepath,  shell=False, universal_newlines=False)
+		process = subprocess.Popen("Rscript", filepath,  shell=True, universal_newlines=False)
 		process.wait()
 		print(str(process.returncode))
 		if process.returncode is not 0:
