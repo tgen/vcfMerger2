@@ -140,14 +140,13 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 		lvcfs = [lvcfs[i] for i in indices]
 		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
 
-	# the trick is here for the Tool Precedence!!! The user has given us the list of
-	# vcfs and toolnames (and/or special precedence order variable) in order of precedence
-	# and we sort the vcf and add them to the tuple accordingly
+	# the trick is here for the Tool Precedence!!! The user has given us an ordered list of
+	# vcfs and toolnames in order of precedence and we sort the vcf and add them to the tuple accordingly
 	for i in range(len(lvcfs)):
 		o = vcfToDict.vcfToDict(lvcfs[i], ltoolnames[i])  ## here we map the toolname and the vcf associated
 		tuple_objs = tuple_objs + (o,)  ## we add instances of object vcfToDict to the tuple ; order FIFO is
 		# equivalent to the order of precedence
-		l_snames.append(o.samplenames)  ## we add tuples of samplenames to the list l_snames is a list of tuples
+		l_snames.append(o.samplenames)  ## we add tuples of samplenames to the list l_snames as a list of tuples
 		l_contigs.append(sorted(o.contigs))
 
 	# performing checks before processing data further
@@ -179,6 +178,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 				if res_search is None:
 					exit(
 						"Id Flag " + flagid + " not Defined in header of vcf file " + tpo.fvcf + ".\nPlease bring the VCF up to specs before running this merging tool. Use a wrapper specific to your tool which has already been created by the Author of the current tool. Aborting!")
+
 
 	# we process the files entirely after all the checks have PASSED successfully
 	# we may make parallel this step But If we do, we lose the precedence order in the tuple_dicts variable and

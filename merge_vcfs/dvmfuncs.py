@@ -630,7 +630,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 
 	if upsetBool:
 		vtype = "upset"
-		type_specific_additional_args = ["--ninter", "5",
+		type_specific_additional_args = ["--ninter", "50",
 		                                 "--sbcolor", "#d8b365",
 		                                 "--mbcolor", "#5ab4ac",
 		                                 "--showzero",
