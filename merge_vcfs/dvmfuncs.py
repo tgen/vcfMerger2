@@ -611,7 +611,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	project = "vcfMerger2_" + str(numberOfTools) + "_tools." + str(
 		figtype);  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 	# Define the type of venn
-	if numberOfTools >= 5:
+	if numberOfTools >= 2:
 		upsetBool = True
 	output_name = "upsetPlot_" + str(numberOfTools) + "_tools" if upsetBool else "venn_" + str(numberOfTools) + "_tools"
 
@@ -633,7 +633,7 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		type_specific_additional_args = ["--ninter", "5",
 		                                 "--sbcolor", "#d8b365",
 		                                 "--mbcolor", "#5ab4ac",
-		                                 "--showzero",
+		                                 "--showzero", "--showsize",
 		                                 "--order", "freq"]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
 
