@@ -634,7 +634,6 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 		                                 "--sbcolor", "#d8b365",
 		                                 "--mbcolor", "#5ab4ac",
 		                                 "--showzero",
-		                                 "--showsize",
 		                                 "--order", "freq"]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
 
