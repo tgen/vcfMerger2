@@ -21,11 +21,16 @@ will contain ALL the information from **ALL** the inputs vcfs
 
 
 # How to Install 
-You can install vcfMerger2 in two ways:
-1. download the git repository as a compressed archived, uncompressed and untar the archive, and update your `PATH` with the command  
+You can install vcfMerger2 in three ways:
+1. download the git repository as a compressed archived, uncompressed and untar the archive, then optionally update your `PATH` with the command  
 `export PATH=/install_directory/vcfMerger2/bin/:${PATH}` 
 
-2. clone the repository and add the bin directory to your `PATH` as described above.
+2. clone the repository and add the bin directory to your `PATH` as described above. 
+3. clone a specific release version of vcfMerger2, such as for instance for the versio 0.5.0-beta, the following command:
+`git clone git@github.com:tgen/vcfMerger2.git --release  0.5.0-beta` 
+or
+`git clone https://github.com/tgen/vcfMerger2.git --release  0.5.0-beta`
+
 
 After installing, you may delete the test_data directory unless you want to run the demo script. 
 
@@ -35,7 +40,7 @@ After installing, you may delete the test_data directory unless you want to run 
 
 The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bin` directory (normally in your `PATH`) 
 
-vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants vcfs. 
+vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants VCFs files. 
  
 Example:  
 ``` 
