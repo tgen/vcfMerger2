@@ -55,19 +55,33 @@ class Genotype(object):
 
 
 def usage(scriptname):
-	print("USAGE: \n" + scriptname + ' \n\t-i <VCF file [M]> \n\t' + ' \n\t-t <comma-separated thresholds values for nDP, tDP, nAR and tAR respectively [O]> \n\t' +  '--filter [boolean; default is False ]\n\t' + '\n\n')
+	print("USAGE: \n" + scriptname + ' -i <VCF file [M]>  --tumor_column INT --normal_column INT ')
+	print("")
+	print("options available:")
+	print(" -i|--fvcf  [ Mandatory, no default value, String Filename full or relative path expected ]\n", \
+	      "--tumor_column  [ Mandatory, no default value, Integer Expected ]\n", \
+	      "--normal_column [ Mandatory, no default value, Integer Expected ]\n", \
+	      "-o|--outfilename  [ Optional, no default value, String Expected ]\n", \
+ 	      "--threshold_AR [ Optional; default value:0.9 ; float expected ]\n", \
+	      "--debug [Optional, Flag, for debug only; increase verbosity ]\n", \
+	      )
+	print("")
 
-	print("#"*40 +"\nWARNING WARNING: This script is to be used only with somatic snvs vcf having NORMAL sample in "
-	              "column 10 and TUMOR sample in column 11; if not like this, update your vcf file to these specs; and the vcf has to be decomposed as well.\n" + "#"*40)
-	print("NOTE: Using the -t|--threshold enables filtering.")
-	print("raw CMD: python3 mutect2.somatic.snvs.filterBy_AR.py -i ${SOMATIC_SNVS_VCF} -t normalDP, tumorDP, normalAR, tumorAR ")
-	print("Example: \tpython3 mutect2.somatic.snvs.filterBy_AR.py -i somatic.snvs.pass.vcf -t 50,30,0.02,0.05 ")
-	print("Example without filtering data:\t python3 mutect2.somatic.snvs.filterBy_AR.py -i somatic.snvs.pass.vcf")
-	print("Example with filtering data using default threshold (10, 10, 0.02, 0.05):\t python3 mutect2.somatic.snvs.filterBy_AR.py -i somatic.snvs.pass.vcf")
+	print("#"*40 +"\nWARNING WARNING\n"+ "#"*40 )
+	print(" This script is to be used only with somatic snvs vcf having NORMAL sample in column 10 and TUMOR sample "
+	      "in column 11;")
+	print("if not like this, update manually your vcf file to these specs; and the vcf has to be decomposed as "
+	      "well ... " )
+	print("or you may use the script 'prep_vcf.sh' to do it for you\n")
 
-	print("INDEL Field already in Original Mutect2's VCF FORMAT columns: GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
-	print("SNV Field already in Original Mutect2's VCF FORMAT columns: GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
-	print("we will add DP to that column and recalculate GT ala TGen; the original GTs are going to be transfered to INFO field")
+	print("List of INDEL Field already in Original Mutect2's VCF FORMAT columns: "
+	      "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
+	print("List of SNV Field already in Original Mutect2's VCF FORMAT columns: "
+	      "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
+	print("we will add DP to that column and << recalculate >> GT ala TGen; the original GTs are going to be "
+	      "transfered to INFO field;\n We also add AR to Genotype fields")
+	print("NOTE: the threshold_AR value is designed to assign the genotype to GT; if AR<=0.9, GT=0/1; above, "
+	      "GT=1/1 ; you have to be aware that 0/0 does not exist in that instance.")
 
 
 def parseArgs(scriptname, argv):
@@ -80,17 +94,17 @@ def parseArgs(scriptname, argv):
 
 
 	try:
-		opts, args = getopt.getopt(argv,"hi:t:o:",[ "fvcf=", \
+		opts, args = getopt.getopt(argv,"hi:o:",[ "fvcf=", \
 		                                            "debug", "outfilename=", \
 		                                            "tumor_column=", "normal_column=", \
-		                                            "threshold_AR="
+		                                            "threshold_AR=", "help"
 		                                            ] )
 		log.info(opts)
 	except getopt.GetoptError:
 		usage(scriptname)
 		sys.exit(2)
 	for opt, arg in opts:
-		if opt == '-h':
+		if opt in ('-h',"--help"):
 			usage(scriptname)
 			sys.exit()
 		elif opt in ("", "--threshold_AR"):
@@ -119,6 +133,7 @@ def parseArgs(scriptname, argv):
 	log.debug("normal_column = {} and tumor_column = {}".format( str(column_normal), str(column_tumor) ))
 
 	if column_tumor is None or column_normal is None:
+		usage(scriptname, opts)
 		sys.exit(
 			"Please Provide column number for tumor and normal Samples; should be 10 and 11  - or -  11 and 10 respectively; Aborting. ")
 	if column_normal == column_tumor:

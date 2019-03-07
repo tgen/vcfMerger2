@@ -45,7 +45,7 @@ def usage(scriptname):
 	print("")
 	print("options available:")
 	print(" -i|--fvcf  [ Mandatory, no default value, String Filename full or relative path expected ]\n", \
-	      "-o|--outfilename  [ Mandatory, no default value, String Expected ]\n", \
+	      "-o|--outfilename  [ Optional, no default value, String Expected ]\n", \
 	      "--tumor_column  [ Mandatory, no default value, Integer Expected ]\n", \
 	      "--normal_column [ Mandatory, no default value, Integer Expected ]\n", \
 	      "--threshold_AR [ Optional; default value:0.9 ; float expected ]\n", \
@@ -118,6 +118,7 @@ def parseArgs(scriptname, argv):
 	log.debug("normal_column = {} and tumor_column = {}".format( str(column_normal), str(column_tumor) ))
 
 	if column_tumor is None or column_normal is None:
+		usage(scriptname, opts)
 		sys.exit(
 			"Please Provide column number for tumor and normal Samples; should be 10 and 11  - or -  11 and 10 respectively; Aborting. ")
 	if column_normal == column_tumor:

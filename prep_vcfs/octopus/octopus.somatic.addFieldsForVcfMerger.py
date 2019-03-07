@@ -58,9 +58,23 @@ class Genotype(object):
 def usage(scriptname, opts):
 	print("\nUSAGE: \npython3 " + scriptname + '  --help')
 	print("python3 " + scriptname + " -i octopus.somatic.snvs.pass.vcf  --tumor_column 11 --normal_column 10  -o updated_vcf.vcf\n")
-	print("#" * 40 + "\nWARNING WARNING: This script is to be used only with somatic snvs vcf having NORMAL sample in "
+
+
+	print("")
+	print("options available:")
+	print(" -i|--fvcf  [ Mandatory, no default value, String Filename full or relative path expected ]\n", \
+	      "--tumor_column  [ Mandatory, no default value, Integer Expected ]\n", \
+	      "--normal_column [ Mandatory, no default value, Integer Expected ]\n", \
+	      "-o|--outfilename  [ Optional, no default value, String Expected ]\n", \
+	      "--threshold_AR [ Optional; default value:0.9 ; float expected ]\n", \
+	      )
+	print("")
+
+	print("#"*40 + "\nWARNING WARNING\n" + "#"*40 )
+	print("1) This script is to be used only with somatic snvs vcf having NORMAL sample in "
 	                 "column 10 and TUMOR sample in column 11; if not like this, update your vcf file to these "
-	                 "specs; and the vcf has to be decomposed as well.\n" + "#" * 40)
+	                 "specs;\n2) and the vcf has to be decomposed as well.\n")
+
 
 def parseArgs(scriptname, argv):
 
@@ -108,6 +122,7 @@ def parseArgs(scriptname, argv):
 			exit("Unknown Option --> " + opt )
 
 	if column_tumor is None or column_normal is None:
+		usage(scriptname, opts)
 		exit(
 			"Please Provide column number for tumor and normal Samples; should be 10 and 11  - or -  11 and 10;\n"
 			"options are: --tumor_column and --normal_column;\nAborting. ")
