@@ -346,7 +346,7 @@ if __name__ == "__main__":
 	vcf = VCFReader(vcf_path)
 	filebasename = str(os.path.splitext(vcf_path)[0])
 	if new_vcf_name is None:
-		new_vcf = '.'.join([filebasename, "AR.vcf"])
+		new_vcf = '.'.join([filebasename, "uts.vcf"])
 	else:
 		new_vcf = new_vcf_name
 
