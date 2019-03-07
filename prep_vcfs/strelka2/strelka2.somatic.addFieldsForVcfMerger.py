@@ -206,7 +206,7 @@ def update_flags(tot_number_samples, v, column_tumor, column_normal):
 		isAnyOfIndelFlag.append(bool(F in v.FORMAT))
 
 	if any(isAnyOfIndelFlag):
-		'''We need to deal here with INDEL processing and not just returning the record '''
+		#'''We need to deal here with INDEL processing and not just returning the record '''
 		return process_indels_records(tot_number_samples, v, column_tumor, column_normal)
 	else:
 		return process_snvs_records(tot_number_samples, v, column_tumor, column_normal)
