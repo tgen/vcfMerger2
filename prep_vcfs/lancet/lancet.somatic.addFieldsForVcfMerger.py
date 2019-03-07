@@ -260,9 +260,11 @@ if __name__ == "__main__":
 
 	vcf_path, new_vcf_name, col_tumor, col_normal = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
 
+	print(' '.join([ "Constant AR threshold is: ", str(AR_threshold_for_GT) ]) )
+
 	vcf = VCF(vcf_path)
 	if new_vcf_name is None:
-		new_vcf = '.'.join([str(vcf_path), "AR.vcf"])
+		new_vcf = '.'.join([str(vcf_path), "uts.vcf"])
 	else:
 		new_vcf = new_vcf_name
 

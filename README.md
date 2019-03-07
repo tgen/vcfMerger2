@@ -106,7 +106,7 @@ _**Note_4**: The given command line example uses 4 input vcfs. [ you may also te
    
    ---                      
 
-**NOTE**: What does `PRECEDENCE` mean here?  A vcf contains information in INFO and FORMAT columns. Unfortunately, redundant information exist from one tools to another in a vcf.
+**NOTE**: What does `PRECEDENCE` mean?  A vcf contains information in INFO and FORMAT columns. Unfortunately, redundant information exist from one tools to another in a vcf.
 For instance, the AR field may exist in ALL the given vcf in the FORMAT columns, but the values may vary from one tool to another. Unfortunately, only one value can be kept in the AR field within the merged vcf. 
 So which one would the user preferably keep in the merged vcf? What tool does have our "liking" the most. This is where the precedence is used. It gives an order of preference for the tool when the vairant is called 
 by more than one tool. This Precedence is subjective to the user.   
@@ -135,9 +135,9 @@ by more than one tool. This Precedence is subjective to the user.
                         the infromation from the tool with precedence
                         
   `--skip-prep-vcfs`      skip the step for preparing vcfs up to specs and only
-                        run the merge step; implies all prep-vcfs are ready
-                        already ; same options and inputs required as if prep
-                        step was run
+                        run the merge step; implies all << given >> vcfs are 
+                        already up-to-specs (uts); whether or not this option is used, user has to provide the same 
+                        options and inputs required to run the prep step, so as if the prep step is run.
                         
   `--skip-merge`          enabling this flag prevents doing the merging step
                         [useful if only the prep step needs to be done ]
@@ -159,12 +159,16 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
 - linux system 
 - grep, awk 
 - python 3.6.0 or up
-    - cyvcf2
+    - cyvcf2 (tested with versions: 0.8.2 or 0.8.4 ; other versions not tested and not recommended)
     - collections
     - argparse
+    - getopt
+    - json
     - logging
     - natsort
+    - subprocess
     - sys, os, time, re 
+    - warnings
     
 - samtools 1.7 or up
 - bcftools 1.7 or up

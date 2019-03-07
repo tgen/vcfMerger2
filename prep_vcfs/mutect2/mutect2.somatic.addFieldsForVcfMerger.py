@@ -282,8 +282,10 @@ if __name__ == "__main__":
 
 	vcf_path, new_vcf_name,	column_tumor, column_normal	= parseArgs(argv[0], argv[1:])
 
+	print(' '.join([ "Constant AR threshold is: ", str(AR_threshold_for_GT) ]) )
+
 	if new_vcf_name is None:
-		new_vcf = '.'.join([str(os.path.splitext(vcf_path)[0]), "AR.vcf"])
+		new_vcf = '.'.join([str(os.path.splitext(vcf_path)[0]), "uts.vcf"])
 	else:
 		new_vcf = new_vcf_name
 

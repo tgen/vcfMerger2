@@ -46,12 +46,13 @@ then
 fi
 
 type python >/dev/null 2>&1 || { echo >&2 "Require \"\python\" executable but it's not in the PATH.  Aborting."; exit 1; } || python -V 
-if [[ ! `python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 ` == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ; exit 1 ; fi 
+if [[ ! `python3 -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 ` == "3" ]] ; then echo -e "ERROR: Python 3 or up
+Expected in PATH; Aborting " ; exit 1 ; fi
 
-type vt >/dev/null 2>&1 || { echo >&2 "Require \"\vt\" executable but it's not in the PATH.  Aborting."; exit 1; } || vt --version 
-type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"\nbcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
+type vt >/dev/null 2>&1 || { echo >&2 "Require \"vt\" executable but it's not in the PATH.  Aborting."; exit 1; } || vt --version
+type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
 if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi 
-type samtools >/dev/null 2>&1 || { echo >&2 "Require \"\nsamtools\" executable but it's not in the PATH.  Aborting."; exit 1; }
+type samtools >/dev/null 2>&1 || { echo >&2 "Require \"samtools\" executable but it's not in the PATH.  Aborting."; exit 1; }
 
 ## uncompressing reference genome
 cd ref_genome
@@ -73,7 +74,7 @@ echo "Directory 'demo_out' has been created and has become our working directory
 echo "All the files to be used should be relative to that directory now;"
 echo "TIPS: symlink or copy all the needed files in here or use relative paths to the file of interest [we are going to use relative paths in our example]"
 echo
-echo "CHhecking if vcfMerger2 executable is in expected folder relative to our current directory" 
+echo "Checking if vcfMerger2 executable is in expected folder relative to our current directory"
 BIN_VM2="../../bin/vcfMerger2.py"
 if [[ ! -e "${BIN_VM2}" ]]
 then
