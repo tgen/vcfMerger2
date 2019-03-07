@@ -38,8 +38,20 @@ global AR_threshold_for_GT
 AR_threshold_for_GT = 0.90  ;  ##  value HARDCODED het_0/1 < 90%  and   homalt_1/1 >= 90%
 
 def usage(scriptname):
-	print("USAGE: \n" + scriptname + ' \n\t-i <VCF file [M]> \n\t' + ' \n\t-t <comma-separated thresholds values for nDP, tDP, nAR and tAR respectively [O]> \n\t' + '\n\n')
-	print("Example: python3 strelka.somatic.snvs.filterBy_AR.py -i somatic.snvs.pass.vcf -t 50,30,0.02,0.05 --filter --addFilterByStrand --tumor_column --normal_column ")
+	print("USAGE: \n")
+	print("Example minimum requirements:\n python3 " + scriptname + " -i somatic.snvs.pass.vcf "
+	      "--tumor_column 11  "
+	      "--normal_column 10 ")
+	print("")
+	print("options available:")
+	print(" -i|--fvcf  [ Mandatory, no default value, String Filename full or relative path expected ]\n", \
+	      "-o|--outfilename  [ Mandatory, no default value, String Expected ]\n", \
+	      "--tumor_column  [ Mandatory, no default value, Integer Expected ]\n", \
+	      "--normal_column [ Mandatory, no default value, Integer Expected ]\n", \
+	      "--threshold_AR [ Optional; default value:0.9 ; float expected ]\n", \
+	      "--debug [Optional, Flag, for debug only; increase verbosity ]\n", \
+	      "--pass [Optional, Flag, will create a file wil only the Strelka's-specific PASS variants]\n", \
+	      )
 
 def parseArgs(scriptname, argv):
 
@@ -54,7 +66,7 @@ def parseArgs(scriptname, argv):
 
 
 	try:
-		opts, args = getopt.getopt(argv,"hi:t:o:",[ "fvcf=", \
+		opts, args = getopt.getopt(argv,"hi:o:",[ "fvcf=", "help",\
 		                                            "debug", \
 		                                            "pass", \
 		                                            "outfilename=", \
@@ -69,6 +81,9 @@ def parseArgs(scriptname, argv):
 
 	for opt, arg in opts:
 		if opt == '-h':
+			usage(scriptname)
+			sys.exit()
+		if opt == '--help':
 			usage(scriptname)
 			sys.exit()
 		elif opt in ("", "--pass"):
