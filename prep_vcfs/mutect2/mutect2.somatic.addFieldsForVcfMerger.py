@@ -56,7 +56,9 @@ class Genotype(object):
 
 def usage(scriptname):
 	print("USAGE: \n" + scriptname + ' \n\t-i <VCF file [M]> \n\t' + ' \n\t-t <comma-separated thresholds values for nDP, tDP, nAR and tAR respectively [O]> \n\t' +  '--filter [boolean; default is False ]\n\t' + '\n\n')
-	print("#"*40 +"\nWARNING WARNING: This script is to be used only with somatic snvs vcf having NORMAL sample in column 10 and TUMOR sample in column 11; if not like this, update your vcf file to these specs; and the vc fhas to be decomposed as well.\n" + "#"*40)
+
+	print("#"*40 +"\nWARNING WARNING: This script is to be used only with somatic snvs vcf having NORMAL sample in "
+	              "column 10 and TUMOR sample in column 11; if not like this, update your vcf file to these specs; and the vcf has to be decomposed as well.\n" + "#"*40)
 	print("NOTE: Using the -t|--threshold enables filtering.")
 	print("raw CMD: python3 mutect2.somatic.snvs.filterBy_AR.py -i ${SOMATIC_SNVS_VCF} -t normalDP, tumorDP, normalAR, tumorAR ")
 	print("Example: \tpython3 mutect2.somatic.snvs.filterBy_AR.py -i somatic.snvs.pass.vcf -t 50,30,0.02,0.05 ")

@@ -59,6 +59,8 @@ function usage(){
 --bam			BAM file to provide to generate intermediate contig file in case --contigs-file option is not provided but needed for current tool's vcf in process
 --th-AR|--threshold-AR      AR value (float from 0.000001 to 1 ). Based on that value, the GT flag (genotype) will be assigned to 0/1 if below that threshold or 1/1 if equal or above that threshold [default value is 0.90 ] ;
 
+
+WARNING: This script does NOT work on MacOS; Sorry. This is due to getOpt incompatibiity with macOS's unix-like system
 "
 }
 
@@ -140,6 +142,7 @@ function init_some_vars(){
 
 function getOptions(){
 # options may be followed by one colon to indicate they have a required argument
+# NOTE: long option are not working on MacOS Sierra
 if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,make-bed-for-venn -- "$@" `
 	then
 	# something went wrong, getopt will put out an error message for us
@@ -501,9 +504,9 @@ function main(){
 
 type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting."; exit
 1; } || python -V
-python_main_version_number=`python -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
-if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting " ; exit 1
-fi
+#python_main_version_number=`python3 -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
+#if [[ ! "${python_main_version_number}" == "3" ]] ; then echo -e "ERROR: Python 3 or up Expected in PATH; Aborting "
+# ; exit 1 ; fi
 type vt >/dev/null 2>&1 || { echo >&2 "Require \"vt\" executable but it's not in the PATH.  Aborting."; exit 1; } ||
 vt --version
 type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but it's not in the PATH.  Aborting."; exit 1; }
