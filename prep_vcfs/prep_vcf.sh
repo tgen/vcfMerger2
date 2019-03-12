@@ -38,7 +38,9 @@ DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
 VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or their corresponding abbreviations, LAN|LCT, MUT,
-OCT, SLK, VDJ|VDT, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
+OCT, SLK, VDJ|VDT, respectively [case Insensitive]"  ## if tools are later added, we will update this variable along
+# with the
+# function run_tool(), where the case statement will need to be updated.
 
 
 function usage(){
