@@ -45,10 +45,10 @@ function usage(){
 	echo -e "`basename $0` \\
 -d|--dir-work    	DIR_WORK directory where outputs will be written (needs to exist))  \\
 -g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] \\
--t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --print-defaults in in-line command \\
+-t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --list-valid-toolnames in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
 --make-bed-for-venn   enable making BED file for the Intervene python tool [default is disable] \\
---print-defaults	Print default valid toolnames accepted so far (case insensitive) \\
+--list-valid-toolnames	Print default valid toolnames accepted so far (case insensitive) and exit \\
 --vcf			vcf having all types of variants already (no need to concatenate) \\
 --vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
 --vcf-snvs		tool's VCF with snvs (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
@@ -143,7 +143,8 @@ function init_some_vars(){
 function getOptions(){
 # options may be followed by one colon to indicate they have a required argument
 # NOTE: long option are not working on MacOS Sierra
-if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-default-toolnames,do-not-normalize,make-bed-for-venn -- "$@" `
+if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn --
+"$@" `
 	then
 	# something went wrong, getopt will put out an error message for us
 		echo "ERROR in Arguments" ; usage
@@ -165,7 +166,8 @@ if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,nor
 		--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-default-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the --toolname option (case insensitive)
+		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the
+		# --toolname option (case insensitive)
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
 		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
 		-h|--help) usage ; exit ;;
