@@ -144,8 +144,7 @@ function init_some_vars(){
 function getOptions(){
 # options may be followed by one colon to indicate they have a required argument
 # NOTE: long option are not working on MacOS Sierra
-if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn --
-"$@" `
+if ! options=`getopt -o hd:b:g:o: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn -- "$@" `
 	then
 	# something went wrong, getopt will put out an error message for us
 		echo "ERROR in Arguments" ; usage
