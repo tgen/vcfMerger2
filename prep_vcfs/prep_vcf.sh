@@ -37,7 +37,8 @@ DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or these abbreviations, LAN|LCT, MUT, OCT, SLK, VDJ|VDT, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
+VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or their corresponding abbreviations, LAN|LCT, MUT,
+OCT, SLK, VDJ|VDT, respectively"  ## if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
 
 
 function usage(){
@@ -48,7 +49,7 @@ function usage(){
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --list-valid-toolnames in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
 --make-bed-for-venn   enable making BED file for the Intervene python tool [default is disable] \\
---list-valid-toolnames	Print default valid toolnames accepted so far (case insensitive) and exit \\
+--print-default-toolnames	Print default valid toolnames accepted so far (case insensitive) and exit \\
 --vcf			vcf having all types of variants already (no need to concatenate) \\
 --vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
 --vcf-snvs		tool's VCF with snvs (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
