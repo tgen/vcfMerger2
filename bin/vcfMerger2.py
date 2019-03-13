@@ -436,7 +436,7 @@ def main(args, cmdline):
 			raise "Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs."
 		log.info("user given threshold for AR: " + str(TH_AR))
 
-	lbeds = []
+	lbeds = ""
 	if args["beds"]:
 		lbeds = str(args["beds"]).split(delim)
 		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
@@ -501,7 +501,6 @@ def make_parser_args():
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
-
 	isRequired = True
 
 
@@ -557,7 +556,7 @@ def make_parser_args():
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
 
 	required.add_argument('-o', '--merged-vcf-outfilename',
-	                      required=True,
+	                      required=isRequired,
 	                      action=UniqueStore,
 	                      help='outfilename for the merge vcf (can be relative or full path)')
 

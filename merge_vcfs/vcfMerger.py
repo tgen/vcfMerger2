@@ -345,7 +345,7 @@ def main(args, cmdline):
 		merge_vcf_outfilename = str(args["outfilename"])
 		log.info("name of merged output vcf will be: " + merge_vcf_outfilename)
 
-	lbeds = []
+	lbeds = ""
 	if args["beds"]:
 		lbeds = str(args["beds"]).split(delim)
 		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
