@@ -304,7 +304,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		if process.returncode is not 0:
 			sys.exit("{} FAILED with vcfs files: {} ".format(prep_script_path, list_vcfs))
 
-def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None):
+def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None ):
 	"""
 
 	:param lvcfs:
@@ -315,26 +315,32 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	:param lprepped_vcf_outfilenames:
 	:return:
 	"""
+	if lvcfs is None:
+		log.info("ERROR: Found list of input vcfs to be prepped or to be merged empty")
+		sys.exit("ERROR: list of vcfs empty")
+	if len(lvcfs) == 1:
+		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
+		sys.exit("ERROR: list of vcfs length of 1 vcf only")
 	if len(lvcfs) != len(ltoolnames):
-		log.info("Found {} vcfs provided and {} tools given ".format(len(lvcfs), len(ltoolnames)))
+		log.info("ERROR: Found {} vcfs provided and {} tools given ".format(len(lvcfs), len(ltoolnames)))
 		sys.exit(
-			"list vcfs files MUST be equal to the number of tools ; check if delimiter is adequate and do not interfere")
+			"ERROR: list vcfs files MUST be equal to the number of tools given ; check if delimiter is adequate and do not interfere")
 	if ltpo is not None and len(ltoolnames) != len(ltpo):
-		log.info("Found {} tools in precedence list and {} toolnames given".format(len(ltpo), len(ltoolnames)))
+		log.info("ERROR: Found {} tools in precedence list and {} toolnames given".format(len(ltpo), len(ltoolnames)))
 		sys.exit(
-			"Number of toolnames MUST be equal to the number of tools given in the list of precedence ; "
+			"ERROR: Number of toolnames MUST be equal to the number of tools given in the list of precedence ; "
 			"check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	if lacronyms is not None and len(ltoolnames) != len(lacronyms):
-		log.info("Found {} in acronyms list and {} toolnames given".format(len(lacronyms), len(ltoolnames)))
+		log.info("ERROR: Found {} in acronyms list and {} toolnames given".format(len(lacronyms), len(ltoolnames)))
 		sys.exit(
-			"Number of toolnames MUST be equal to the number of acronyms given ; "
-			"check if delimiter is adequate and do not interfere with splitting the given lists of tools")
+			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
+			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	if lprepped_vcf_outfilenames is not None and len(ltoolnames) != len(lprepped_vcf_outfilenames):
 		log.info(
-			"Found {} in list of given prep-filenames and {} toolnames given".format(len(lprepped_vcf_outfilenames),
+			"ERROR: Found {} in list of given prep-filenames and {} toolnames given".format(len(lprepped_vcf_outfilenames),
 			                                                                         len(ltoolnames)))
 		sys.exit(
-			"Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;\ncheck if delimiter is adequate and do not interfere with splitting the given lists of tools")
+			"ERROR: Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;\ncheck if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
 def main(args, cmdline):
 
@@ -410,7 +416,7 @@ def main(args, cmdline):
 	merged_vcf_outfilename = None
 	if args["merged_vcf_outfilename"]:
 		merged_vcf_outfilename = str(args["merged_vcf_outfilename"])
-		log.info("prefix for the output vcf filename is: " + merged_vcf_outfilename)
+		log.info("filename for the merged output vcf will be: " + merged_vcf_outfilename)
 
 	skip_prep_vcfs = False
 	if args["skip_prep_vcfs"]:
@@ -449,7 +455,7 @@ def main(args, cmdline):
 	## MAIN  ##
 	##@@@@@@@@@
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
-	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames)
+	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds)
 
 	data = make_data_for_json(lvcfs,
 	                          ltoolnames,
