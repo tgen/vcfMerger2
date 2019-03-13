@@ -410,7 +410,7 @@ function process_lancet_vcf(){
 function process_octopus_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	VCF=$( add_Contigs ${VCF} )
+	#VCF=$( add_Contigs ${VCF} )
 	VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
 	VCF=$( decompose ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
@@ -485,8 +485,11 @@ function main(){
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
-		echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
-		ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
+		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
+		then
+		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
+		    ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
+		fi
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
 		run_tool ${TOOLNAME} ${VCF}
