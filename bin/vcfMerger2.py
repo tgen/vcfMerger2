@@ -394,6 +394,8 @@ def main(args, cmdline):
 	if args["prep_outfilenames"]:
 		lprepped_vcf_outfilenames = str(args["prep_outfilenames"]).split(delim)
 		log.info("tool-specific filenames for intermediate upto vcfMerger2-specs: " + str(lprepped_vcf_outfilenames))
+		if args["skip_prep_vcfs"] == True:
+			lprepped_vcf_outfilenames = None
 
 	lbams = None
 	if args["bams"]:
@@ -427,7 +429,7 @@ def main(args, cmdline):
 			raise "Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs."
 		log.info("user given threshold for AR: " + str(TH_AR))
 
-	lbeds = ""
+	lbeds = []
 	if args["beds"]:
 		lbeds = str(args["beds"]).split(delim)
 		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
@@ -511,8 +513,8 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='expected name of tumor sample in vcf file')
 
-	required.add_argument('--prep-outfilenames',
-	                      required=isRequired,
+	optional.add_argument('--prep-outfilenames',
+	                      required=False,
 	                      action=UniqueStore,
 	                      help='delim-separated names to the tool-specific prepared vcf files')
 	optional.add_argument('-c', '--precedence',

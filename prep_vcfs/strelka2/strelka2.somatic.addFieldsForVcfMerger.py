@@ -339,8 +339,7 @@ if __name__ == "__main__":
 
 	vcf_path, new_vcf_name, column_tumor, column_normal, generate_vcf_pass_calls = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
 
-
-	print(AR_threshold_for_GT)
+	log.info(' '.join(["Constant AR threshold is: ", str(AR_threshold_for_GT)]))
 
 
 	vcf = VCFReader(vcf_path)
