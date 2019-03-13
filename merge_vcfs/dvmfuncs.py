@@ -51,7 +51,10 @@ def compareTuples(LoT, msg):
 			log.info("\n" + "-"*41 + "\n!! VCF's "+ msg + " Differ; Aborting !!\n" + "-"*41 )
 			log.info(str(x) + " vs. " + str(y))
 			log.info(" <-- vs --> ".join([str(LoT[x]),str(LoT[y])]))
-			log.info("Samples should be in the EXACT same order and exact same CASE (case sensitive comparison)")
+			if msg == "SampleNames":
+			log.info("ERROR: SAMPLES should be in the EXACT same order and exact same CASE (case sensitive comparison)")
+			if msg == "CONTIGS":
+				log.info("ERROR: CONTIGS number or/and CONTIGS names are not identical from one vcf to another")
 			log.info("Correct and modify the inputs VCF files to get them up to specs for the current merging tool")
 			sys.exit(2)
 	log.info("Comparison of << " + msg + " >> between VCFs: PASSED")

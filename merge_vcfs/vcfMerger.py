@@ -151,7 +151,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 
 	# performing checks before processing data further
 	dvm.compareTuples(l_snames,
-	                  "Sample Names")  ## we cannot skip that one. If not matching, then modify vcf to get samples in
+	                  "SampleNames")  ## we cannot skip that one. If not matching, then modify vcf to get samples in
 	# correct columns or with the same names across ALL the vcf files ;
 	dvm.compareTuples(l_contigs, " CONTIGS ")  ## we may add an option to skip that check ; even though we do not know
 	# what could be the consequences of having different contigs ; we cannot think any so far.
