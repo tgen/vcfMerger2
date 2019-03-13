@@ -78,39 +78,6 @@ class UniqueStore(argparse.Action):
 			parser.error(option_string + " appears several times.")
 		setattr(namespace, self.dest, values)
 
-def prepare_bed_for_venn(vcf):
-	'''
-	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
-	the skip-prep-vcf is used, we can make the beds from the vcf file(s) provided. As we already have the
-	function << prepare_input_file_for_Venn >> in the bash script named << prep_vcf.sh >>, we will source the function
-	and run it using system.command()
-	:param vcf:
-	:return: none
-	'''
-
-	# we get the path to the prep_vcf.sh file relative to our current file
-	full_path_to_bash_cript_prep_vcf = str(path.abspath(path.relpath('../prep_vcfs/')) + path.sep + "prep_vcf.sh")
-
-	# we first source the function
-	command = "source "
-	# Build subprocess command
-	mycmd = ["source", full_path_to_bash_cript_prep_vcf, ";", "prepare_input_file_for_Venn", vcf]
-	log.info(str(mycmd))
-	log.info(" ".join([x for x in mycmd]))
-	print(str(args))
-	print("Running bash function prep_input_file_for_venn command")
-	process = subprocess.Popen(args, shell=False, universal_newlines=False)
-	process.wait()
-	if process.returncode is not 0:
-		sys.exit("Prep BED file for venn FAile for vcf "+str(vcf) )
-	log.info("Running Rscript Command")
-	# import os
-	# print(os.path.abspath("."))
-	# process = subprocess.Popen(str("Rscript " + file_path[0]), shell=True, universal_newlines=False)
-	# process.wait()
-	# print(str(process.returncode))
-	# if process.returncode is not 0:
-	# 	sys.exit("Upset Creation FAILED")
 
 def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline):
 	"""

@@ -250,7 +250,41 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_script_path, tool))
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, skip_prep_vcfs):
+def prepare_bed_for_venn(vcf):
+	'''
+	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
+	the skip-prep-vcf is used, we can make the beds from the vcf file(s) provided. As we already have the
+	function << prepare_input_file_for_Venn >> in the bash script named << prep_vcf.sh >>, we will source the function
+	and run it using system.command()
+	:param vcf:
+	:return: none
+	'''
+
+	# we get the path to the prep_vcf.sh file relative to our current file
+	full_path_to_bash_cript_prep_vcf = str(path.abspath(path.relpath('../prep_vcfs/')) + path.sep + "prep_vcf.sh")
+
+	# we first source the function
+	command = "source "
+	# Build subprocess command
+	mycmd = ["source", full_path_to_bash_cript_prep_vcf, ";", "prepare_input_file_for_Venn", vcf]
+	log.info(str(mycmd))
+	log.info(" ".join([x for x in mycmd]))
+	print(str(args))
+	print("Running bash function prep_input_file_for_venn command")
+	process = subprocess.Popen(args, shell=False, universal_newlines=False)
+	process.wait()
+	if process.returncode is not 0:
+		sys.exit("Prep BED file for venn FAile for vcf "+str(vcf) )
+	log.info("Running Rscript Command")
+	# import os
+	# print(os.path.abspath("."))
+	# process = subprocess.Popen(str("Rscript " + file_path[0]), shell=True, universal_newlines=False)
+	# process.wait()
+	# print(str(process.returncode))
+	# if process.returncode is not 0:
+	# 	sys.exit("Upset Creation FAILED")
+
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs):
 	"""
 
 	:param data:
@@ -283,12 +317,17 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		for tool in data.keys():
 			if not skip_prep_vcfs:
 				list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
-			else:
+			elif lbeds == "":
 				log.info("processing vcf for tool: "+str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
+				prepare_bed_for_venn(data[tool]['vcf'])
+				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
+			else:
+				list_beds = lbeds
+
 
 		if len(list_beds) == 0:
-			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you input or contact your IT/HPC admin")
+			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you inputs. Aborting.")
 		log.info(double_quote_str(list_beds))
 		if len(list_beds.split(delim)) != len(list_tools.split(delim)):
 			sys.exit("ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin".format(list_beds,list_tools))
@@ -487,7 +526,7 @@ def main(args, cmdline):
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 	if not skip_merge:
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, skip_prep_vcfs)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, skip_prep_vcfs, lbeds)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
