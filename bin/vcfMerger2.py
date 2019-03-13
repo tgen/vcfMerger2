@@ -486,6 +486,16 @@ def main(args, cmdline):
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
+	if not skip_prep_vcfs and not skip_merge:
+		log.info("prep and merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("prep and merge vcfs completed successfully")
+	elif skip_prep_vcfs:
+		log.info("merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("merge vcfs completed successfully")
+	elif skip_merge:
+		log.info("prep Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("prep vcfs completed successfully")
+
 def make_parser_args():
 	parser = argparse.ArgumentParser(description='Processing options ...')
 	parser._action_groups.pop()
@@ -600,15 +610,4 @@ if __name__ == '__main__':
 	args = vars(parser.parse_args())  # vars() function returns a dictionary of key-value arguments
 	print(str(args))
 	main(args, cmdline)
-
-	if not skip_prep_vcfs and not skip_merge:
-		log.info("prep and merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
-		log.info("prep and merge vcfs completed successfully")
-	elif skip_prep_vcfs:
-		log.info("merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
-		log.info("merge vcfs completed successfully")
-	elif skip_merge:
-		log.info("prep Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
-		log.info("prep vcfs completed successfully")
-
 	sys.exit()
