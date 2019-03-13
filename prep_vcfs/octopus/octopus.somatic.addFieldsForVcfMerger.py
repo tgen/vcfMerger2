@@ -241,16 +241,17 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	DP_tumor = v.format('DP')[idxT][0]
 	DP_normal = v.format('DP')[idxN][0]
 
-	if is_obj_nan(AR_tumor): AR_tumor = 0.00
-	if is_obj_nan(AR_normal): AR_normal = 0.00
-	if is_obj_nan(DP_tumor): DP_tumor = 0.00
-	if is_obj_nan(DP_normal): DP_normal = 0.00
+	if is_obj_nan(AR_tumor): AR_tumor = float(0.00)
+	if is_obj_nan(AR_normal): AR_normal = float(0.00)
+	if is_obj_nan(DP_tumor): DP_tumor = float(0.00)
+	if is_obj_nan(DP_normal): DP_normal = float(0.00)
 
 	if idxT == 0:
 		ARs = [float(AR_tumor), float(AR_normal)]
 	else:
 		ARs = [ float(AR_normal), float(AR_tumor) ]
-	ADs = [ (0,0), (0,0) ] ## as Ocotpus does not provide enough information to calculate AD, we assign default
+	ADs = [ (0,0), (0,0) ] ## HARDCODED information ;
+	# Because Octopus does not provide enough information to calculate AD, we assign default
 	# values of 0,0 ## can be discussed and modify if users think differently
 
 	log.debug("\t".join([ str(x) for x  in [ idxT, idxN , AR_tumor, AR_normal, DP_tumor, DP_normal ] ] ))
