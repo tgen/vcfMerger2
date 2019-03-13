@@ -261,6 +261,7 @@ def main(args, cmdline):
 	# we may give the user the choice of the delimiter or the choice within several pre-determined list
 	# of delimiters ; if we give the choice to the user, this variable HAS to be the first to be tested and assigned
 	# as other variables depend upon it
+	delim = "|"
 	if args["delim"]:
 		delim = args["delim"]
 		if len(delim) != 1:
