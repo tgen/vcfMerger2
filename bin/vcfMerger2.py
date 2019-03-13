@@ -262,9 +262,8 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	list_tools = ""
 	list_tools_acronyms = ""
 	for tool in data.keys():
-		vcf = data[tool]['prepped_vcf_outfilename']
+		vcf = data[tool]['vcf']
 		acronym = data[tool]['tool_acronym'] if data[tool]['tool_acronym'] != "" else str(tool).upper()
-
 		list_tools = delim.join([list_tools, tool]) if list_tools != "" else tool
 		list_vcfs = delim.join([list_vcfs, vcf]) if list_vcfs != "" else vcf
 		list_tools_acronyms = delim.join([list_tools_acronyms, acronym]) if list_tools_acronyms != "" else acronym
