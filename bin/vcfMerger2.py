@@ -261,13 +261,10 @@ def prepare_bed_for_venn(vcf):
 	:return: none
 	'''
 
-	# we get the path to the prep_vcf.sh file relative to our current file
-	full_path_to_bash_cript_prep_vcf = str(path.abspath(path.relpath('../prep_vcfs/')) + path.sep + "prep_vcf.sh")
-
 	# we first source the function
 	command = "source "
 	# Build subprocess command
-	mycmd = ["source", full_path_to_bash_cript_prep_vcf, ";", "prepare_input_file_for_Venn", vcf]
+	mycmd = ["source", prep_script_path, ";", "prepare_input_file_for_Venn", vcf]
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
 	print(str(args))
