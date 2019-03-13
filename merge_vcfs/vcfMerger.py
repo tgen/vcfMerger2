@@ -22,7 +22,7 @@
 ### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ### SOFTWARE.
 ###
-### Major Contributors: Christophe Legendre'a0
+### Major Contributors: Christophe Legendre
 ### Minor Contributors:
 
 
@@ -31,6 +31,7 @@ import argparse
 from sys import exit
 from sys import argv
 from os import linesep
+from os import path
 from re import search
 import dvmfuncs as dvm
 import vcfToDict
@@ -38,6 +39,7 @@ import logging as log
 from collections import OrderedDict
 from natsort import natsorted
 import time
+import subprocess
 
 '''
 ## STEPS so far:
@@ -76,6 +78,39 @@ class UniqueStore(argparse.Action):
 			parser.error(option_string + " appears several times.")
 		setattr(namespace, self.dest, values)
 
+def prepare_bed_for_venn(vcf):
+	'''
+	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
+	the skip-prep-vcf is used, we can make the beds from the vcf file(s) provided. As we already have the
+	function << prepare_input_file_for_Venn >> in the bash script named << prep_vcf.sh >>, we will source the function
+	and run it using system.command()
+	:param vcf:
+	:return: none
+	'''
+
+	# we get the path to the prep_vcf.sh file relative to our current file
+	full_path_to_bash_cript_prep_vcf = str(path.abspath(path.relpath('../prep_vcfs/')) + path.sep + "prep_vcf.sh")
+
+	# we first source the function
+	command = "source "
+	# Build subprocess command
+	mycmd = ["source", full_path_to_bash_cript_prep_vcf, ";", "prepare_input_file_for_Venn", vcf]
+	log.info(str(mycmd))
+	log.info(" ".join([x for x in mycmd]))
+	print(str(args))
+	print("Running bash function prep_input_file_for_venn command")
+	process = subprocess.Popen(args, shell=False, universal_newlines=False)
+	process.wait()
+	if process.returncode is not 0:
+		sys.exit("Prep BED file for venn FAile for vcf "+str(vcf) )
+	log.info("Running Rscript Command")
+	# import os
+	# print(os.path.abspath("."))
+	# process = subprocess.Popen(str("Rscript " + file_path[0]), shell=True, universal_newlines=False)
+	# process.wait()
+	# print(str(process.returncode))
+	# if process.returncode is not 0:
+	# 	sys.exit("Upset Creation FAILED")
 
 def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline):
 	"""
@@ -141,7 +176,8 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
 
 	# the trick is here for the Tool Precedence!!! The user has given us an ordered list of
-	# vcfs and toolnames in order of precedence and we sort the vcf and add them to the tuple accordingly
+	# vcfs and toolnames in order of precedence or a specific PRECEDENCE order was given via --precedence
+	# and we sort the vcf and add them to the tuple accordingly
 	for i in range(len(lvcfs)):
 		o = vcfToDict.vcfToDict(lvcfs[i], ltoolnames[i])  ## here we map the toolname and the vcf associated
 		tuple_objs = tuple_objs + (o,)  ## we add instances of object vcfToDict to the tuple ; order FIFO is
@@ -153,6 +189,8 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	dvm.compareTuples(l_snames,
 	                  "SampleNames")  ## we cannot skip that one. If not matching, then modify vcf to get samples in
 	# correct columns or with the same names across ALL the vcf files ;
+
+	## UNCOMMENT NEXT LINE TO PUT THE CONTIGS CHECK BACK ON
 #########	dvm.compareTuples(l_contigs, "CONTIGS")  ## we may add an option to skip that check ; even though we do not know
 	# what could be the consequences of having different contigs ; we cannot think any so far.
 
@@ -322,7 +360,7 @@ def main(args, cmdline):
 		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
 	if lvcfs is None:
 		exit("ERROR: please provide the list of vcf you want to prep or merged using --lvcfs option with value delimited with the DELIMITER (--delim)")
-	log.info("{} --- {}".format(str(len(lvcfs)),str(len(ltoolnames))))
+	log.debug("n(vcfs) = {} --- n(tools) = {}".format(str(len(lvcfs)),str(len(ltoolnames))))
 	if len(lvcfs) != len(ltoolnames):
 		exit("ERROR: number of  vcfs  MUST match number of  toolnames ; order sensitive; case insensitive; Aborting.")
 	if lacronyms is not None and len(lacronyms) != len(ltoolnames):
@@ -332,11 +370,10 @@ def main(args, cmdline):
 	if do_venn:
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
-		dvm.make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
+		dvm.make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False)
 		exit()
 
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline)
-
 
 def make_parser_args():
 	parser = argparse.ArgumentParser(description='Processing options ...')
@@ -381,7 +418,7 @@ def make_parser_args():
 	                      help='list of bed files to be used to make Venns or Upset plots; requires to enable --do-venn as well to validate making Venn/upset plots ; list MUST be delimited by DELIM character (--delim or default delim)',
 	                      action=UniqueStore)
 	optional.add_argument('--do-venn',
-	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
+	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number and order of tools listed in --toolnames ',
 	                      action='store_true')
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',

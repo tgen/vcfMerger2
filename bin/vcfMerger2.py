@@ -22,7 +22,7 @@
 ### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ### SOFTWARE.
 ###
-### Major Contributors: Christophe Legendre'a0
+### Major Contributors: Christophe Legendre
 ### Minor Contributors:
 
 
@@ -562,7 +562,7 @@ def make_parser_args():
 	                      help='AlleRatio threshold value to assign genotype; 0/1 if less than threshold, 1/1 if equal or above threshold; default is 0.90 ; range ]0,1] ')
 
 	optional.add_argument('--lossy',
-	                      help='This will create a lossy merged vcf by only keeping the infromation from the tool with precedence',
+	                      help='This will create a lossy merged vcf by only keeping the information from the tool with first hand precedence',
 	                      action='store_true')
 
 	optional.add_argument('--skip-prep-vcfs',
@@ -601,6 +601,14 @@ if __name__ == '__main__':
 	print(str(args))
 	main(args, cmdline)
 
-	log.info("prep and merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
-	log.info("prep and merge vcfs completed successfully")
+	if not skip_prep_vcfs and not skip_merge:
+		log.info("prep and merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("prep and merge vcfs completed successfully")
+	elif skip_prep_vcfs:
+		log.info("merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("merge vcfs completed successfully")
+	elif skip_merge:
+		log.info("prep Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("prep vcfs completed successfully")
+
 	sys.exit()

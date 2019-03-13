@@ -22,7 +22,7 @@
 ### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ### SOFTWARE.
 ###
-### Major Contributors: Christophe Legendre'a0
+### Major Contributors: Christophe Legendre
 ### Minor Contributors:
 
 
@@ -599,11 +599,14 @@ def get_colors_for_venns(number):
 		log.info("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 
-def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False):
+def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	# TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
-	beds = ' '.join([name for name in lbeds])
+	#beds = ' '.join([name for name in lbeds]) ## DELETE Line if tst without it turns OK
 	numberOfTools = len(ltoolnames)
+	if len(lbeds) != numberOfTools:
+		log.info("WARNING: Number of Tools and number of BED files do NOT match; we skip the creation of Venn")
+		return 0
 	type = "genomic"
 	colors = list(get_colors_for_venns(numberOfTools))
 	title = "\"Venn using " + str(numberOfTools) + " variant callers\""
