@@ -250,7 +250,7 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_script_path, tool))
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, skip_prep_vcfs):
 	"""
 
 	:param data:
@@ -487,7 +487,7 @@ def main(args, cmdline):
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 	if not skip_merge:
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, skip_prep_vcfs)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
