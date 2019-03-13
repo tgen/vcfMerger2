@@ -346,9 +346,10 @@ def main(args, cmdline):
 		log.info("name of merged output vcf will be: " + merge_vcf_outfilename)
 
 	lbeds = ""
+	log.info("before --- ordered list of beds given:\t\t{}".format(str(lbeds)))
 	if args["beds"]:
 		lbeds = str(args["beds"]).split(delim)
-		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
+		log.info("after --- ordered list of beds given:\t\t{}".format(str(lbeds)))
 
 	do_venn = False
 	if args["do_venn"]:

@@ -281,7 +281,11 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 
 	if do_venn:
 		for tool in data.keys():
-			list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
+			if not skip_prep_vcf:
+				list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
+			else:
+				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
+
 		if len(list_beds) == 0:
 			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you input or contact your IT/HPC admin")
 		log.info(double_quote_str(list_beds))
