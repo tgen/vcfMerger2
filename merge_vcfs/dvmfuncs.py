@@ -664,21 +664,31 @@ def make_venn(ltoolnames, lbeds, delim, saveOverlapsBool=False, upsetBool=False)
 	print(str(process.returncode))
 	if process.returncode is not 0:
 		sys.exit("Venn or Upset Creation FAILED")
+
+
 	## update Rscript to colorize the intersection of all tools
 	if upsetBool:
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
 		pattern = "nsets"
-		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)),nsets"
-		scriptname = project +  "_upset.R"
-		filepath = output_name + "/" + scriptname
+		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), nsets"
+		#replacement = "XXXXXXXXXXXXXXXXXXXXXXx"
+		full_string_sed = [ "s/" + pattern + "/" + replacement + "/" ]
+		scriptname = project + "_upset.R"
+		file_path = [ output_name + "/" + scriptname ]
+
+		print(replacement)
+		print(file_path)
+		args = ["sed", "-i" ] + full_string_sed +  file_path
+		print(str(args))
 		print("Running Sed command")
-		process = subprocess.Popen("sed", "-i", "'s/"+pattern+"/"+replacement+"/'", filepath,  shell=True, universal_newlines=False)
+		process = subprocess.Popen(args,  shell=False, universal_newlines=False)
 		process.wait()
-		print(str(process.returncode))
 		if process.returncode is not 0:
 			sys.exit("Upset Creation FAILED")
 		log.info("Running Rscript Command")
-		process = subprocess.Popen("Rscript", filepath,  shell=True, universal_newlines=False)
+		import os
+		print(os.path.abspath("."))
+		process = subprocess.Popen(str("Rscript " + file_path[0]),  shell=True, universal_newlines=False)
 		process.wait()
 		print(str(process.returncode))
 		if process.returncode is not 0:
