@@ -316,14 +316,17 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if do_venn:
 		for tool in data.keys():
 			if not skip_prep_vcfs:
+				print("1111111111111111111")
 				list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
 			elif lbeds == "":
+				print("2222222222222222222")
 				log.info("processing vcf for tool: "+str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
 				print(tool + " __ prepare_bed_for_venn __  " + data[tool]['vcf'])
 				prepare_bed_for_venn(data[tool]['vcf'])
 				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
 			else:
+				print("333333333333333333333")
 				list_beds = lbeds
 
 
