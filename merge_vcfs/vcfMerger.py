@@ -321,7 +321,7 @@ def main(args, cmdline):
 		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
 	if lvcfs is None:
 		exit("ERROR: please provide the list of vcf you want to prep or merged using --lvcfs option with value delimited with the DELIMITER (--delim)")
-	log.info("{} --- {}".str(len(lvcfs)),str(len(ltoolnames)))
+	log.info("{} --- {}".format(str(len(lvcfs)),str(len(ltoolnames))))
 	if len(lvcfs) != len(ltoolnames):
 		exit("ERROR: number of  vcfs  MUST match number of  toolnames ; order sensitive; case insensitive; Aborting.")
 	if lacronyms is not None and len(lacronyms) != len(ltoolnames):
