@@ -159,8 +159,8 @@ def processing_variants_as_block_substitution(LOV, w):
 
 		tests = []
 		for rec in LOV: ## HARDCODED Here Below for TESTS
-			if rec.format('DP')[1] >= 10 \
-					and rec.format('MAP_VAF')[1] >= 0.20 \
+			if int(rec.format('DP')[1]) >= 10 \
+					and float(rec.format('MAP_VAF')[1]) >= 0.20 \
 					and not rec.is_indel:
 				tests.append(True)
 			else:
