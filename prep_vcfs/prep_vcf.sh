@@ -450,7 +450,7 @@ function run_tool(){
 		octopus|oct)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.addFieldsForVcfMerger.py"
 			PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py"
-			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
+			#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_octopus_vcf ${VCF}
 			;;
 		vardict|vdt|vdj)
