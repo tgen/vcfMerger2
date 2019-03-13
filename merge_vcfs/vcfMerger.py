@@ -31,7 +31,6 @@ import argparse
 from sys import exit
 from sys import argv
 from os import linesep
-from os import path
 from re import search
 import dvmfuncs as dvm
 import vcfToDict
@@ -39,7 +38,6 @@ import logging as log
 from collections import OrderedDict
 from natsort import natsorted
 import time
-import subprocess
 
 '''
 ## STEPS so far:
