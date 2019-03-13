@@ -269,10 +269,12 @@ def main(args, cmdline):
 				delim))))
 		log.info("delimiter is:\t" + delim)
 
+	lvcfs = []
 	if args["vcfs"]:
 		lvcfs = str(args["vcfs"]).split(delim)
 		log.info("ordered list of vcfs given:\t\t{}".format(str(lvcfs)))
 
+	ltoolnames = []
 	if args["toolnames"]:
 		ltoolnames = str(args["toolnames"]).split(delim)
 		ltoolnames = [x.upper() for x in ltoolnames]
@@ -302,9 +304,9 @@ def main(args, cmdline):
 
 	if args["outfilename"]:
 		merge_vcf_outfilename = str(args["outfilename"])
-		log.info("name output vcf filename is: " + merge_vcf_outfilename)
+		log.info("name of merged output vcf will be: " + merge_vcf_outfilename)
 
-	lbeds = ""
+	lbeds = []
 	if args["beds"]:
 		lbeds = str(args["beds"]).split(delim)
 		log.info("ordered list of beds given:\t\t{}".format(str(lbeds)))
@@ -317,10 +319,12 @@ def main(args, cmdline):
 	# CHECK POINTS
 	if lossy and lossless:
 		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
+	if lvcfs is None:
+		exit("ERROR: please provide the list of vcf you want to prep or merged using --lvcfs option with value delimited with the DELIMITER (--delim)")
 	if len(lvcfs) != len(ltoolnames):
-		exit("ERROR: number of vcfs should match number of toolnames; Aborting.")
+		exit("ERROR: number of vcfs MUST match number of toolnames; order sensitive; case insensitive; Aborting.")
 	if lacronyms is not None and len(lacronyms) != len(ltoolnames):
-		exit("ERROR: number of acronyms should match number of toolnames; Aborting.")
+		exit("ERROR: number of acronyms should match number of toolnames; order sensitive ; Aborting.")
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		exit("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
 	if do_venn:

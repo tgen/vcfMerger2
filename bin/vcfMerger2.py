@@ -356,10 +356,12 @@ def main(args, cmdline):
 				delim))))
 		log.info("delimiter is:\t" + delim)
 
+	lvcfs = []
 	if args["vcfs"]:
 		lvcfs = str(args["vcfs"]).split(delim)
 		log.info("ordered list of vcfs given:\t\t{}".format(str(lvcfs)))
 
+	ltoolnames = []
 	if args["toolnames"]:
 		ltoolnames = str(args["toolnames"]).split(delim)
 		ltoolnames = [x.lower() for x in ltoolnames]
