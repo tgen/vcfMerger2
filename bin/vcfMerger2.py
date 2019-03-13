@@ -285,13 +285,13 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 			list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
 		if len(list_beds) == 0:
 			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you input or contact your IT/HPC admin")
+		log.info(double_quote_str(list_beds))
 		if len(list_beds.split(delim)) != len(list_tools.split(delim)):
 			sys.exit("ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin".format(list_beds,list_tools))
 		my_command = my_command + " --do-venn --beds " + double_quote_str(list_beds)
 
 	log.info(double_quote_str(list_tools))
 	log.info(double_quote_str(list_vcfs))
-	log.info(double_quote_str(list_beds))
 	log.info(my_command)
 
 	if not dryrun:
