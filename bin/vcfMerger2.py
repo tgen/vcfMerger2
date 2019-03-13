@@ -284,7 +284,7 @@ def prepare_bed_for_venn(vcf):
 	# if process.returncode is not 0:
 	# 	sys.exit("Upset Creation FAILED")
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, ):
 	"""
 
 	:param data:
@@ -399,9 +399,7 @@ def main(args, cmdline):
 	if args["delim"]:
 		delim = args["delim"]
 		if len(delim) != 1:
-			exit("the list delimiter given with --delim should be one character only and NOT a space; found {"
-			     "}".format(str(len(
-				delim))))
+			exit("the list delimiter given with --delim should be one character only and NOT a space; found {}".format(str(len(delim))))
 		log.info("delimiter is:\t" + delim)
 
 	lvcfs = []
@@ -531,7 +529,7 @@ def main(args, cmdline):
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 	if not skip_merge:
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, skip_prep_vcfs, lbeds)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
