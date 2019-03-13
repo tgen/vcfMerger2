@@ -236,15 +236,15 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	idxN = 1 if int(column_normal) == 11 else 0
 	log.debug("___".join(str(x) for x in [ idxT, idxN ]) )
 
-	AR_tumor = v.format('MAP_VAF')[idxT][0]
-	AR_normal = v.format('MAP_VAF')[idxN][0]
-	DP_tumor = v.format('DP')[idxT][0]
-	DP_normal = v.format('DP')[idxN][0]
+	AR_tumor = v.format('MAP_VAF')[idxT][0]		## returns numpy.float32
+	AR_normal = v.format('MAP_VAF')[idxN][0]	## returns numpy.float32
+	DP_tumor = v.format('DP')[idxT] 		## returns numpy.str_
+	DP_normal = v.format('DP')[idxN]		## returns numpy.str_
 
-	if is_obj_nan(AR_tumor): AR_tumor = float(0.00)
-	if is_obj_nan(AR_normal): AR_normal = float(0.00)
-	if is_obj_nan(DP_tumor): DP_tumor = float(0.00)
-	if is_obj_nan(DP_normal): DP_normal = float(0.00)
+	if is_obj_nan(float(AR_tumor)): AR_tumor = 0.00
+	if is_obj_nan(float(AR_normal)): AR_normal = 0.00
+	if is_obj_nan(int(DP_tumor)): DP_tumor = 0.00
+	if is_obj_nan(int(DP_normal)): DP_normal = 0.00
 
 	if idxT == 0:
 		ARs = [float(AR_tumor), float(AR_normal)]
