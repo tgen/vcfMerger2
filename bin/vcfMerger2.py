@@ -262,7 +262,7 @@ def subprocess_cmd(command):
     process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     out, err = process.communicate(command)
     log.info("from within subprocess_cmd function in python ...")
-    print out
+    print(out)
 
 def prepare_bed_for_venn(vcf):
 	'''
