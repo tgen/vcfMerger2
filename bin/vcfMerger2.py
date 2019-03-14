@@ -270,19 +270,13 @@ def prepare_bed_for_venn(vcf):
 	log.info(" ".join([x for x in mycmd]))
 	print(str(args))
 	print("Running bash function prep_input_file_for_venn command")
-	process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
+	process = subprocess.run(mycmd, shell=False, universal_newlines=True)
 	process.wait()
 	if process.returncode is not 0:
 		sys.exit("Prep BED file for venn FAILED for vcf "+str(vcf) )
 	log.info("Running Rscript Command")
 	sys.exit("INININININININININI")
-	# import os
-	# print(os.path.abspath("."))
-	# process = subprocess.Popen(str("Rscript " + file_path[0]), shell=True, universal_newlines=False)
-	# process.wait()
-	# print(str(process.returncode))
-	# if process.returncode is not 0:
-	# 	sys.exit("Upset Creation FAILED")
+
 
 def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, ):
 	"""
