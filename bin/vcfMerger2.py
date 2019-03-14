@@ -323,7 +323,6 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		if len(list_beds) == 0:
 			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you inputs. Aborting.")
 		log.info(double_quote_str(list_beds))
-		sys.exit("FFFFFFFFFFFFFFFFFFFF")
 		if len(list_beds.split(delim)) != len(list_tools.split(delim)):
 			sys.exit("ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin".format(list_beds,list_tools))
 		my_command = my_command + " --do-venn --beds " + double_quote_str(list_beds)
