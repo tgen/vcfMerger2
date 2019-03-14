@@ -662,11 +662,11 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	log.info(" ".join([x for x in mycmd]))
 	# check_output will run the command and store to result
 	import subprocess
-	print("*" * 50)
-	print("full command run intervene")
+	log.info("*" * 50)
+	log.info("full command run intervene")
 	process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
 	process.wait()
-	print(str(process.returncode))
+	log.info(str(process.returncode))
 	if process.returncode is not 0:
 		sys.exit("Venn or Upset Creation FAILED")
 
