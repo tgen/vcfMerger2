@@ -278,7 +278,7 @@ def prepare_bed_for_venn(vcf):
 	# we first source the function
 	command = "source "
 	# Build subprocess command
-	mycmd = ["source", prep_vcf_functions_script_path, "&&", "prepare_input_file_for_Venn", vcf]
+	mycmd = ["source ", prep_vcf_functions_script_path, " && ", "prepare_input_file_for_Venn", vcf]
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
 	print("Running bash function prep_input_file_for_venn command")
