@@ -630,7 +630,6 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	        "--dpi", str(dpi),
 	        "--project", project,
 	        "--output", output_name,
-	        "--scriptonly"
 	        ]
 
 
@@ -640,7 +639,7 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 		                                 "--sbcolor", "#d8b365",
 		                                 "--mbcolor", "#5ab4ac",
 		                                 "--showzero",
-		                                 "--order", "freq"]
+		                                 "--order", "freq", "--scriptonly" ]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
 
 	else:
