@@ -280,9 +280,8 @@ def prepare_bed_for_venn(vcf):
 	mycmd = ["source", prep_vcf_functions_script_path, ";", "prepare_input_file_for_Venn", vcf]
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
-	print(str(args))
 	print("Running bash function prep_input_file_for_venn command")
-	subprocess_cmd(mycmd)
+	subprocess_cmd(''.join([ str(x) for x in mycmd]))
 	# process = subprocess.run(mycmd, shell=False, universal_newlines=True)
 	# process.wait()
 	# if process.returncode is not 0:
