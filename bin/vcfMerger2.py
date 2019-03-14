@@ -254,7 +254,7 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 
 
 def subprocess_cmd(command):
-    process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
+    process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=False)
     proc_stdout = process.communicate()[0].strip()
     log.info("from within subprocess_cmd function in python ...")
     log.info(proc_stdout)
