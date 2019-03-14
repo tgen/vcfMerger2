@@ -40,6 +40,7 @@ import time
 scriptDirectory = os.path.dirname(os.path.realpath(__file__))
 ## as the project should be installed by the user and not modified by the user, we know where the prep_vcf.sh script is
 prep_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
+prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf_functions.sh")
 vcfmerger_tool_path = os.path.join(os.path.dirname(scriptDirectory), "merge_vcfs", "vcfMerger.py")
 
 
@@ -264,7 +265,7 @@ def prepare_bed_for_venn(vcf):
 	# we first source the function
 	command = "source "
 	# Build subprocess command
-	mycmd = ["source", prep_script_path, ";", "prepare_input_file_for_Venn", vcf]
+	mycmd = ["source", prep_vcf_functions_script_path, ";", "prepare_input_file_for_Venn", vcf]
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
 	print(str(args))
@@ -274,6 +275,7 @@ def prepare_bed_for_venn(vcf):
 	if process.returncode is not 0:
 		sys.exit("Prep BED file for venn FAile for vcf "+str(vcf) )
 	log.info("Running Rscript Command")
+	sys.exit("INININININININININI")
 	# import os
 	# print(os.path.abspath("."))
 	# process = subprocess.Popen(str("Rscript " + file_path[0]), shell=True, universal_newlines=False)
