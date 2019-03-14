@@ -254,15 +254,15 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 
 
 def subprocess_cmd(command):
-    # process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
-    # proc_stdout = process.communicate()
-    # log.info("from within subprocess_cmd function in python ...")
-    # log.info(proc_stdout)
-
-    process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    out, err = process.communicate(command)
+    process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
+    proc_stdout = process.communicate()
     log.info("from within subprocess_cmd function in python ...")
-    print(out)
+    log.info(proc_stdout)
+
+    # process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    # out, err = process.communicate(command)
+    # log.info("from within subprocess_cmd function in python ...")
+    # print(out)
 
 def prepare_bed_for_venn(vcf):
 	'''
