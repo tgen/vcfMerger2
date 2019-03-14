@@ -270,10 +270,10 @@ def prepare_bed_for_venn(vcf):
 	log.info(" ".join([x for x in mycmd]))
 	print(str(args))
 	print("Running bash function prep_input_file_for_venn command")
-	process = subprocess.Popen(args, shell=False, universal_newlines=False)
+	process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
 	process.wait()
 	if process.returncode is not 0:
-		sys.exit("Prep BED file for venn FAile for vcf "+str(vcf) )
+		sys.exit("Prep BED file for venn FAILED for vcf "+str(vcf) )
 	log.info("Running Rscript Command")
 	sys.exit("INININININININININI")
 	# import os
@@ -320,7 +320,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 				list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
 			elif lbeds == "":
 				print("2222222222222222222")
-				log.info("processing vcf for tool: "+str(tool))
+				log.info("processing vcf to make bed for tool: "+str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
 				print(tool + " __ prepare_bed_for_venn __  " + data[tool]['vcf'])
 				prepare_bed_for_venn(data[tool]['vcf'])

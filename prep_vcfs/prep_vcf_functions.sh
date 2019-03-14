@@ -311,6 +311,7 @@ function normalize_vcf(){
 
 function prepare_input_file_for_Venn(){
     local VCF="$1"
+    if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
     local INPUT_FILE_FOR_VENN=$( basename ${VCF} ".vcf" ).intervene.bed
     echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
     grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${INPUT_FILE_FOR_VENN}
