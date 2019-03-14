@@ -255,15 +255,6 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 
 def subprocess_cmd(command):
 	os.system(command)
-    # process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
-    # proc_stdout = process.communicate()
-    # log.info("from within subprocess_cmd function in python ...")
-    # log.info(proc_stdout)
-
-    # process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    # out, err = process.communicate(command)
-    # log.info("from within subprocess_cmd function in python ...")
-    # print(out)
 
 def prepare_bed_for_venn(vcf):
 	'''
@@ -275,20 +266,12 @@ def prepare_bed_for_venn(vcf):
 	:return: none
 	'''
 
-	# we first source the function
-	command = "source "
 	# Build subprocess command
 	mycmd = ["source ", prep_vcf_functions_script_path, " && ", "prepare_input_file_for_Venn ", vcf]
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
 	print("Running bash function prep_input_file_for_venn command")
 	subprocess_cmd(''.join([ str(x) for x in mycmd]))
-	# process = subprocess.run(mycmd, shell=False, universal_newlines=True)
-	# process.wait()
-	# if process.returncode is not 0:
-	# 	sys.exit("Prep BED file for venn FAILED for vcf "+str(vcf) )
-	# log.info("Running Rscript Command")
-	sys.exit("INININININININININI")
 
 
 def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, ):
