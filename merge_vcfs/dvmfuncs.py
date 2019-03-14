@@ -600,7 +600,7 @@ def get_colors_for_venns(number):
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 
 def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
-	# TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
+	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
 	#beds = ' '.join([name for name in lbeds]) ## DELETE Line if tst without it turns OK
 	numberOfTools = len(ltoolnames)
@@ -616,7 +616,7 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	fontsize = 20
 	project = "vcfMerger2_" + str(numberOfTools) + "_tools." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 	# Define the type of venn
-	if numberOfTools >= 2:
+	if numberOfTools >= 5:
 		upsetBool = True
 	output_name = "upsetPlot_" + str(numberOfTools) + "_tools" if upsetBool else "venn_" + str(numberOfTools) + "_tools"
 
@@ -677,26 +677,27 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
 		pattern = "nsets"
 		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), nsets"
-		#replacement = "XXXXXXXXXXXXXXXXXXXXXXx"
+
 		full_string_sed = [ "s/" + pattern + "/" + replacement + "/" ]
 		scriptname = project + "_upset.R"
 		file_path = [ output_name + "/" + scriptname ]
 
-		print(replacement)
-		print(file_path)
+		log.info(replacement)
+		log.info(file_path)
 		args = ["sed", "-i" ] + full_string_sed +  file_path
-		print(str(args))
-		print("Running Sed command")
+		log.info(str(args))
+		log.info("Running Sed command")
 		process = subprocess.Popen(args,  shell=False, universal_newlines=False)
 		process.wait()
 		if process.returncode is not 0:
 			sys.exit("Upset Creation FAILED")
 		log.info("Running Rscript Command")
 		import os
-		print(os.path.abspath("."))
+		log.info(os.path.abspath("."))
 		process = subprocess.Popen(str("Rscript " + file_path[0]),  shell=True, universal_newlines=False)
 		process.wait()
-		print(str(process.returncode))
+		log.info("process return code: " + str(process.returncode))
 		if process.returncode is not 0:
+			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
 

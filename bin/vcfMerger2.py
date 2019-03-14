@@ -306,17 +306,14 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if do_venn:
 		for tool in data.keys():
 			if not skip_prep_vcfs:
-				print("1111111111111111111")
 				list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
 			elif lbeds == "":
-				print("2222222222222222222")
 				log.info("processing vcf to make bed for tool: "+str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
 				print(tool + " __ prepare_bed_for_venn __  " + data[tool]['vcf'])
 				prepare_bed_for_venn(data[tool]['vcf'])
 				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
 			else:
-				print("333333333333333333333")
 				list_beds = lbeds
 
 
@@ -334,8 +331,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if not dryrun:
 		log.info("")
 		log.info("%" * 10 + " starting vcfMerger ... ".upper() + "%" * 10)
-		process = subprocess.Popen(my_command,
-		                           shell=True)
+		process = subprocess.Popen(my_command, shell=True)
 		process.wait()
 		log.info("vcfMerger2.0 exit value: " + str(process.returncode))
 		if process.returncode is not 0:
