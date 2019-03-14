@@ -252,6 +252,13 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_script_path, tool))
 
+
+def subprocess_cmd(command):
+    process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
+    proc_stdout = process.communicate()[0].strip()
+    log.info("from within subprocess_cmd function in python ...")
+    log.info(proc_stdout)
+
 def prepare_bed_for_venn(vcf):
 	'''
 	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
@@ -270,11 +277,12 @@ def prepare_bed_for_venn(vcf):
 	log.info(" ".join([x for x in mycmd]))
 	print(str(args))
 	print("Running bash function prep_input_file_for_venn command")
-	process = subprocess.run(mycmd, shell=False, universal_newlines=True)
-	process.wait()
-	if process.returncode is not 0:
-		sys.exit("Prep BED file for venn FAILED for vcf "+str(vcf) )
-	log.info("Running Rscript Command")
+	subprocess_cmd(mycmd)
+	# process = subprocess.run(mycmd, shell=False, universal_newlines=True)
+	# process.wait()
+	# if process.returncode is not 0:
+	# 	sys.exit("Prep BED file for venn FAILED for vcf "+str(vcf) )
+	# log.info("Running Rscript Command")
 	sys.exit("INININININININININI")
 
 
