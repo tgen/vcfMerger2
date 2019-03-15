@@ -169,6 +169,7 @@ function check_and_update_sample_names(){
 	## will need discussion to do so, and will need to capture all the use cases possible ;
 
 	local VCF=$1
+	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
 	echo " in ${funcname} :  ${VCF} ${TOOLNAME} ${NORMAL_SNAME} ${TUMOR_SNAME} " 1>&2
 
 	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
@@ -180,7 +181,7 @@ function check_and_update_sample_names(){
 		echo -e "\tsample name in column 10 is  NORMAL and column 11 is named TUMOR" 1>&2
 		echo -e "\twe are updating the sample names appropriately here with the ones given by the user" 1>&2
 		sed "/^#CHROM/ s/NORMAL/${NORMAL_SNAME}/ ; /^#CHROM/ s/TUMOR/${TUMOR_SNAME}/" ${VCF} > temp_sname_${VCF}
-        mv temp_sname_${VCF} > ${VCF}
+        mv temp_sname_${VCF} > ${VCF_OUT}
 
 	elif [[ "${COL11_VALUE}" == "NORMAL" && "${COL10_VALUE}" == "TUMOR"  ]] ;
 	then
@@ -189,7 +190,7 @@ function check_and_update_sample_names(){
 		echo -e "\twe RENAME and SWAPPED the sample names." 1>&2
 		cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; continue} ; if($1~/^CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print }  }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
 		check_ev $? "swap column 10 and 11"  1>&2
-		mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VCF}
+		mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VVCF_OUT}
 
 	elif [[ ( "${COL11_VALUE}" == "${TUMOR_SNAME}" && "${COL10_VALUE}" == "${NORMAL_SNAME}" ) || ( "${COL10_VALUE}" == "${TUMOR_SNAME}" && "${COL11_VALUE}" == "${NORMAL_SNAME}" )   ]] ;
 	then
@@ -199,7 +200,7 @@ function check_and_update_sample_names(){
 			echo "## we swap column 10 and 11 as we found that sample name in column 10 is the Tumor sample" 1>&2
 			(grep -E "^##" ${VCF} ; grep -vE "^##" ${VCF} | awk -F"\t" '{OFS="\t" ; TEMP=$10 ; $10=$11 ; $11=TEMP ; print }' ) > temp_swap_samples_column.${TOOLNAME}.vcf
 			if [[ $? -ne 0 ]] ; then echo -e "ERROR in swapping column; please check logs and your inputs to understand why it failed; Aborting LANCET post-processing; " ; fexit ; fi
-			mv temp_swap_samples_column.${TOOLNAME}.vcf ${VCF}
+			mv temp_swap_samples_column.${TOOLNAME}.vcf ${VCF_OUT}
 		else
 			echo -e "## We found that sample in column 10 is the NORMAL sample; we do not swap the columns" 1>&2
 		fi
@@ -208,8 +209,8 @@ function check_and_update_sample_names(){
 		\nplease check your inputs; Aborting!" 1>&2
 		fexit
 	fi
-	## return value
-	echo "${VCF}"
+	## return value which is the vcf filename
+	echo "${VCF_OUT}"
 }
 
 function get_contigs_file(){

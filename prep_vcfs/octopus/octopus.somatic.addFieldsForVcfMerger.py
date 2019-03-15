@@ -25,6 +25,15 @@
 ### Major Contributors: Christophe Legendre'a0
 ### Minor Contributors:
 
+## WHAT DOES THIS SCRIPT DO?
+## In order to <<harmonized>> the GENOTYPE flags, we add, modifed, remove or replace the Genotype Octopus' Flags
+## We want some common following flags in the Genotype fields for each of our vcf that need to be merged:
+## GT:DP:AR:AD are the flags we want to be common;
+## We are not removing
+
+
+
+
 
 from sys import exit
 from sys import argv
