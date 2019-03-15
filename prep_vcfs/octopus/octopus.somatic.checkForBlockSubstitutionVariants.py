@@ -265,6 +265,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 				"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
 			from shutil import copyfile
 			copyfile(input_vcf_path, new_vcf_name)
+			exit()
 		else:
 			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
 			exit("PS flag Absent")
