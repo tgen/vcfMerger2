@@ -267,7 +267,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 		else:
 			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
 			sys.exit("PS flag Absent")
-	v = None
+
 
 #@#########
 #@ MAIN  ##
@@ -282,11 +282,12 @@ if __name__ == "__main__":
 		exit("ERROR: Number of Samples is different from 2; Expected 2 samples only NORMAL and TUMOR (in that order in the VCF) ; Aborting Here.")
 
 	if new_vcf_name is None:
-		new_vcf = '.'.join([str(vcf_path), "blocsub.vcf"])
+		new_vcf = '.'.join([str(vcf_path), "blocsubs.vcf"])
 	else:
 		new_vcf = new_vcf_name
 
 	## checking if PS flag is still present in the VCF genotype fields
+	log.info("Checking PS flag presence in FORMAT ...")
 	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
 
 	## Adding Fields to INFO field
