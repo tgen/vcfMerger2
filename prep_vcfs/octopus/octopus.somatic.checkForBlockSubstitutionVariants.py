@@ -253,7 +253,9 @@ def check_for_block_substitution(vcf, column_tumor, w):
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
-	v = next(iter(vcf_cyobj))
+	iterVCF = iter(vcf_cyobj)
+	v1 = next(iterVCF)
+	log.info(str(v1))
 	log.info("Checking PS flag presence in FORMAT ...")
 	if not 'PS' in v.FORMAT:
 		log.info(
@@ -266,7 +268,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 			copyfile(input_vcf_path, new_vcf_name)
 		else:
 			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
-			sys.exit("PS flag Absent")
+			exit("PS flag Absent")
 
 
 #@#########
