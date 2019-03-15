@@ -255,21 +255,21 @@ def check_for_block_substitution(vcf, column_tumor, w):
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 	iterVCF = iter(vcf_cyobj)
 	v1 = next(iterVCF)
-	log.info(str(v1))
 	log.info("Checking PS flag presence in FORMAT ...")
 	if not 'PS' in v1.FORMAT:
-		log.info(
+		log.warning(
 			"PS tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
 		if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
-			log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
-			log.info(
+			log.warning("FORMAT field is equivalent to 'GT:DP:AR:AD'")
+			log.warning(
 				"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
 			from shutil import copyfile
 			copyfile(input_vcf_path, new_vcf_name)
 		else:
 			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
 			exit("PS flag Absent")
-
+	else:
+		log.warning("PS flag Found")
 
 #@#########
 #@ MAIN  ##
