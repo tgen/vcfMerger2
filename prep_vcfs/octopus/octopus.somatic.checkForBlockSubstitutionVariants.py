@@ -270,6 +270,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 			exit("PS flag Absent")
 	else:
 		log.warning("PS flag Found")
+		exit("XXXXX")
 
 #@#########
 #@ MAIN  ##
