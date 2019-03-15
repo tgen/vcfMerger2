@@ -225,6 +225,26 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	v.set_format('GT', np.array(GTs))
 	return v
 
+def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
+	iterVCF = iter(vcf_cyobj)
+	v1 = next(iterVCF)
+	log.info("Checking PS flag presence in FORMAT ...")
+	if not 'PS' in v1.FORMAT:
+		log.warning(
+			"PS tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
+		if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
+			log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
+			log.warning(
+				"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
+			from shutil import copyfile
+			copyfile(input_vcf_path, new_vcf_name)
+			exit()
+		else:
+			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
+			exit("PS flag Absent")
+	else:
+		log.info("PS flag Found")
+
 def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	'''
 	Calculate the AR for each sample in the variant record v
@@ -276,6 +296,8 @@ if __name__ == "__main__":
 	else:
 		new_vcf = new_vcf_name
 
+	## checking if PS flag is still present in the VCF genotype fields
+	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
 
 	vcf = update_header(vcf)
 
