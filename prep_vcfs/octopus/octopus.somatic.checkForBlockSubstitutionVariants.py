@@ -254,7 +254,7 @@ def check_for_block_substitution(vcf, column_tumor, w):
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 	v = next(iter(vcf_cyobj))
-	if v.format('PS')[0] is None:
+	if not 'PS' in v.FORMAT:
 		log.info(
 			"PS tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
 		if ':'.join(v.FORMAT) == "GT:DP:AR:AD":
