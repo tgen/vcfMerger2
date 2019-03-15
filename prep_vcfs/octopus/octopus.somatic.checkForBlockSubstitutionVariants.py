@@ -257,10 +257,10 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 	v1 = next(iterVCF)
 	log.info(str(v1))
 	log.info("Checking PS flag presence in FORMAT ...")
-	if not 'PS' in v.FORMAT:
+	if not 'PS' in v1.FORMAT:
 		log.info(
 			"PS tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
-		if ':'.join(v.FORMAT) == "GT:DP:AR:AD":
+		if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
 			log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
 			log.info(
 				"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
