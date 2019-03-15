@@ -252,6 +252,21 @@ def check_for_block_substitution(vcf, column_tumor, w):
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##
 
+def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
+	v = next(iter(vcf_cyobj))
+	if v.format('PS')[0] is None:
+		log.info(
+			"PS tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
+		if ':'.join(v.FORMAT) == "GT:DP:AR:AD":
+			log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
+			log.info(
+				"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
+			from shutil import copyfile
+			copyfile(input_vcf_path, new_vcf_name)
+		else:
+			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
+			sys.exit("PS flag Absent")
+	v = None
 
 #@#########
 #@ MAIN  ##
@@ -266,9 +281,12 @@ if __name__ == "__main__":
 		exit("ERROR: Number of Samples is different from 2; Expected 2 samples only NORMAL and TUMOR (in that order in the VCF) ; Aborting Here.")
 
 	if new_vcf_name is None:
-		new_vcf = '.'.join([str(vcf_path), "blockSubs.vcf"])
+		new_vcf = '.'.join([str(vcf_path), "blocsub.vcf"])
 	else:
 		new_vcf = new_vcf_name
+
+	## checking if PS flag is still present in the VCF genotype fields
+	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
 
 	## Adding Fields to INFO field
 	vcf.add_info_to_header({'ID': 'BLOCSUBSFROM', 'Description': 'List of Original Position in OctopusVcf That were used to make current block substitution variant', 'Type': 'String', 'Number': '.'})
