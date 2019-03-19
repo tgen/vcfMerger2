@@ -191,7 +191,7 @@ def filter_vcf(data, path_jar_snpsift):
 		vcf = data[tool]['vcf']
 		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
 		log.info("Filtering vcf ...")
-		log.info("input: \tool\t==\t{}".format(str(tool)))
+		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
 		mycmd = ["bash ", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
 		log.info(str(mycmd))
