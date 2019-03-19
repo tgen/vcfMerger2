@@ -282,21 +282,23 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		AR_tumor = round(float(AD_tumor/ADP_tumor), 2)
 	except ZeroDivisionError:
 		log.info("division by zero!")
-		AR_tumor = 0.00
+		AR_tumor = float(0.00)
 	try:
 		AR_normal = round(float(AD_normal / ADP_normal), 2)
 	except ZeroDivisionError:
 		log.info("division by zero!")
-		AR_normal = 0.00
-
+		AR_normal = float(0.00)
+	log.info(str(AR_normal) + " -----  " + str(AR_tumor))
 	## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
 	AD_tumor = [ADP_tumor - AD_tumor, ADP_tumor]
 	AD_normal = [ADP_tumor - AD_normal, ADP_normal]
+	log.info(str(AD_normal) + " -----  " + str(AD_tumor))
 
 	DP_tumor = v.format('DP')[idxT][0] if ',' in v.format('DP')[idxT] else v.format('DP')[idxT]		## returns numpy.str_
 	DP_normal = v.format('DP')[idxN][0] if ',' in v.format('DP')[idxN][0] else v.format('DP')[idxN]		## returns numpy.str_
 	#DP_tumor = v.format('DP')[idxT]
 	#DP_normal = v.format('DP')[idxN]
+	log.info(str(DP_normal) + " -----  " + str(DP_tumor))
 	if is_obj_nan(float(AR_tumor)): AR_tumor = 0.00
 	if is_obj_nan(float(AR_normal)): AR_normal = 0.00
 	if is_obj_nan(int(DP_tumor)): DP_tumor = 0.00
