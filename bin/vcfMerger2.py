@@ -496,7 +496,7 @@ def main(args, cmdline):
 		filter_string_for_snpsift = args["filter"]
 		log.info("filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
 
-	snpsift_jar_path = None
+	path_jar_snpsift = None
 	if args["filter"] is not None and args['path_jar_snpsift'] is not None:
 		path_jar_snpsift = args['path_jar_snpsift']
 		log.info("Path to provided snpSift.jar file:" + str(filter_string_for_snpsift))
@@ -562,7 +562,7 @@ def main(args, cmdline):
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
 	if filter_string_for_snpsift is not None:
-		data = filter_vcf(data, snpsift_jar_path)
+		data = filter_vcf(data, path_jar_snpsift)
 		print(str(data))
 	sys.exit()
 
