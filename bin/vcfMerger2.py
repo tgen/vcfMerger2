@@ -553,7 +553,7 @@ def main(args, cmdline):
 	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
 	                          lbams=lbams,
 	                          lcontigs=lcontigs,
-	                          filter=filter_string_for_snpsift,
+	                          filter_string_for_snpsift=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn)
 	json_filename = "vcfMerger.json"
