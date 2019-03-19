@@ -156,11 +156,14 @@ def update_header(vcf):
 			                                      ' and GT_1/1 >= AR_', str(AR_threshold_for_GT), ' )']),
 		 'Type': 'String', 'Number': '.'})
 
-	## if Adding AR to FORMAT field
+	## Adding AR and new AD to FORMAT field
 	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt tier1 Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT', 'Type': 'Float', 'Number': 'A'})
 	vcf.add_format_to_header({'ID': 'AD',
-	                          'Description': 'Allele Depth',
-	                          'Type': 'String', 'Number': '.'})
+	                          'Description': 'Reformatted Allele Depth according to specs (AD=ADP-ADO,ADO)',
+	                          'Type': 'Integer', 'Number': '2'})
+	vcf.add_format_to_header({'ID': 'ADO',
+	                          'Description': 'Original Octopus Allele Depth Value',
+	                          'Type': 'Integer', 'Number': '1'})
 
 	return vcf
 
@@ -234,25 +237,26 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	v.set_format('GT', np.array(GTs))
 	return v
 
-def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
+def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of_fields_to_check):
 	iterVCF = iter(vcf_cyobj)
 	v1 = next(iterVCF)
 	log.info("Checking PS flag presence in FORMAT ...")
-	if not 'PS' in v1.FORMAT:
-		log.warning(
-			"PS tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
-		if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
-			log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
+	for FIELD in list_of_fields_to_check:
+		if not FIELD in v1.FORMAT:
 			log.warning(
-				"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
-			from shutil import copyfile
-			copyfile(input_vcf_path, new_vcf_name)
-			exit()
+				FIELD+" tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
+			if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
+				log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
+				log.warning(
+					"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
+				from shutil import copyfile
+				copyfile(input_vcf_path, new_vcf_name)
+				exit()
+			else:
+				log.error(FIELD+" flag NOT found in FORMAT field; Aborting VCF preparation.")
+				exit(FIELD+" flag Absent")
 		else:
-			log.error("PS flag NOT found in OFRMAT field; Aborting VCF preparation.")
-			exit("PS flag Absent")
-	else:
-		log.info("PS flag Found")
+			log.info(FIELD+" flag Found")
 
 def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	'''
@@ -265,8 +269,31 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	idxN = 1 if int(column_normal) == 11 else 0
 	log.debug("___".join(str(x) for x in [ idxT, idxN ]) )
 
-	AR_tumor = v.format('MAP_VAF')[idxT][0]		## returns numpy.float32
-	AR_normal = v.format('MAP_VAF')[idxN][0]	## returns numpy.float32
+	## capturing Original AD and ADP
+	AD_tumor = v.format(AD)[idxT][0]
+	ADP_tumor = v.format(ADP)[idxT][0]
+	AD_normal = v.format(AD)[idxN][0]
+	ADP_normal = v.format(ADP)[idxN][0]
+	## Re-Allocationg ADs to ADOs, new tag for Original Octopus AD flags and values
+	ADOs = [AD_tumor, AD_normal] if idxT == 0 else [AD_normal, AD_tumor]
+	v.set_format('ADO', np.array(ADOs))
+
+	## Calculate AR (allele ration using AD and ADP)
+	try:
+		AR_tumor = round(float(AD_tumor/ADP_tumor), 2)
+	except ZeroDivisionError:
+		log.info("division by zero!")
+		AR_tumor = 0.00
+	try:
+		AR_normal = round(float(AD_normal / ADP_normal), 2)
+	except ZeroDivisionError:
+		log.info("division by zero!")
+		AR_normal = 0.00
+
+	## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
+	AD_tumor = [ADP_tumor - AD_tumor, ADP_tumor]
+	AD_normal = [ADP_tumor - AD_normal, ADP_normal]
+
 	DP_tumor = v.format('DP')[idxT][0] if ',' in v.format('DP')[idxT] else v.format('DP')[idxT]		## returns numpy.str_
 	DP_normal = v.format('DP')[idxN][0] if ',' in v.format('DP')[idxN][0] else v.format('DP')[idxN]		## returns numpy.str_
 	#DP_tumor = v.format('DP')[idxT]
@@ -277,10 +304,12 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	if is_obj_nan(int(DP_normal)): DP_normal = 0.00
 
 	if idxT == 0:
-		ARs = [float(AR_tumor), float(AR_normal)]
+		ARs = [AR_tumor, AR_normal]
+		ADs = [AD_tumor, AD_normal]
 	else:
-		ARs = [ float(AR_normal), float(AR_tumor) ]
-	ADs = [ (0,0), (0,0) ] ## HARDCODED information ;
+		ARs = [AR_normal, AR_tumor]
+		ADs = [AD_normal, AD_tumor]
+
 	# Because Octopus does not provide enough information to calculate AD, we assign default
 	# values of 0,0 ## can be discussed and modify if users think differently
 
@@ -306,7 +335,7 @@ if __name__ == "__main__":
 		new_vcf = new_vcf_name
 
 	## checking if PS flag is still present in the VCF genotype fields
-	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
+	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS", "AD", "ADP"])
 
 	vcf = update_header(vcf)
 
