@@ -561,9 +561,9 @@ def main(args, cmdline):
 	#inFileJson = make_json(data, json_filename)
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
-	if filter_string_for_snpsift is not None:
-		data = filter_vcf(data, path_jar_snpsift)
-		print(str(data))
+	# if filter_string_for_snpsift is not None:
+	# 	data = filter_vcf(data, path_jar_snpsift)
+	# 	print(str(data))
 
 	if not skip_prep_vcfs:
 		log.info("**** prep vcf steps section ***".upper())
@@ -577,7 +577,7 @@ def main(args, cmdline):
 		log.info("Performing vcf filtering for ALL the provided prepped vcfs ...")
 		data = filter_vcf(data, path_jar_snpsift)
 		log.info(str(data))
-	sys.exit()
+
 
 	if not skip_merge:
 		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs)
