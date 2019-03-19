@@ -186,6 +186,7 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 	:param data: dictionary of converted json data
 	:return: updated data object
 	"""
+	CONSTANT_STRING_FOR_PASS_RECORDS="( FILTER == 'PASS' )" ## HARDCODED
 	for tool in data.keys():
 
 		vcf = data[tool]['vcf']
@@ -193,12 +194,12 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 		log.info("Filtering vcf ...")
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, str("\""+CONSTANT_STRING_FOR_PASS_RECORDS+"\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".filt.vcf")
+		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".pass.vcf")
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['vcf'] = os.path.abspath(new_vcf_name)
 
@@ -589,9 +590,12 @@ def main(args, cmdline):
 	#inFileJson = make_json(data, json_filename)
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
-	# if filter_string_for_snpsift is not None:
-	# 	data = filter_vcf(data, path_jar_snpsift)
-	# 	print(str(data))
+
+	## filter the PASS records before preparing the vcf for vcfMerger step
+	if filter_string_for_snpsift is not None:
+		log.info("Performing PASS only filtering for ALL the provided input vcfs ...")
+		data = filter_unprepped_vcf(data, path_jar_snpsift)
+		log.info(str(data))
 
 	if not skip_prep_vcfs:
 		log.info("**** prep vcf steps section ***".upper())
