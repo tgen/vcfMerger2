@@ -501,9 +501,9 @@ def main(args, cmdline):
 		path_jar_snpsift = args['path_jar_snpsift']
 		log.info("Path to provided snpSift.jar file:" + str(filter_string_for_snpsift))
 		if not os.path.exists(path_jar_snpsift):
-			raise "ERROR: snpSift.jar FILE NOT FOUND. Aborting!"
+			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
-		raise "Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!"
+		raise Exception("Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
 	else:
 		log.info("Well, you provided the path to snpSift for nothing as you have not set the filter option. :-) ")
 
@@ -517,7 +517,7 @@ def main(args, cmdline):
 	if args['threshold_AR']:
 		TH_AR = args['threshold_AR']
 		if isinstance(TH_AR, (int, float, complex)):
-			raise "Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs."
+			raise Exception("Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.")
 		log.info("user given threshold for AR: " + str(TH_AR))
 
 	lbeds = ""
