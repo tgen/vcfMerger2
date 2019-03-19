@@ -193,11 +193,11 @@ def filter_vcf(data, path_jar_snpsift):
 		log.info("Filtering vcf ...")
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = ["bash ", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
-		subprocess_cmd(''.join([str(x) for x in mycmd]))
+		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 		new_vcf_name=os.path.splitext(vcf)[0]+".filt.vcf"
 		log.info("expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['vcf'] = new_vcf_name
