@@ -243,6 +243,18 @@ function get_contigs_file(){
 
 }
 
+function modify_contig_info_in_lancet(){
+	local VCF=$1
+	## Compared with other tools, lancet does add the assembly name to the contig definition
+	## here we remove the extra assembly info in order to get the same contig lines accross the tools
+	fout_name=${VCF%.*}.contigs.vcf
+	echo -e "## adding contigs to ${TOOLNAME}'s vcf header ..." 1>&2
+	sed '/^##contig/s/,assembly.*>$/>/' ${VCF} > ${fout_name}
+	check_ev $? "addContigs " 1>&2
+	VCF=${fout_name}
+	echo "${VCF}"
+}
+
 function add_Contigs(){
 	local VCF=$1
 	## Add missing Contigs lines to VCF Header
@@ -362,7 +374,7 @@ function process_mutect2_vcf(){
 function process_lancet_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	VCF=$( add_Contigs ${VCF} )
+	VCF=$( modify_contig_info_in_lancet ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
@@ -371,7 +383,6 @@ function process_lancet_vcf(){
 function process_octopus_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	#VCF=$( add_Contigs ${VCF} )
 	VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
 	VCF=$( decompose ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
