@@ -175,6 +175,7 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
 - samtools 1.7 or up
 - bcftools 1.7 or up
 - vt v0.57721 or up (tests done with v0.57721)
+- snpSift 4.3 or up (snpSift.jar)
 
 
 ## Running demo
@@ -187,6 +188,7 @@ You can run the script from anywwhere, and the results will be outputted into a 
 vcfMerger2 is composed of two main steps:
 1. Preparing vcf to specs
 2. Merging vcfs
+3. Filtering any vcf
 
 Users can run these two steps independently if needed, even though this can be achieved by using the `--skip-prep-vcfs` or `--skip-merge` optional arguments from the `all-in-one` way. 
 
@@ -203,6 +205,10 @@ Example_2:
  
 
 _**HINT**_: if you already have the command line from `all-in-one` way style, you can just add the option `--skip-merge` to that command and only the `prep` step will be performed for all the given vcfs instead of running one by one the `prep_vcf.sh` script
+
+#### How to manually **_filtering_** vcfs
+A script is provided to manually filter the vcf before or after having prepared the vcfs for merging.
+You only have to provide 
 
 
 #### How to **_only_** merge vcfs? 
