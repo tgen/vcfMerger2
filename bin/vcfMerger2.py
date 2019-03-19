@@ -491,7 +491,7 @@ def main(args, cmdline):
 		skip_prep_vcfs = args["skip_prep_vcfs"]
 		log.info("skip_prep_vcfs:" + str(skip_prep_vcfs))
 
-	filter = None
+	filter_string_for_snpsift = None
 	if args["filter"] is not None:
 		filter_string_for_snpsift = args["filter"]
 		log.info("filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
@@ -561,9 +561,9 @@ def main(args, cmdline):
 	#inFileJson = make_json(data, json_filename)
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
-	if filter is not None:
-		filter_vcf(data, snpsift_jar_path)
-
+	if filter_string_for_snpsift is not None:
+		data = filter_vcf(data, snpsift_jar_path)
+		print(str(data))
 	sys.exit()
 
 	if not skip_prep_vcfs:
