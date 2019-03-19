@@ -196,7 +196,7 @@ def filter_vcf(data, path_jar_snpsift):
 		mycmd = [ snpsift_filter_script_path, path_jar_snpsift, data[tool]['filter_string_snpsift'], vcf ]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
-		log.info(("Running filter stage for vcf: {}"+.format()))
+		log.info(("Running filter stage for vcf: {}".format()))
 		subprocess_cmd(''.join([str(x) for x in mycmd]))
 		new_vcf_name=os.path.splitext(vcf)[0]+".filt.vcf"
 		log.info("expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
