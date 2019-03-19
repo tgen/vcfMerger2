@@ -238,13 +238,12 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	return v
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of_fields_to_check):
-	iterVCF = iter(vcf_cyobj)
-	v1 = next(iterVCF)
+	v1 = next(iter(vcf_cyobj))
 	log.info("Checking PS flag presence in FORMAT ...")
 	for FIELD in list_of_fields_to_check:
 		if not FIELD in v1.FORMAT:
 			log.warning(
-				FIELD+" tag s not present in the FORMAT field of OCTOPUS; We assume that the VCF has already been modified from its original copy.")
+				FIELD+" tag is ABSENT from the FORMAT field of OCTOPUS\nPlease Check you have run Octopus with appropriate options (i.e, with random forest option and no other filtering option; random forest filtering add ALL the adequate fields to FORMAT columns )")
 			if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
 				log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
 				log.warning(
@@ -270,10 +269,10 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	log.debug("___".join(str(x) for x in [ idxT, idxN ]) )
 
 	## capturing Original AD and ADP
-	AD_tumor = v.format(AD)[idxT][0]
-	ADP_tumor = v.format(ADP)[idxT][0]
-	AD_normal = v.format(AD)[idxN][0]
-	ADP_normal = v.format(ADP)[idxN][0]
+	AD_tumor = v.format('AD')[idxT][0]
+	ADP_tumor = v.format('ADP')[idxT][0]
+	AD_normal = v.format('AD')[idxN][0]
+	ADP_normal = v.format('ADP')[idxN][0]
 	## Re-Allocationg ADs to ADOs, new tag for Original Octopus AD flags and values
 	ADOs = [AD_tumor, AD_normal] if idxT == 0 else [AD_normal, AD_tumor]
 	v.set_format('ADO', np.array(ADOs))
