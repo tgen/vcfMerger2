@@ -42,6 +42,7 @@ scriptDirectory = os.path.dirname(os.path.realpath(__file__))
 prep_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
 prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf_functions.sh")
 vcfmerger_tool_path = os.path.join(os.path.dirname(scriptDirectory), "merge_vcfs", "vcfMerger.py")
+snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "utils", "filter_vcf.sh")
 
 
 class UniqueStore(argparse.Action):
@@ -117,6 +118,7 @@ def make_data_for_json(lvcfs,
                        lprepped_vcf_outfilenames=None,
                        lbams=None,
                        lcontigs=None,
+                       filter=None,
                        TH_AR=0.9,
                        do_venn=False):
 	# TODO : Check if tool precedence is different from order of toolnames
@@ -168,16 +170,45 @@ def make_data_for_json(lvcfs,
 		# lossy do not need to be added to the json file because it applies to vcfMerger not prep
 		# we keep it here just in case we use the json file as a reminder of what was run
 		data[ltoolnames[tool_idx]]['lossy'] = lossy
+		data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
 
 	return data
 
+def filter_vcf(data, path_jar_snpsift):
+	"""
+	1) parse the data object
+	2) prepare command for running the filter bash script
+	3) call and run bash script
+	4) update the data object with new vcf file
+
+	:param data: dictionary of converted json data
+	:return: updated data object
+	"""
+	for tool in data.keys():
+
+		vcf = data[tool]['vcf']
+		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
+		log.info("Filtering vcf ...")
+		log.info("input: \tool\t==\t{}".format(str(tool)))
+		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
+		mycmd = [ snpsift_filter_script_path, path_jar_snpsift, data[tool]['filter_string_snpsift'], vcf ]
+		log.info(str(mycmd))
+		log.info(" ".join([x for x in mycmd]))
+		log.info(("Running filter stage for vcf: {}"+.format()))
+		subprocess_cmd(''.join([str(x) for x in mycmd]))
+		new_vcf_name=os.path.splitext(vcf)[0]+".filt.vcf"
+		log.info("expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
+		data[tool]['vcf'] = new_vcf_name
+
+	return data
+
+
 def parse_json_data_and_run_prep_vcf(data, dryrun):
 	"""
 	1) parse the data from the json file
-	2) run prep_vcf program
-	3) merge the prep_vcf
+	2) run prep_vcf program for each tool's vcf
 
 	:param data: dictionary of converted json data
 	:return: list of expected prep_vcfs from each tool unless error
@@ -251,6 +282,7 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			subp_logfile.close()
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_script_path, tool))
+
 
 
 def subprocess_cmd(command):
@@ -459,6 +491,20 @@ def main(args, cmdline):
 		skip_prep_vcfs = args["skip_prep_vcfs"]
 		log.info("skip_prep_vcfs:" + str(skip_prep_vcfs))
 
+	filter = None
+	if args["filter"]:
+		filter_string_for_snpsift = args["filter"]
+		log.info("filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
+
+	snpsift_jar_path = None
+	if args["filter"] is None and args['path-jar-snpsift'] is None:
+		raise "Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!"
+	else:
+		path_jar_snpsift = args['path-jar-snpsift']
+		log.info("Path to provided snpSift.jar file:" + str(filter_string_for_snpsift))
+		if not os.path.exists(path_jar_snpsift):
+			raise "ERROR: snpSift.jar FILE NOT FOUND. Aborting!"
+
 	skip_merge = False
 	if args["skip_merge"]:
 		skip_merge = args["skip_merge"]
@@ -504,11 +550,18 @@ def main(args, cmdline):
 	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
 	                          lbams=lbams,
 	                          lcontigs=lcontigs,
+	                          filter=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn)
 	json_filename = "vcfMerger.json"
-	inFileJson = make_json(data, json_filename)
-	data = read_json(inFileJson)
+	make_json(data, json_filename)
+	#inFileJson = make_json(data, json_filename)
+	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
+
+	if filter is not None:
+		filter_vcf(data, snpsift_jar_path)
+
+	sys.exit()
 
 	if not skip_prep_vcfs:
 		log.info("**** prep vcf steps section ***".upper())
@@ -606,6 +659,7 @@ def make_parser_args():
 	                      help='AlleRatio threshold value to assign genotype; 0/1 if less than threshold, 1/1 if equal or above threshold; default is 0.90 ; range ]0,1] ')
 
 	optional.add_argument('--lossy',
+	                      required=False,
 	                      help='This will create a lossy merged vcf by only keeping the information from the tool with first hand precedence',
 	                      action='store_true')
 
@@ -613,6 +667,21 @@ def make_parser_args():
 	                      required=False,
 	                      action='store_true',
 	                      help=' skip the step for preparing vcfs up to specs and only run the merge step; implies all prep-vcfs are ready already ; same options and inputs required as if prep step was run ')
+
+	optional.add_argument('--filter',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help='enable vcf filtering using snpSift tool; A string argument is passed to this filter option; \
+	                      This string MUST be formatted as if you were using it for snpSift, i.e. we used "as_is" the string provided; \
+	                      Therefore a valid format is mandatory; Check snpSift manual ; IMPORTANT NOTE: the filtering MUST use FLAG and TAGs \
+	                      that are COMMON to ALL the tools involved ; The Prepped vcfs have some common flags in the GENOTYPE fields (so far GT, DP, AR, AD), \
+	                      and the CC flag is common to ALL records. The filtering takes place after the prep_vcf step and before merging the vcfs; Example of String: \
+	                      \"( GEN[TUMOR].AR >= 0.10 ) & ( GEN[NORMAL].AR <= 0.02 ) & ( CC >= 2 ) & ( GEN[TUMOR].DP >= 10 & GEN[NORMAL].DP>=10 )\", where NORMAL or TUMOR can be replaced with appropriate indices or other given names')
+
+	optional.add_argument('--path-jar-snpsift',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help='Provide full Path of the snpSift.jar you want to use for filtering the vcf before merging them')
 
 	optional.add_argument('--skip-merge',
 	                      required=False,
