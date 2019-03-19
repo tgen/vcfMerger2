@@ -497,13 +497,16 @@ def main(args, cmdline):
 		log.info("filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
 
 	snpsift_jar_path = None
-	if args["filter"] is None and args['path-jar-snpsift'] is None:
-		raise "Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!"
-	else:
-		path_jar_snpsift = args['path-jar-snpsift']
+	if args["filter"] is not None and args['path_jar_snpsift'] is not None:
+		path_jar_snpsift = args['path_jar_snpsift']
 		log.info("Path to provided snpSift.jar file:" + str(filter_string_for_snpsift))
 		if not os.path.exists(path_jar_snpsift):
 			raise "ERROR: snpSift.jar FILE NOT FOUND. Aborting!"
+	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
+		raise "Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!"
+	else:
+		log.info("Well, you provided the path to snpSift for nothing as you have not set the filter option. :-) ")
+
 
 	skip_merge = False
 	if args["skip_merge"]:
