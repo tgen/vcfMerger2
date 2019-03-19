@@ -4,9 +4,9 @@ SNPSIFT_JAR_PATH=$1
 STRING_FOR_SNPSIFT_FILTERING="$2"  ## double quote mandatory here
 VCF=$3
 
-if [[ ${VCF##.*} == "vcf" ]] ; then
+if [[ ${VCF##*.} == "vcf" ]] ; then
     VCF_OUT=$(basename ${VCF} ".vcf").filt.vcf
-elif [[ ${VCF##.*} == "gz" ]] ; then
+elif [[ ${VCF##*.} == "gz" ]] ; then
     VCF_OUT=$(basename ${VCF} ".vcf.gz").filt.vcf
 else
     echo -e "ERROR: Unexpected file extension. File Extension is neither .vcf or .vcf.gz; \
