@@ -118,7 +118,7 @@ def make_data_for_json(lvcfs,
                        lprepped_vcf_outfilenames=None,
                        lbams=None,
                        lcontigs=None,
-                       filter=None,
+                       filter_string_for_snpsift=None,
                        TH_AR=0.9,
                        do_venn=False):
 	# TODO : Check if tool precedence is different from order of toolnames
@@ -492,7 +492,7 @@ def main(args, cmdline):
 		log.info("skip_prep_vcfs:" + str(skip_prep_vcfs))
 
 	filter = None
-	if args["filter"]:
+	if args["filter"] is not None:
 		filter_string_for_snpsift = args["filter"]
 		log.info("filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
 
