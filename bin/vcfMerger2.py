@@ -193,7 +193,7 @@ def filter_vcf(data, path_jar_snpsift):
 		log.info("Filtering vcf ...")
 		log.info("input: \tool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = [ snpsift_filter_script_path, path_jar_snpsift, data[tool]['filter_string_snpsift'], vcf ]
+		mycmd = ["bash ", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format()))
