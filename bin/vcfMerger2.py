@@ -194,7 +194,7 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 		log.info("Filtering vcf ...")
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, str("\""+CONSTANT_STRING_FOR_PASS_RECORDS+"\""), vcf]
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "pass", str("\""+CONSTANT_STRING_FOR_PASS_RECORDS+"\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
@@ -222,7 +222,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("Filtering vcf ...")
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "filt", str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
