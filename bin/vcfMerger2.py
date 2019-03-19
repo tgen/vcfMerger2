@@ -198,9 +198,9 @@ def filter_vcf(data, path_jar_snpsift):
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name=os.path.splitext(vcf)[0]+".filt.vcf"
-		log.info("expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
-		data[tool]['vcf'] = new_vcf_name
+		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".filt.vcf")
+		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
+		data[tool]['vcf'] = os.path.abspath(new_vcf_name)
 
 	return data
 
@@ -564,7 +564,6 @@ def main(args, cmdline):
 	if filter_string_for_snpsift is not None:
 		data = filter_vcf(data, path_jar_snpsift)
 		print(str(data))
-	sys.exit()
 
 	if not skip_prep_vcfs:
 		log.info("**** prep vcf steps section ***".upper())
@@ -572,6 +571,14 @@ def main(args, cmdline):
 		log.info("**** merge process section  ****".upper())
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
+
+	## FILTERING STEP for PREPPED VCFS (note: Filtering must not be applied ot un-prepped vcfs unless users would like to
+	if filter_string_for_snpsift is not None:
+		log.info("Performing vcf filtering for ALL the provided prepped vcfs ...")
+		data = filter_vcf(data, path_jar_snpsift)
+		log.info(str(data))
+	sys.exit()
+
 	if not skip_merge:
 		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs)
 	else:
