@@ -176,7 +176,7 @@ def make_data_for_json(lvcfs,
 
 	return data
 
-def filter_vcf(data, path_jar_snpsift):
+def filter_unprepped_vcf(data, path_jar_snpsift):
 	"""
 	1) parse the data object
 	2) prepare command for running the filter bash script
@@ -201,6 +201,34 @@ def filter_vcf(data, path_jar_snpsift):
 		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".filt.vcf")
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['vcf'] = os.path.abspath(new_vcf_name)
+
+	return data
+
+def filter_prepped_vcf(data, path_jar_snpsift):
+	"""
+	1) parse the data object
+	2) prepare command for running the filter bash script
+	3) call and run bash script
+	4) update the data object with new vcf file
+
+	:param data: dictionary of converted json data
+	:return: updated data object
+	"""
+	for tool in data.keys():
+
+		vcf = data[tool]['prepped_vcf_outfilename']
+		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
+		log.info("Filtering vcf ...")
+		log.info("input: \ttool\t==\t{}".format(str(tool)))
+		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
+		log.info(str(mycmd))
+		log.info(" ".join([x for x in mycmd]))
+		log.info(("Running filter stage for vcf: {}".format(vcf)))
+		subprocess_cmd(' '.join([str(x) for x in mycmd]))
+		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".filt.vcf")
+		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
+		data[tool]['prepped_vcf_outfilename'] = os.path.abspath(new_vcf_name)
 
 	return data
 
@@ -575,7 +603,7 @@ def main(args, cmdline):
 	## FILTERING STEP for PREPPED VCFS (note: Filtering must not be applied ot un-prepped vcfs unless users would like to
 	if filter_string_for_snpsift is not None:
 		log.info("Performing vcf filtering for ALL the provided prepped vcfs ...")
-		data = filter_vcf(data, path_jar_snpsift)
+		data = filter_prepped_vcf(data, path_jar_snpsift)
 		log.info(str(data))
 
 
