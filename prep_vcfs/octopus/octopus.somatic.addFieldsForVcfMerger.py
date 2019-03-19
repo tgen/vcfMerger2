@@ -273,8 +273,10 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	ADP_tumor = v.format('ADP')[idxT][0]
 	AD_normal = v.format('AD')[idxN][0]
 	ADP_normal = v.format('ADP')[idxN][0]
+	log.info(str(ADP_normal) + " -----  " + str(ADP_tumor))
 	## Re-Allocationg ADs to ADOs, new tag for Original Octopus AD flags and values
 	ADOs = [AD_tumor, AD_normal] if idxT == 0 else [AD_normal, AD_tumor]
+	log.info(str(ADOs) + " <<<<<<<<-----  ")
 	v.set_format('ADO', np.array(ADOs))
 
 	## Calculate AR (allele ration using AD and ADP)
