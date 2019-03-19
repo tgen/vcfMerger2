@@ -187,11 +187,13 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 	:return: updated data object
 	"""
 	CONSTANT_STRING_FOR_PASS_RECORDS="( FILTER == 'PASS' )" ## HARDCODED
+	log.info("Filtering vcf ... "+CONSTANT_STRING_FOR_PASS_RECORDS)
+
 	for tool in data.keys():
 
 		vcf = data[tool]['vcf']
 		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
-		log.info("Filtering vcf ...")
+
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
 		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "pass", str("\""+CONSTANT_STRING_FOR_PASS_RECORDS+"\""), vcf]
@@ -205,7 +207,7 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 
 	return data
 
-def filter_prepped_vcf(data, path_jar_snpsift):
+def filter_vcf(data, path_jar_snpsift, code_stage):
 	"""
 	1) parse the data object
 	2) prepare command for running the filter bash script
@@ -227,7 +229,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".filt.vcf")
+		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+"."+code_stage+".vcf")
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = os.path.abspath(new_vcf_name)
 
@@ -593,8 +595,8 @@ def main(args, cmdline):
 
 	## filter the PASS records before preparing the vcf for vcfMerger step
 	if filter_string_for_snpsift is not None:
-		log.info("Performing PASS only filtering for ALL the provided input vcfs ...")
-		data = filter_unprepped_vcf(data, path_jar_snpsift)
+		log.info("Performing PASS only filtering for ALL the original provided tool-specific input vcfs ...")
+		data = filter_vcf(data, path_jar_snpsift, "pass")
 		log.info(str(data))
 
 	if not skip_prep_vcfs:
@@ -607,7 +609,7 @@ def main(args, cmdline):
 	## FILTERING STEP for PREPPED VCFS (note: Filtering must not be applied ot un-prepped vcfs unless users would like to
 	if filter_string_for_snpsift is not None:
 		log.info("Performing vcf filtering for ALL the provided prepped vcfs ...")
-		data = filter_prepped_vcf(data, path_jar_snpsift)
+		data = filter_vcf(data, path_jar_snpsift, "filt")
 		log.info(str(data))
 
 
