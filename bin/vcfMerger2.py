@@ -561,7 +561,8 @@ def main(args, cmdline):
 	merged_vcf_outfilename = None
 	if args["merged_vcf_outfilename"]:
 		merged_vcf_outfilename = str(args["merged_vcf_outfilename"])
-		log.info("filename for the merged output vcf will be: " + merged_vcf_outfilename)
+		log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
+		log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename+".gz")
 
 	skip_prep_vcfs = False
 	if args["skip_prep_vcfs"]:
@@ -569,7 +570,7 @@ def main(args, cmdline):
 		log.info("skip_prep_vcfs:" + str(skip_prep_vcfs))
 
 	filter_by_pass = False
-	if args['filter-by-pass']:
+	if args['filter_by_pass']:
 		filter_by_pass = False
 		log.info("filtering by PASS variant enabled; This filter will be applied before the PREP_VCF step")
 
