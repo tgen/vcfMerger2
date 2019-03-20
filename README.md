@@ -165,9 +165,11 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
     - collections
     - argparse
     - getopt
+    - gzip
     - json
     - logging
     - natsort
+    - shutil
     - subprocess
     - sys, os, time, re 
     - warnings
