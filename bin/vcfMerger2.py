@@ -621,7 +621,7 @@ def main(args, cmdline):
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
-	sys.exit()
+
 
 	data = make_data_for_json(lvcfs,
 	                          ltoolnames,
