@@ -430,11 +430,11 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		process.wait()
 		log.info("vcfMerger2.0 exit value: " + str(process.returncode))
 		if process.returncode is not 0:
-			sys.exit("{} FAILED with vcfs files: {} ".format(prep_script_path, list_vcfs))
+			sys.exit("{} FAILED with vcfs files: {} ".format(vcfmerger_tool_path, list_vcfs))
 		else:
 			zvcf = str(merged_vcf_outfilename+".gz")
 			log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
-			mycmd = [ "bcftools index --tbi ", merged_vcf_outfilename ]
+			mycmd = [ "bcftools view -O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --tbi ", zvcf ]
 			subprocess_cmd(" ".join(str(x) for x in mycmd))
 
 
