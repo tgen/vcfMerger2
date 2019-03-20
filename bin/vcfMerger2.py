@@ -568,10 +568,15 @@ def main(args, cmdline):
 		skip_prep_vcfs = args["skip_prep_vcfs"]
 		log.info("skip_prep_vcfs:" + str(skip_prep_vcfs))
 
+	filter_by_pass = False
+	if args['filter-by-pass']:
+		filter_by_pass = False
+		log.info("filtering by PASS variant enabled; This filter will be applied before the PREP_VCF step")
+
 	filter_string_for_snpsift = None
 	if args["filter"] is not None:
 		filter_string_for_snpsift = args["filter"]
-		log.info("filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
+		log.info("filtering variant enabled and filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
 
 	path_jar_snpsift = None
 	if args["filter"] is not None and args['path_jar_snpsift'] is not None:
@@ -644,37 +649,38 @@ def main(args, cmdline):
 
 
 	## filter the PASS records before preparing the vcf for vcfMerger step
-	if filter_string_for_snpsift is not None:
+	if filter_by_pass:
 		log.info("Performing PASS only filtering for ALL the provided input vcfs ...")
 		data = filter_unprepped_vcf(data, path_jar_snpsift)
 		log.info(str(data))
 
-	if not skip_prep_vcfs:
+	if not skip_prep_vcfs:  ## PREP_VCF step Enabled
 		log.info("**** prep vcf steps section ***".upper())
 		parse_json_data_and_run_prep_vcf(data, dryrun)
 		log.info("**** merge process section  ****".upper())
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 
-	## FILTERING STEP for PREPPED VCFS (note: Filtering must not be applied ot un-prepped vcfs unless users would like to
+	## FILTERING STEP Enabled for Already PREPPED VCFS (note: Filtering must not be applied on un-prepped vcfs unless user knows what he/she is doing
 	if filter_string_for_snpsift is not None:
 		log.info("Performing vcf filtering for ALL the provided prepped vcfs ...")
 		data = filter_prepped_vcf(data, path_jar_snpsift)
 		log.info(str(data))
 
 
-	if not skip_merge:
+	if not skip_merge:  ## MERGING step Enabled
 		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
-	if not skip_prep_vcfs and not skip_merge:
+	## MESSAGES END of WORK
+	if not skip_prep_vcfs and not skip_merge: ## we perform the ALL in one [ PREP_VCF + MERGE ]
 		log.info("prep and merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("prep and merge vcfs completed successfully")
-	elif skip_prep_vcfs:
+	elif skip_prep_vcfs:    ## Here we only performed MERGING
 		log.info("merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("merge vcfs completed successfully")
-	elif skip_merge:
+	elif skip_merge:    ## here we only performed PREP_VCF
 		log.info("prep Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("prep vcfs completed successfully")
 
@@ -761,6 +767,11 @@ def make_parser_args():
 	                      required=False,
 	                      action='store_true',
 	                      help=' skip the step for preparing vcfs up to specs and only run the merge step; implies all prep-vcfs are ready already ; same options and inputs required as if prep step was run ')
+
+	optional.add_argument('--filter-by-pass',
+	                      required=False,
+	                      action='store_true',
+	                      help='enable vcf filtering of PASS variant using snpSift tool; String to snpSift hardcoded as (FILTER == "PASS") ')
 
 	optional.add_argument('--filter',
 	                      required=False,
