@@ -437,7 +437,8 @@ def check_path_to_vcfs(lvcfs):
 		try:
 			vcf = next(iterator)
 			if not os.path.exists(vcf):
-				sys.exit("ERROR: VCF File NOT Found; Check your input for vcf:"+vcf)
+				log.error("ERROR: VCF File NOT FOUND;     Check your input for vcf:"+vcf)
+				sys.exit(-1)
 		except StopIteration:
 			break  # Iterator exhausted: stop the loop
 		else:
