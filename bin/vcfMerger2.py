@@ -571,7 +571,7 @@ def main(args, cmdline):
 
 	filter_by_pass = False
 	if args['filter_by_pass']:
-		filter_by_pass = False
+		filter_by_pass = True
 		log.info("filtering by PASS variant enabled; This filter will be applied before the PREP_VCF step")
 
 	filter_string_for_snpsift = None
@@ -582,7 +582,7 @@ def main(args, cmdline):
 	path_jar_snpsift = None
 	if args["filter"] is not None and args['path_jar_snpsift'] is not None:
 		path_jar_snpsift = args['path_jar_snpsift']
-		log.info("Path to provided snpSift.jar file:" + str(filter_string_for_snpsift))
+		log.info("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
