@@ -61,7 +61,7 @@ class UniqueStore(argparse.Action):
 		setattr(namespace, self.dest, values)
 
 def is_gzip(path, magic_number=b'\x1f\x8b'):
-    """Returns True if the path is gzipped."""
+    """Returns True if the path is gzipped. Fucntion taken from JetStream and created by Ryan Richolt"""
     if os.path.exists(path) and not os.path.isfile(path):
         err = 'This should only be used with regular files because otherwise ' \
               'it will lose some data.'
@@ -136,7 +136,6 @@ def read_json(f):
 		data = json.load(read_file)
 	log.debug(str(data) + '\n')
 	return data
-
 
 def make_data_for_json(lvcfs,
                        ltoolnames,
@@ -268,7 +267,6 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 
 	return data
 
-
 def parse_json_data_and_run_prep_vcf(data, dryrun):
 	"""
 	1) parse the data from the json file
@@ -347,8 +345,6 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_script_path, tool))
 
-
-
 def subprocess_cmd(command):
 	os.system(command)
 
@@ -363,12 +359,11 @@ def prepare_bed_for_venn(vcf):
 	'''
 
 	# Build subprocess command
-	mycmd = ["source ", prep_vcf_functions_script_path, " && ", "prepare_input_file_for_Venn ", vcf]
+	mycmd = ["source", prep_vcf_functions_script_path, " && ", "prepare_input_file_for_Venn ", vcf]
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
 	log.info(("Running bash function prep_input_file_for_venn command"))
-	subprocess_cmd(''.join([ str(x) for x in mycmd]))
-
+	subprocess_cmd(' '.join([ str(x) for x in mycmd]))
 
 def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, ):
 	"""
@@ -436,6 +431,12 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		log.info("vcfMerger2.0 exit value: " + str(process.returncode))
 		if process.returncode is not 0:
 			sys.exit("{} FAILED with vcfs files: {} ".format(prep_script_path, list_vcfs))
+		else:
+			zvcf = str(merged_vcf_outfilename+".gz")
+			log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
+			mycmd = [ "bcftools index --tbi ", merged_vcf_outfilename ]
+			subprocess_cmd(" ".join(str(x) for x in mycmd))
+
 
 def check_path_to_vcfs(lvcfs):
 	iterator = iter(lvcfs)
@@ -443,13 +444,12 @@ def check_path_to_vcfs(lvcfs):
 		try:
 			vcf = next(iterator)
 			if not os.path.exists(vcf):
-				log.error("ERROR: VCF File NOT FOUND;     Check your input for vcf:"+vcf)
+				log.error("ERROR:  FILE NOT FOUND  --->  Check your input for vcf:"+vcf)
 				sys.exit(-1)
 		except StopIteration:
 			break  # Iterator exhausted: stop the loop
 		else:
 			log.info("VCF found: "+str(vcf))
-
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None ):
 	"""
