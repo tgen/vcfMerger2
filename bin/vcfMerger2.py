@@ -616,7 +616,7 @@ def main(args, cmdline):
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
 	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds)
 
-	lvcfs = check_if_vcf_are_compressed(lvcfs)
+	lvcfs = check_if_vcf_is_compressed(lvcfs)
 
 	data = make_data_for_json(lvcfs,
 	                          ltoolnames,
