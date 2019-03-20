@@ -87,6 +87,7 @@ def check_if_vcf_is_compressed(lvcfs):
 			with gzip.open(vcf, 'rb') as f_in, open(uvcf, 'w') as f_out:
 				shutil.copyfileobj(f_in, f_out)
 			lvcfs[i] = uvcf
+	return lvcfs
 
 def quote_str(s):
 	'''
