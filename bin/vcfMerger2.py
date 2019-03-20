@@ -34,6 +34,8 @@ from os import path
 import sys
 import logging as log
 import time
+import gzip
+import shutil
 
 # CAPTURED VARIABLES AUTOMATICALLY
 ## capturing the current path of the current script
@@ -57,6 +59,32 @@ class UniqueStore(argparse.Action):
 		if getattr(namespace, self.dest, self.default) is not None:
 			parser.error(option_string + " appears several times.  Please modify your options.")
 		setattr(namespace, self.dest, values)
+
+def is_gzip(path, magic_number=b'\x1f\x8b'):
+    """Returns True if the path is gzipped."""
+    if os.path.exists(path) and not os.path.isfile(path):
+        err = 'This should only be used with regular files because otherwise ' \
+              'it will lose some data.'
+        raise ValueError(err)
+
+    with open(path, 'rb') as fp:
+        if fp.read(2) == magic_number:
+            return True
+        else:
+            return False
+
+def check_if_vcf_is_compressed(lvcfs):
+	"""check if vcfs are comporessed and if so, uncompress the vcf in current working directory
+	:param lvcfs
+	:return updated lvcfs
+	"""
+	for i in range(len(lvcfs)):
+		vcf = lvcfs[i]
+		if is_gzip(vcf):
+			uvcf = os.path.basename(os.path.splitext(vcf)[0])
+			with gzip.open(vcf, 'rb') as f_in, open(uvcf, 'w') as f_out:
+				shutil.copyfileobj(f_in, f_out)
+			lvcfs[i] = uvcf
 
 def quote_str(s):
 	'''
@@ -403,6 +431,19 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		if process.returncode is not 0:
 			sys.exit("{} FAILED with vcfs files: {} ".format(prep_script_path, list_vcfs))
 
+def check_path_to_vcfs(lvcfs):
+	iterator = iter(lvcfs)
+	while True:
+		try:
+			vcf = next(iterator)
+			if not os.path.exists(vcf):
+				sys.exit("ERROR: VCF File NOT Found; Check your input for vcf:"+vcf)
+		except StopIteration:
+			break  # Iterator exhausted: stop the loop
+		else:
+			log.info("VCF found: "+str(vcf))
+
+
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None ):
 	"""
 
@@ -440,6 +481,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			                                                                         len(ltoolnames)))
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;\ncheck if delimiter is adequate and do not interfere with splitting the given lists of tools")
+	check_path_to_vcfs(lvcfs)
 
 def main(args, cmdline):
 
@@ -572,6 +614,8 @@ def main(args, cmdline):
 	##@@@@@@@@@
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
 	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds)
+
+	lvcfs = check_if_vcf_are_compressed(lvcfs)
 
 	data = make_data_for_json(lvcfs,
 	                          ltoolnames,
@@ -746,7 +790,6 @@ def make_parser_args():
 
 	print(str(parser.prog) + "   " + str(parser.description))
 	return parser
-
 
 if __name__ == '__main__':
 	# capture time for calculating vcfMerger's runtime
