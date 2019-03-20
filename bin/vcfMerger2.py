@@ -84,7 +84,7 @@ def check_if_vcf_is_compressed(lvcfs):
 		if is_gzip(vcf):
 			uvcf = os.path.basename(os.path.splitext(vcf)[0])
 			log.info("vcf file after decompression: "+uvcf)
-			with gzip.open(vcf, 'rb') as f_in, open(uvcf, 'w') as f_out:
+			with gzip.open(vcf, 'r') as f_in, open(uvcf, 'wb') as f_out:
 				shutil.copyfileobj(f_in, f_out)
 			lvcfs[i] = uvcf
 	return lvcfs
