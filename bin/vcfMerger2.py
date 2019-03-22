@@ -661,7 +661,6 @@ def main(args, cmdline):
 	#inFileJson = make_json(data, json_filename)
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
-	sys.exit()
 	## filter the PASS records before preparing the vcf for vcfMerger step
 	if filter_by_pass:
 		log.info("Performing PASS only filtering for ALL the provided input vcfs ...")
