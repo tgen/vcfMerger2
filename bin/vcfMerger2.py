@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ### vcfMerger2
 ###
 ### MIT License
@@ -24,6 +26,7 @@
 ###
 ### Major Contributors: Christophe Legendre
 ### Minor Contributors:
+
 
 
 import argparse
@@ -200,7 +203,11 @@ def make_data_for_json(lvcfs,
 		# lossy do not need to be added to the json file because it applies to vcfMerger not prep
 		# we keep it here just in case we use the json file as a reminder of what was run
 		data[ltoolnames[tool_idx]]['lossy'] = lossy
-		data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift
+
+		if  len(re.findall("###",filter_string_for_snpsift)) == 0:  ## HARDCODED DELIMITER
+			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift
+		else:
+			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift.split("###")[tool_idx]  ; ## HARDCODED DELIMITER
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
 
@@ -652,7 +659,7 @@ def main(args, cmdline):
 	#inFileJson = make_json(data, json_filename)
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
-
+	sys.exit()
 	## filter the PASS records before preparing the vcf for vcfMerger step
 	if filter_by_pass:
 		log.info("Performing PASS only filtering for ALL the provided input vcfs ...")
