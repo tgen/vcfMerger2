@@ -39,6 +39,8 @@ import logging as log
 import time
 import gzip
 import shutil
+import re
+
 
 # CAPTURED VARIABLES AUTOMATICALLY
 ## capturing the current path of the current script
