@@ -821,7 +821,19 @@ def make_parser_args():
 	print(str(parser.prog) + "   " + str(parser.description))
 	return parser
 
+def check_if_executable_in_path(list_executables):
+
+	for executable in list_executables:
+		if shutil.which(executable) is None:
+			sys.exit(str(executable) + "  NOT IN PATH ; Aborting;")
+
 if __name__ == '__main__':
+
+	list_executables = ['bedtools', 'samtools', 'Rscript', 'python3', 'intervene']
+	check_if_executable_in_path(list_executables)
+
+	##TODO check if ALL intended python packages are present in python3
+
 	# capture time for calculating vcfMerger's runtime
 	start_time = time.time()
 	# capture commandline for adding it to vcf header
