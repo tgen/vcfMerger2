@@ -62,7 +62,6 @@ import time
 #######################################################################################################################
 '''
 
-
 class UniqueStore(argparse.Action):
 	"""
 	class grabbed from stackOverflow (2018-11-08)
@@ -75,7 +74,6 @@ class UniqueStore(argparse.Action):
 		if getattr(namespace, self.dest, self.default) is not None:
 			parser.error(option_string + " appears several times.")
 		setattr(namespace, self.dest, values)
-
 
 def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline):
 	"""
@@ -256,7 +254,6 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	else:
 		of.close()
 
-
 def main(args, cmdline):
 	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
 	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
@@ -391,7 +388,6 @@ def make_parser_args():
 	                      action='store_true')
 	print(str(parser.prog) + "   " + str(parser.description))
 	return parser
-
 
 if __name__ == '__main__':
 	# capture time for calculating vcfMerger's runtime

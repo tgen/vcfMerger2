@@ -176,8 +176,22 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
     
 - samtools 1.7 or up
 - bcftools 1.7 or up
+- bedtools 2.26.0 or up
 - vt v0.57721 or up (tests done with v0.57721)
 - snpSift 4.3 or up (snpSift.jar)
+
+
+## FILTERING VCF
+### PASS variant and FILTER column
+vcf files must contain the keyword "PASS" in the FILTER column if you want to filter (i.e., keep) the variants the tool considers as of "PASS" or 'OK' 
+
+### Filtering options [[ --filter_by_pass and --filter options ]]
+VCF Filtering is performed here using a third party tool called SnpSift from the snpEff tool. 
+The full path to "SnpSift.jar" file MUST be provided to vcfMerger2 if any of the two aforementioned option is given.
+`--path_jar_snpsift` is used to provide the full path to the jar file
+Two options are available to filter the variant before merging the vcf files. 
+`--filter-by-pass` and `--filter` 
+1. `filter-by-pass` filter the raw vcf outputted by the variant caller using the `FILTER` column and looking for the keyword `PASS` in that column; If a dot is present instead of `PASS` to signify a PASS variant, all the good variant will be skipped and no variant are going to be found in th vcf.  
 
 
 ## Running demo
@@ -206,11 +220,7 @@ Example_2:
 `prep_vcf.sh --toolname lancet --normal-sname NORMAL --tumor-sname TUMOR --vcf raw_tool_vcfs/lancet.raw.vcf -g ref_genome/grch37.22.fa -o lancet.prepped.vcf --contigs-file ./contigs/contigs/txt`
  
 
-_**HINT**_: if you already have the command line from `all-in-one` way style, you can just add the option `--skip-merge` to that command and only the `prep` step will be performed for all the given vcfs instead of running one by one the `prep_vcf.sh` script
-
-#### How to manually **_filtering_** vcfs
-A script is provided to manually filter the vcf before or after having prepared the vcfs for merging.
-You only have to provide 
+_**HINT**_: if you already have the command line from `all-in-one` way style, you just add the option `--skip-merge` to that command and only the `prep` step will be performed for all the given vcfs instead of running one by one the `prep_vcf.sh` script
 
 
 #### How to **_only_** merge vcfs? 

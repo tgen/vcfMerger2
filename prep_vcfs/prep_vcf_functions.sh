@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 function usage(){
 	echo -e "\nUSAGE:"
 	echo -e "`basename $0` \\
@@ -430,6 +429,20 @@ function run_tool(){
 			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_vardictjava_vcf ${VCF}
 			;;
+		haplotypecaller|hc)
+		    PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py"
+		    process_haplotypecaller_vcf ${VCF}
+		    ;;
+        freebayes|fby|fbs|fb)
+            PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/freebayes/freebayes.germline.1s.addFieldsForVcfMerger.py"
+            process_freebayes_vcf ${VCF}
+            ;;
+        samtools|mpileup|st|mpl|mpp|mpup)
+            PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/samtools/samtools.germline.1s.addFieldsForVcfMerger.py"
+            process_samtools_mpileup_vcf ${VCF}
+            ;;
+
+
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
 	esac
 	echo "${SCRIPT_FP}" ## we return the full path of the script
