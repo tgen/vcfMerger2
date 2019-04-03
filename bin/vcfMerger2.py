@@ -845,12 +845,12 @@ def make_parser_args():
 	                      help='expected name of germline sample(s) in vcf file if option --germline is in use')
 
 	optional.add_argument('--normal-sname',
-	                      required=isRequired,
+	                      required=False,
 	                      action=UniqueStore,
 	                      help='expected name of normal sample in vcf file')
 
 	optional.add_argument('--tumor-sname',
-	                      required=isRequired,
+	                      required=False,
 	                      action=UniqueStore,
 	                      help='expected name of tumor sample in vcf file')
 
