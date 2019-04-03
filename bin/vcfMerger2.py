@@ -594,6 +594,10 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			log.error(
 				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and normal-sname with expected sample names")
 			sys.exit(-1)
+	if germline_snames is not None and germline is False and ( tumor_sname is not None or normal_sname is not None):
+		log.error(
+			"ERROR: Ambiguous inputs and options; germline and soamtic analyses are EXCLUSIVE ; use --germline option to stipulate processing germlien calls and provide --germline-snames as well ; if only somatic, provide only tumor-sname and normal-sname")
+		sys.exit(-1)
 
 def main(args, cmdline):
 
@@ -830,10 +834,15 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='outfilename for the merge vcf (can be relative or full path)')
 
-	optional.add_argument('--germline-snames',
-	                      required=isRequired,
+	optional.add_argument('--germline',
+	                      required=False,
 	                      action=UniqueStore,
-	                      help='expected name of normal sample in vcf file')
+	                      help='option required if dealing with GERMLINE VCFs, otherwise data will be considered as Somatic calls')
+
+	optional.add_argument('--germline-snames',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help='expected name of germline sample(s) in vcf file')
 
 	optional.add_argument('--normal-sname',
 	                      required=isRequired,
