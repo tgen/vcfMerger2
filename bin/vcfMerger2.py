@@ -216,10 +216,14 @@ def make_data_for_json(lvcfs,
 		# we keep it here just in case we use the json file as a reminder of what was run
 		data[ltoolnames[tool_idx]]['lossy'] = lossy
 
-		if  len(re.findall("###",filter_string_for_snpsift)) == 0:  ## HARDCODED DELIMITER
-			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift
+		if filter_string_for_snpsift is not None:
+			if len(re.findall("###",filter_string_for_snpsift)) == 0:  ## HARDCODED DELIMITER
+				data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift
+			else:
+				data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift.split("###")[tool_idx]  ; ## HARDCODED DELIMITER
 		else:
-			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift.split("###")[tool_idx]  ; ## HARDCODED DELIMITER
+			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = ""
+
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
 
