@@ -750,6 +750,7 @@ def main(args, cmdline):
 	                          ltoolnames,
 	                          normal_sname,
 	                          tumor_sname,
+	                          germline_snames,
 	                          ref_genome_fasta,
 	                          lossy,
 	                          ltpo=list_tool_precedence_order,
@@ -760,7 +761,7 @@ def main(args, cmdline):
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn)
-	json_filename = "vcfMerger.json"
+	json_filename = "vcfMerger.json" if not germline else json_filename = "vcfMerger_germline.json"
 	make_json(data, json_filename)
 	#inFileJson = make_json(data, json_filename)
 	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
