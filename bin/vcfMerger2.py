@@ -836,13 +836,13 @@ def make_parser_args():
 
 	optional.add_argument('--germline',
 	                      required=False,
-	                      action=UniqueStore,
+	                      action='store_true',
 	                      help='option required if dealing with GERMLINE VCFs, otherwise data will be considered as Somatic calls')
 
 	optional.add_argument('--germline-snames',
 	                      required=False,
 	                      action=UniqueStore,
-	                      help='expected name of germline sample(s) in vcf file')
+	                      help='expected name of germline sample(s) in vcf file if option --germline is in use')
 
 	optional.add_argument('--normal-sname',
 	                      required=isRequired,
