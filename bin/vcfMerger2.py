@@ -46,8 +46,10 @@ import re
 ## capturing the current path of the current script
 scriptDirectory = os.path.dirname(os.path.realpath(__file__))
 ## as the project should be installed by the user and not modified by the user, we know where the prep_vcf.sh script is
-prep_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
+prep_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
 prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf_functions.sh")
+prep_germline_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline", "prep_vcf_germline.sh")
+prep_germline_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline", "prep_vcf_functions_germline.sh")
 vcfmerger_tool_path = os.path.join(os.path.dirname(scriptDirectory), "merge_vcfs", "vcfMerger.py")
 snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "utils", "filter_vcf.sh")
 
@@ -148,6 +150,7 @@ def make_data_for_json(lvcfs,
                        tumor_sname,
                        ref_genome_fasta,
                        lossy,
+                       germline_snames=None,
                        ltpo=None,
                        lacronyms=None,
                        lprepped_vcf_outfilenames=None,
@@ -167,6 +170,7 @@ def make_data_for_json(lvcfs,
 			data[ltoolnames[tool_idx]]['tool_acronym'] = ""
 		else:
 			data[ltoolnames[tool_idx]]['tool_acronym'] = lacronyms[tool_idx]
+		data[ltoolnames[tool_idx]]['tool_precedence_order'] = "" if ltpo is None else ltpo
 
 		data[ltoolnames[tool_idx]]['dir_work'] = "."
 
@@ -179,8 +183,14 @@ def make_data_for_json(lvcfs,
 		# 		sys.exit("ERROR: vcf path NOT FOUND from current directory '{}'\npath must be the basename, relative path or full path to the vcf file".format(lvcfs[tool_idx]))
 		# else:
 		# 	sys.exit("ERROR: vcf pathname is INVALID '{}'\npathname must be the basename, relative path or full path to the vcf file".format(lvcfs[tool_idx]))
+
+		if germline_snames is not None:
+			data[ltoolnames[tool_idx]]['germline_snames'] = germline_snames
+		else:
+			data[ltoolnames[tool_idx]]['germline_snames'] = ""
 		data[ltoolnames[tool_idx]]['normal'] = normal_sname
 		data[ltoolnames[tool_idx]]['tumor'] = tumor_sname
+
 		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[tool_idx] ; # manages wherever is the vcf (relative of full path to the current directory)
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
@@ -276,7 +286,83 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 
 	return data
 
-def parse_json_data_and_run_prep_vcf(data, dryrun):
+def parse_json_data_and_run_prep_vcf_germline(data, dryrun=False):
+	"""
+		1) parse the data from the json file
+		2) run prep_vcf program for each tool's vcf
+
+		:param data: dictionary of converted json data
+		:return: list of expected prep_vcfs from each tool unless error
+		"""
+
+	for tool in data.keys():
+
+		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
+		log.info("recap inputs captured from json file")
+		log.info("input: \ttool\t==\t{}".format(str(tool)))
+
+		for var, val in data[tool].items():
+			log.info("input:\t{} \t==\t{}".format(var, quote_str(val)))
+		print()
+
+		# check if outfilename for prep_vcf is Null or None
+		if data[tool]['prepped_vcf_outfilename'] is None or data[tool]['prepped_vcf_outfilename'] == "":
+			msg = "prepped_vcf_outfilename has not been defined injson file for tool {} ; Aborting.".format(tool)
+			sys.exit(str(msg))
+		# check if outfilename will be outputted in current working folder or not; important for vcfMerger2.0 to
+		# know where the prep vcfs are located (users can provide full path for prep vcf outfilename otherwise ; no relative path in json )
+		if os.path.curdir != data[tool]['dir_work']:
+			if not str(data[tool]['prepped_vcf_outfilename']).startswith("/"):
+				data[tool]['prepped_vcf_outfilename'] = os.path.join(os.path.abspath(os.path.curdir),
+				                                                     os.path.basename(
+					                                                     data[tool]['prepped_vcf_outfilename']))
+
+		# make string from all options for the future bash command line
+		cmdLine = ' '.join(
+			[
+				"-d", quote_str(data[tool]['dir_work']),
+				'--toolname', quote_str(tool),
+				'--germline-snames', quote_str(data[tool]['germline_snames']),
+				'--vcf', quote_str(data[tool]['vcf']),
+				'-g', quote_str(data[tool]['ref_genome_fasta']),
+				'-o', quote_str(data[tool]['prepped_vcf_outfilename']),
+				'--bam', quote_str(data[tool]['bam']),
+				'--contigs-file', quote_str(data[tool]['contigs_file']),
+
+			]
+		)
+
+		## capture if user wants to make the Venn/upset plots later on before merging vcfs
+		if data[tool]['do_venn']:
+			cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
+
+		# capture threshold AR found in json
+		TH_AR = data[tool]['threshold_AR']
+		if TH_AR is not None and TH_AR != "" and TH_AR != 0.9:
+			cmdLine = ' '.join([cmdLine, "--threshold-AR", TH_AR])
+
+		# display the command line for log purposes
+		log.info(prep_germline_vcf_script_path + " " + cmdLine)
+		my_command = ' '.join(["bash", prep_germline_vcf_script_path, cmdLine])
+		logFilename = "log_prep_vcf_{}.logs".format(tool)
+		subp_logfile = open(logFilename, "w")
+		if not dryrun:
+			log.info("")
+			log.info("%" * 10 + " prep {} vcf ".format(tool).upper() + "%" * 10)
+			log.info("logging prep steps to file: " + str(logFilename))
+			process = subprocess.Popen(my_command,
+			                           shell=True,
+			                           universal_newlines=True,
+			                           stdout=subp_logfile,
+			                           stderr=subp_logfile)
+			process.wait()
+			print(str(process.returncode))
+			subp_logfile.close()
+			if process.returncode is not 0:
+				sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
+
+
+def parse_json_data_and_run_prep_vcf(data, dryrun=False):
 	"""
 	1) parse the data from the json file
 	2) run prep_vcf program for each tool's vcf
@@ -335,8 +421,8 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			cmdLine = ' '.join([cmdLine, "--threshold-AR", TH_AR])
 
 		# display the command line for log purposes
-		log.info(prep_script_path + " " + cmdLine)
-		my_command = ' '.join(["bash", prep_script_path, cmdLine])
+		log.info(prep_vcf_script_path + " " + cmdLine)
+		my_command = ' '.join(["bash", prep_vcf_script_path, cmdLine])
 		logFilename = "log_prep_vcf_{}.logs".format(tool)
 		subp_logfile = open(logFilename, "w")
 		if not dryrun:
@@ -352,7 +438,7 @@ def parse_json_data_and_run_prep_vcf(data, dryrun):
 			print(str(process.returncode))
 			subp_logfile.close()
 			if process.returncode is not 0:
-				sys.exit("{} FAILED for tool {} ".format(prep_script_path, tool))
+				sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
 def subprocess_cmd(command):
 	os.system(command)
@@ -461,7 +547,8 @@ def check_path_to_vcfs(lvcfs):
 		else:
 			log.info("VCF found: "+str(vcf))
 
-def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None ):
+def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
+                 germline, tumor_sname, normal_sname, germline_snames):
 	"""
 
 	:param lvcfs:
@@ -499,6 +586,14 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;\ncheck if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	check_path_to_vcfs(lvcfs)
+	if germline and germline_snames == "":
+		log.error("ERROR: germline was enabled but no germline sample names given; please use option: --germline-snames and provide a DELIM-list of sample according to vcf content ")
+		sys.exit(-1)
+	if not germline:
+		if tumor_sname == "" or normal_sname == "" or (tumor_sname == "" and normal_sname == ""):
+			log.error(
+				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and normal-sname with expected sample names")
+			sys.exit(-1)
 
 def main(args, cmdline):
 
@@ -603,6 +698,10 @@ def main(args, cmdline):
 	else:
 		log.info("Well, you provided the path to snpSift for nothing as you have not set the filter option. :-) ")
 
+	germline = False
+	if args["germline"]:
+		germline = True
+		log.info("GERMLINE analysis enabled")
 
 	skip_merge = False
 	if args["skip_merge"]:
@@ -669,7 +768,7 @@ def main(args, cmdline):
 
 	if not skip_prep_vcfs:  ## PREP_VCF step Enabled
 		log.info("**** prep vcf steps section ***".upper())
-		parse_json_data_and_run_prep_vcf(data, dryrun)
+		parse_json_data_and_run_prep_vcf(data, dryrun) if not germline else parse_json_data_and_run_prep_vcf_germline(data, dryrun)
 		log.info("**** merge process section  ****".upper())
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
@@ -720,12 +819,22 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='reference genome used with bcftools norm ; must match reference used for alignment')
 
-	required.add_argument('--normal-sname',
+	required.add_argument('-o', '--merged-vcf-outfilename',
+	                      required=isRequired,
+	                      action=UniqueStore,
+	                      help='outfilename for the merge vcf (can be relative or full path)')
+
+	optional.add_argument('--germline-snames',
 	                      required=isRequired,
 	                      action=UniqueStore,
 	                      help='expected name of normal sample in vcf file')
 
-	required.add_argument('--tumor-sname',
+	optional.add_argument('--normal-sname',
+	                      required=isRequired,
+	                      action=UniqueStore,
+	                      help='expected name of normal sample in vcf file')
+
+	optional.add_argument('--tumor-sname',
 	                      required=isRequired,
 	                      action=UniqueStore,
 	                      help='expected name of tumor sample in vcf file')
@@ -756,10 +865,6 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
 
-	required.add_argument('-o', '--merged-vcf-outfilename',
-	                      required=isRequired,
-	                      action=UniqueStore,
-	                      help='outfilename for the merge vcf (can be relative or full path)')
 
 	optional.add_argument('--delim',
 	                      required=False,
