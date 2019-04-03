@@ -214,7 +214,7 @@ def make_data_for_json(lvcfs,
 
 		# lossy do not need to be added to the json file because it applies to vcfMerger not prep
 		# we keep it here just in case we use the json file as a reminder of what was run
-		data[ltoolnames[tool_idx]]['lossy'] = lossy
+		data[ltoolnames[tool_idx]]['lossy'] = lossy ;
 
 		if filter_string_for_snpsift is not None:
 			if len(re.findall("###",filter_string_for_snpsift)) == 0:  ## HARDCODED DELIMITER
@@ -222,7 +222,7 @@ def make_data_for_json(lvcfs,
 			else:
 				data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift.split("###")[tool_idx]  ; ## HARDCODED DELIMITER
 		else:
-			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = ""
+			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = None
 
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
@@ -714,6 +714,7 @@ def main(args, cmdline):
 	germline_snames = None
 	if args['germline_snames']:
 		germline_snames = args['germline_snames']
+		log.info("germline_snames == "+ str(germline_snames))
 
 	skip_merge = False
 	if args["skip_merge"]:
@@ -758,9 +759,9 @@ def main(args, cmdline):
 	                          ltoolnames,
 	                          normal_sname,
 	                          tumor_sname,
-	                          germline_snames,
 	                          ref_genome_fasta,
 	                          lossy,
+	                          germline_snames=germline_snames,
 	                          ltpo=list_tool_precedence_order,
 	                          lacronyms=lacronyms,
 	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
