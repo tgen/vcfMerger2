@@ -548,7 +548,7 @@ def check_path_to_vcfs(lvcfs):
 			log.info("VCF found: "+str(vcf))
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
-                 germline, tumor_sname, normal_sname, germline_snames):
+                 germline=False, tumor_sname=None, normal_sname=None, germline_snames=None):
 	"""
 
 	:param lvcfs:
@@ -586,11 +586,11 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;\ncheck if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	check_path_to_vcfs(lvcfs)
-	if germline and germline_snames == "":
+	if germline and germline_snames is None:
 		log.error("ERROR: germline was enabled but no germline sample names given; please use option: --germline-snames and provide a DELIM-list of sample according to vcf content ")
 		sys.exit(-1)
 	if not germline:
-		if tumor_sname == "" or normal_sname == "" or (tumor_sname == "" and normal_sname == ""):
+		if tumor_sname is None or normal_sname is None or (tumor_sname is None and normal_sname is None):
 			log.error(
 				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and normal-sname with expected sample names")
 			sys.exit(-1)
@@ -703,6 +703,10 @@ def main(args, cmdline):
 		germline = True
 		log.info("GERMLINE analysis enabled")
 
+	germline_snames = None
+	if args['germline_snames']:
+		germline_snames = args['germline_snames']
+
 	skip_merge = False
 	if args["skip_merge"]:
 		skip_merge = args["skip_merge"]
@@ -735,7 +739,8 @@ def main(args, cmdline):
 	## MAIN  ##
 	##@@@@@@@@@
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
-	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds)
+	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds,
+	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname, germline_snames=germline_snames)
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
