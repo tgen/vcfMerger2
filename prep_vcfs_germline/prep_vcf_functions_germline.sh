@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+## CONSTANT VARIABLE (modified accordingly)
+DIR_PATH_TO_SCRIPTS="$( dirname $( dirname $0 ) ) "
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh
+
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
@@ -7,6 +11,7 @@ function init_some_vars(){
 	VCF_ALL_CALLS=""
 	NORMAL_SNAME=""
 	TUMOR_SNAME=""
+	GERMLINE_SNAMES=""
 	VCF_INDELS_FILE=""
 	VCF_SNVS_FILE=""
 	BAM_FILE=""
@@ -176,6 +181,12 @@ function process_octopus_vcf(){
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
+function process_strelka2_vcf(){
+    local VCF=${1}
+    VCF=$( check_and_update_sample_names ${VCF} )
+    VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
+}
+
 
 function run_tool(){
     local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]' | tr ' ' '_' )
@@ -198,6 +209,14 @@ function run_tool(){
         deepvariant|dv|dvt)
             PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/deepvariant/deepvariant.germline.1s.addFieldsForVcfMerger.py"
             process_deepvariant_vcf ${VCF}
+        ;;
+        octopus|oct)
+            PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.germline.1s.addFieldsForVcfMerger.py"
+            process_octopus_vcf ${VCF}
+        ;;
+        strelka2|slk)
+            PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/strelka2.germline.1s.addFieldsForVcfMerger.py"
+            process_strelka2_vcf ${VCF}
         ;;
 
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
