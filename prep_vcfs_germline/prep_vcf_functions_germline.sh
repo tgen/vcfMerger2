@@ -86,7 +86,7 @@ function check_and_update_sample_names(){
     fi
     if [[ ${#SNAMES_IN_VCF[@]} -eq 1  ]] ;
     then
-        echo -e "Found only 1 Sample in List, therefore checking if name matches user-given name ; if not we update name" ; 1>&2
+        echo -e "Found only 1 Sample in List, therefore checking if name matches user-given name ; if not we update name" 1>&2
         for I in `seq 0 $((${#SNAMES_IN_VCF[@]}-1))`
         do
             if [[ ${SNAMES_IN_VCF[I]} -ne ${LSNAMES[I]} ]] ;
@@ -258,7 +258,7 @@ function main(){
 		checkFile ${VCF_ALL_CALLS}
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
-		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
+		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}" 1>&2
 		    ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
 		fi
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
