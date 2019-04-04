@@ -2,9 +2,9 @@
 
 ## CONSTANT VARIABLE (modified accordingly)
 DIR_PATH_TO_SCRIPTS="$( dirname $( dirname $0 ) )"
-echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh"
+echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh" 1>&2
 source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh
-
+DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
