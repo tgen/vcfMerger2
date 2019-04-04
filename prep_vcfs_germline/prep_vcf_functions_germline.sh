@@ -57,6 +57,10 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 		esac
 		shift
 	done
+
+	recap_input
+	echo -e "VCF == ${VCF_ALL_CALLS}" 1>&2
+	echo -e "GERMLINE_SNAMES  == ${GERMLINE_SNAMES}" 1>&2
 }
 
 
@@ -74,15 +78,16 @@ function check_and_update_sample_names(){
 	SNAMES_IN_VCF=( $( zcat -f ${VCF} | grep -m 1 "#CHROM"  | cut -f10- | sed 's/\t/ /' )  )
 	HEADERLINE_VCF="$( zcat -f ${VCF} | grep -m 1 "#CHROM"  | cut -f1-9 | sed 's/\t/ /'  )"
 
-    echo " in ${funcname} :  ${VCF} ${TOOLNAME} ${SNAMES_IN_VCF[@]} " 1>&2
+    echo " in ${FUNCNAME} :  ${VCF} ${TOOLNAME} ${SNAMES_IN_VCF[@]} " 1>&2
+    echo " ??  ${#SNAMES_IN_VCF[@]} -ne ${#LSNAMES[@]}  ?? " 1>&2
     if [[ ${#SNAMES_IN_VCF[@]} -ne ${#LSNAMES[@]} ]] ;
     then
-        echo -e "ERROR: number of sample name(s) given by user and number of sample(s) found in VCF are DIFFERENT ; Aborting ;"
-        exit -1
+        echo -e "ERROR: number of sample name(s) given by user and number of sample(s) found in VCF are DIFFERENT ; Aborting ;" 1>&2
+        fexit 1
     fi
     if [[ ${#SNAMES_IN_VCF[@]} -eq 1  ]] ;
     then
-        echo -e "Found only 1 Sample in List, therefore checking if name matches user-given name ; if not we update name" ;
+        echo -e "Found only 1 Sample in List, therefore checking if name matches user-given name ; if not we update name" ; 1>&2
         for I in `seq 0 $((${#SNAMES_IN_VCF[@]}-1))`
         do
             if [[ ${SNAMES_IN_VCF[I]} -ne ${LSNAMES[I]} ]] ;
@@ -95,10 +100,10 @@ function check_and_update_sample_names(){
     elif [[ ${#SNAMES_IN_VCF[@]} -gt 1  ]] ;
     then
         ##TODO: check and manage more than one sample in Germline VCF; Swapping column around might be necessary if sample do not output the sample in the same order (mostly becaue they do not use the same name either)
-        echo -e "Found more than 1 Sample in List, therefore checking if name matches user-given name ;"
-        echo -e "if name is not present in vcf, we raise an exception or we assume the user-given list is for renaming the sample names in vcf and that list is in correct order; Let's keep that in min for a future #TODO" ;
-        echo -e "Normally the calls should have been done on the same BAM file, so if variant caller follow specs, the same name should have been used for the Sample Names."
-        echo -e "but as usual, there is probably no harmony ..."
+        echo -e "Found more than 1 Sample in List, therefore checking if name matches user-given name ;"  1>&2
+        echo -e "if name is not present in vcf, we raise an exception or we assume the user-given list is for renaming the sample names in vcf and that list is in correct order; Let's keep that in min for a future #TODO" 1>&2 ;
+        echo -e "Normally the calls should have been done on the same BAM file, so if variant caller follow specs, the same name should have been used for the Sample Names." 1>&2
+        echo -e "but as usual, there is probably no harmony ..." 1>&2
 
         ## HERE we ASSUME that the user-given list of germline sample names is for renaming only and the order of the sample is ALREADY the same for ALL vcf
 #        for I in `seq 0 $((${#SNAMES_IN_VCF[@]}-1))`
@@ -237,9 +242,9 @@ function main(){
 #	echo -e "## Checking inputs ..."  1>&2
 #	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." 1>&2 ; fexit ; fi
 #	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." 1>&2 ; fexit ; fi
-#	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE SAMPLE NAMES MUST be provided in the same order as present in all VCF files; REQUIREMENT: \
-#	if germline VCFs have more than sample after column 9 in vcf, the order of these sample (aka column order) MUST be IDENTICAL even though their name might not be \
-#	 ; Missing Values Found ; Check your inputs;  Aborting."  1>&2 ; fexit ; fi
+	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE SAMPLE NAMES MUST be provided in the same order as present in all VCF files; REQUIREMENT: \
+	if germline VCFs have more than sample after column 9 in vcf, the order of these sample (aka column order) MUST be IDENTICAL even though their name might not be \
+	 ; Missing Values Found ; Check your inputs;  Aborting."  1>&2 ; fexit ; fi
 
 
 	## check files and folders if exist
