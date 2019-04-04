@@ -273,7 +273,7 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='Input VCF to be updated to specs for vcfMerger2')
 
-	optional.add_argument('-o','--prep-outfilename',
+	optional.add_argument('-o','--prep-outfilename','--outfilename',
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='outfilename for the prepped vcf')
