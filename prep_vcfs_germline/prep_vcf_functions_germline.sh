@@ -58,7 +58,6 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 		shift
 	done
 
-	recap_input
 	echo -e "VCF == ${VCF_ALL_CALLS}" 1>&2
 	echo -e "GERMLINE_SNAMES  == ${GERMLINE_SNAMES}" 1>&2
 }
@@ -249,7 +248,6 @@ function main(){
 
 	## check files and folders if exist
 	checkDir ${DIR_WORK}
-	checkFile ${VCF}
 #	checkFile ${REF_GENOME_FASTA}
 
 	cd ${DIR_WORK}
