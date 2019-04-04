@@ -193,6 +193,8 @@ def process_indels_records(tot_number_samples, v):
 		ADs.append(AD)
 		GTs.append(get_GT_value_from_AR(AR))
 		log.error("GT={} ".format(get_GT_value_from_AR(AR)))
+
+	v.INFO["OMGT"] = ','.join([str(Genotype(li)) for li in v.genotypes])
 	v.set_format('GT', np.array(GTs))
 	v.set_format('AR', np.array(ARs))
 	v.set_format('AD', np.array(ADs))
