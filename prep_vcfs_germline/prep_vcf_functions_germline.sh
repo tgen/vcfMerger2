@@ -72,7 +72,7 @@ function check_and_update_sample_names(){
 	## will need discussion to do so, and will need to capture all the use cases possible ;
 
 	local VCF=$1
-	local LSNAMES=( $( echo -e "$2" | sed 's/\|/ /g')  ) ### list of samples in order the user want them to be
+	local LSNAMES=( $( echo -e "$2" | sed 's/|/ /g')  ) ### list of samples in order the user want them to be
 	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
 	SNAMES_IN_VCF=( $( zcat -f ${VCF} | grep -m 1 "#CHROM"  | cut -f10- | sed 's/\t/ /' )  )
 	HEADERLINE_VCF="$( zcat -f ${VCF} | grep -m 1 "#CHROM"  | cut -f1-9 | sed 's/\t/ /'  )"
