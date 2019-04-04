@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 ## CONSTANT VARIABLE (modified accordingly)
-DIR_PATH_TO_SCRIPTS="$( dirname $( dirname $0 ) )"
+DIR_PATH_TO_SCRIPTS=$(dirname $( dirname $(readlink -f ${BASH_SOURCE[0]}) )  )
 echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh" 1>&2
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh
-DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
+DIR_PATH_TO_SCRIPTS="$( dirname $(readlink -f ${BASH_SOURCE[0]}) )"
+
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
@@ -233,17 +234,18 @@ function main(){
 	##@@@@@@@@@@@@@@@@@##
 	##  check inputs   ##
 	##@@@@@@@@@@@@@@@@@##
-	echo -e "## Checking inputs ..."
-	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
-	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
-	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE SAMPLE NAMES MUST be provided in the same order as present in all VCF files; REQUIREMENT: \
-	if germline VCFs have more than sample after column 9 in vcf, the order of these sample (aka column order) MUST be IDENTICAL even though their name might not be \
-	 ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
+#	echo -e "## Checking inputs ..."  1>&2
+#	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." 1>&2 ; fexit ; fi
+#	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." 1>&2 ; fexit ; fi
+#	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE SAMPLE NAMES MUST be provided in the same order as present in all VCF files; REQUIREMENT: \
+#	if germline VCFs have more than sample after column 9 in vcf, the order of these sample (aka column order) MUST be IDENTICAL even though their name might not be \
+#	 ; Missing Values Found ; Check your inputs;  Aborting."  1>&2 ; fexit ; fi
 
 
 	## check files and folders if exist
 	checkDir ${DIR_WORK}
-	checkFile ${REF_GENOME_FASTA}
+	checkFile ${VCF}
+#	checkFile ${REF_GENOME_FASTA}
 
 	cd ${DIR_WORK}
 
@@ -270,3 +272,5 @@ function main(){
 	fi
 
 }
+
+
