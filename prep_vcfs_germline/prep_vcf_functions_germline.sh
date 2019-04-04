@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ## CONSTANT VARIABLE (modified accordingly)
-DIR_PATH_TO_SCRIPTS="$( dirname $( dirname $0 ) ) "
+DIR_PATH_TO_SCRIPTS="$( dirname $( dirname $0 ) )"
 echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh"
 source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh
 
