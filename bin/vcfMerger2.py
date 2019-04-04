@@ -144,21 +144,11 @@ def read_json(f):
 	log.debug(str(data) + '\n')
 	return data
 
-def make_data_for_json(lvcfs,
-                       ltoolnames,
-                       normal_sname,
-                       tumor_sname,
-                       ref_genome_fasta,
-                       lossy,
-                       germline_snames=None,
-                       ltpo=None,
-                       lacronyms=None,
-                       lprepped_vcf_outfilenames=None,
-                       lbams=None,
-                       lcontigs=None,
-                       filter_string_for_snpsift=None,
-                       TH_AR=0.9,
-                       do_venn=False):
+def make_data_for_json(lvcfs, ltoolnames, normal_sname,tumor_sname,
+                       ref_genome_fasta, lossy, germline_snames=None,
+                       ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
+                       lbams=None, lcontigs=None, filter_string_for_snpsift=None,
+                       TH_AR=0.9, do_venn=False):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
