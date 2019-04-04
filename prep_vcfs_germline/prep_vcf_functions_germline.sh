@@ -134,11 +134,14 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	## updating ${TOOLNAME} VCF to specs for vcfMerger2_Germline
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	local VCF=$1
-	local LSNAMES="${2}"  ## must be in final wanted order
-	echo -e "## prep vcf for vcfMerger2 Germline ..." 1>&2
+	local VCF="$1"
+	#local LSNAMES="${2}"  ## must be in final wanted order
 	fout_name=${VCF%.*}.prep.vcf
-	mycmd="python ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --expected-snames "${LSNAMES[@]}" --outfilename ${fout_name}"
+	echo -e "## prep vcf for vcfMerger2 Germline ..." 1>&2
+	echo -e "## VCF == ${VCF}" 1>&2
+	echo -e "## outVCF == ${fout_name}" 1>&2
+
+	mycmd="python ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --outfilename ${fout_name}"
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
