@@ -362,7 +362,7 @@ def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False)
 		                           stderr=subp_logfile)
 		process.wait()
 		print(str(process.returncode))
-		log.info("return code value for tool {} is {}".format(tool, str(process.returncode)))
+		log.info("return code value prep step for tool {} is: {}".format(tool, str(process.returncode)))
 		log.info("prep step for tool {}: {} seconds".format(tool, str(int(round((time.time() - start_time))))))
 		subp_logfile.close()
 		if process.returncode is not 0:
@@ -438,7 +438,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 		                           stdout=subp_logfile,
 		                           stderr=subp_logfile)
 		process.wait()
-		log.info("return code value for tool {} is {}".format(tool, str(process.returncode)))
+		log.info("return code value prep step for tool {} is {}".format(tool, str(process.returncode)))
 		log.info("prep step for tool {}: {} seconds".format(tool, str(int(round((time.time() - start_time))))))
 		subp_logfile.close()
 		if process.returncode is not 0:
@@ -953,7 +953,7 @@ def main(args, cmdline):
 		log.info("**** prep vcf steps section ***".upper())
 		# parse_json_data_and_run_prep_vcf(data, dryrun) if not germline else parse_json_data_and_run_prep_vcf_germline(
 		# 	data, dryrun)
-
+		time.sleep(1)
 		## TRY PARALLELIZE THIS SECTION OF MAKING PREP FILES
 		import multiprocessing
 		funcToUse = parse_json_data_and_run_prep_vcf_parallel if not germline else parse_json_data_and_run_prep_vcf_germline_parallel
@@ -964,7 +964,7 @@ def main(args, cmdline):
 
 		for p in procs:
 			p.start()
-			time.sleep(0.5)
+			time.sleep(1)
 
 
 		for p in procs:
