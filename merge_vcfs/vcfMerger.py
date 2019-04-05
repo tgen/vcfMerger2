@@ -175,7 +175,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	check_fields_definitions_in_header = True
 	if check_fields_definitions_in_header:
 		for flagid in ListFieldsToProcessForOurFORMATColumn:
-			log.info(flagid)
+			log.info("common flag to be processed in FORMAT: ".format(flagid))
 			for tpo in tuple_objs:
 				'''Check if flag we want to put in the format field have been defined in the VCF header'''
 				res_search = search("".join(["ID=", flagid]), tpo.headers)
@@ -350,7 +350,7 @@ def main(args, cmdline):
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline)
 
 def make_parser_args():
-	parser = argparse.ArgumentParser(description='Processing options ...')
+	parser = argparse.ArgumentParser(description='Processing options in vcfMerger.py ...')
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
