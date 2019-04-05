@@ -355,6 +355,8 @@ def parse_json_data_and_run_prep_vcf_germline(data, dryrun=False):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
 
+def parallel_subprocess():
+	pass
 
 def parse_json_data_and_run_prep_vcf(data, dryrun=False):
 	"""

@@ -190,6 +190,7 @@ function process_octopus_vcf(){
 function process_samtools_mpileup_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
+    VCF=$( decompose ${VCF} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
@@ -199,7 +200,6 @@ function process_strelka2_vcf(){
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
-
 function run_tool(){
     local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]' | tr ' ' '_' )
     local VCF="$2"
@@ -208,11 +208,11 @@ function run_tool(){
     case $TOOLNAME in
         haplotypecaller|hc)
             PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py"
-		    process_haplotypecaller_vcf ${VCF} &
+		    process_haplotypecaller_vcf ${VCF}
 		    ;;
         freebayes|fby|fbs|fb)
             PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/freebayes/freebayes.germline.1s.addFieldsForVcfMerger.py"
-            process_freebayes_vcf ${VCF} &
+            process_freebayes_vcf ${VCF}
             ;;
         samtools|mpileup|st|mpl|mpp|mpup)
             PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/samtools/samtools.germline.1s.addFieldsForVcfMerger.py"
@@ -277,6 +277,7 @@ function main(){
 		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
 		fexit
 	fi
+
 
 }
 
