@@ -297,7 +297,7 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	local VCF=$1
 	echo -e "## prep vcf for vcfMerger2 ..." 1>&2
 	fout_name=${VCF%.*}.prep.vcf
-	mycmd="python ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
+	mycmd="python -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
@@ -397,7 +397,6 @@ function process_vardictjava_vcf(){
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
 }
-
 
 function run_tool(){
 	local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]')
