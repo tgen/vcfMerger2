@@ -369,6 +369,7 @@ def main(args):
 				w.write_record(v)
 	except Exception as e:
 		log.error(' '.join(["ERROR: variant number ", str(c), "  --> raises the exception: ", str(e) ]) )
+		log.error(str(v))
 		sys.exit(-1)
 	finally:
 		w.close()
