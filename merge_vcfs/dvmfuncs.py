@@ -80,7 +80,7 @@ def prefix_headers_other_information_line_with_toolname(myHeaderString, toolname
 	"""
 	return re.sub(r"^##", ''.join(["##", toolname.upper(), "_"]), str(myHeaderString))
 
-def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific ):
+def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific, dico_map_tool_acronym):
 	'''
 	Manage the Headers from all the input VCFs and recreate a brand new updated Header
 	:param: tuple of vcf2dict objects which containg ALL the information about each input vcfs
@@ -123,21 +123,23 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		if reference == "":
 			indices = [i for i, s in enumerate(vtdo.header_other_info) if '##reference=' in s]
 			reference = vtdo.header_other_info[indices[0]]
+
+		toolname_or_acronym = get_acronym_for_current_tool(vtdo.toolname, dico_map_tool_acronym)
 		for s in vtdo.header_filters:
-			lh.append(prefix_headers_information_line_with_toolname(s, vtdo.toolname))
+			lh.append(prefix_headers_information_line_with_toolname(s, toolname_or_acronym))
 		for s in vtdo.header_info:
-			lh.append(prefix_headers_information_line_with_toolname(s, vtdo.toolname))
+			lh.append(prefix_headers_information_line_with_toolname(s, toolname_or_acronym))
 		for s in vtdo.header_format:
-			lh.append(prefix_headers_information_line_with_toolname(s, vtdo.toolname))
+			lh.append(prefix_headers_information_line_with_toolname(s, toolname_or_acronym))
 		for s in vtdo.header_other_info:
-			lh.append(prefix_headers_other_information_line_with_toolname(s, vtdo.toolname))
+			lh.append(prefix_headers_other_information_line_with_toolname(s, toolname_or_acronym))
 		## if LOSSLESS, the column QUAL, FILTER, ID, and some others are ADDED to the variant record
 		## this creates NEW fields prefixed with the toolname
 		for COLUMN in ["FILTER", "QUAL", "ID"]:
 			## ##INFO=<ID=SEURAT_AR1,Number=1,Type=Float,Description="Allele frequency of ALT allele in normal">
-			stringline = ''.join(["##INFO=<ID=", vtdo.toolname, "_", COLUMN,
+			stringline = ''.join(["##INFO=<ID=", toolname_or_acronym, "_", COLUMN,
 			                      ',Number=.,Type=String,Description=',
-			                      '"Represents lossless data from tool ',vtdo.toolname,
+			                      '"Represents lossless data from tool ',vtdo.toolname,' or (if given acronym: aka ', toolname_or_acronym,
 			                      'for column ', COLUMN,'">'] )
 			lh.append(stringline)
 		## Here when LOSSLESS is enabled, fields that were in format of the secondary tools, are added to
@@ -147,7 +149,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		## Now we need to implement this here TODO: add the test if lossless enabled;
 		##1) we capture the Format column, aka column number 9 for the current tool and prefixed it with tool names
 		## and Sample number
-		toolname = vtdo.toolname
+
 		numberOfSamples = len(vtdo.samplenames)
 		for S in vtdo.header_format:
 			## return the first indice where the pattern is in the string
@@ -155,7 +157,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			idx2 = S[:idx1].rfind("=")
 			FIELD = (S[idx2+1:idx1])
 			for i in range(1,numberOfSamples+1):
-				newField = '_'.join([ toolname, "S"+str(i), FIELD ])
+				newField = '_'.join([ toolname_or_acronym, "S"+str(i), FIELD ])
 				# print(newField)
 				stringline = ''.join(["##INFO=<ID=", newField,
 			                      ',Number=.,Type=String,Description=',
@@ -172,7 +174,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	lh.append(command_line)
 	return lh  ## returns a list
 
-def add_new_header_to_merged_file(f, list_lines_header,header_chrom_line):
+def add_new_header_to_merged_file(f, list_lines_header, header_chrom_line):
 	"""
 	:param list_lines_header:  list of string objects ; each string is a line that has to be added to the merged vcf file ;
 	 but the CHROM line should not be in it.
@@ -432,10 +434,10 @@ def get_acronym_for_current_tool(tool, dico_map_tool_acronym):
 	"""
 	d = dico_map_tool_acronym
 	if tool in d.keys() and ( d[tool] is not None or d[tool] is not ""):
-		log.info("RETURN ACRONYM: " + d[tool])
+		log.debug("RETURN ACRONYM: " + d[tool])
 		return d[tool]
 	else:
-		log.info("RETURN TN: " + tool )
+		log.debug("RETURN TN: " + tool )
 		return tool
 
 def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, totnum_samples = 1):
