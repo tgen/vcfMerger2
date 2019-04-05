@@ -28,7 +28,6 @@
 ### Minor Contributors:
 
 
-
 import argparse
 import json
 import subprocess
@@ -41,15 +40,16 @@ import gzip
 import shutil
 import re
 
-
 # CAPTURED VARIABLES AUTOMATICALLY
 ## capturing the current path of the current script
 scriptDirectory = os.path.dirname(os.path.realpath(__file__))
 ## as the project should be installed by the user and not modified by the user, we know where the prep_vcf.sh script is
 prep_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
 prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf_functions.sh")
-prep_germline_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline", "prep_vcf_germline.sh")
-prep_germline_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline", "prep_vcf_functions_germline.sh")
+prep_germline_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline",
+                                             "prep_vcf_germline.sh")
+prep_germline_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline",
+                                                       "prep_vcf_functions_germline.sh")
 vcfmerger_tool_path = os.path.join(os.path.dirname(scriptDirectory), "merge_vcfs", "vcfMerger.py")
 snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "utils", "filter_vcf.sh")
 
@@ -67,18 +67,20 @@ class UniqueStore(argparse.Action):
 			parser.error(option_string + " appears several times.  Please modify your options.")
 		setattr(namespace, self.dest, values)
 
-def is_gzip(path, magic_number=b'\x1f\x8b'):
-    """Returns True if the path is gzipped. Fucntion taken from JetStream and created by Ryan Richolt"""
-    if os.path.exists(path) and not os.path.isfile(path):
-        err = 'This should only be used with regular files because otherwise ' \
-              'it will lose some data.'
-        raise ValueError(err)
 
-    with open(path, 'rb') as fp:
-        if fp.read(2) == magic_number:
-            return True
-        else:
-            return False
+def is_gzip(path, magic_number=b'\x1f\x8b'):
+	"""Returns True if the path is gzipped. Fucntion taken from JetStream and created by Ryan Richolt"""
+	if os.path.exists(path) and not os.path.isfile(path):
+		err = 'This should only be used with regular files because otherwise ' \
+		      'it will lose some data.'
+		raise ValueError(err)
+
+	with open(path, 'rb') as fp:
+		if fp.read(2) == magic_number:
+			return True
+		else:
+			return False
+
 
 def check_if_vcf_is_compressed(lvcfs):
 	'''check if vcfs are comporessed and if so, uncompress the vcf in current working directory
@@ -90,11 +92,12 @@ def check_if_vcf_is_compressed(lvcfs):
 		vcf = lvcfs[i]
 		if is_gzip(vcf):
 			uvcf = os.path.basename(os.path.splitext(vcf)[0])
-			log.info("vcf file after decompression: "+uvcf)
+			log.info("vcf file after decompression: " + uvcf)
 			with gzip.open(vcf, 'r') as f_in, open(uvcf, 'wb') as f_out:
 				shutil.copyfileobj(f_in, f_out)
 			lvcfs[i] = uvcf
 	return lvcfs
+
 
 def quote_str(s):
 	'''
@@ -108,6 +111,7 @@ def quote_str(s):
 		return ''.join(["\"\'", s, "\'\""])
 	return s
 
+
 def double_quote_str(s):
 	'''
 	This is an important function to get the empty string with appropriate quotes in order to avoid
@@ -117,6 +121,7 @@ def double_quote_str(s):
 	:return: a double-quoted string
 	'''
 	return ''.join(["\"", s, "\""])
+
 
 def make_json(data, f):
 	"""
@@ -131,6 +136,7 @@ def make_json(data, f):
 		json.dump(data, write_file, indent=4)
 	return f
 
+
 def read_json(f):
 	"""
 	read the json file with specific format for the vcfMerger
@@ -144,7 +150,8 @@ def read_json(f):
 	log.debug(str(data) + '\n')
 	return data
 
-def make_data_for_json(lvcfs, ltoolnames, normal_sname,tumor_sname,
+
+def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
@@ -181,7 +188,8 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname,tumor_sname,
 		data[ltoolnames[tool_idx]]['normal'] = normal_sname
 		data[ltoolnames[tool_idx]]['tumor'] = tumor_sname
 
-		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[tool_idx] ; # manages wherever is the vcf (relative of full path to the current directory)
+		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[
+			tool_idx];  # manages wherever is the vcf (relative of full path to the current directory)
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
 		if lprepped_vcf_outfilenames is not None:
@@ -204,13 +212,14 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname,tumor_sname,
 
 		# lossy do not need to be added to the json file because it applies to vcfMerger not prep
 		# we keep it here just in case we use the json file as a reminder of what was run
-		data[ltoolnames[tool_idx]]['lossy'] = lossy ;
+		data[ltoolnames[tool_idx]]['lossy'] = lossy;
 
 		if filter_string_for_snpsift is not None:
-			if len(re.findall("###",filter_string_for_snpsift)) == 0:  ## HARDCODED DELIMITER
+			if len(re.findall("###", filter_string_for_snpsift)) == 0:  ## HARDCODED DELIMITER
 				data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift
 			else:
-				data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift.split("###")[tool_idx]  ; ## HARDCODED DELIMITER
+				data[ltoolnames[tool_idx]]['filter_string_snpsift'] = filter_string_for_snpsift.split("###")[
+					tool_idx];  ## HARDCODED DELIMITER
 		else:
 			data[ltoolnames[tool_idx]]['filter_string_snpsift'] = None
 
@@ -218,6 +227,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname,tumor_sname,
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
 
 	return data
+
 
 def filter_unprepped_vcf(data, path_jar_snpsift):
 	"""
@@ -229,26 +239,27 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 	:param data: dictionary of converted json data
 	:return: updated data object
 	"""
-	CONSTANT_STRING_FOR_PASS_RECORDS="( FILTER == 'PASS' )" ## HARDCODED
-	log.info("Filtering vcf ... "+CONSTANT_STRING_FOR_PASS_RECORDS)
+	CONSTANT_STRING_FOR_PASS_RECORDS = "( FILTER == 'PASS' )"  ## HARDCODED
+	log.info("Filtering vcf ... " + CONSTANT_STRING_FOR_PASS_RECORDS)
 
 	for tool in data.keys():
-
 		vcf = data[tool]['vcf']
 		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
 
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "pass", str("\""+CONSTANT_STRING_FOR_PASS_RECORDS+"\""), vcf]
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "pass",
+		         str("\"" + CONSTANT_STRING_FOR_PASS_RECORDS + "\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".pass.vcf")
+		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0] + ".pass.vcf")
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['vcf'] = os.path.abspath(new_vcf_name)
 
 	return data
+
 
 def filter_prepped_vcf(data, path_jar_snpsift):
 	"""
@@ -267,18 +278,112 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("Filtering vcf ...")
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
-		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "filt", str("\""+data[tool]['filter_string_snpsift']+"\""), vcf]
+		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "filt",
+		         str("\"" + data[tool]['filter_string_snpsift'] + "\""), vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0]+".filt.vcf")
+		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0] + ".filt.vcf")
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = os.path.abspath(new_vcf_name)
 		if data[tool]['do_venn']:
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
 
 	return data
+
+
+from multiprocessing.dummy import Pool  # use threads
+from subprocess import Popen
+
+
+def parallel_subprocess():
+	pass
+
+
+def run_until_done(args):
+	cmd, log_filename = args
+	try:
+		with open(log_filename, 'wb', 0) as logfile:
+			p = Popen(cmd, stdout=logfile)
+		return cmd, p.wait(), None
+	except Exception as e:
+		return cmd, None, str(e)
+
+
+def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False):
+	"""
+	1) parse the data from the json file
+	2) run prep_vcf program for each tool's vcf
+
+	:param tool: tool name for current data processing
+	:param data: dictionary of converted json data
+	:return: list of expected prep_vcfs from each tool unless error
+	"""
+	log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
+	log.info("recap inputs captured from json file")
+	log.info("input: \ttool\t==\t{}".format(str(tool)))
+
+	for var, val in data[tool].items():
+		log.info("input:\t{} \t==\t{}".format(var, quote_str(val)))
+	print()
+
+	# check if outfilename for prep_vcf is Null or None
+	if data[tool]['prepped_vcf_outfilename'] is None or data[tool]['prepped_vcf_outfilename'] == "":
+		msg = "prepped_vcf_outfilename has not been defined injson file for tool {} ; Aborting.".format(tool)
+		sys.exit(str(msg))
+	# check if outfilename will be outputted in current working folder or not; important for vcfMerger2.0 to
+	# know where the prep vcfs are located (users can provide full path for prep vcf outfilename otherwise ; no relative path in json )
+	if os.path.curdir != data[tool]['dir_work']:
+		if not str(data[tool]['prepped_vcf_outfilename']).startswith("/"):
+			data[tool]['prepped_vcf_outfilename'] = os.path.join(os.path.abspath(os.path.curdir),
+			                                                     os.path.basename(
+				                                                     data[tool]['prepped_vcf_outfilename']))
+
+	# make string from all options for the future bash command line
+	cmdLine = ' '.join(
+		[
+			"-d", quote_str(data[tool]['dir_work']),
+			'--toolname', quote_str(tool),
+			'--germline-snames', quote_str(data[tool]['germline_snames']),
+			'--vcf', quote_str(data[tool]['vcf']),
+			'-g', quote_str(data[tool]['ref_genome_fasta']),
+			'-o', quote_str(data[tool]['prepped_vcf_outfilename']),
+			'--bam', quote_str(data[tool]['bam']),
+			'--contigs-file', quote_str(data[tool]['contigs_file']),
+
+		]
+	)
+
+	## capture if user wants to make the Venn/upset plots later on before merging vcfs
+	if data[tool]['do_venn']:
+		cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
+
+	# capture threshold AR found in json
+	TH_AR = data[tool]['threshold_AR']
+	if TH_AR is not None and TH_AR != "" and TH_AR != 0.9:
+		cmdLine = ' '.join([cmdLine, "--threshold-AR", TH_AR])
+
+	# display the command line for log purposes
+	log.info(prep_germline_vcf_script_path + " " + cmdLine)
+	my_command = ' '.join(["bash", prep_germline_vcf_script_path, cmdLine])
+	logFilename = "log_prep_vcf_{}.logs".format(tool)
+	subp_logfile = open(logFilename, "w")
+	if not dryrun:
+		log.info("")
+		log.info("%" * 10 + " prep {} vcf ".format(tool).upper() + "%" * 10)
+		log.info("logging prep steps to file: " + str(logFilename))
+		process = subprocess.Popen(my_command,
+		                           shell=True,
+		                           universal_newlines=True,
+		                           stdout=subp_logfile,
+		                           stderr=subp_logfile)
+		process.wait()
+		print(str(process.returncode))
+		subp_logfile.close()
+		if process.returncode is not 0:
+			sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
+
 
 def parse_json_data_and_run_prep_vcf_germline(data, dryrun=False):
 	"""
@@ -355,8 +460,6 @@ def parse_json_data_and_run_prep_vcf_germline(data, dryrun=False):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
 
-def parallel_subprocess():
-	pass
 
 def parse_json_data_and_run_prep_vcf(data, dryrun=False):
 	"""
@@ -436,8 +539,10 @@ def parse_json_data_and_run_prep_vcf(data, dryrun=False):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
+
 def subprocess_cmd(command):
 	os.system(command)
+
 
 def prepare_bed_for_venn(vcf):
 	'''
@@ -454,7 +559,8 @@ def prepare_bed_for_venn(vcf):
 	log.info(str(mycmd))
 	log.info(" ".join([x for x in mycmd]))
 	log.info(("Running bash function prep_input_file_for_venn command"))
-	subprocess_cmd(' '.join([ str(x) for x in mycmd]))
+	subprocess_cmd(' '.join([str(x) for x in mycmd]))
+
 
 def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, ):
 	"""
@@ -490,23 +596,26 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if do_venn:
 		for tool in data.keys():
 			if not skip_prep_vcfs:
-				list_beds = delim.join([str(os.path.splitext(vcf)[0]+".intervene.bed") for vcf in list_vcfs.split(delim)]) ## extension intervene.bed defined in prep_vcf.sh
-				log.info("list_bed for venn is: "+str(list_beds))
+				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+				                        list_vcfs.split(delim)])  ## extension intervene.bed defined in prep_vcf.sh
+				log.info("list_bed for venn is: " + str(list_beds))
 			elif lbeds == "":
-				log.info("for intervene tool, making bed from vcf intended to be merged : "+str(tool))
+				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
 				print(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'])
 				prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
-				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
+				list_beds = delim.join(
+					[str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
 			else:
 				list_beds = lbeds
-
 
 		if len(list_beds) == 0:
 			sys.exit("ERROR: --do-venn provided, but list_beds file EMPTY ; check you inputs. Aborting.")
 		log.info(double_quote_str(list_beds))
 		if len(list_beds.split(delim)) != len(list_tools.split(delim)):
-			sys.exit("ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin".format(list_beds,list_tools))
+			sys.exit(
+				"ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin".format(
+					list_beds, list_tools))
 		my_command = my_command + " --do-venn --beds " + double_quote_str(list_beds)
 
 	log.info(double_quote_str(list_tools))
@@ -523,11 +632,12 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		if process.returncode is not 0:
 			sys.exit("{} FAILED with vcfs files: {} ".format(vcfmerger_tool_path, list_vcfs))
 		else:
-			zvcf = str(merged_vcf_outfilename+".gz")
+			zvcf = str(merged_vcf_outfilename + ".gz")
 			log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
-			mycmd = [ "bcftools view --threads 2 -O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --tbi ", zvcf ]
+			mycmd = ["bcftools view --threads 2 -O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --tbi ",
+			         zvcf]
 			subprocess_cmd(" ".join(str(x) for x in mycmd))
-			# sys.exit()
+		# sys.exit()
 
 
 def check_path_to_vcfs(lvcfs):
@@ -536,12 +646,13 @@ def check_path_to_vcfs(lvcfs):
 		try:
 			vcf = next(iterator)
 			if not os.path.exists(vcf):
-				log.error("ERROR:  FILE NOT FOUND  --->  Check your input for vcf:"+vcf)
+				log.error("ERROR:  FILE NOT FOUND  --->  Check your input for vcf:" + vcf)
 				sys.exit(-1)
 		except StopIteration:
 			break  # Iterator exhausted: stop the loop
 		else:
-			log.info("VCF found: "+str(vcf))
+			log.info("VCF found: " + str(vcf))
+
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None):
@@ -577,26 +688,28 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	if lprepped_vcf_outfilenames is not None and len(ltoolnames) != len(lprepped_vcf_outfilenames):
 		log.info(
-			"ERROR: Found {} in list of given prep-filenames and {} toolnames given".format(len(lprepped_vcf_outfilenames),
-			                                                                         len(ltoolnames)))
+			"ERROR: Found {} in list of given prep-filenames and {} toolnames given".format(
+				len(lprepped_vcf_outfilenames),
+				len(ltoolnames)))
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;\ncheck if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	check_path_to_vcfs(lvcfs)
 	if germline and germline_snames is None:
-		log.error("ERROR: germline was enabled but no germline sample names given; please use option: --germline-snames and provide a DELIM-list of sample according to vcf content ")
+		log.error(
+			"ERROR: germline was enabled but no germline sample names given; please use option: --germline-snames and provide a DELIM-list of sample according to vcf content ")
 		sys.exit(-1)
 	if not germline:
 		if tumor_sname is None or normal_sname is None or (tumor_sname is None and normal_sname is None):
 			log.error(
 				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and normal-sname with expected sample names")
 			sys.exit(-1)
-	if germline_snames is not None and germline is False and ( tumor_sname is not None or normal_sname is not None):
+	if germline_snames is not None and germline is False and (tumor_sname is not None or normal_sname is not None):
 		log.error(
 			"ERROR: Ambiguous inputs and options; germline and soamtic analyses are EXCLUSIVE ; use --germline option to stipulate processing germlien calls and provide --germline-snames as well ; if only somatic, provide only tumor-sname and normal-sname")
 		sys.exit(-1)
 
-def main(args, cmdline):
 
+def main(args, cmdline):
 	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
 	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
 
@@ -604,7 +717,8 @@ def main(args, cmdline):
 	if args["delim"]:
 		delim = args["delim"]
 		if len(delim) != 1:
-			exit("the list delimiter given with --delim should be one character only and NOT a space; found {}".format(str(len(delim))))
+			exit("the list delimiter given with --delim should be one character only and NOT a space; found {}".format(
+				str(len(delim))))
 		log.info("delimiter is:\t" + delim)
 
 	lvcfs = []
@@ -652,7 +766,8 @@ def main(args, cmdline):
 	lprepped_vcf_outfilenames = None
 	if args["prep_outfilenames"]:
 		lprepped_vcf_outfilenames = str(args["prep_outfilenames"]).split(delim)
-		log.info("tool-specific filenames for intermediate vcfMerger2-up-to-specs vcf: " + str(lprepped_vcf_outfilenames))
+		log.info(
+			"tool-specific filenames for intermediate vcfMerger2-up-to-specs vcf: " + str(lprepped_vcf_outfilenames))
 		if args["skip_prep_vcfs"] == True:
 			lprepped_vcf_outfilenames = None
 
@@ -670,7 +785,7 @@ def main(args, cmdline):
 	if args["merged_vcf_outfilename"]:
 		merged_vcf_outfilename = str(args["merged_vcf_outfilename"])
 		log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
-		log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename+".gz")
+		log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
 
 	skip_prep_vcfs = False
 	if args["skip_prep_vcfs"]:
@@ -685,7 +800,8 @@ def main(args, cmdline):
 	filter_string_for_snpsift = None
 	if args["filter"] is not None:
 		filter_string_for_snpsift = args["filter"]
-		log.info("filtering variant enabled and filter string to be used with snpSift: \"" + str(filter_string_for_snpsift) +"\"")
+		log.info("filtering variant enabled and filter string to be used with snpSift: \"" + str(
+			filter_string_for_snpsift) + "\"")
 
 	path_jar_snpsift = None
 	if args["filter"] is not None and args['path_jar_snpsift'] is not None:
@@ -694,7 +810,8 @@ def main(args, cmdline):
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
-		raise Exception("Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
+		raise Exception(
+			"Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
 	else:
 		log.info("Well, you provided the path to snpSift for nothing as you have not set the filter option. :-) ")
 
@@ -706,7 +823,7 @@ def main(args, cmdline):
 	germline_snames = None
 	if args['germline_snames']:
 		germline_snames = args['germline_snames']
-		log.info("germline_snames == "+ str(germline_snames))
+		log.info("germline_snames == " + str(germline_snames))
 
 	skip_merge = False
 	if args["skip_merge"]:
@@ -717,7 +834,8 @@ def main(args, cmdline):
 	if args['threshold_AR']:
 		TH_AR = args['threshold_AR']
 		if isinstance(TH_AR, (int, float, complex)):
-			raise Exception("Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.")
+			raise Exception(
+				"Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.")
 		log.info("user given threshold for AR: " + str(TH_AR))
 
 	lbeds = ""
@@ -746,7 +864,6 @@ def main(args, cmdline):
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
 
-
 	data = make_data_for_json(lvcfs,
 	                          ltoolnames,
 	                          normal_sname,
@@ -764,8 +881,8 @@ def main(args, cmdline):
 	                          do_venn=do_venn)
 	json_filename = "vcfMerger.json" if not germline else "vcfMerger_germline.json"
 	make_json(data, json_filename)
-	#inFileJson = make_json(data, json_filename)
-	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
+	# inFileJson = make_json(data, json_filename)
+	# data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
 
 	## filter the PASS records before preparing the vcf for vcfMerger step
 	if filter_by_pass:
@@ -775,7 +892,23 @@ def main(args, cmdline):
 
 	if not skip_prep_vcfs:  ## PREP_VCF step Enabled
 		log.info("**** prep vcf steps section ***".upper())
-		parse_json_data_and_run_prep_vcf(data, dryrun) if not germline else parse_json_data_and_run_prep_vcf_germline(data, dryrun)
+		# parse_json_data_and_run_prep_vcf(data, dryrun) if not germline else parse_json_data_and_run_prep_vcf_germline(
+		# 	data, dryrun)
+
+		## TRY PARALLELIZE THIS SECTION OF MAKING PREP FILES
+		import multiprocessing
+		procs = []
+		for tool in data.keys():
+			p = multiprocessing.Process(target=parse_json_data_and_run_prep_vcf_germline_parallel, args=(tool, data, dryrun))
+			procs.append(p)
+
+		#for p in procs:
+		#	p.start()
+
+		for p in procs:
+			p.join()
+
+
 		log.info("**** merge process section  ****".upper())
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
@@ -786,22 +919,22 @@ def main(args, cmdline):
 		data = filter_prepped_vcf(data, path_jar_snpsift)
 		log.info(str(data))
 
-
 	if not skip_merge:  ## MERGING step Enabled
 		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
 	## MESSAGES END of WORK
-	if not skip_prep_vcfs and not skip_merge: ## we perform the ALL in one [ PREP_VCF + MERGE ]
+	if not skip_prep_vcfs and not skip_merge:  ## we perform the ALL in one [ PREP_VCF + MERGE ]
 		log.info("prep and merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("prep and merge vcfs completed successfully")
-	elif skip_prep_vcfs:    ## Here we only performed MERGING
+	elif skip_prep_vcfs:  ## Here we only performed MERGING
 		log.info("merge vcfs Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("merge vcfs completed successfully")
-	elif skip_merge:    ## here we only performed PREP_VCF
+	elif skip_merge:  ## here we only performed PREP_VCF
 		log.info("prep Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("prep vcfs completed successfully")
+
 
 def make_parser_args():
 	parser = argparse.ArgumentParser(description='Processing options ...')
@@ -809,7 +942,6 @@ def make_parser_args():
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
 	isRequired = True
-
 
 	required.add_argument('--vcfs',
 	                      required=isRequired,
@@ -821,7 +953,7 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='List of vcfs file delimited by DELIM character; default DELIM is pipe unless --delim '
 	                           'option is used using --delim option')
-	required.add_argument('-g','--refgenome',
+	required.add_argument('-g', '--refgenome',
 	                      required=isRequired,
 	                      action=UniqueStore,
 	                      help='reference genome used with bcftools norm ; must match reference used for alignment')
@@ -876,7 +1008,6 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
-
 
 	optional.add_argument('--delim',
 	                      required=False,
@@ -938,14 +1069,14 @@ def make_parser_args():
 	print(str(parser.prog) + "   " + str(parser.description))
 	return parser
 
-def check_if_executable_in_path(list_executables):
 
+def check_if_executable_in_path(list_executables):
 	for executable in list_executables:
 		if shutil.which(executable) is None:
 			sys.exit(str(executable) + "  NOT IN PATH ; Aborting;")
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
 	list_executables = ['bedtools', 'samtools', 'Rscript', 'python3', 'intervene']
 	check_if_executable_in_path(list_executables)
 
