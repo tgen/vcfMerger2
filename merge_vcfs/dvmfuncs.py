@@ -334,22 +334,22 @@ def process_GT_field(field, totnum_samples, dicField, v):
 			else:
 				dicField[i] = str("./.")
 	else:
-		log.info("%" * 10 + " IN ELSE " + "%" * 10)
-		log.info(v)
-		log.info(v.format('GT'))
-		log.info(v.FORMAT)
-		log.info(v.genotypes)
+		log.debug("%" * 10 + " IN ELSE " + "%" * 10)
+		log.debug(v)
+		log.debug(v.format('GT'))
+		log.debug(v.FORMAT)
+		log.debug(v.genotypes)
 
 		gts = v.genotypes
 		log.debug("GENOTYPE gts is:" + str(gts))
 		my_genotypes = [Genotype(li) for li in gts]
 
-		log.info("TYPE of my_genotypes :::: " + str(type(my_genotypes)))
-		log.info("MY GENOTYPES ARE: ")
-		log.info(my_genotypes)
-		log.info(str(my_genotypes[0]))
+		log.debug("TYPE of my_genotypes :::: " + str(type(my_genotypes)))
+		log.debug("MY GENOTYPES ARE: ")
+		log.debug(my_genotypes)
+		log.debug(str(my_genotypes[0]))
 
-		log.info(str(range(totnum_samples)))
+		log.debug(str(range(totnum_samples)))
 
 		for i in range(totnum_samples):
 			log.info(" index i == "  + str(i))
