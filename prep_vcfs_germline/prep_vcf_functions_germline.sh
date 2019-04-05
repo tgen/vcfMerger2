@@ -60,7 +60,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 
 	echo -e "VCF == ${VCF_ALL_CALLS}" 1>&2
 	echo -e "GERMLINE_SNAMES  == ${GERMLINE_SNAMES}" 1>&2
-	echo -e "VCF_FINAL_USER_GIVEN_NAME="  == ${VCF_FINAL_USER_GIVEN_NAME="}" 1>&2
+	echo -e "VCF_FINAL_USER_GIVEN_NAME  == ${VCF_FINAL_USER_GIVEN_NAME}" 1>&2
 }
 
 
@@ -164,7 +164,6 @@ function process_deepvariant_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
-    final_msg ${VCF}
 }
 
 function process_freebayes_vcf(){
@@ -179,6 +178,7 @@ function process_haplotypecaller_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
+    final_msg ${VCF}
 }
 
 function process_octopus_vcf(){
