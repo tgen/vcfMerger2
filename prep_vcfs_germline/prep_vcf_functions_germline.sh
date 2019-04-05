@@ -152,7 +152,7 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
 	fi
 	echo ${mycmd} 1>&2 ;
-	eval ${mycmd} 1>&2 ;
+	unbuffer eval ${mycmd} 1>&2 ;
 	check_ev $? "${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} " 1>&2
 	VCF=${fout_name}
 	echo "${VCF}"
@@ -168,31 +168,31 @@ function process_haplotypecaller_vcf(){
 
 function process_deepvariant_vcf(){
     local VCF=${1}
-    VCF=$( check_and_update_sample_names ${VCF} )
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
 function process_freebayes_vcf(){
     local VCF=${1}
-    VCF=$( check_and_update_sample_names ${VCF} )
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
 function process_samtools_mpileup_vcf(){
     local VCF=${1}
-    VCF=$( check_and_update_sample_names ${VCF} )
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
 function process_octopus_vcf(){
     local VCF=${1}
-    VCF=$( check_and_update_sample_names ${VCF} )
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
 function process_strelka2_vcf(){
     local VCF=${1}
-    VCF=$( check_and_update_sample_names ${VCF} )
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
