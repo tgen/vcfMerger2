@@ -423,7 +423,7 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 			                                    ])
 	return currentNewRebuiltINFO.strip(';')
 
-def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 2 ):
+def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 1):
 
 	"""
 	built a lossless variant line using all the variant INFO from each tool.

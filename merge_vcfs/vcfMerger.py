@@ -235,6 +235,10 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 		# 3a) get the total number variants to process in order to calculate on the fly the value for the counter
 		# steps
 		tot_variants_count = len(dd)
+		totnum_samples = len(dd[1][1].samples) ## get the number of sample detected within the VCF ; We already check if same number of samples for each vcf so no need here
+		print(str(totnum_samples))
+		print(str(dd[1][1]))
+
 		counter = 0
 		# step is ~10% of tot_variants and round to the nearest nth value
 		step = int(round(tot_variants_count / 10, -(len(str(round(tot_variants_count / 10))) - 1)))
@@ -242,8 +246,10 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 			counter += 1;
 			if counter % step == 0:
 				log.info("processed {} variants ...".format(counter))
-			rebuilt_variant = dvm.rebuiltVariantLine(dd[K], lossless,
-			                                         ListFieldsToProcessForOurFORMATColumn);  ## dd[K} represent a List of Variants (LV)
+			rebuilt_variant = dvm.rebuiltVariantLine(dd[K],
+			                                         lossless,
+			                                         ListFieldsToProcessForOurFORMATColumn,
+			                                         totnum_samples);  ## dd[K} represent a List of Variants (LV)
 			of.write(rebuilt_variant + linesep)
 		log.info("total processed variants: {}".format(counter))
 
