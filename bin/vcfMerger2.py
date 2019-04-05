@@ -355,13 +355,14 @@ def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False)
 		log.info("")
 		log.info("%" * 10 + " prep {} vcf ".format(tool).upper() + "%" * 10)
 		log.info("logging prep steps to file: " + str(logFilename))
+		log.info("")
 		process = subprocess.Popen(my_command,
 		                           shell=True,
 		                           universal_newlines=True,
 		                           stdout=subp_logfile,
 		                           stderr=subp_logfile)
 		process.wait()
-		print(str(process.returncode))
+
 		log.info("return code value prep step for tool {} is: {}".format(tool, str(process.returncode)))
 		log.info("prep step for tool {}: {} seconds".format(tool, str(int(round((time.time() - start_time))))))
 		subp_logfile.close()
