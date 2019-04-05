@@ -431,10 +431,12 @@ def get_acronym_for_current_tool(tool, dico_map_tool_acronym):
 	:return: string_of_interest [ acronym or toolname ]
 	"""
 	d = dico_map_tool_acronym
-	if tool in d.keys() and ( d[tool] is not None or d[tool] is not "") :
-		return str(d[tool]).replace(" ","_")
+	if tool in d.keys() and ( d[tool] is not None or d[tool] is not ""):
+		log.info("RETURN ACRONYM: " + d[tool])
+		return d[tool]
 	else:
-		return str(tool).replace(" ","_")
+		log.info("RETURN TN: " + tool )
+		return tool
 
 def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, totnum_samples = 1):
 
