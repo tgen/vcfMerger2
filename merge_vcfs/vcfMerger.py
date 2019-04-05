@@ -214,7 +214,8 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 	list_lines_header = dvm.create_new_header_for_merged_vcf(tuple_objs,
 	                                                         cmdline,
 	                                                         vcfMerger_Format_Fields_Specific,
-	                                                         vcfMerger_Info_Fields_Specific
+	                                                         vcfMerger_Info_Fields_Specific,
+	                                                         dico_map_tool_acronym
 	                                                         )
 	# 2) we add the modified header lines to the output merger file
 	log.info("adding the header to the out vcf file ...")
@@ -341,7 +342,7 @@ def main(args, cmdline):
 		exit("ERROR: number of  vcfs  MUST match number of  toolnames ; order sensitive; case insensitive; Aborting.")
 	if lacronyms is not None and len(lacronyms) != len(ltoolnames):
 		exit("ERROR: number of acronyms should match number of toolnames; order sensitive ; Aborting.")
-	elif lacronyms is not None:
+	elif lacronyms is None:
 		lacronyms = [ "" ]*len(ltoolnames)
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		exit("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
@@ -352,9 +353,10 @@ def main(args, cmdline):
 
 	dico_map_tool_acronym = {}
 	for tool_idx in range(len(ltoolnames)):
+		log.info(str(ltoolnames[tool_idx]) + " ==>  acronym ==> " + str(lacronyms[tool_idx]) )
 		dico_map_tool_acronym[ltoolnames[tool_idx]] = lacronyms[tool_idx]
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
-	sys.exit()
+
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
 def make_parser_args():
