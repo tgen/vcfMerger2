@@ -192,6 +192,7 @@ function process_samtools_mpileup_vcf(){
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( decompose ${VCF} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
+    final_msg ${VCF}
 }
 
 function process_strelka2_vcf(){
