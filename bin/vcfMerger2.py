@@ -438,6 +438,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 		process.wait()
 		print(str(process.returncode))
 		subp_logfile.close()
+		log.info("prep step for tool {}: {} seconds".format(tool,str(int(round((time.time() - start_time))))))
 		if process.returncode is not 0:
 			sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
@@ -967,6 +968,7 @@ def main(args, cmdline):
 
 
 		log.info("**** merge process section  ****".upper())
+		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 
