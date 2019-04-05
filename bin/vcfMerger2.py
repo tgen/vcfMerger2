@@ -525,9 +525,9 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		else:
 			zvcf = str(merged_vcf_outfilename+".gz")
 			log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
-			mycmd = [ "bcftools view -O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --tbi ", zvcf ]
+			mycmd = [ "bcftools view --threads 2 -O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --tbi ", zvcf ]
 			subprocess_cmd(" ".join(str(x) for x in mycmd))
-			sys.exit()
+			# sys.exit()
 
 
 def check_path_to_vcfs(lvcfs):
