@@ -368,7 +368,8 @@ def main(args):
 			if v is not None:
 				w.write_record(v)
 	except Exception as e:
-		log.info(' '.join(["variant number: ", str(c), "raises the exception: ", str(e) ]) )
+		log.error(' '.join(["ERROR: variant number ", str(c), "  --> raises the exception: ", str(e) ]) )
+		sys.exit(-1)
 	finally:
 		w.close()
 		vcf.close()
