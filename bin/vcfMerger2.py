@@ -902,8 +902,8 @@ def main(args, cmdline):
 			p = multiprocessing.Process(target=parse_json_data_and_run_prep_vcf_germline_parallel, args=(tool, data, dryrun))
 			procs.append(p)
 
-		#for p in procs:
-		#	p.start()
+		for p in procs:
+			p.start()
 
 		for p in procs:
 			p.join()
