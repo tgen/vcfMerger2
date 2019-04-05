@@ -293,24 +293,6 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 	return data
 
 
-from multiprocessing.dummy import Pool  # use threads
-from subprocess import Popen
-
-
-def parallel_subprocess():
-	pass
-
-
-def run_until_done(args):
-	cmd, log_filename = args
-	try:
-		with open(log_filename, 'wb', 0) as logfile:
-			p = Popen(cmd, stdout=logfile)
-		return cmd, p.wait(), None
-	except Exception as e:
-		return cmd, None, str(e)
-
-
 def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False):
 	"""
 	1) parse the data from the json file
@@ -384,8 +366,82 @@ def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False)
 		if process.returncode is not 0:
 			sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
 
+def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
+	"""
+	1) parse the data from the json file
+	2) run prep_vcf program for each tool's vcf
 
-def parse_json_data_and_run_prep_vcf_germline(data, dryrun=False):
+	:param data: dictionary of converted json data
+	:return: list of expected prep_vcfs from each tool unless error
+	"""
+	log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
+	log.info("recap inputs captured from json file")
+	log.info("input: \ttool\t==\t{}".format(str(tool)))
+
+	for var, val in data[tool].items():
+		log.info("input:\t{} \t==\t{}".format(var, quote_str(val)))
+	print()
+
+	# check if outfilename for prep_vcf is Null or None
+	if data[tool]['prepped_vcf_outfilename'] is None or data[tool]['prepped_vcf_outfilename'] == "":
+		msg = "prepped_vcf_outfilename has not been defined injson file for tool {} ; Aborting.".format(tool)
+		sys.exit(str(msg))
+	# check if outfilename will be outputted in current working folder or not; important for vcfMerger2.0 to
+	# know where the prep vcfs are located (users can provide full path for prep vcf outfilename otherwise ; no relative path in json )
+	if os.path.curdir != data[tool]['dir_work']:
+		if not str(data[tool]['prepped_vcf_outfilename']).startswith("/"):
+			data[tool]['prepped_vcf_outfilename'] = os.path.join(os.path.abspath(os.path.curdir),
+			                                                     os.path.basename(
+				                                                     data[tool]['prepped_vcf_outfilename']))
+
+	# make string from all options for the future bash command line
+	cmdLine = ' '.join(
+		[
+			"-d", quote_str(data[tool]['dir_work']),
+			'--toolname', quote_str(tool),
+			'--normal-sname', quote_str(data[tool]['normal']),
+			'--tumor-sname', quote_str(data[tool]['tumor']),
+			'--vcf', quote_str(data[tool]['vcf']),
+			'-g', quote_str(data[tool]['ref_genome_fasta']),
+			'-o', quote_str(data[tool]['prepped_vcf_outfilename']),
+			'--vcf-indels', quote_str(data[tool]['vcf_indels']),
+			'--vcf-snvs', quote_str(data[tool]['vcf_snvs']),
+			'--bam', quote_str(data[tool]['bam']),
+			'--contigs-file', quote_str(data[tool]['contigs_file']),
+
+		]
+	)
+
+	## capture if user wants to make the Venn/upset plots later on before merging vcfs
+	if data[tool]['do_venn']:
+		cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
+
+	# capture threshold AR found in json
+	TH_AR = data[tool]['threshold_AR']
+	if TH_AR is not None and TH_AR != "" and TH_AR != 0.9:
+		cmdLine = ' '.join([cmdLine, "--threshold-AR", TH_AR])
+
+	# display the command line for log purposes
+	log.info(prep_vcf_script_path + " " + cmdLine)
+	my_command = ' '.join(["bash", prep_vcf_script_path, cmdLine])
+	logFilename = "log_prep_vcf_{}.logs".format(tool)
+	subp_logfile = open(logFilename, "w")
+	if not dryrun:
+		log.info("")
+		log.info("%" * 10 + " prep {} vcf ".format(tool).upper() + "%" * 10)
+		log.info("logging prep steps to file: " + str(logFilename))
+		process = subprocess.Popen(my_command,
+		                           shell=True,
+		                           universal_newlines=True,
+		                           stdout=subp_logfile,
+		                           stderr=subp_logfile)
+		process.wait()
+		print(str(process.returncode))
+		subp_logfile.close()
+		if process.returncode is not 0:
+			sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
+
+def parse_json_data_and_run_prep_vcf_germline__DEPRECATED(data, dryrun=False):
 	"""
 		1) parse the data from the json file
 		2) run prep_vcf program for each tool's vcf
@@ -460,8 +516,7 @@ def parse_json_data_and_run_prep_vcf_germline(data, dryrun=False):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
 
-
-def parse_json_data_and_run_prep_vcf(data, dryrun=False):
+def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
 	"""
 	1) parse the data from the json file
 	2) run prep_vcf program for each tool's vcf
@@ -562,7 +617,7 @@ def prepare_bed_for_venn(vcf):
 	subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, ):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs):
 	"""
 
 	:param data:
@@ -630,14 +685,15 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		process.wait()
 		log.info("vcfMerger2.0 exit value: " + str(process.returncode))
 		if process.returncode is not 0:
-			sys.exit("{} FAILED with vcfs files: {} ".format(vcfmerger_tool_path, list_vcfs))
+			sys.exit("{} FAILED with VCF files: {} ".format(vcfmerger_tool_path, list_vcfs))
 		else:
+			cpus = len(list_vcfs) if len(list_vcfs) > 2 else 2
 			zvcf = str(merged_vcf_outfilename + ".gz")
 			log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
-			mycmd = ["bcftools view --threads 2 -O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --tbi ",
-			         zvcf]
+			mycmd = ["bcftools view --threads", cpus, "-O z -o ", zvcf, merged_vcf_outfilename, ";",
+			         "bcftools index --threads", cpus, "--tbi ", zvcf]
 			subprocess_cmd(" ".join(str(x) for x in mycmd))
-		# sys.exit()
+
 
 
 def check_path_to_vcfs(lvcfs):
@@ -897,9 +953,10 @@ def main(args, cmdline):
 
 		## TRY PARALLELIZE THIS SECTION OF MAKING PREP FILES
 		import multiprocessing
+		funcToUse = parse_json_data_and_run_prep_vcf_parallel if not germline else parse_json_data_and_run_prep_vcf_germline_parallel
 		procs = []
 		for tool in data.keys():
-			p = multiprocessing.Process(target=parse_json_data_and_run_prep_vcf_germline_parallel, args=(tool, data, dryrun))
+			p = multiprocessing.Process(target=funcToUse, args=(tool, data, dryrun))
 			procs.append(p)
 
 		for p in procs:
