@@ -361,14 +361,14 @@ def main(args):
 	try:
 		for v in vcf: ## v for variant which represents one "variant record"
 			c = c+1
-			log.info("c={} ; locus= {}".format(str(c), str(str(v.CHROM) + ":" + str(v.POS))))
+			log.debug("c={} ; locus={}".format(str(c), str(str(v.CHROM) + ":" + str(v.POS))))
 			if c % 100000 == 0:
 				log.info("processed {}".format(str(c)))
 			v = update_flags(tot_number_samples, v)
 			if v is not None:
 				w.write_record(v)
 	except Exception as e:
-		log.info(' '.join(["variant number: ", str(c), "raises an exception: ", str(e) ]) )
+		log.info(' '.join(["variant number: ", str(c), "raises the exception: ", str(e) ]) )
 	finally:
 		w.close()
 		vcf.close()

@@ -152,7 +152,7 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
 	fi
 	echo ${mycmd} 1>&2 ;
-	unbuffer ${mycmd} 1>&2 ;
+	eval ${mycmd} 1>&2 ;
 	check_ev $? "${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} " 1>&2
 	VCF=${fout_name}
 	echo "${VCF}"
