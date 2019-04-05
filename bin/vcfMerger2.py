@@ -687,7 +687,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		if process.returncode is not 0:
 			sys.exit("{} FAILED with VCF files: {} ".format(vcfmerger_tool_path, list_vcfs))
 		else:
-			cpus = len(list_vcfs) if len(list_vcfs) > 2 else 2
+			cpus = len(data.keys()) if len(data.keys()) > 2 else 2
 			zvcf = str(merged_vcf_outfilename + ".gz")
 			log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
 			mycmd = ["bcftools view --threads", cpus, "-O z -o ", zvcf, merged_vcf_outfilename, ";",
