@@ -358,17 +358,21 @@ def main(args):
 
 	c=0
 	log.info("looping over records ...")
-	for v in vcf: ## v for variant which represents one "variant record"
-		c = c+1
-		if c % 100000 == 0:
-			log.info("processed {}".format(str(c)))
-		v = update_flags(tot_number_samples, v)
-		if v is not None:
-			w.write_record(v)
-
-	w.close()
-	vcf.close()
-	log.info("work completed")
+	try:
+		for v in vcf: ## v for variant which represents one "variant record"
+			c = c+1
+			log.info("c={} ; locus= {}".format(str(c), str(str(v.CHROM) + ":" + str(v.POS))))
+			if c % 100000 == 0:
+				log.info("processed {}".format(str(c)))
+			v = update_flags(tot_number_samples, v)
+			if v is not None:
+				w.write_record(v)
+	except Exception as e:
+		log.info(' '.join(["variant number: ", str(c), "raises an exception: ", str(e) ]) )
+	finally:
+		w.close()
+		vcf.close()
+	log.info("prep work completed")
 	log.info('new vcf is << {} >>'.format(new_vcf))
 	sys.exit()
 

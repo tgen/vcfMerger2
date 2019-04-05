@@ -168,6 +168,7 @@ function process_deepvariant_vcf(){
 function process_freebayes_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
+    VCF=$( decompose ${VCF} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
 }
 
@@ -202,8 +203,8 @@ function run_tool(){
 	local DIR_PATH_TO_SCRIPTS="${DIR_PATH_TO_SCRIPTS}"
 
     case $TOOLNAME in
-		haplotypecaller|hc)
-		    PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py"
+        haplotypecaller|hc)
+            PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py"
 		    process_haplotypecaller_vcf ${VCF} &
 		    ;;
         freebayes|fby|fbs|fb)
