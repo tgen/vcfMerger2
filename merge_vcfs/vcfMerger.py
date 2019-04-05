@@ -75,7 +75,7 @@ class UniqueStore(argparse.Action):
 			parser.error(option_string + " appears several times.")
 		setattr(namespace, self.dest, values)
 
-def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline):
+def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline):
 	"""
 	process the merging after having checked all the inputs
 	:param lvcfs: list of vcf tools delimited by the delim value
@@ -95,7 +95,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	l_snames = []
 	l_contigs = []
 
-	ListFieldsToProcessForOurFORMATColumn = ["GT", "DP", "AR", "AD"]
+	ListFieldsToProcessForOurFORMATColumn = ["GT", "DP", "AR", "AD"]  ## HARDCODED
 
 	vcfMerger_Format_Fields_Specific = [
 		'##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">',
@@ -105,9 +105,9 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	]
 
 	TN_FLAGS = []
-	for T in ltoolnames:
+	for tool in ltoolnames:
 		TN_FLAG = str(''.join([
-			'##INFO=<ID=' + T + ',Number=0,Type=Flag,Description="Toolname Flag means that position got '
+			'##INFO=<ID=' + tool + ',Number=0,Type=Flag,Description="Toolname Flag means that position got '
 			                    'called by this tool">']))
 		TN_FLAGS.append(TN_FLAG)
 	Additional_FLAGS = [
@@ -175,7 +175,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	check_fields_definitions_in_header = True
 	if check_fields_definitions_in_header:
 		for flagid in ListFieldsToProcessForOurFORMATColumn:
-			log.info("common flag to be processed in FORMAT: ".format(flagid))
+			log.info("common flag to be processed in FORMAT: {}".format(flagid))
 			for tpo in tuple_objs:
 				'''Check if flag we want to put in the format field have been defined in the VCF header'''
 				res_search = search("".join(["ID=", flagid]), tpo.headers)
@@ -252,6 +252,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 			if counter % step == 0:
 				log.info("processed {} variants ...".format(counter))
 			rebuilt_variant = dvm.rebuiltVariantLine(dd[K],
+			                                         dico_map_tool_acronym,
 			                                         lossless,
 			                                         ListFieldsToProcessForOurFORMATColumn,
 			                                         totnum_samples);  ## dd[K} represent a List of Variants (LV)
@@ -309,6 +310,7 @@ def main(args, cmdline):
 		lossy = True
 		lossless = bool(not lossy)
 
+	lacronyms = None
 	if args["toolacronyms"]:
 		lacronyms = str(args["toolacronyms"]).split(delim)
 		lacronyms = [x.upper() for x in lacronyms]
@@ -339,6 +341,8 @@ def main(args, cmdline):
 		exit("ERROR: number of  vcfs  MUST match number of  toolnames ; order sensitive; case insensitive; Aborting.")
 	if lacronyms is not None and len(lacronyms) != len(ltoolnames):
 		exit("ERROR: number of acronyms should match number of toolnames; order sensitive ; Aborting.")
+	elif lacronyms is not None:
+		lacronyms = [""]*len(ltoolnames)
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		exit("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
 	if do_venn:
@@ -346,8 +350,12 @@ def main(args, cmdline):
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
 		dvm.make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False)
 
+	dico_map_tool_acronym = {}
+	for tool_idx in range(len(ltoolnames)):
+		dico_map_tool_acronym[ltoolnames[tool_idx]] = lacronyms[tool_idx]
+	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
-	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, merge_vcf_outfilename, cmdline)
+	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
 def make_parser_args():
 	parser = argparse.ArgumentParser(description='Processing options in vcfMerger.py ...')

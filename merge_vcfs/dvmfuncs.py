@@ -423,14 +423,28 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 			                                    ])
 	return currentNewRebuiltINFO.strip(';')
 
-def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 1):
+def get_acronym_for_current_tool(tool, dico_map_tool_acronym):
+	"""
+	return the given acronym of toolname if acronym for that tool got defined; otherwise return toolname
+	:param tool:
+	:param map:
+	:return: string_of_interest [ acronym or toolname ]
+	"""
+	d = dico_map_tool_acronym
+	if tool in d.keys() and ( d[tool] is not None or d[tool] is not "") :
+		return str(d[tool]).replace(" ","_")
+	else:
+		return str(tool).replace(" ","_")
+
+def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, totnum_samples = 1):
 
 	"""
 	built a lossless variant line using all the variant INFO from each tool.
 	:param LV: variant information object for the Winner Tool; v represents an entire line of a vcf
+	:param dico_map_tool_acronym is a dico with keys as toolname and values as acronyms
 	:param: lossless, boolean; if True, will keep ALL the information from teh secondary tools and add that
 	information to the INFO field in the  merged VCF
-	:param  As this versio is dedicated to Somatic, we expect two Sample by default in the FORMAT Columns.
+	:param  As this version is dedicated to Somatic, we expect two Sample by default in the FORMAT Columns.
 	:param: list_Fields_Format, Format Fields that wll be present in the Merged VCF ; if no information about hte
 	field exist in any of the tools' FORMAT columns, the field is set with dots to indicat absence of information or value
 	:return: String of the new whole variant line
@@ -451,7 +465,8 @@ def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 1):
 
 	## 1) we first deal with rebuildign INFO field
 	## Lets' deal with the winner tool first
-	newINFO = renameINFO_IDS(wtv, wtn)  ## LV[0][0] is the toolname which has precedence for that current call
+
+	newINFO = renameINFO_IDS(wtv, get_acronym_for_current_tool(wtn, dico_map_tool_acronym))  ## LV[0][0] is the toolname which has precedence for that current call
 
 	INFOfromOtherTools = ""
 
@@ -467,8 +482,8 @@ def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 1):
 	## we process the calls from the other tools
 	## we add their data from ALL the fields and column if lossless ; or just from their INFO field otherwise
 	for i in range(1, len(LV)):  # i represent the index of the variant in the list LV for current
-		# position ; If we have only one tool that called that variant, we never enter this for loop;
-		tn = LV[i][0]  # In the list of 2 elements, the first is the toolname to remember the file of origin
+		# position ; If we have only one tool which called that variant, we never enter this for loop;
+		tn = get_acronym_for_current_tool(LV[i][0], dico_map_tool_acronym)  # In the list of 2 elements, the first is the toolname to remember the file of origin
 		tv = LV[i][1]  # the second element is the variant object (tv stands for tool variant)
 		INFOfromOtherTools = addINFO_FromSecondaryToolsToNewRebuiltINFO_Field(INFOfromOtherTools, tv, tn)
 
@@ -578,8 +593,8 @@ def rebuiltVariantLine(LV, lossless, list_Fields_Format, totnum_samples = 1):
 
 	#prefixing each FILTER information with toolname or acronym given by the user
 	log.debug(str(wtv.FILTER))
-	FILT = ';'.join([ wtn+"_"+FLTV for FLTV in wtv.FILTER.split(';') ]) if wtv.FILTER != None else "."
-	#FILT = wtv.FILTER if wtv.FILTER != None else "."  ## note: cyvcf2 consider the keyword PASS as no filter and
+	FILT = ';'.join([get_acronym_for_current_tool(wtn, dico_map_tool_acronym) +"_"+FLTV for FLTV in wtv.FILTER.split(';') ]) if wtv.FILTER != None else "."
+	#FILT = wtv.FILTER if wtv.FILTER != None else "."  ## note: cyvcf2 consider the keyword PASS as 'no filter' and
 	# therefore, when PASS is present, wtv.FILTER returns  None, which in our case here is a dot or will be force to
 	#  be a dot.
 
