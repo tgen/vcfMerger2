@@ -152,6 +152,9 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 	dvm.compareTuples(l_snames,
 	                  "SampleNames")  ## we cannot skip that one. If not matching, then modify vcf to get samples in
 	# correct columns or with the same names across ALL the vcf files ;
+	log.info("list -captured Sample Names:")
+	log.info(set(l_snames))
+	log.info(len(set(l_snames)))
 
 	## UNCOMMENT NEXT LINE TO PUT THE CONTIGS CHECK BACK ON
 #########	dvm.compareTuples(l_contigs, "CONTIGS")  ## we may add an option to skip that check ; even though we do not know
@@ -235,9 +238,10 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 		# 3a) get the total number variants to process in order to calculate on the fly the value for the counter
 		# steps
 		tot_variants_count = len(dd)
-		totnum_samples = len(dd[1][1].samples) ## get the number of sample detected within the VCF ; We already check if same number of samples for each vcf so no need here
+		print(str(dd[0][1]))
+		totnum_samples = len(set(l_snames)) ## get the number of sample detected within the VCF ; We already check if same number of samples for each vcf so no need here
 		print(str(totnum_samples))
-		print(str(dd[1][1]))
+
 
 		counter = 0
 		# step is ~10% of tot_variants and round to the nearest nth value
