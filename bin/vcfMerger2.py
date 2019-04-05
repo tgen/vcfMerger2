@@ -650,7 +650,7 @@ def main(args, cmdline):
 	lprepped_vcf_outfilenames = None
 	if args["prep_outfilenames"]:
 		lprepped_vcf_outfilenames = str(args["prep_outfilenames"]).split(delim)
-		log.info("tool-specific filenames for intermediate upto vcfMerger2-specs: " + str(lprepped_vcf_outfilenames))
+		log.info("tool-specific filenames for intermediate vcfMerger2-up-to-specs vcf: " + str(lprepped_vcf_outfilenames))
 		if args["skip_prep_vcfs"] == True:
 			lprepped_vcf_outfilenames = None
 
