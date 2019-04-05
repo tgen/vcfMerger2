@@ -348,7 +348,7 @@ def process_GT_field(field, totnum_samples, dicField, v):
 		log.info("MY GENOTYPES ARE: ")
 		log.info(my_genotypes)
 		log.info(str(my_genotypes[0]))
-		log.info(str(my_genotypes[1]))
+
 		log.info(str(range(totnum_samples)))
 
 		for i in range(totnum_samples):
