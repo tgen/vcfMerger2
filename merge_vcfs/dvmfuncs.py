@@ -349,8 +349,10 @@ def process_GT_field(field, totnum_samples, dicField, v):
 		log.info(my_genotypes)
 		log.info(str(my_genotypes[0]))
 		log.info(str(my_genotypes[1]))
+		log.info(str(range(totnum_samples)))
 
 		for i in range(totnum_samples):
+			log.info(" index i == "  + str(i))
 			if not len(dicField[i]) == 0:
 				# dicField[i] = ":".join([dicField[i], str('/'.join(["x", "x"]))])
 				dicField[i] = ":".join([dicField[i], str(my_genotypes[i])])
