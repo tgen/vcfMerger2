@@ -235,8 +235,8 @@ def process_snvs_records(tot_number_samples, v):
 	## here we only deal with the first ALT ## TODO implement AR for each ALT
 	## loop through samples to calculate AR for each one
 	for sidx in range(tot_number_samples):
-		refCounts = v.INFO['DP4'][sidx][0] + v.INFO['DP4'][sidx][1]
-		altCounts = v.INFO['DP4'][sidx][2] + v.INFO['DP4'][sidx][3]
+		refCounts = v.INFO['DP4'][0] + v.INFO['DP4'][1]
+		altCounts = v.INFO['DP4'][2] + v.INFO['DP4'][3]
 		try:
 			AR = float(altCounts/(refCounts + altCounts)) if altCounts != 0 else 0.00
 		except ZeroDivisionError:
