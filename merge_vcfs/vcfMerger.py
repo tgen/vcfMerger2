@@ -238,7 +238,6 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, lossless, mer
 		# 3a) get the total number variants to process in order to calculate on the fly the value for the counter
 		# steps
 		tot_variants_count = len(dd)
-		print(str(dd[0][1]))
 		totnum_samples = len(set(l_snames)) ## get the number of sample detected within the VCF ; We already check if same number of samples for each vcf so no need here
 		print(str(totnum_samples))
 
