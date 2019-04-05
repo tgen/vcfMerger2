@@ -80,7 +80,7 @@ def update_header(vcf):
 	                          'Type': 'Float', 'Number': '1'})
 	vcf.add_format_to_header({'ID': 'AD',
 	                          'Description': 'Allele Depth Ref,Alt',
-	                          'Type': 'Float', 'Number': '1'})
+	                          'Type': 'Integer', 'Number': '2'})
 	vcf.add_format_to_header({'ID': 'GT',
 	                          'Description': ''.join([ 'GT fields for each sample after reassigning the GT value based on AR threshold (GT_0/1 < AR_', str(AR_threshold_for_GT) ,
 	                                                   ' and GT_1/1 >= AR_', str(AR_threshold_for_GT),  ' )' ]) ,
@@ -179,48 +179,48 @@ def update_flags(tot_number_samples, v):
 	else:
 		return None
 
-def process_indels_records(tot_number_samples, v):
-	'''
-	Calculate the AR for indel in each sample in the variant record v
-	The Total number of Samples in the VCF file is given by the variable tot_number_samples
-	We assume that the number of sample does not vary form one record to another as recommended in VCF specs.
-	Within that function we then can calculate GTs because we have AR available
-	'''
-	## in Haplotype caller the Flags are the same for Indels and SNVs (so far)
-
-	ARs, ADs, GTs, DPs = [], [], [], []
-
-	## loop through samples to calculate AR for each one
-	for sidx in range(tot_number_samples):
-		if v.format('DP') is not None:
-			DP = v.format('DP')[sidx][0]
-			DPs.append(DP)
-		else:
-			DPs.append('0')
-		if v.format('AD') is not None:
-			AD = v.format('AD')[sidx]
-			ADs.append(AD)
-			try:
-				AR = float(AD[0]/(AD[0]+AD[1])) if AR[0] != 0 else 0.00
-				ARs.append(AR)
-			except ZeroDivisionError:
-				log.debug("You can't divide by zero!")
-				AR = float(0.00)  ## so we make it zero manually
-		else:
-			ADs.append('0,0')
-			ARs.append(float(0.00))
-
-		log.error("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
-		ARs.append(AR)
-		ADs.append(AD)
-		GTs.append(get_GT_value_from_AR(AR))
-		log.error("GT={} ".format(get_GT_value_from_AR(AR)))
-	v.set_format('GT', np.array(GTs))
-	v.set_format('AR', np.array(ARs))
-	v.set_format('AD', np.array(ADs))
-
-	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
-	return v
+# def process_indels_records(tot_number_samples, v):
+# 	'''
+# 	Calculate the AR for indel in each sample in the variant record v
+# 	The Total number of Samples in the VCF file is given by the variable tot_number_samples
+# 	We assume that the number of sample does not vary form one record to another as recommended in VCF specs.
+# 	Within that function we then can calculate GTs because we have AR available
+# 	'''
+# 	## in Haplotype caller the Flags are the same for Indels and SNVs (so far)
+#
+# 	ARs, ADs, GTs, DPs = [], [], [], []
+#
+# 	## loop through samples to calculate AR for each one
+# 	for sidx in range(tot_number_samples):
+# 		if v.format('DP') is not None:
+# 			DP = v.format('DP')[sidx][0]
+# 			DPs.append(DP)
+# 		else:
+# 			DPs.append('0')
+# 		if v.format('AD') is not None:
+# 			AD = v.format('AD')[sidx]
+# 			ADs.append(AD)
+# 			try:
+# 				AR = float(AD[0]/(AD[0]+AD[1])) if AR[0] != 0 else 0.00
+# 				ARs.append(AR)
+# 			except ZeroDivisionError:
+# 				log.debug("You can't divide by zero!")
+# 				AR = float(0.00)  ## so we make it zero manually
+# 		else:
+# 			ADs.append('0,0')
+# 			ARs.append(float(0.00))
+#
+# 		log.error("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
+# 		ARs.append(AR)
+# 		ADs.append(AD)
+# 		GTs.append(get_GT_value_from_AR(AR))
+# 		log.error("GT={} ".format(get_GT_value_from_AR(AR)))
+# 	v.set_format('GT', np.array(GTs))
+# 	v.set_format('AR', np.array(ARs))
+# 	v.set_format('AD', np.array(ADs))
+#
+# 	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
+# 	return v
 
 def process_snvs_records(tot_number_samples, v):
 	'''
@@ -229,7 +229,7 @@ def process_snvs_records(tot_number_samples, v):
 	We assume that the number of sample does not vary form one record to another as recommended in VCF specs.
 	Within that function we then can calculate GTs because we have AR available
 	'''
-	ARs, ADs, DPs, GTs, OGTs = [], [], [], [], []
+	ARs, ADs, DPs, GTs = [], [], [], []
 
 	## get REF and ALT bases ; note: ALT is a list in cyvcf2, not a character as multiple ALT can exist
 	## here we only deal with the first ALT ## TODO implement AR for each ALT
@@ -250,7 +250,7 @@ def process_snvs_records(tot_number_samples, v):
 		ADs.append(AD)
 		ARs.append(AR)
 		GTs.append(get_GT_value_from_AR(AR))
-	#	OGTs.append(v.format('GT')[sidx])
+
 
 	# log.info(str(OGTs))
 	log.debug(str(GTs))
