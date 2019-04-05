@@ -436,9 +436,9 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 		                           stdout=subp_logfile,
 		                           stderr=subp_logfile)
 		process.wait()
-		print(str(process.returncode))
+		log.info("return code value for tool {} is {}".format(tool, str(process.returncode)))
+		log.info("prep step for tool {}: {} seconds".format(tool, str(int(round((time.time() - start_time))))))
 		subp_logfile.close()
-		log.info("prep step for tool {}: {} seconds".format(tool,str(int(round((time.time() - start_time))))))
 		if process.returncode is not 0:
 			sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
