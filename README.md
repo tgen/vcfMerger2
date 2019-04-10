@@ -84,13 +84,8 @@ _**Note_4**: The given command line example uses 4 input vcfs. [ you may also te
   `-g REFGENOME, --refgenome REFGENOME` 
                         reference genome `.fa` and its `.fai` index are used with bcftools norm ; must match
                         reference used for alignment
-                        
-  `--normal-sname NORMAL_SNAME` 
-                        expected name of normal sample in vcf file
-                        
-  `--tumor-sname TUMOR_SNAME` 
-                        expected name of tumor sample in vcf file
-                        
+
+                     
   `--prep-outfilenames PREP_OUTFILENAMES` 
                         delim-separated names to the tool-specific prepared
                         vcf files
@@ -99,7 +94,28 @@ _**Note_4**: The given command line example uses 4 input vcfs. [ you may also te
                         outfilename for the merge vcf (can be relative or full
                         path)
 
+##### additional required arguments if merging SOMATIC Vcfs:                         
+                      
+  `--tumor-sname TUMOR_SNAME` 
+                        expected name of tumor sample in vcf file (already present in VCF; mostly used to make sure of the right column)
+  
+  `--normal-sname NORMAL_SNAME`
+                        expected name of normal sample in vcf file (already present in VCF; mostly used to make sure of the right column)
+   
+
 ##### optional arguments: 
+
+  `--germline` 
+                        consider the inputs VCFs as GERMLINE only VCFs (and not somatic)
+                        This implies using the right toolnames associated to germline calls. as of 2019, we implemented
+                        preprocessing for three (3) germline variants callers: HaplotypeCaller, Freebayes and and Deepvariant.
+                        (see exact name using --list-tools )
+
+  `--germline-snames`
+                        ordered list of sample name(s) that should be present in the VCF beyond column 9.
+                        As of 2019-04-04, ONLY one sample per VCF is taken into account; So this option should be a list of ONE name only
+                     
+
 
   `-c PRECEDENCE, --precedence PRECEDENCE`
                         sorted delim-separated list of the toolnames as listed
@@ -117,13 +133,13 @@ by more than one tool. This Precedence is subjective to the user.
 
   `--bams BAMS`          List of bams necessary for capturing contigs if not
                         present in input vcf; otherwise put empty_string as
-                        value for each tool
+                        value for each tool [maybe deprecated in future as ALL the vcfs MUST contain the exact same contigs in their headers (if not check you input vcfs and update them)]
                         
   `--contigs-file-for-vcf-header CONTIGS_FILE_FOR_VCF_HEADER`
                         List of contigs necessary for capturing adding them to
                         tool vcf header if needed; otherwise put empty_string
                         as value for each tool ;do not provide if bam file is
-                        given instead
+                        given instead [maybe deprecated in future as ALL the vcfs MUST contain the exact same contigs in their headers (if not check you input vcfs and update them)]
                         
   `-a TOOLACRONYMS, --toolacronyms TOOLACRONYMS`
                         List of Acronyms for toolnames to be used as PREFIXES
@@ -150,6 +166,21 @@ by more than one tool. This Precedence is subjective to the user.
   `-n, --dry-run`         perform a dry run to just see the commands lines that
                         will be run behind the scenes
                          
+`--filter-by-pass`      filter the variants by PASS. This implies that the keyword `PASS` must be present in column 7 of the VCF, and not a dot.
+                        This filtering step is specifically performed before preparing the vcfs to specs steps ; if you want to filter PASS after prep_step and before merging, use `--filter FILTER`; 
+
+`--filter FILTER`   filter variants using snpSift in the backend; This filtering process is performed ONLY on up-to-specs vcf (so after the stage prep-vcf [if run] );
+                    A string must be provided as if you were using snpSift (see snpSift user manual); For each tool, a string must be provided; If you have 3 tools, three string must be provided;
+                    Hint: if you want to apply the exact same filtering to all the tools because they do possess the same Flags, you may provide only one string. 
+
+`--path-jar-snpsift`    FULL PATH to the SnpSift JAR file MUST be provided if any of the filter option is used. 
+
+ `--do-venn`    Will make a Venn diagram using the vcf files provided to the merging step. This is a simple vennDiagram.
+ 
+ `--beds `      If the user already have the data in bed format to make the Venn Diagram, the user can provide these bed files here; The number of bed files MSUT be the same as the number of toolnames or VCFs files. 
+                If bed files are not provided and `--do-venn` is enabled, the bed files are created on the fly from the vcf files;
+                If `--beds` is used, `--do-venn` must also be used otherwise the venn won't be created.   
+
 
 --- 
 
@@ -162,6 +193,7 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
 - grep, awk 
 - python 3.6.0 or up
     - cyvcf2 (tested with versions: 0.8.2 or 0.8.4 ; other versions not tested and not recommended)
+    - intervene
     - collections
     - argparse
     - getopt
@@ -187,7 +219,7 @@ vcf files must contain the keyword "PASS" in the FILTER column if you want to fi
 
 ### Filtering options [[ --filter_by_pass and --filter options ]]
 VCF Filtering is performed here using a third party tool called SnpSift from the snpEff tool. 
-The full path to "SnpSift.jar" file MUST be provided to vcfMerger2 if any of the two aforementioned option is given.
+The full path to "SnpSift.jar" file MUST be provided to vcfMerger2 if any of the two aforementioned options is given.
 `--path_jar_snpsift` is used to provide the full path to the jar file
 Two options are available to filter the variant before merging the vcf files. 
 `--filter-by-pass` and `--filter` 
@@ -196,7 +228,8 @@ Two options are available to filter the variant before merging the vcf files.
 
 ## Running demo
 Once all the requiremetns are available, it is advised to run the **demo** script.  
-You can run the script from anywwhere, and the results will be outputted into a **demo_out** folder created by the script itself into the **test_data** directory.
+You must run the script from within the **test_data** directory [in theory, it could be run from anywhere]. The results will be outputted into a **demo_out** folder created by the script itself into the **test_data** directory.
+Any previous **demo_out** directory from a previous run will be deleted.
 
 ----
 ----
@@ -239,15 +272,29 @@ Example_3 (adding acronyms to reduce file size):
 
 _**HINT**_: You also can run the same command listed in `all-in-one` way by just adding the option `--skip-prep-vcfs`, and only vcfMerger step will be performed.
 
+Example_4 (Germline calls instead of somatic ; adding acronyms to reduce file size):  
+`python3 /home/clegendre/qscripts/gits/vcfMerger2_devel_branch/bin/vcfMerger2.py -g ${REF_GENOME}  --toolnames "haplotypecaller|freebayes|samtools" --vcfs "testFile_HC.100000lines.vcf|testFile_FB.100000lines.vcf|testFile_ST.100000lines.vcf" --prep-outfilenames "HC_prep.vcf|FB_prep.vcf|ST_prep.vcf" --germline  --germline-snames "HAPI_0001_000001_OV_Whole_T1_TSWGS_A28333" -o "merged_germline_calls_3tools.vcf" -a "HC|FB|ST"`
+
+Example_5 (using filtering options [here both filtering options are being used]):
+python3 /home/clegendre/qscripts/gits/vcfMerger2_devel_branch/bin/vcfMerger2.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "strelka2.somatic.snvs_indels.vcf|mutect2.somatic.snvs_indels.FiltMutCallsTool.vcf|lancet.commpressed.somatic.snvs_indels.vcf.gz|octopus.legacy.vcf" --normal-sname "COLO829_C2" --tumor-sname "COLO829_T1"  -g ${REF_GENOME_FASTA_FILE} -o colo829.merged.vcf --prep-outfilenames "SLK.prep.vcf|MUT.prepped.vcf|LAN.prepped.vcf|OCT_prepped.vcf"  --filter "( GEN[0].DP>=10 && GEN[0].DP>=10 ) && ( GEN[0].AR<=0.02 && GEN[1].AR >= 0.05 )" --path-jar-snpsift /tools/snpEff/4.3/snpEff/SnpSift.jar --filter-by-pass --do-venn
+
+
 #### what tool-specific raw vcfs are currently supported?
 To bring each vcf up to vcfMerger2 specs, a tool-specific script that modifies and update tool-specific vcf is provided. (see `prep_vcfs` directory) 
-To date, 4 tools are supported.
+To date, 4 somatic tools are supported.
 - strelka2
 - mutect2
 - lancet
 - octopus
 
-If the variant caller users use is not listed above, users can make their own `prep` script for their tool then create a pull-request on github, or open an issue with keyword `improvement` as first line in bloc text. 
+To date, 3 germline callers are supported:
+- haplotype caller
+- freebayes
+- samtools mpileup
+
+
+
+If the variant caller is not listed above, users can make their own `prep` script for their tool then create a pull-request on github, or open an issue with keyword `improvement` as first line in bloc text. 
 
 ### Licence
 vcfMerger2 is under MIT licence.

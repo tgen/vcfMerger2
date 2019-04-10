@@ -242,7 +242,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		totnum_samples = len(set(l_snames)) ## get the number of sample detected within the VCF ; We already check if same number of samples for each vcf so no need here
 		log.info("Expected number of Samples in each VCF: "+str(totnum_samples))
 		log.info("Set of sample(s) found:: " + str(set(l_snames)))
-		log.info("Total Count of Variants (aka union of variant here):  " + str(tot_variants_count))
+		log.info("Total Count of Variants to be merged (aka union of variant here):  " + str(tot_variants_count))
 
 
 		counter = 0
