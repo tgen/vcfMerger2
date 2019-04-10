@@ -66,8 +66,9 @@ fi
 if [[ ! -e grch37.22.fa || ! -e grch37.22.fa.fai  ]] ; then echo -e "ERROR: grch37.22.fa or grch37.22.fa.fai NOT FOUND ; check directories and files" ; exit 1 ; fi 
 cd ..
 
+rm -r demo_out/*
 
-mkdir demo_out
+mkdir -p demo_out
 cd demo_out
 
 echo "Directory 'demo_out' has been created and has become our working directory"
