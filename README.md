@@ -298,3 +298,6 @@ If the variant caller is not listed above, users can make their own `prep` scrip
 
 ### Licence
 vcfMerger2 is under MIT licence.
+
+## Simplified Flowchart of the vcfMerger2 steps
+![flowchart](/vcfMerger2.flowchart.png)
