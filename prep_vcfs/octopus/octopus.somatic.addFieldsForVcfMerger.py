@@ -243,12 +243,14 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of_fields_to_check):
 	v1 = next(iter(vcf_cyobj))
 	log.info("Checking PS flag presence in FORMAT ...")
+	# Minimum_Expected_Fields_in_FORMAT_not_MANAGE_by_the_CODE
+	ExpectedFlags="GT:DP"
 	for FIELD in list_of_fields_to_check:
 		if not FIELD in v1.FORMAT:
 			log.warning(
 				FIELD+" tag is ABSENT from the FORMAT field of OCTOPUS\nPlease Check you have run Octopus with appropriate options (i.e, with random forest option and no other filtering option; random forest filtering add ALL the adequate fields to FORMAT columns )")
-			if ':'.join(v1.FORMAT) == "GT:DP:AR:AD":
-				log.info("FORMAT field is equivalent to 'GT:DP:AR:AD'")
+			if ':'.join(v1.FORMAT) == ExpectedFlags:
+				log.info("FORMAT field is equivalent to {}, but we request to have these flags at least: {}; And we try to manage the rest, such as AD and AR; Would be better if you could run random_Forest_Filtering; ".format(v1.FORMAT, ExpectedFlags))
 				log.warning(
 					"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
 				from shutil import copyfile
