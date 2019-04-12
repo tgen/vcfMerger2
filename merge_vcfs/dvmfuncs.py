@@ -389,7 +389,7 @@ def process_known_field(field, totnum_samples, dicField, v):
 	:return: the updated dictField
 	'''
 	nfor = v.format(field).tolist() ## return a numpy array  ; we need to manage this array for each recaptured field
-	log.info("In process known for flag << "+ field +" >> :  "+ str(nfor))
+	log.debug("In process known for flag << "+ field +" >> :  "+ str(nfor))
 	for i in range(len(nfor)):
 		if not len(dicField[i]) == 0:
 			dicField[i] = ":".join([dicField[i], str(','.join(str(e) for e in nfor[i] if e is not ","))])
