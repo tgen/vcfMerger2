@@ -227,8 +227,9 @@ function get_contigs_file(){
 		then
 			if [[ "${CONTIGSF}" == "" || ! -e "${CONTIGSF}"  ]]
 			then
-				echo -e "ERROR: at least one of the option --bam or --contigs-file has to be provided; Check your inputs; Aborting" ;
-				fexit
+			    echo -e "WARNING WARNING: neither --bam or --contigs-file got provided; We DO NOT garuantee that the contigs are present in LANCET vcfs in correct way; That might be the cause of Errors later on in the vcfMerge2 tool; Check that the First LANCET vcf has the correct expected contig names; WARNING WARNING" ;
+				#echo -e "ERROR: at least one of the option --bam or --contigs-file has to be provided; Check your inputs; Aborting" ;
+				#fexit
 			else
 				export CONTIGS_FILE="${CONTIGSF}"
 			fi
