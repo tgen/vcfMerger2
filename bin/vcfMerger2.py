@@ -983,7 +983,7 @@ def main(args, cmdline):
 				log.error(msg)
 				STOP = bool(True)
 
-		if STOP: sys.exit(255)
+		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED")
 
 		log.info("**** merge process section  ****".upper())
 		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
