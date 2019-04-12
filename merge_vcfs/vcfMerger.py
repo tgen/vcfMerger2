@@ -239,7 +239,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		# 3a) get the total number variants to process in order to calculate on the fly the value for the counter
 		# steps
 		tot_variants_count = len(dd)
-		totnum_samples = len(set(l_snames)) ## get the number of sample detected within the VCF ; We already check if same number of samples for each vcf so no need here
+		totnum_samples = len(list(set(l_snames))[0]) ## get the number of sample detected within the VCF ; We already check if same number of samples within each vcf so no need here; But we deal with tuples of strings so we need to extract the unique tuple from the set; because we expect only ONE tuple
 		log.info("Expected number of Samples in each VCF: "+str(totnum_samples))
 		log.info("Set of sample(s) found:: " + str(set(l_snames)))
 		log.info("Total Count of Variants to be merged (aka union of variant here):  " + str(tot_variants_count))
