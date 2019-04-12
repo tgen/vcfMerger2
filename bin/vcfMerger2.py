@@ -960,17 +960,30 @@ def main(args, cmdline):
 		funcToUse = parse_json_data_and_run_prep_vcf_parallel if not germline else parse_json_data_and_run_prep_vcf_germline_parallel
 		procs = []
 		for tool in data.keys():
-			p = multiprocessing.Process(target=funcToUse, args=(tool, data, dryrun))
+			p = multiprocessing.Process(target=funcToUse, name=tool, args=(tool, data, dryrun))
 			procs.append(p)
 
 		for p in procs:
 			p.start()
 			time.sleep(1)
 
-
+		procs_exit_codes = {}
 		for p in procs:
 			p.join()
 
+		for p in procs:
+			procs_exit_codes[p.name] = p.exitcode
+
+		STOP = bool(false)
+		for name, ev in procs_exit_codes.items():
+			msg = " prep ev value of {} for tool {} ".format(ev, name)
+			if ev == 0:
+				log.info(msg)
+			else:
+				log.error(msg)
+				STOP = bool(true)
+
+		if STOP: sys.exit(255)
 
 		log.info("**** merge process section  ****".upper())
 		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
