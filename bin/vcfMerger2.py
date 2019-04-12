@@ -872,11 +872,13 @@ def main(args, cmdline):
 	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
 		raise Exception(
 			"Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
-	else:
+	elif args['path_jar_snpsift'] is not None:
 		path_jar_snpsift = args['path_jar_snpsift']
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 		log.info("Well, you provided the path to snpSift probably before the options for foltering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
+	else:
+		log.info("Why Am I here?")
 
 
 	germline = False
