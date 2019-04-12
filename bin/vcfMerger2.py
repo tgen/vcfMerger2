@@ -975,7 +975,7 @@ def main(args, cmdline):
 			procs_exit_codes[p.name] = p.exitcode
 
 		STOP = bool(False)
-		for name, ev in procs_exit_codes.items(): + " FAILED"
+		for name, ev in procs_exit_codes.items():
 			msg = " prep ev value of {} for tool {} ".format(ev, name)
 			if ev == 0:
 				log.info(msg)
