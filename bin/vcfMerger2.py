@@ -983,12 +983,12 @@ def main(args, cmdline):
 				log.error(msg + " --> FAILED")
 				STOP = bool(True)
 
-		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED + " FAILED"")
+		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED")
 
 		log.info("**** merge process section  ****".upper())
 		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 	else:
-		log.info("**** SKIPPED prep vcfs step SKIPPED ****") + " FAILED"
+		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 
 	## FILTERING STEP Enabled for Already PREPPED VCFS (note: Filtering must not be applied on un-prepped vcfs unless user knows what he/she is doing
 	if filter_string_for_snpsift is not None:
