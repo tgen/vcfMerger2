@@ -389,7 +389,7 @@ if __name__ == "__main__":
 		new_vcf = new_vcf_name
 
 	## checking if PS flag is still present in the VCF genotype fields
-	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS", "AD", "ADP"])
+	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS"])
 
 	vcf = update_header(vcf)
 
