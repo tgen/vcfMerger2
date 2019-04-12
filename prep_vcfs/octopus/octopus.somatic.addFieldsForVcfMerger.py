@@ -361,8 +361,14 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	else:
 		# Because Octopus does not provide enough information to calculate AD, we assign default
 		# values of 0,0 ## can be discussed and modify if users think differently
-		ADs = [[-2, -2], [-2, -2]]
-		ARs = ADs
+		AR_tumor = [-2, -2]
+		AR_normal = [-2, -2]
+		DP_tumor = v.format('DP')[idxT][0]
+		DP_normal = v.format('DP')[idxN][0]
+		AD_tumor = [-2, -2]
+		AD_normal = [-2, -2]
+		ADs = [AD_normal, AD_tumor]
+		ARs = [AR_normal, AR_tumor]
 
 	log.debug("ADs  is  : " + str(ADs))
 	log.debug("ARs  is  : " + str(ARs))
