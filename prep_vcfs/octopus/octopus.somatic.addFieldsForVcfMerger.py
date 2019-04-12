@@ -260,6 +260,13 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of
 		else:
 			log.info(FIELD+" flag Found")
 
+def if_dot_assign_negative_value(obj):
+	if obj != ".":
+		return obj
+	else:
+		return -2
+
+
 def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	'''
 	Calculate the AR for each sample in the variant record v
@@ -271,90 +278,88 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	idxN = 1 if int(column_normal) == 11 else 0
 	log.debug("___".join(str(x) for x in [ idxT, idxN ]) )
 
-	## capturing Original AD and ADP
-	log.debug(str(v))
-	log.debug("AD____TUMOR is " + str(v.format('AD')[idxT]))
-	log.debug("AD____TUMOR is "+str(v.format('AD')[idxT][0]))
-	AD_tumor = v.format('AD')[idxT]
-	ADP_tumor = v.format('ADP')[idxT]
-	AD_normal = v.format('AD')[idxN]
-	ADP_normal = v.format('ADP')[idxN]
+	if 'AD' in v.FORMAT:
+		log.debug(str(v))
+		log.debug("AD____TUMOR is " + str(v.format('AD')[idxT]))
+		log.debug("AD____TUMOR is "+str(v.format('AD')[idxT][0]))
+		## capturing Original AD and ADP
+		AD_tumor = v.format('AD')[idxT]
+		ADP_tumor = v.format('ADP')[idxT]
+		AD_normal = v.format('AD')[idxN]
+		ADP_normal = v.format('ADP')[idxN]
 
-	def if_dot_assign_negative_value(obj):
-		if obj != ".":
-			return obj
+
+		# AD_tumor = -1
+		# ADP_tumor = 600
+		#AD_normal = -1
+		#ADP_normal = 9999
+
+		log.debug(str(v))
+		log.debug("ADP --->  " + str(ADP_normal) + " -----  " + str(ADP_tumor))
+		## Re-Allocationg ADs to ADOs, new tag for Original Octopus AD flags and values
+		AD_tumor = int(if_dot_assign_negative_value(AD_tumor))
+		AD_normal = int(if_dot_assign_negative_value(AD_normal))
+		ADP_tumor = int(if_dot_assign_negative_value(ADP_tumor))
+		ADP_normal = int(if_dot_assign_negative_value(ADP_normal))
+		ADOs = [AD_tumor,AD_normal] if idxT == 0 else [AD_normal,AD_tumor]
+		log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ")
+		v.set_format('ADO', np.array(ADOs))
+
+		## Calculate AR (allele ration using AD and ADP)
+		try:
+			log.debug("before calcul AR, AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
+			log.debug("before calcul AR, ADP = ---->>    " + str(ADP_normal) + " -----  " + str(ADP_tumor))
+
+			if AD_tumor != "." and AD_tumor >=0:
+				AR_tumor = round(float(AD_tumor/ADP_tumor), 2)
+				## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
+				AD_tumor = [ADP_tumor - AD_tumor, ADP_tumor]
+			else:
+				AR_tumor = int(-2)
+				AD_tumor = [0, ADP_tumor]
+		except ZeroDivisionError:
+			log.debug("division by zero!")
+			AD_tumor = [0, 0]
+			AR_tumor = float(0.00)
+		try:
+			if AD_normal != "." and AD_normal >=0:
+				AR_normal = round(float(AD_normal / ADP_normal), 2)
+				AD_normal = [ADP_normal - AD_normal, ADP_normal]
+			else:
+				AR_normal = int(-2)
+				log.debug("AD in the else of the try --> " + str(ADP_normal))
+				AD_normal = [0, ADP_normal]
+
+		except ZeroDivisionError:
+			log.debug("division by zero!")
+			AD_normal = [0, 0]
+			AR_normal = float(0.00)
+
+		log.debug("AR --->> " + str(AR_normal) + " -----  " + str(AR_tumor))
+		log.debug("AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
+		log.debug("DP tumor is  : "+str(v.format('DP')[idxT][0]))
+		log.debug("DP normal is  : " + str(v.format('DP')[idxN][0]))
+		DP_tumor = v.format('DP')[idxT][0] #if ',' in v.format('DP')[idxT] else v.format('DP')[idxT]		## returns numpy.str_
+		DP_normal = v.format('DP')[idxN][0] #if ',' in v.format('DP')[idxN][0] else v.format('DP')[idxN]		## returns numpy.str_
+		#DP_tumor = v.format('DP')[idxT]
+		#DP_normal = v.format('DP')[idxN]
+		log.debug(str(DP_normal) + " -----  " + str(DP_tumor))
+		if is_obj_nan(float(AR_tumor)): AR_tumor = 0.00
+		if is_obj_nan(float(AR_normal)): AR_normal = 0.00
+		if is_obj_nan(int(DP_tumor)): DP_tumor = 0.00
+		if is_obj_nan(int(DP_normal)): DP_normal = 0.00
+
+		if idxT == 0:
+			ARs = [AR_tumor, AR_normal]
+			ADs = [AD_tumor, AD_normal]
 		else:
-			return -2
+			ARs = [AR_normal, AR_tumor]
+			ADs = [AD_normal, AD_tumor]
 
-	# AD_tumor = -1
-	# ADP_tumor = 600
-	#AD_normal = -1
-	#ADP_normal = 9999
-
-	log.debug(str(v))
-	log.debug("ADP --->  " + str(ADP_normal) + " -----  " + str(ADP_tumor))
-	## Re-Allocationg ADs to ADOs, new tag for Original Octopus AD flags and values
-	AD_tumor = int(if_dot_assign_negative_value(AD_tumor))
-	AD_normal = int(if_dot_assign_negative_value(AD_normal))
-	ADP_tumor = int(if_dot_assign_negative_value(ADP_tumor))
-	ADP_normal = int(if_dot_assign_negative_value(ADP_normal))
-	ADOs = [AD_tumor,AD_normal] if idxT == 0 else [AD_normal,AD_tumor]
-	log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ")
-	v.set_format('ADO', np.array(ADOs))
-
-	## Calculate AR (allele ration using AD and ADP)
-	try:
-		log.debug("before calcul AR, AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
-		log.debug("before calcul AR, ADP = ---->>    " + str(ADP_normal) + " -----  " + str(ADP_tumor))
-
-		if AD_tumor != "." and AD_tumor >=0:
-			AR_tumor = round(float(AD_tumor/ADP_tumor), 2)
-			## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
-			AD_tumor = [ADP_tumor - AD_tumor, ADP_tumor]
-		else:
-			AR_tumor = int(-2)
-			AD_tumor = [0, ADP_tumor]
-	except ZeroDivisionError:
-		log.debug("division by zero!")
-		AD_tumor = [0, 0]
-		AR_tumor = float(0.00)
-	try:
-		if AD_normal != "." and AD_normal >=0:
-			AR_normal = round(float(AD_normal / ADP_normal), 2)
-			AD_normal = [ADP_normal - AD_normal, ADP_normal]
-		else:
-			AR_normal = int(-2)
-			log.debug("AD in the else of the try --> " + str(ADP_normal))
-			AD_normal = [0, ADP_normal]
-
-	except ZeroDivisionError:
-		log.debug("division by zero!")
-		AD_normal = [0, 0]
-		AR_normal = float(0.00)
-
-	log.debug("AR --->> " + str(AR_normal) + " -----  " + str(AR_tumor))
-	log.debug("AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
-	log.debug("DP tumor is  : "+str(v.format('DP')[idxT][0]))
-	log.debug("DP normal is  : " + str(v.format('DP')[idxN][0]))
-	DP_tumor = v.format('DP')[idxT][0] #if ',' in v.format('DP')[idxT] else v.format('DP')[idxT]		## returns numpy.str_
-	DP_normal = v.format('DP')[idxN][0] #if ',' in v.format('DP')[idxN][0] else v.format('DP')[idxN]		## returns numpy.str_
-	#DP_tumor = v.format('DP')[idxT]
-	#DP_normal = v.format('DP')[idxN]
-	log.debug(str(DP_normal) + " -----  " + str(DP_tumor))
-	if is_obj_nan(float(AR_tumor)): AR_tumor = 0.00
-	if is_obj_nan(float(AR_normal)): AR_normal = 0.00
-	if is_obj_nan(int(DP_tumor)): DP_tumor = 0.00
-	if is_obj_nan(int(DP_normal)): DP_normal = 0.00
-
-	if idxT == 0:
-		ARs = [AR_tumor, AR_normal]
-		ADs = [AD_tumor, AD_normal]
 	else:
-		ARs = [AR_normal, AR_tumor]
-		ADs = [AD_normal, AD_tumor]
-
-	# Because Octopus does not provide enough information to calculate AD, we assign default
-	# values of 0,0 ## can be discussed and modify if users think differently
+		# Because Octopus does not provide enough information to calculate AD, we assign default
+		# values of 0,0 ## can be discussed and modify if users think differently
+		ADs = [[-2, -2], [-2, -2]]
 
 	log.debug("ADs  is  : " + str(ADs))
 	log.debug("ARs  is  : " + str(ARs))
