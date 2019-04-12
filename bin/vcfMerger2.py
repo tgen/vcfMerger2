@@ -974,14 +974,14 @@ def main(args, cmdline):
 		for p in procs:
 			procs_exit_codes[p.name] = p.exitcode
 
-		STOP = bool(false)
+		STOP = bool(False)
 		for name, ev in procs_exit_codes.items():
 			msg = " prep ev value of {} for tool {} ".format(ev, name)
 			if ev == 0:
 				log.info(msg)
 			else:
 				log.error(msg)
-				STOP = bool(true)
+				STOP = bool(True)
 
 		if STOP: sys.exit(255)
 
