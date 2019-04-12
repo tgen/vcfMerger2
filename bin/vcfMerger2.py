@@ -975,20 +975,20 @@ def main(args, cmdline):
 			procs_exit_codes[p.name] = p.exitcode
 
 		STOP = bool(False)
-		for name, ev in procs_exit_codes.items():
+		for name, ev in procs_exit_codes.items(): + " FAILED"
 			msg = " prep ev value of {} for tool {} ".format(ev, name)
 			if ev == 0:
 				log.info(msg)
 			else:
-				log.error(msg)
+				log.error(msg + " --> FAILED")
 				STOP = bool(True)
 
-		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED")
+		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED + " FAILED"")
 
 		log.info("**** merge process section  ****".upper())
 		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 	else:
-		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
+		log.info("**** SKIPPED prep vcfs step SKIPPED ****") + " FAILED"
 
 	## FILTERING STEP Enabled for Already PREPPED VCFS (note: Filtering must not be applied on un-prepped vcfs unless user knows what he/she is doing
 	if filter_string_for_snpsift is not None:
