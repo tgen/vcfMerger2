@@ -106,29 +106,29 @@ function check_and_update_sample_names(){
         echo -e "but as usual, there is probably no harmony ..." 1>&2
 
         ## HERE we ASSUME that the user-given list of germline sample names is for renaming only and the order of the sample is ALREADY the same for ALL vcf
-#        for I in `seq 0 $((${#SNAMES_IN_VCF[@]}-1))`
-#        do
-#            CURNAME=${SNAMES_IN_VCF[I]}
-#            SN_IN_VCF=false
-#            POSITION_J=0
-#            for J in `seq 0 $((${#LSNAMES[@]}-1))`
-#            do
-#                if [[ ${SNAMES_IN_VCF[I]} -eq ${LSNAMES[J]} ]] ;
-#                then
-#                    SN_IN_VCF=true
-#                    POSITION_J=${J}
-#                    break
-#                fi
-#            done
-#            if [[ ${SN_IN_VCF} == "true" ]] ;
-#            then
-#                if [[ ${I} == ${POSITION_J} ]] ; then echo -e "sample names are in same column ; no modification of headerline line in vcf necessary" ;
-#                else
-#                    echo -e "we need to update the column by moving it to position $I"
-#                    ##TODO
-#                fi
-#            fi
-#        done
+        for I in `seq 0 $((${#SNAMES_IN_VCF[@]}-1))`
+        do
+            CURNAME=${SNAMES_IN_VCF[I]}
+            SN_IN_VCF=false
+            POSITION_J=0
+            for J in `seq 0 $((${#LSNAMES[@]}-1))`
+            do
+                if [[ ${SNAMES_IN_VCF[I]} -eq ${LSNAMES[J]} ]] ;
+                then
+                    SN_IN_VCF=true
+                    POSITION_J=${J}
+                    break
+                fi
+            done
+            if [[ ${SN_IN_VCF} == "true" ]] ;
+            then
+                if [[ ${I} == ${POSITION_J} ]] ; then echo -e "sample names are in same column ; no modification of headerline line in vcf necessary" ;
+                else
+                    echo -e "we need to update the column by moving it to position $I"
+                    ##TODO
+                fi
+            fi
+        done
         zcat -f ${VCF} > ${VCF_OUT}
         echo ${VCF_OUT}
     fi
