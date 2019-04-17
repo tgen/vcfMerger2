@@ -27,7 +27,7 @@
 ### Major Contributors: Christophe Legendre 
 ### Minor Contributors:
 
-
+## trap to capture the exit value from a function and from within a function
 trap "exit 1" TERM
 export TOP_PID=$$
 
@@ -37,7 +37,7 @@ DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, or their corresponding abbreviations, LAN|LCT, MUT,
+VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, vardictjava, VarDictJava, or their corresponding abbreviations, LAN|LCT, MUT,
 OCT, SLK, VDJ|VDT, respectively [case Insensitive]"  ## if tools are later added, we will update this variable along
 # with the
 # function run_tool(), where the case statement will need to be updated.

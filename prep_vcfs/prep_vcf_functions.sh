@@ -393,7 +393,7 @@ function process_octopus_vcf(){
 function process_vardictjava_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	VCF=$( add_Contigs ${VCF} )
+	#VCF=$( add_Contigs ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}

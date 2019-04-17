@@ -726,3 +726,5 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
 
+def add_text_to_image(img_obj):
+	pass
