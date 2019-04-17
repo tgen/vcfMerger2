@@ -228,7 +228,7 @@ def add_new_flags(v, column_tumor, column_normal, tot_number_samples):
 	idxT = 0 if int(column_tumor) == 10 else 1
 	idxN = 1 if int(column_normal) == 11 else 0
 	log.debug("___".join(str(x) for x in [ idxT, idxN ]) )
-	if 'AF' v.FORMAT:
+	if 'AF' in v.FORMAT:
 		AR_tumor = v.format('AF')[idxT][0]
 		AR_normal = v.format('AF')[idxN][0]
 	if 'DP' in v.FORMAT:
