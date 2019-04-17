@@ -361,13 +361,14 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	else:
 		# Because Octopus does not provide enough information to calculate AD, we assign default
 		# values of 0,0 ## can be discussed and modify if users think differently
-		dummy_value = int(-2)
+		dummy_value = int(-2)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
 		AR_tumor = [dummy_value, dummy_value]
 		AR_normal = [dummy_value, dummy_value]
 		DP_tumor = v.format('DP')[idxT][0]
 		DP_normal = v.format('DP')[idxN][0]
 		AD_tumor = [dummy_value, dummy_value]
 		AD_normal = [dummy_value, dummy_value]
+
 		ADs = [AD_normal, AD_tumor]
 		ARs = [AR_normal, AR_tumor]
 

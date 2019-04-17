@@ -228,11 +228,12 @@ def add_new_flags(v, column_tumor, column_normal, tot_number_samples):
 	idxT = 0 if int(column_tumor) == 10 else 1
 	idxN = 1 if int(column_normal) == 11 else 0
 	log.debug("___".join(str(x) for x in [ idxT, idxN ]) )
-
-	AR_tumor = v.format('AF')[idxT][0]
-	AR_normal = v.format('AF')[idxN][0]
-	DP_tumor = v.format('DP')[idxT][0]
-	DP_normal = v.format('DP')[idxN][0]
+	if 'AF' v.FORMAT:
+		AR_tumor = v.format('AF')[idxT][0]
+		AR_normal = v.format('AF')[idxN][0]
+	if 'DP' in v.FORMAT:
+		DP_tumor = v.format('DP')[idxT][0]
+		DP_normal = v.format('DP')[idxN][0]
 
 	if is_obj_nan(AR_tumor): AR_tumor = 0.00 ## takes care of possible abscence of the AF flag for unknown reason
 	if is_obj_nan(AR_normal): AR_normal = 0.00

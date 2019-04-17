@@ -878,7 +878,7 @@ def main(args, cmdline):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 		log.info("Well, you provided the path to snpSift probably before the options for foltering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
 	else:
-		log.info("Why Am I here?")
+		log.info("No Path given for SnpSift")
 
 
 	germline = False
