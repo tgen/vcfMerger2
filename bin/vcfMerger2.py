@@ -426,7 +426,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 	# display the command line for log purposes
 	log.info(prep_vcf_script_path + " " + cmdLine)
 	my_command = ' '.join(["bash", prep_vcf_script_path, cmdLine])
-	logFilename = "log_prep_vcf_{}.logs".format(tool)
+	logFilename = os.path.sep.join([ data[tool]['dir_work'] ,"log_prep_vcf_{}.logs".format(tool) ])
 	subp_logfile = open(logFilename, "w")
 	if not dryrun:
 		log.info("")
