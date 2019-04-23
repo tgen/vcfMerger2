@@ -114,7 +114,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 	do
 		# for options with required arguments, an additional shift is required
 		case "$1" in
-		-d|--dir-work) export DIR_WORK=$2 ; LI="${LI}\nDIR_WORK==\"${DIR_WORK}\"" ;  shift ;;
+		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nDIR_WORK==\"${DIR_OUTPUT}\"" ;  shift ;;
 		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
 		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
 		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
@@ -136,6 +136,16 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		esac
 		shift
 	done
+}
+
+function delete_temporary_files(){
+    local delete_temps=$1
+#    local PATTERN="sname.vcf$|sname.prep.vcf$|sname.prep.norm.vcf$|sname.decomp.vcf$|sname.decomp.prep.vcf$|sname.decomp.prep.norm.vcf"
+    local PATTERN="*sname.*.vcf$"
+    if [[ ${delete_temp} == 1 ]]
+    then
+        rm $( find ${DIR_OUTPUT} -type f -name "${PATTERN}")
+    fi
 }
 
 function recap_input(){
@@ -338,7 +348,7 @@ function final_msg(){
 	then
 		VCF_FINAL=${VCF_FINAL_USER_GIVEN_NAME}
 	else
-		VCF_FINAL=${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
+		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
 	cp ${VCF} ${VCF_FINAL}
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
@@ -405,11 +415,11 @@ function run_tool(){
 	local DIR_PATH_TO_SCRIPTS="${DIR_PATH_TO_SCRIPTS}"
 
 	case $TOOLNAME in
-		strelka2|slk)
+		strelka2|slk|strelka)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/strelka2/strelka2.somatic.addFieldsForVcfMerger.py"
 			process_strelka2_vcf ${VCF}
 			;;
-		mutect2|mtc)
+		mutect2|mtc|mutect)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/mutect2/mutect2.somatic.addFieldsForVcfMerger.py"
 			process_mutect2_vcf ${VCF}
 			;;
@@ -441,6 +451,10 @@ function run_tool(){
             PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/samtools/samtools.germline.1s.addFieldsForVcfMerger.py"
             process_samtools_mpileup_vcf ${VCF}
             ;;
+        deepvariant|dpv)
+            PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/deepvariant/deepvariant.germline.1s.addFieldsForVcfMerger.py"
+            process_deepvariant_vcf ${VCF}
+            ;;
 
 
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
@@ -461,10 +475,11 @@ function main(){
 
 
 	## check files and folders if exist
-	checkDir ${DIR_WORK}
+	checkDir ${DIR_OUTPUT}
 	checkFile ${REF_GENOME_FASTA}
 
-	cd ${DIR_WORK}
+
+	cd ${DIR_OUTPUT}
 
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
@@ -482,7 +497,7 @@ function main(){
 	then
 		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}
 		VCF=$( concatenate_snvs_indels ${TOOLNAME} ${VCF_SNVS_FILE} ${VCF_INDELS_FILE} )
-		run_tool ${TOOLNAME} ${VCF}
+		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
 	else
 		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
 		fexit
