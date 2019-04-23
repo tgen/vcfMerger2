@@ -98,7 +98,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 
 
 	log.info("creating new header")
-	lh = []
+	lh = [] ## list headers
 	l_contigs = []
 	## capture infos and assign values
 	fileformat="##fileformat=VCFv4.2" ## harcoded
