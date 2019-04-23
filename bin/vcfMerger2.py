@@ -632,6 +632,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	list_vcfs = ""
 	list_tools = ""
 	list_tools_acronyms = ""
+	list_precedence_order = ""
 	for tool in data.keys():
 		vcf = data[tool]['vcf']
 		prepped_vcf = data[tool]['prepped_vcf_outfilename']
@@ -640,6 +641,9 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		vcf_to_add = prepped_vcf if prepped_vcf != "" else vcf
 		list_vcfs = delim.join([list_vcfs, vcf_to_add]) if list_vcfs != "" else vcf_to_add
 		list_tools_acronyms = delim.join([list_tools_acronyms, acronym]) if list_tools_acronyms != "" else acronym
+		list_precedence_order = data[tool]['tool_precedence_order'] if list_precedence_order == ""
+		if list_precedence_order != "" and len(list_precedence_order) != len(data.keys()):
+			list_precedence_order = ""
 
 	log.info(str(list_tools_acronyms))
 	my_command = ' '.join(["python", vcfmerger_tool_path,
@@ -649,6 +653,8 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	                       "-a", double_quote_str(list_tools_acronyms)
 	                       ])
 
+	if list_precedence_order != "":
+		my_command = my_command + "--precedence " + double_quote_str(",".join(list_precedence_order))
 	if lossy:
 		my_command = my_command + " --lossy"
 

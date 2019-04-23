@@ -81,8 +81,8 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 	:param lvcfs: list of vcf tools delimited by the delim value
 	:param ltoolnames: list of names, toolnames, given in same order as the vcf
 	:param list_tool_precedence_order: if specified, this list of toolnames given in a specific order (different or
-	same as order inltoolnames, will be used for precedence order; NOTE: the precedence is only a term here that
-	means the value in FORMAT fields will come from the first tool which call the variant.
+	same as order in ltoolnames, will be used for precedence order; NOTE: the precedence is only a term here that
+	means the value in FORMAT fields will come from the first tool which call the variant and has the precedence.
 	:param lossless: the INFO column will be FILLED with ALL the information coming from ALL the TOOLS and not only
 	the first tool which got precedence
 	:param merge_vcf_outfilename:  name of the vcf with the merged info
