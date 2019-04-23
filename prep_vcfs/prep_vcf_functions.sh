@@ -483,6 +483,7 @@ function main(){
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
+		VCF_ALL_CALLS = $(readlink -f ${VCF_ALL_CALLS})
 		cd ${DIR_OUTPUT}
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
