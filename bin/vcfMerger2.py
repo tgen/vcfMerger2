@@ -29,16 +29,15 @@
 
 
 import argparse
-import json
-import subprocess
-import os
-from os import path
-import sys
-import logging as log
-import time
 import gzip
-import shutil
+import json
+import logging as log
+import os
 import re
+import shutil
+import subprocess
+import sys
+import time
 
 # CAPTURED VARIABLES AUTOMATICALLY
 ## capturing the current path of the current script
@@ -654,7 +653,8 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	                       ])
 
 	if list_precedence_order != "":
-		my_command = my_command + "--precedence " + double_quote_str(delim.join(list_precedence_order))
+		my_command = my_command + " --precedence" + double_quote_str(delim.join(list_precedence_order))
+
 	if lossy:
 		my_command = my_command + " --lossy"
 
