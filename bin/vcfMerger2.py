@@ -653,10 +653,10 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	                       ])
 
 	if list_precedence_order != "":
-		my_command = my_command + " --precedence" + double_quote_str(delim.join(list_precedence_order))
+		my_command = my_command + " --precedence " + double_quote_str(delim.join(list_precedence_order))
 
 	if lossy:
-		my_command = my_command + " --lossy"
+		my_command = my_command + " --lossy "
 
 	if do_venn:
 		for tool in data.keys():
