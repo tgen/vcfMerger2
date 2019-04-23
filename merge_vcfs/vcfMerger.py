@@ -122,7 +122,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 
 	vcfMerger_Info_Fields_Specific = TN_FLAGS + Additional_FLAGS
 
-	log.info("is list_tool_precedence empty?".format(str(list_tool_precedence_order)))
+	log.info("is list_tool_precedence empty? ".format(str(list_tool_precedence_order)))
 	if list_tool_precedence_order is not None:
 		'''here we sort and reassigned ltoolnames and lvcfs based on list_tool_precedence_order ; names of the 
 		tools have to match 100%
@@ -301,7 +301,7 @@ def main(args, cmdline):
 	if args["precedence"]:
 		list_tool_precedence_order = str(args["precedence"]).split(delim)
 		list_tool_precedence_order = [x.upper() for x in list_tool_precedence_order]
-		log.info("precedence: {} ".format(str(list_tool_precedence_order)))
+		log.info("precedence given: {} ".format(str(list_tool_precedence_order)))
 
 	lossless = True
 	lossy = False
@@ -348,7 +348,8 @@ def main(args, cmdline):
 	elif lacronyms is None:
 		lacronyms = [ "" ]*len(ltoolnames)
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
-		exit("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
+		log.error("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
+		sys.exit(-1)
 	if do_venn:
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
