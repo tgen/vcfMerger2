@@ -35,12 +35,12 @@ function check_ev(){
 
 function checkDir(){
 	local D=$1
-	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >>; Aborting!" ; fexit; fi ;
+	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >> ; curdir = ${PWD}; Aborting!" ; fexit; fi ;
 }
 
 function checkFile(){
 	local F=$1
-	if [[ ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >>; Aborting!" ; fexit ; fi ;
+	if [[ ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >> ; curdir = ${PWD}; Aborting!" ; fexit ; fi ;
 }
 
 function checkFileName(){
@@ -479,12 +479,11 @@ function main(){
 	checkFile ${REF_GENOME_FASTA}
 
 
-	cd ${DIR_OUTPUT}
-
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
+		cd ${DIR_OUTPUT}
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
 		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
