@@ -26,9 +26,12 @@
 ### Minor Contributors:
 
 
-import re, sys
-from myGenotype import Genotype
 import logging as log
+import re
+import sys
+
+from myGenotype import Genotype
+
 
 def get_dictOfLoci(vcfToDict_instance):
 	"""
@@ -127,10 +130,12 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		if reference == "":
 			indices = [i for i, s in enumerate(vtdo.header_other_info) if '##reference=' in s]
 			if indices == None or len(indices) == 0:
-				log.error("ERROR: Line ##reference is missing in your input vcf file for tool {}".format(vtdo.toolname) )
-				sys.exit(-1)
-			reference = vtdo.header_other_info[indices[0]]
-			log.info("reference is: {}".format(reference))
+				reference = ""
+				# log.error("ERROR: Line ##reference is missing in your input vcf file for tool {}".format(vtdo.toolname) )
+				# sys.exit(-1)
+			else:
+				reference = vtdo.header_other_info[indices[0]]
+			log.info("reference is: {}".format(reference if reference != "" else "Reference Line Not Defined In {} Vcf ".format(vtdo.toolname)))
 
 		toolname_or_acronym = get_acronym_for_current_tool(vtdo.toolname, dico_map_tool_acronym)
 		for s in vtdo.header_filters:
@@ -177,7 +182,8 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		lh.append(item)
 	for item in vcfMerger_Info_Fields_Specific:
 		lh.append(item)
-	lh.append(reference)
+	if reference is not None or reference != "":
+		lh.append(reference)
 
 	lh.append(command_line)
 	return lh  ## returns a list

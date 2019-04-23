@@ -705,7 +705,6 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 			subprocess_cmd(" ".join(str(x) for x in mycmd))
 
 
-
 def check_path_to_vcfs(lvcfs):
 	iterator = iter(lvcfs)
 	while True:
