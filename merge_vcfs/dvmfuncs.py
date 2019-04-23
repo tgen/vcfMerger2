@@ -123,10 +123,16 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 
 	for vtdo in tuple_objs:  ## list of vcfToDict objects
 		log.info("reference is: {}".format(reference))
+		log.info("vtdo.header_other_info) is length : {}".format(str(vtdo.header_other_info)))
 		log.info("vtdo is length : {}".format(str(len(vtdo))))
 
+
+		## capturing the ##reference informatino from the tool which has precedenc
 		if reference == "":
 			indices = [i for i, s in enumerate(vtdo.header_other_info) if '##reference=' in s]
+			if indices == None or len(indices) == 0:
+				log.error("ERROR: Line ##reference is missing in your input vcf file for tool {}".format(vtdo.toolname) )
+				sys.exit(-1)
 			reference = vtdo.header_other_info[indices[0]]
 			log.info("reference is: {}".format(reference))
 
