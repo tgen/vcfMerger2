@@ -243,7 +243,7 @@ Users can run these two steps independently if needed, even though this can be a
 
 #### How to _**only**_ prepare the vcf files using vcfMerger2?
 Users can prepare tool-specific vcf by only running the sub-step of vcfMerger2 called `prep_vcf` independently of the `all-in-one` way described above. 
-The script called `prep_vcf.sh` allows you to specifically bring up to vcfMerger2 specs vcfs for the supported tools *(see list of supported tools below)*.
+The script called `prep_vcf.sh` allows you to specifically bring up to vcfMerger2-specs vcfs for the supported tools *(see list of supported tools below)*.
 This script can be called directly and run independently for each vcf and tool. 
 
 Example_1:  

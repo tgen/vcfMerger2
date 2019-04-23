@@ -119,10 +119,15 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		lh.append(contig)
 	## prefixing the header with the toolname, the same way the INFO Fields Flag are prefixed
 	reference=""
+	log.info("vtdo is length : {}".format(str(len(vtdo))))
+
 	for vtdo in tuple_objs:  ## list of vcfToDict objects
+		log.info("reference is: {}".format(reference))
+
 		if reference == "":
 			indices = [i for i, s in enumerate(vtdo.header_other_info) if '##reference=' in s]
 			reference = vtdo.header_other_info[indices[0]]
+			log.info("reference is: {}".format(reference))
 
 		toolname_or_acronym = get_acronym_for_current_tool(vtdo.toolname, dico_map_tool_acronym)
 		for s in vtdo.header_filters:
