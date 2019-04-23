@@ -925,7 +925,7 @@ def main(args, cmdline):
 		try:
 			if not os.path.exists(dirout):
 				os.mkdir(dirout)
-		dirout = os.path.realpath(dirout)
+			dirout = os.path.realpath(dirout)
 		except Exception as e:
 			log.info(e)
 			sys.exit(-1)
