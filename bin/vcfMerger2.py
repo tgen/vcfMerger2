@@ -155,7 +155,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False):
+                       TH_AR=0.9, do_venn=False, dirout="."):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -169,7 +169,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 			data[ltoolnames[tool_idx]]['tool_acronym'] = lacronyms[tool_idx]
 		data[ltoolnames[tool_idx]]['tool_precedence_order'] = "" if ltpo is None else ltpo
 
-		data[ltoolnames[tool_idx]]['dir_work'] = "."
+		data[ltoolnames[tool_idx]]['dir_work'] = dirout
 
 		# if os.path.dirname(lvcfs[tool_idx]) is None or os.path.dirname(lvcfs[tool_idx]) == "":
 		# 	data[ltoolnames[tool_idx]]['dir_work'] = "."
@@ -761,7 +761,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if not germline:
 		if tumor_sname is None or normal_sname is None or (tumor_sname is None and normal_sname is None):
 			log.error(
-				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and normal-sname with expected sample names")
+				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and --normal-sname with expected sample names")
 			sys.exit(-1)
 	if germline_snames is not None and germline is False and (tumor_sname is not None or normal_sname is not None):
 		log.error(
@@ -914,6 +914,16 @@ def main(args, cmdline):
 		do_venn = True
 		log.info("make venn enabled")
 
+	dirout = os.curdir
+	if args["dir_out"]:
+		dirout = args["dir_out"]
+		try:
+			if not os.path.exists(dirout):
+				os.mkdir(dirout)
+		except Exception as e:
+			log.info(e)
+			sys.exit()
+
 	dryrun = False
 	if args["dry_run"]:
 		dryrun = args["dry_run"]
@@ -944,7 +954,8 @@ def main(args, cmdline):
 	                          lcontigs=lcontigs,
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
-	                          do_venn=do_venn)
+	                          do_venn=do_venn,
+	                          dirout=dirout)
 	json_filename = "vcfMerger.json" if not germline else "vcfMerger_germline.json"
 	make_json(data, json_filename)
 	# inFileJson = make_json(data, json_filename)
@@ -1143,6 +1154,10 @@ def make_parser_args():
 	optional.add_argument('--do-venn',
 	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
 	                      action='store_true')
+
+	optional.add_argument('--dir-out',
+	                      help=' direcgtory where the outputs of vcfMerger2 will be written ',
+	                      action=UniqueStore)
 
 	optional.add_argument('-n', '--dry-run',
 	                      required=False,
