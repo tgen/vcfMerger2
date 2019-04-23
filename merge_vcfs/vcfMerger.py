@@ -122,6 +122,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 
 	vcfMerger_Info_Fields_Specific = TN_FLAGS + Additional_FLAGS
 
+	log.info("is list_tool_precedence empty?".format(str(list_tool_precedence_order)))
 	if list_tool_precedence_order is not None:
 		'''here we sort and reassigned ltoolnames and lvcfs based on list_tool_precedence_order ; names of the 
 		tools have to match 100%
@@ -131,6 +132,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 			     "input\n" + "sorted_list_tool_precedence -> " + str(sorted(list_tool_precedence_order)) +
 			     "\nsorted_list_tool_names ------> "
 			     + str(sorted(ltoolnames)))
+		## REORDERING the list of PRECEDENCE of the TOOLs
 		indices = []
 		for toolname in list_tool_precedence_order:
 			indices.append(ltoolnames.index(toolname))
