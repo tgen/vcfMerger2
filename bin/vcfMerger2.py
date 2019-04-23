@@ -641,8 +641,8 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		vcf_to_add = prepped_vcf if prepped_vcf != "" else vcf
 		list_vcfs = delim.join([list_vcfs, vcf_to_add]) if list_vcfs != "" else vcf_to_add
 		list_tools_acronyms = delim.join([list_tools_acronyms, acronym]) if list_tools_acronyms != "" else acronym
-		list_precedence_order = data[tool]['tool_precedence_order'] if list_precedence_order == ""
-		if list_precedence_order != "" and len(list_precedence_order) != len(data.keys()):
+		list_precedence_order = data[tool]['tool_precedence_order'] if list_precedence_order != "" else None
+		if list_precedence_order is not None and ( list_precedence_order != "" and len(list_precedence_order) != len(data.keys())):
 			list_precedence_order = ""
 
 	log.info(str(list_tools_acronyms))
