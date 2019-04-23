@@ -192,7 +192,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
 		if lprepped_vcf_outfilenames is not None:
-			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] = lprepped_vcf_outfilenames[tool_idx]
+			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] =   os.path.sep.join([ str(dirout),  str(lprepped_vcf_outfilenames[tool_idx]) ])
 		else:
 			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] = ""
 
