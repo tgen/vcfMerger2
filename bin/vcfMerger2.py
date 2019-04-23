@@ -901,7 +901,7 @@ def main(args, cmdline):
 		skip_merge = args["skip_merge"]
 		log.info("skip_merge:" + str(skip_merge))
 
-	TH_AR = 0.90
+	TH_AR = 0.90 ; ## HARDCODED
 	if args['threshold_AR']:
 		TH_AR = args['threshold_AR']
 		if isinstance(TH_AR, (int, float, complex)):
@@ -925,9 +925,10 @@ def main(args, cmdline):
 		try:
 			if not os.path.exists(dirout):
 				os.mkdir(dirout)
+		dirout = os.path.realpath(dirout)
 		except Exception as e:
 			log.info(e)
-			sys.exit()
+			sys.exit(-1)
 
 	dryrun = False
 	if args["dry_run"]:
