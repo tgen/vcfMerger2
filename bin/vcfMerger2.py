@@ -959,7 +959,7 @@ def main(args, cmdline):
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
 	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds,
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
-	             germline_snames=germline_snames, dirout=dirout)
+	             germline_snames=germline_snames)
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
