@@ -230,7 +230,6 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 
 	return data
 
-
 def filter_unprepped_vcf(data, path_jar_snpsift):
 	"""
 	1) parse the data object
@@ -263,7 +262,6 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 
 	return data
 
-
 def filter_prepped_vcf(data, path_jar_snpsift):
 	"""
 	1) parse the data object
@@ -292,10 +290,9 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		if data[tool]['do_venn']:
-			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
+			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
 	log.info(str(data))
 	return data
-
 
 def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False):
 	"""
@@ -609,9 +606,12 @@ def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
 def subprocess_cmd(command):
 	ev = os.system(command)
 	log.info("return code from os.system is: "+ str(ev))
+	if ev != 0:
+		log.error("ERROR: subprocess command for command <<\"{}\">> FAILED".format(command))
+		exit(ev)
 
 
-def prepare_bed_for_venn(vcf):
+def prepare_bed_for_venn(vcf, dirout):
 	'''
 	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
 	the skip-prep-vcf is used, we can make the beds from the vcf file(s) provided. As we already have the
@@ -623,7 +623,7 @@ def prepare_bed_for_venn(vcf):
 
 	# Build subprocess command
 	for F in ["prepare_input_file_for_Venn", "prepare_input_file_for_Venn_SplitbyVariantType"]:
-		mycmd = ["source", prep_vcf_functions_script_path, " && ", F, " " , vcf]
+		mycmd = ["source", prep_vcf_functions_script_path, " && ", F, " " , vcf, dirout]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running bash function prep_input_file_for_venn command"))
@@ -677,8 +677,8 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 			elif lbeds == "":
 				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
-				log.info(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'])
-				prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
+				log.info(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'] + " " + dirout)
+				prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
 				list_beds = delim.join(
 					[str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
 			else:
