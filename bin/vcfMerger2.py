@@ -1068,7 +1068,7 @@ def main(args, cmdline):
 
 
 def make_parser_args():
-	parser = argparse.ArgumentParser(description='Processing options ...')
+	parser = argparse.ArgumentParser(description='Processing options in vcfMerger2.py ...')
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
@@ -1212,7 +1212,9 @@ def check_if_executable_in_path(list_executables):
 
 
 if __name__ == '__main__':
-	list_executables = ['bedtools', 'samtools', 'Rscript', 'python3', 'intervene']
+	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
+	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
+	list_executables = ['bedtools', 'samtools', 'Rscript', 'python3', 'intervene']  ## list of executables required to be in path
 	check_if_executable_in_path(list_executables)
 
 	##TODO check if ALL intended python packages are present in python3
@@ -1223,6 +1225,7 @@ if __name__ == '__main__':
 	cmdline = ' '.join(sys.argv)
 	parser = make_parser_args()
 	args = vars(parser.parse_args())  # vars() function returns a dictionary of key-value arguments
-	print(str(args))
+	log.info(str(args))
+
 	main(args, cmdline)
 	sys.exit()
