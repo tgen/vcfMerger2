@@ -728,7 +728,7 @@ def check_path_to_vcfs(lvcfs):
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
-	             snpsift_filter_script_path=None):
+                 path_jar_snpsift=None):
 	"""
 
 	:param lvcfs:
@@ -761,17 +761,17 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
 	## Checking snpsift path to jar
-	if (filter_by_pass is not None or filter_string_for_snpsift is not None) and snpsift_filter_script_path is None:
+	if (filter_by_pass or filter_string_for_snpsift is not None) and path_jar_snpsift is None:
 		log.error("ERROR: You enabled a filter option but did not provide any path to snpSift.jar ; please provide the FULL PATH to SnpSift.jar file; Aborting!")
 		sys.exit(-1)
-	elif (filter_string_for_snpsift is not None or filter_by_pass is not None) and snpsift_filter_script_path is not None:
+	elif (filter_string_for_snpsift is not None or filter_by_pass) and path_jar_snpsift is not None:
 		log.info("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
-	elif filter_string_for_snpsift is not None and snpsift_filter_script_path is None:
+	elif filter_string_for_snpsift is not None and path_jar_snpsift is None:
 		raise Exception(
 			"Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
-	elif snpsift_filter_script_path is not None:
+	elif path_jar_snpsift is not None:
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 		log.info("Well, you provided the path to snpSift probably before the options for filtering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
@@ -981,7 +981,7 @@ def main(args, cmdline):
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
-	             snpsift_filter_script_path=snpsift_filter_script_path)
+	             path_jar_snpsift=path_jar_snpsift)
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
