@@ -992,7 +992,7 @@ def main(args, cmdline):
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn,
 	                          dirout=dirout)
-	json_filename = "vcfMerger.json" if not germline else "vcfMerger_germline.json"
+	json_filename = "vcfMerger2_somatic.json" if not germline else "vcfMerger2_germline.json"
 	make_json(data, json_filename)
 	# inFileJson = make_json(data, json_filename)
 	# data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
@@ -1212,6 +1212,7 @@ def check_if_executable_in_path(list_executables):
 
 
 if __name__ == '__main__':
+	print("   ")
 	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
 	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
 	list_executables = ['bedtools', 'samtools', 'Rscript', 'python3', 'intervene']  ## list of executables required to be in path
