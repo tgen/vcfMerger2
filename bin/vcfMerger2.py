@@ -726,7 +726,9 @@ def check_path_to_vcfs(lvcfs):
 
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
-                 germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None):
+                 germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
+	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
+	             snpsift_filter_script_path=snpsift_filter_script_path):
 	"""
 
 	:param lvcfs:
@@ -758,7 +760,23 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
-	## Checking dirout
+	## Checking snpsift path to jar
+	if (args["filter"] is not None or args["filter_by_pass"] is not None) and args['path_jar_snpsift'] is None:
+		log.error("ERROR: You enabled a filter option but did not provide any path to snpSift.jar ; please provide the FULL PATH to SnpSift.jar file; Aborting!")
+		sys.exit(-1)
+	elif (args["filter"] is not None or args["filter_by_pass"] is not None) and args['path_jar_snpsift'] is not None:
+		log.info("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
+		if not os.path.exists(path_jar_snpsift):
+			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
+	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
+		raise Exception(
+			"Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
+	elif args['path_jar_snpsift'] is not None:
+		if not os.path.exists(path_jar_snpsift):
+			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
+		log.info("Well, you provided the path to snpSift probably before the options for foltering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
+	else:
+		log.info("No Path given for SnpSift")
 
 
 	#checking if merged_vcf_outfilename has relative or full path included
@@ -898,21 +916,9 @@ def main(args, cmdline):
 			filter_string_for_snpsift) + "\"")
 
 	path_jar_snpsift = None
-	if (args["filter"] is not None or args["filter_by_pass"] is not None) and args['path_jar_snpsift'] is not None:
+	if args['path_jar_snpsift'] is not None:
 		path_jar_snpsift = args['path_jar_snpsift']
-		log.info("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
-		if not os.path.exists(path_jar_snpsift):
-			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
-	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
-		raise Exception(
-			"Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
-	elif args['path_jar_snpsift'] is not None:
-		path_jar_snpsift = args['path_jar_snpsift']
-		if not os.path.exists(path_jar_snpsift):
-			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
-		log.info("Well, you provided the path to snpSift probably before the options for foltering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
-	else:
-		log.info("No Path given for SnpSift")
+
 
 
 	germline = False
@@ -973,7 +979,9 @@ def main(args, cmdline):
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
 	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds,
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
-	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename)
+	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
+	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
+	             snpsift_filter_script_path=snpsift_filter_script_path)
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
