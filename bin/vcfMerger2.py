@@ -927,7 +927,7 @@ def main(args, cmdline):
 		dirout = args["dir_out"]
 		try:
 			if not os.path.exists(dirout):
-				os.mkdir(dirout)
+				os.makedirs(dirout, exist_ok=True)
 			dirout = os.path.realpath(dirout)
 		except Exception as e:
 			log.info(e)
