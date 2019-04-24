@@ -619,11 +619,12 @@ def prepare_bed_for_venn(vcf):
 	'''
 
 	# Build subprocess command
-	mycmd = ["source", prep_vcf_functions_script_path, " && ", "prepare_input_file_for_Venn ", vcf]
-	log.info(str(mycmd))
-	log.info(" ".join([x for x in mycmd]))
-	log.info(("Running bash function prep_input_file_for_venn command"))
-	subprocess_cmd(' '.join([str(x) for x in mycmd]))
+	for F in ["prepare_input_file_for_Venn", "prepare_input_file_for_Venn_SplitbyVariantType"]:
+		mycmd = ["source", prep_vcf_functions_script_path, " && ", F, " " , vcf]
+		log.info(str(mycmd))
+		log.info(" ".join([x for x in mycmd]))
+		log.info(("Running bash function prep_input_file_for_venn command"))
+		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
 def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, cmdline=None):
