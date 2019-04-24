@@ -245,6 +245,7 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 	log.info("Filtering vcf ... " + CONSTANT_STRING_FOR_PASS_RECORDS)
 
 	for tool in data.keys():
+		dir_temp = data[tool]['dir_work']
 		vcf = data[tool]['vcf']
 		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
 
@@ -256,9 +257,9 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0] + ".pass.vcf")
+		new_vcf_name = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".pass.vcf"))
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
-		data[tool]['vcf'] = os.path.abspath(new_vcf_name)
+		data[tool]['vcf'] = new_vcf_name
 
 	return data
 
