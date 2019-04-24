@@ -697,7 +697,7 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	mycmd = [command, vtype]
 	mycmd = mycmd + common_args + type_specific_additional_args
 	mycmd = mycmd + ["--input"] + lbeds
-
+	import os
 	## check if bed file by variant types are their as well
 	## check if snvs.bed file
 	mycmdsnvs=None
