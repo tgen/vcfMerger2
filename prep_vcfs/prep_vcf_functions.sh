@@ -142,10 +142,15 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 function delete_temporary_files(){
     local delete_temps=$1
 #    local PATTERN="sname.vcf$|sname.prep.vcf$|sname.prep.norm.vcf$|sname.decomp.vcf$|sname.decomp.prep.vcf$|sname.decomp.prep.norm.vcf"
-    local PATTERN="*sname.*.vcf$"
+    local PATTERN="*sname.*.vcf"
     if [[ ${delete_temp} == 1 ]]
     then
+        echo -e "file with pattern \"${PATTERN}\" will be deleted ... "
         rm $( find ${DIR_OUTPUT} -type f -name "${PATTERN}")
+        if [[ $? -ne 0 ]]
+        then
+            echo "ERROR in deleting files with pattern ${PATTERN}"
+        fi
     fi
 }
 
@@ -495,6 +500,7 @@ function main(){
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
 		run_tool ${TOOLNAME} ${VCF}
+		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]
 	then
 		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}

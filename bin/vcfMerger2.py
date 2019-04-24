@@ -1033,8 +1033,9 @@ def main(args, cmdline):
 
 		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED")
 
-		log.info("**** merge process section  ****".upper())
 		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
+		log.info("**** end PREP process section  ****".upper())
+
 	else:
 		log.info("**** SKIPPED prep vcfs step SKIPPED ****")
 
