@@ -773,7 +773,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			dn)
 		log.error(msg);
 		raise (msg)
-	elif dn == '':
+	elif dn == '' or dn is None:
 		log.info("final vcf will be written in current directory.")
 	log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
 	log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
