@@ -36,6 +36,7 @@ import time
 from collections import OrderedDict
 from collections import defaultdict
 from os import linesep
+from os import makedirs
 from os import path
 from re import search
 from sys import argv
@@ -352,22 +353,22 @@ def main(args, cmdline):
 		do_venn = True
 		log.info("make venn enabled")
 
-	dirout = os.path.realpath(os.curdir)
+	dirout = path.realpath(path.curdir)
 	if args["dir_out"]:
 		dirout = args["dir_out"]
 		try:
 			if not os.path.exists(dirout):
 				log.info("creating temp directory recursively if not present")
-				os.makedirs(dirout, exist_ok=True)
+				makedirs(dirout, exist_ok=True)
 			dirout = os.path.realpath(dirout)
 			log.info(dirout + " created")
 		except Exception as e:
 			log.info(e)
-			sys.exit(-1)
+			exit(-1)
 
 	# CHECK POINT
 	if lossy and lossless:
-		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
+		exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
 	if lvcfs is None:
 		exit("ERROR: please provide the list of vcf you want to prep or merged using --lvcfs option with value delimited with the DELIMITER (--delim)")
 	log.debug("n(vcfs) = {} --- n(tools) = {}".format(str(len(lvcfs)),str(len(ltoolnames))))
@@ -379,7 +380,7 @@ def main(args, cmdline):
 		lacronyms = [ "" ]*len(ltoolnames)
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		log.error("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
-		sys.exit(-1)
+		exit(-1)
 
 	dico_map_tool_acronym = {}
 	for tool_idx in range(len(ltoolnames)):
