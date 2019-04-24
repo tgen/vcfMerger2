@@ -140,7 +140,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		## we reallocate/reorder the vcfs files the same order of the list_tool_precedence_order
 		lvcfs = [lvcfs[i] for i in indices]
 		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
-		log.info(str(class(list_tool_precedence_order)))
+		log.info(str(type(list_tool_precedence_order)))
 		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: {} ".format(
 			list_tool_precedence_order))
 
