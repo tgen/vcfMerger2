@@ -391,14 +391,15 @@ def main(args, cmdline):
 	if do_venn:
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
+		## make venn for snvs_and_indels altogether
 		dvm.make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=dirout)
 		## make Venn using only the SNVs
-		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.snvs.bed', file) for file in lbeds]
+		lbeds_snvs = [re.sub(r'\.intervene.bed$', '.snvs.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
 		## make Venn using only the Indels
-		lbeds_indels = [re.sub(r'\.intervene\.bed$', '.indels.bed', file) for file in lbeds]
-		if all([path.isfile(f) for f in lbeds_snvs]):
+		lbeds_indels = [re.sub(r'\.intervene.bed$', '.indels.bed', file) for file in lbeds]
+		if all([path.isfile(f) for f in lbeds_indels]):
 			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
 
 
