@@ -767,14 +767,16 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		log.error(msg)
 		sys.exit(-1)
 	dn = os.path.dirname(merged_vcf_outfilename)
-	log.info("dirname of merged_vcf_filename: " + str(dn))
-	if (dn != '' or dn != "." or dn not None) and not os.path.exists(dn):
+	if dn == '':
+		log.info("final vcf will be written in current directory: " + os.path.realpath(os.curdir))
+	elif (dn != '' and dn != "." and dn is not None) and not os.path.exists(dn):
 		msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; folder << {} >> NOT FOUND".format(
 			dn)
 		log.error(msg);
-		raise (msg)
-	elif dn == '' or dn is None:
-		log.info("final vcf will be written in current directory.")
+		raise(msg)
+	else:
+		log.error("dn object has a weird assignment; Why am I here?? ; dn is <" + dn + ">")
+		sys.exit(-1)
 	log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
 	log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
 
