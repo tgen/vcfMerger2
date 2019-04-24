@@ -414,7 +414,7 @@ def make_parser_args():
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',
 	                      action='store_true')
-	log.info(str(parser.prog) + "   " + str(parser.description))
+	print(str(parser.prog) + "   " + str(parser.description))  ## cannot use log.info at this line because if we do, the counter in line does not show in stdout; Why??? No idea
 	return parser
 
 if __name__ == '__main__':
