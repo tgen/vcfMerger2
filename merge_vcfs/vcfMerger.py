@@ -414,7 +414,7 @@ def make_parser_args():
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',
 	                      action='store_true')
-	print(str(parser.prog) + "   " + str(parser.description))
+	log.info(str(parser.prog) + "   " + str(parser.description))
 	return parser
 
 if __name__ == '__main__':
