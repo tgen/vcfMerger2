@@ -388,21 +388,23 @@ def main(args, cmdline):
 		dico_map_tool_acronym[ltoolnames[tool_idx]] = lacronyms[tool_idx]
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
-	## we do merging before the Venns, as Merging is more important that the venns
-	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
-
 	if do_venn:
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
 		dvm.make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=dirout)
 		## make Venn using only the SNVs
-		lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
+		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.snvs.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
 		## make Venn using only the Indels
-		lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
+		lbeds_indels = [re.sub(r'\.intervene\.bed$', '.indels.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
+
+
+
+	## we do merging before the Venns, as Merging is more important that the venns
+	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
 
 def make_parser_args():
