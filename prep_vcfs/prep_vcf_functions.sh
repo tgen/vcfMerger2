@@ -348,6 +348,19 @@ function prepare_input_file_for_Venn(){
     check_ev $? "prepare_input_file_for_Venn"
 }
 
+
+function prepare_input_file_for_Venn_SplitbyVariantType(){
+    local VCF="$1"
+    if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
+    local INPUT_FILE_FOR_VENN_SNVS=$( basename ${VCF} ".vcf" ).snvs.intervene.bed
+    local INPUT_FILE_FOR_VENN_INDELS=$( basename ${VCF} ".vcf" ).indels.intervene.bed
+    #echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
+    grep -vE "^#" ${VCF} | awk -F"\t" ' $4~/[ATCG]/ && $5~/[ATCG]/ && length($4)==1 && length($5)==1 || ( length($4)>1 && length($4)==length($5) ) {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${INPUT_FILE_FOR_VENN_SNVS}
+    check_ev $? "prepare_input_file_for_Venn_SNVS"
+    grep -vE "^#" ${VCF} | awk -F"\t" ' length($4)>length($5) || length($5)>length($4) || $4=="." || $5=="."  {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${INPUT_FILE_FOR_VENN_INDELS}
+    check_ev $? "prepare_input_file_for_Venn_INDELS"
+}
+
 function final_msg(){
 	local VCF=$1
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
