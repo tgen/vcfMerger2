@@ -367,7 +367,7 @@ def main(args, cmdline):
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
 def make_parser_args():
-	parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser(description='Processing options in vcfMerger.py ...')
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
@@ -414,7 +414,7 @@ def make_parser_args():
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',
 	                      action='store_true')
-	log.info(str(parser.prog) + "   " + str(parser.description))
+	print(str(parser.prog) + "   " + str(parser.description))
 	return parser
 
 if __name__ == '__main__':
