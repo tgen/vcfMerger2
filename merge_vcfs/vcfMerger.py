@@ -335,6 +335,10 @@ def main(args, cmdline):
 		merge_vcf_outfilename = str(args["outfilename"])
 		log.info("name of merged output vcf will be: " + merge_vcf_outfilename)
 
+	if args["cmdline"]:
+		cmdline = str(args["cmdline"])
+		log.info("custom command line that will be added to vcf header: " + cmdline)
+
 	lbeds = ""
 	log.debug("before --- ordered list of beds given:\t\t{}".format(str(lbeds)))
 	if args["beds"]:
@@ -346,7 +350,7 @@ def main(args, cmdline):
 		do_venn = True
 		log.info("make venn enabled")
 
-	# CHECK POINTS
+	# CHECK POINT
 	if lossy and lossless:
 		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
 	if lvcfs is None:
@@ -419,6 +423,9 @@ def make_parser_args():
 	optional.add_argument('--do-venn',
 	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number and order of tools listed in --toolnames ',
 	                      action='store_true')
+	optional.add_argument('--cmdline',
+	                      help=' string of the command line you would like to add to the vcf header ',
+	                      action=UniqueStore)
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',
 	                      action='store_true')

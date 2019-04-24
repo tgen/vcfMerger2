@@ -626,7 +626,7 @@ def prepare_bed_for_venn(vcf):
 	subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, cmdline=None):
 	"""
 
 	:param data:
@@ -689,6 +689,9 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 					list_beds, list_tools))
 		my_command = my_command + " --do-venn --beds " + double_quote_str(list_beds)
 
+	if cmdline is not None or cmdline != "":
+		my_command = my_command + " --cmdline " + double_quote_str(str(cmdline))
+
 	log.info(double_quote_str(list_tools))
 	log.info(double_quote_str(list_vcfs))
 	log.info("merging vcfs ...")
@@ -696,7 +699,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 
 	if not dryrun:
 		log.info("")
-		log.info("%" * 10 + " starting vcfMerger ... ".upper() + "%" * 10)
+		log.info("%" * 10 + " starting vcfMerger command... ".upper() + "%" * 10)
 		process = subprocess.Popen(my_command, shell=True)
 		process.wait()
 		log.info("vcfMerger2.0 exit value: " + str(process.returncode))
@@ -1061,7 +1064,7 @@ def main(args, cmdline):
 		log.info(str(data))
 
 	if not skip_merge:  ## MERGING step Enabled
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, cmdline)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
