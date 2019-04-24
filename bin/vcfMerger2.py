@@ -293,7 +293,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		if data[tool]['do_venn']:
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
-
+	log.info(str(data))
 	return data
 
 
@@ -607,7 +607,8 @@ def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
 
 
 def subprocess_cmd(command):
-	os.system(command)
+	ev = os.system(command)
+	log.info("return code from os.system is: "+ str(ev))
 
 
 def prepare_bed_for_venn(vcf):
