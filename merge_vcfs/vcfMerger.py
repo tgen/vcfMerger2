@@ -375,6 +375,7 @@ def main(args, cmdline):
 		lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False)
+		lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False)
 
