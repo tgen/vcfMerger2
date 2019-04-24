@@ -723,7 +723,7 @@ def check_path_to_vcfs(lvcfs):
 
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
-                 germline=False, tumor_sname=None, normal_sname=None, germline_snames=None):
+                 germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None):
 	"""
 
 	:param lvcfs:
@@ -759,6 +759,10 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 
 
 	#checking if merged_vcf_outfilename has relative or full path included
+	if merged_vcf_outfilename is None:
+		msg = "ERROR: Missing filename; Please provide a name for the merged final VCF; (fullpath, relative path or just basename)"
+		log.error(msg)
+		sys.exit(-1)
 	dn = os.path.dirname(merged_vcf_outfilename)
 	if (dn != '' or dn != ".") and not os.path.exists(dn):
 		msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; folder << {} >> NOT FOUND".format(
@@ -959,7 +963,7 @@ def main(args, cmdline):
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
 	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds,
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
-	             germline_snames=germline_snames)
+	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename)
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
