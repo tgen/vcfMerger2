@@ -727,7 +727,7 @@ def check_path_to_vcfs(lvcfs):
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
-	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
+                 filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
 	             snpsift_filter_script_path=snpsift_filter_script_path):
 	"""
 
@@ -761,20 +761,20 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
 	## Checking snpsift path to jar
-	if (args["filter"] is not None or args["filter_by_pass"] is not None) and args['path_jar_snpsift'] is None:
+	if (filter_by_pass is not None or filter_string_for_snpsift is not None) and snpsift_filter_script_path is None:
 		log.error("ERROR: You enabled a filter option but did not provide any path to snpSift.jar ; please provide the FULL PATH to SnpSift.jar file; Aborting!")
 		sys.exit(-1)
-	elif (args["filter"] is not None or args["filter_by_pass"] is not None) and args['path_jar_snpsift'] is not None:
+	elif (filter_string_for_snpsift is not None or filter_by_pass is not None) and snpsift_filter_script_path is not None:
 		log.info("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
-	elif args["filter"] is not None and args['path_jar_snpsift'] is None:
+	elif filter_string_for_snpsift is not None and snpsift_filter_script_path is None:
 		raise Exception(
 			"Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!")
-	elif args['path_jar_snpsift'] is not None:
+	elif snpsift_filter_script_path is not None:
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
-		log.info("Well, you provided the path to snpSift probably before the options for foltering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
+		log.info("Well, you provided the path to snpSift probably before the options for filtering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
 	else:
 		log.info("No Path given for SnpSift")
 
