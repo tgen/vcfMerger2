@@ -852,6 +852,11 @@ def main(args, cmdline):
 	merged_vcf_outfilename = None
 	if args["merged_vcf_outfilename"]:
 		merged_vcf_outfilename = str(args["merged_vcf_outfilename"])
+		dn = os.path.dirname(merged_vcf_outfilename)
+		if ( dn != '' or dn != "." )  and not os.path.exists(dn):
+			msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; {} NOT FOUND".format(dn)
+			log.error(msg)
+			raise(msg)
 		log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
 		log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
 
