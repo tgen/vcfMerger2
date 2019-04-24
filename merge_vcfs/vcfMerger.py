@@ -99,6 +99,33 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 
 	ListFieldsToProcessForOurFORMATColumn = ["GT", "DP", "AR", "AD"]  ## HARDCODED
 
+	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	## SECTION CHECKING PRECEDENCE ORDER if necessary
+	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	log.info("is list_tool_precedence empty? ".format(str(list_tool_precedence_order)))
+	if list_tool_precedence_order is not None:
+		'''here we sort and reassigned ltoolnames and lvcfs based on list_tool_precedence_order ; names of the 
+		tools have to match 100%
+		'''
+		if len(list_tool_precedence_order) != len(ltoolnames):
+			exit("ERROR: Tool Names in list precedence do not match 100% names in list toolnames ; check your "
+			     "input\n" + "sorted_list_tool_precedence -> " + str(sorted(list_tool_precedence_order)) +
+			     "\nsorted_list_tool_names ------> "
+			     + str(sorted(ltoolnames)))
+		## REORDERING the list of PRECEDENCE of the TOOLs
+		indices = []
+		for toolname in list_tool_precedence_order:
+			indices.append(ltoolnames.index(toolname))
+		## we reallocate/reorder the vcfs files the same order of the list_tool_precedence_order
+		lvcfs = [lvcfs[i] for i in indices]
+		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
+		log.info(str(type(list_tool_precedence_order)))
+		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: {} ".format(
+			list_tool_precedence_order))
+
+	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	## SECTION STARTING PROCESSING FIELDS
+	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	vcfMerger_Format_Fields_Specific = [
 		'##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">',
 		'##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth at locus in Sample">',
@@ -123,27 +150,6 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 	]
 
 	vcfMerger_Info_Fields_Specific = TN_FLAGS + Additional_FLAGS
-
-	log.info("is list_tool_precedence empty? ".format(str(list_tool_precedence_order)))
-	if list_tool_precedence_order is not None:
-		'''here we sort and reassigned ltoolnames and lvcfs based on list_tool_precedence_order ; names of the 
-		tools have to match 100%
-		'''
-		if len(list_tool_precedence_order) != len(ltoolnames):
-			exit("ERROR: Tool Names in list precedence do not match 100% names in list toolnames ; check your "
-			     "input\n" + "sorted_list_tool_precedence -> " + str(sorted(list_tool_precedence_order)) +
-			     "\nsorted_list_tool_names ------> "
-			     + str(sorted(ltoolnames)))
-		## REORDERING the list of PRECEDENCE of the TOOLs
-		indices = []
-		for toolname in list_tool_precedence_order:
-			indices.append(ltoolnames.index(toolname))
-		## we reallocate/reorder the vcfs files the same order of the list_tool_precedence_order
-		lvcfs = [lvcfs[i] for i in indices]
-		ltoolnames = list_tool_precedence_order ;  ## we re-assigned the list
-		log.info(str(type(list_tool_precedence_order)))
-		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: {} ".format(
-			list_tool_precedence_order))
 
 	# the trick is here for the Tool Precedence!!! The user has given us an ordered list of
 	# vcfs and toolnames in order of precedence or a specific PRECEDENCE order was given via --precedence
