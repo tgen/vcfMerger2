@@ -3,7 +3,8 @@
 SNPSIFT_JAR_PATH=$1
 CODE_EXT_FILT=$2  # can be either "filt" or "pass"
 STRING_FOR_SNPSIFT_FILTERING="$3"  ## double quote mandatory here
-VCF=$4
+DIR_TEMP=$4
+VCF=$5
 
 if [[ ${VCF##*.} == "vcf" ]] ; then
     VCF_OUT=$(basename ${VCF} ".vcf").${CODE_EXT_FILT}.vcf
@@ -17,9 +18,9 @@ fi
 
 set -eu
 
-zcat -f ${VCF} | java -jar ${SNPSIFT_JAR_PATH} filter " ${STRING_FOR_SNPSIFT_FILTERING} " > ${VCF_OUT}
+zcat -f ${VCF} | java -jar ${SNPSIFT_JAR_PATH} filter " ${STRING_FOR_SNPSIFT_FILTERING} " > ${DIR_TEMP}/${VCF_OUT}
 if [[ $? -ne 0 ]] ;
 then
-    echo -e "ERROR: Filtering VCF step FAILED;\n Command  << zcat -f ${VCF} | java -jar ${SNPSIFT_JAR_PATH} filter ' ${STRING_FOR_SNPSIFT_FILTERING} ' > ${VCF_OUT} >> FAILED"
+    echo -e "ERROR: Filtering VCF step FAILED;\n Command  << zcat -f ${VCF} | java -jar ${SNPSIFT_JAR_PATH} filter ' ${STRING_FOR_SNPSIFT_FILTERING} ' > ${DIR_TEMP}/${VCF_OUT} >> FAILED"
     exit 1
 fi

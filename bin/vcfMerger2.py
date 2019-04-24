@@ -252,7 +252,7 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
 		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "pass",
-		         str("\"" + CONSTANT_STRING_FOR_PASS_RECORDS + "\""), vcf]
+		         str("\"" + CONSTANT_STRING_FOR_PASS_RECORDS + "\""), dir_temp, vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
@@ -283,14 +283,14 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("input: \ttool\t==\t{}".format(str(tool)))
 		log.info("input: \tvcf\t==\t{}".format(str(vcf)))
 		mycmd = ["bash", snpsift_filter_script_path, path_jar_snpsift, "filt",
-		         str("\"" + data[tool]['filter_string_snpsift'] + "\""), vcf]
+		         str("\"" + data[tool]['filter_string_snpsift'] + "\""), dir_temp, vcf]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running filter stage for vcf: {}".format(vcf)))
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
-		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0] + ".filt.vcf")
+		new_vcf_name = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".filt.vcf") )
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
-		data[tool]['prepped_vcf_outfilename'] = os.path.join(dir_temp, new_vcf_name)
+		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		if data[tool]['do_venn']:
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
 
@@ -391,7 +391,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 
 	# check if outfilename for prep_vcf is Null or None
 	if data[tool]['prepped_vcf_outfilename'] is None or data[tool]['prepped_vcf_outfilename'] == "":
-		msg = "prepped_vcf_outfilename has not been defined injson file for tool {} ; Aborting.".format(tool)
+		msg = "prepped_vcf_outfilename has not been defined in json file for tool {} ; Aborting.".format(tool)
 		sys.exit(str(msg))
 	# check if outfilename will be outputted in current working folder or not; important for vcfMerger2.0 to
 	# know where the prep vcfs are located (users can provide full path for prep vcf outfilename otherwise ; no relative path in json )
