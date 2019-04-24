@@ -31,6 +31,7 @@ import argparse
 import logging as log
 import time
 from collections import OrderedDict
+from collections import defaultdict
 from os import linesep
 from re import search
 from sys import argv
@@ -139,7 +140,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 			indices.append(ltoolnames.index(toolname))
 		## we reallocate/reorder the vcfs files the same order of the list_tool_precedence_order
 		lvcfs = [lvcfs[i] for i in indices]
-		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
+		ltoolnames = list_tool_precedence_order ;  ## we re-assigned the list
 		log.info(str(type(list_tool_precedence_order)))
 		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: {} ".format(
 			list_tool_precedence_order))
