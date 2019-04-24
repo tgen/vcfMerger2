@@ -36,6 +36,7 @@ import time
 from collections import OrderedDict
 from collections import defaultdict
 from os import linesep
+from os import path
 from re import search
 from sys import argv
 from sys import exit
@@ -372,9 +373,9 @@ def main(args, cmdline):
 		dvm.make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False)
 		## make Venn using only the SNVs
 		lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
-		if all([os.path.isfile(f) for f in lbeds_snvs]):
+		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False)
-		if all([os.path.isfile(f) for f in lbeds_snvs]):
+		if all([path.isfile(f) for f in lbeds_snvs]):
 			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False)
 
 	## make Venn using only the Indels
