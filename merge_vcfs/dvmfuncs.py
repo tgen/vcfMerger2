@@ -578,7 +578,7 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 	CC = '='.join(["CC", str(len(LV))])  ## CC is the flag that stands for CALLERS_COUNT
 	TPCE = '='.join(["TPCE", wtn])  ## TPCE stands for TOOL PRECEDENCE ;
 	# TOOLS_AS_FLAG=";".join([wtn, ";".join([ LV[i][0] for i in range(1, len(LV)) ] ) ])
-	TOOLS_AS_FLAG = ";".join([LV[i][0] for i in range(1, len(LV))])
+	TOOLS_AS_FLAG = ";".join([LV[i][0] for i in range(0, len(LV))])
 
 
 	### We also could keep the original user's input that tell us about the order of precedence chosen by the user;
