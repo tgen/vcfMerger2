@@ -727,8 +727,8 @@ def check_path_to_vcfs(lvcfs):
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
-                 filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
-	             snpsift_filter_script_path=snpsift_filter_script_path):
+                 filter_by_pass=False, filter_string_for_snpsift=None,
+	             snpsift_filter_script_path=None):
 	"""
 
 	:param lvcfs:
