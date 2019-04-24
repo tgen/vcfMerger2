@@ -920,7 +920,7 @@ def main(args, cmdline):
 		log.info("make venn enabled")
 
 	dirout = os.curdir
-	if args["dir_out"] or args['dir_temp']:
+	if args["dir_out"]:
 		dirout = args["dir_out"]
 		try:
 			if not os.path.exists(dirout):
