@@ -520,7 +520,7 @@ def parse_json_data_and_run_prep_vcf_germline__DEPRECATED(data, dryrun=False):
 			                           stdout=subp_logfile,
 			                           stderr=subp_logfile)
 			process.wait()
-			print(str(process.returncode))
+			log.info(str(process.returncode))
 			subp_logfile.close()
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
@@ -598,7 +598,7 @@ def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
 			                           stdout=subp_logfile,
 			                           stderr=subp_logfile)
 			process.wait()
-			print(str(process.returncode))
+			log.info(str(process.returncode))
 			subp_logfile.close()
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
@@ -673,7 +673,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 			elif lbeds == "":
 				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
-				print(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'])
+				log.info(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'])
 				prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
 				list_beds = delim.join(
 					[str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
@@ -1068,7 +1068,7 @@ def main(args, cmdline):
 
 
 def make_parser_args():
-	parser = argparse.ArgumentParser(description='Processing options in vcfMerger2.py ...')
+	parser = argparse.ArgumentParser()
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
@@ -1201,7 +1201,7 @@ def make_parser_args():
 	                      action='store_true',
 	                      help=' perform a dry run to just see the commands lines that will be run behind the scenes ')
 
-	print(str(parser.prog) + "   " + str(parser.description))
+	log.info(str(parser.prog) + "   " + str(parser.description))
 	return parser
 
 
