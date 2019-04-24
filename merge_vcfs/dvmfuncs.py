@@ -654,7 +654,6 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
 	project = "vcfMerger2_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
-	from os import path
 
 	# Define the type of venn
 	if numberOfTools >= 5:
@@ -663,7 +662,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	if dirout is None:
 		from os import path
 		dirout = path.basename(path.curdir)
-	project = path.sep.join([dirout, output_name])
+	output_name = path.sep.join([dirout, output_name])
 	# Define command and arguments
 	command = 'intervene'
 
