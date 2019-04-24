@@ -1237,6 +1237,6 @@ if __name__ == '__main__':
 	parser = make_parser_args()
 	args = vars(parser.parse_args())  # vars() function returns a dictionary of key-value arguments
 	log.info(str(args))
-
+	log.info(' '.join(["Command Line captured: ", cmdline]))
 	main(args, cmdline)
 	sys.exit()
