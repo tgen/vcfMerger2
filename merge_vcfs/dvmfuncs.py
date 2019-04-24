@@ -642,7 +642,6 @@ def get_colors_for_venns(number):
 def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
-	#beds = ' '.join([name for name in lbeds]) ## DELETE Line if tst without it turns OK
 	numberOfTools = len(ltoolnames)
 	if len(lbeds) != numberOfTools:
 		log.info("WARNING: Number of Tools and number of BED files do NOT match; we skip the creation of Venn")
@@ -698,17 +697,38 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	mycmd = [command, vtype]
 	mycmd = mycmd + common_args + type_specific_additional_args
 	mycmd = mycmd + ["--input"] + lbeds
-	log.info(str(mycmd))
-	log.info(" ".join([x for x in mycmd]))
-	# check_output will run the command and store to result
-	import subprocess
-	log.info("*" * 50)
-	log.info("full command run intervene")
-	process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
-	process.wait()
-	log.info(str(process.returncode))
-	if process.returncode is not 0:
-		sys.exit("Venn or Upset Creation FAILED")
+
+	## check if bed file by variant types are their as well
+	## check if snvs.bed file
+	mycmdsnvs=None
+	lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
+	if all([os.path.isfile(f) for f in lbeds_snvs]):
+		mycmdsnvs = mycmd + ["--input"] + lbeds_snvs
+
+
+	## check if indels.bed file
+	mycmdindels=None
+	lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
+	if all([os.path.isfile(f) for f in lbeds_indels]):
+		mycmdindels = mycmd + ["--input"] + lbeds_indels
+
+	list_commands = []
+	for C in [mycmd, mycmdsnvs, mycmdindels]:
+		if C is not None:
+			list_commands.append(C)
+
+	for mycmd in list_commands:
+		log.info(str(mycmd))
+		log.info(" ".join([x for x in mycmd]))
+		# check_output will run the command and store to result
+		import subprocess
+		log.info("*" * 50)
+		log.info("full command run intervene")
+		process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
+		process.wait()
+		log.info(str(process.returncode))
+		if process.returncode is not 0:
+			sys.exit("Venn or Upset Creation FAILED")
 
 
 	## update Rscript to colorize the intersection of all tools
