@@ -154,7 +154,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False, dirout="."):
+                       TH_AR=0.9, do_venn=False, dirout=""):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -920,7 +920,7 @@ def main(args, cmdline):
 		log.info("make venn enabled")
 
 	dirout = os.curdir
-	if args["dir_out"]:
+	if args["dir_out"] or args['dir_temp']:
 		dirout = args["dir_out"]
 		try:
 			if not os.path.exists(dirout):
@@ -1161,7 +1161,7 @@ def make_parser_args():
 	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
 	                      action='store_true')
 
-	optional.add_argument('--dir-out',
+	optional.add_argument('-d','--dir-out', '--dir-temp',
 	                      help=' direcgtory where the outputs of vcfMerger2 will be written ',
 	                      action=UniqueStore)
 
