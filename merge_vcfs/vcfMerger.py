@@ -138,9 +138,11 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		for toolname in list_tool_precedence_order:
 			indices.append(ltoolnames.index(toolname))
 		## we reallocate/reorder the vcfs files the same order of the list_tool_precedence_order
-		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: ".format("|".join([ list_tool_precedence_order])))
 		lvcfs = [lvcfs[i] for i in indices]
 		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
+		log.info(str(class(list_tool_precedence_order)))
+		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: {} ".format(
+			list_tool_precedence_order))
 
 	# the trick is here for the Tool Precedence!!! The user has given us an ordered list of
 	# vcfs and toolnames in order of precedence or a specific PRECEDENCE order was given via --precedence
@@ -196,8 +198,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		tuple_dicts = tuple_dicts + (tpo.dictOfLoci(tpo.readVCF()),)
 
 	# we merge the Loci from all the VCFs [Key + Value, where Key is defined as CHROM_POS_REF_ALT as assigned in the function "dictOfLoci" of class vcfToDict ]
-	from collections import defaultdict
-	dd = defaultdict(list)
+		dd = defaultdict(list)
 
 	log.debug("-" * 41);
 	log.debug(str(type(tuple_dicts)))
