@@ -754,6 +754,20 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
+
+	## Checking dirout
+
+
+	#checking if merged_vcf_outfilename has relative or full path included
+	dn = os.path.dirname(merged_vcf_outfilename)
+	if (dn != '' or dn != ".") and not os.path.exists(dn):
+		msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; folder << {} >> NOT FOUND".format(
+			dn)
+		log.error(msg);
+		raise (msg)
+	log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
+	log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
+
 	if lprepped_vcf_outfilenames is not None and len(ltoolnames) != len(lprepped_vcf_outfilenames):
 		log.info(
 			"ERROR: Found {} in list of given prep-filenames and {} toolnames given".format(
@@ -852,13 +866,6 @@ def main(args, cmdline):
 	merged_vcf_outfilename = None
 	if args["merged_vcf_outfilename"]:
 		merged_vcf_outfilename = str(args["merged_vcf_outfilename"])
-		dn = os.path.dirname(merged_vcf_outfilename)
-		if ( dn != '' or dn != "." )  and not os.path.exists(dn):
-			msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; {} NOT FOUND".format(dn)
-			log.error(msg)
-			raise(msg)
-		log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
-		log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
 
 	skip_prep_vcfs = False
 	if args["skip_prep_vcfs"]:
@@ -932,8 +939,10 @@ def main(args, cmdline):
 		dirout = args["dir_out"]
 		try:
 			if not os.path.exists(dirout):
+				log.info("creating temp directory recursively if not present")
 				os.makedirs(dirout, exist_ok=True)
 			dirout = os.path.realpath(dirout)
+			log.info(dirout + " created")
 		except Exception as e:
 			log.info(e)
 			sys.exit(-1)
@@ -949,7 +958,8 @@ def main(args, cmdline):
 	##@@@@@@@@@
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
 	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds,
-	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname, germline_snames=germline_snames)
+	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
+	             germline_snames=germline_snames, dirout=dirout)
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs)
 	log.info(str(lvcfs))
