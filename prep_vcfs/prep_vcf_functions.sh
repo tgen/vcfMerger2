@@ -98,6 +98,7 @@ function init_some_vars(){
 	VCF_FINAL_USER_GIVEN_NAME=""
 	TH_AR=""
 	MAKE_BED_FOR_VENN="no"
+	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
 }
 
 function getOptions(){
@@ -125,8 +126,8 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the
-		# --toolname option (case insensitive)
+		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module
+		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"";
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
 		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
 		-h|--help) usage ; exit ;;
@@ -499,6 +500,7 @@ function main(){
 		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}
 		VCF=$( concatenate_snvs_indels ${TOOLNAME} ${VCF_SNVS_FILE} ${VCF_INDELS_FILE} )
 		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
+		delete_temporary_files ${DELETE_TEMPS}
 	else
 		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
 		fexit
