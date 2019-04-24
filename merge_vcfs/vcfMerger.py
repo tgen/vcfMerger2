@@ -352,6 +352,19 @@ def main(args, cmdline):
 		do_venn = True
 		log.info("make venn enabled")
 
+	dirout = os.path.realpath(os.curdir)
+	if args["dir_out"]:
+		dirout = args["dir_out"]
+		try:
+			if not os.path.exists(dirout):
+				log.info("creating temp directory recursively if not present")
+				os.makedirs(dirout, exist_ok=True)
+			dirout = os.path.realpath(dirout)
+			log.info(dirout + " created")
+		except Exception as e:
+			log.info(e)
+			sys.exit(-1)
+
 	# CHECK POINT
 	if lossy and lossless:
 		sys.exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
@@ -367,19 +380,6 @@ def main(args, cmdline):
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		log.error("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
 		sys.exit(-1)
-	if do_venn:
-		if lbeds == "":
-			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
-		dvm.make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False)
-		## make Venn using only the SNVs
-		lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
-		if all([path.isfile(f) for f in lbeds_snvs]):
-			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False)
-		lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
-		if all([path.isfile(f) for f in lbeds_snvs]):
-			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False)
-
-	## make Venn using only the Indels
 
 	dico_map_tool_acronym = {}
 	for tool_idx in range(len(ltoolnames)):
@@ -387,7 +387,22 @@ def main(args, cmdline):
 		dico_map_tool_acronym[ltoolnames[tool_idx]] = lacronyms[tool_idx]
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
+	## we do merging before the Venns, as Merging is more important that the venns
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
+
+	if do_venn:
+		if lbeds == "":
+			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
+		dvm.make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=dirout)
+		## make Venn using only the SNVs
+		lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
+		if all([path.isfile(f) for f in lbeds_snvs]):
+			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
+		## make Venn using only the Indels
+		lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
+		if all([path.isfile(f) for f in lbeds_snvs]):
+			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
+
 
 def make_parser_args():
 	parser = argparse.ArgumentParser(description='Processing options in vcfMerger.py ...')
@@ -436,6 +451,9 @@ def make_parser_args():
 	                      action='store_true')
 	optional.add_argument('--cmdline',
 	                      help=' string of the command line you would like to add to the vcf header ',
+	                      action=UniqueStore)
+	optional.add_argument('-d','--dir-out', '--dir-temp',
+	                      help=' direcgtory where the outputs of vcfMerger2 will be written ',
 	                      action=UniqueStore)
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',
