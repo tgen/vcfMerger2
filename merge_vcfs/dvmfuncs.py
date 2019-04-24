@@ -639,7 +639,7 @@ def get_colors_for_venns(number):
 		log.info("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 
-def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=""):
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=None):
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
 	numberOfTools = len(ltoolnames)
@@ -654,6 +654,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
 	project = "vcfMerger2_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
+	from os import path
+	project = path.sep.join([dirout, project])
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
