@@ -639,7 +639,7 @@ def get_colors_for_venns(number):
 		log.info("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 
-def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, ):
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
 	numberOfTools = len(ltoolnames)
@@ -648,7 +648,7 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 		return 0
 	type = "genomic"
 	colors = list(get_colors_for_venns(numberOfTools))
-	title = "\"Venn using " + str(numberOfTools) + " variant callers\""
+	title = "\"Venn using " + str(numberOfTools) + " variant callers  [ " + variantType + "]\""
 	figtype = "png"
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
@@ -657,7 +657,7 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
-	output_name = "upsetPlot_" + str(numberOfTools) + "_tools" if upsetBool else "venn_" + str(numberOfTools) + "_tools"
+	output_name = "upsetPlot_" + str(numberOfTools) + "_tools_" + variantType if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType
 
 	# Define command and arguments
 	command = 'intervene'
@@ -697,23 +697,24 @@ def make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False):
 	mycmd = [command, vtype]
 	mycmd = mycmd + common_args + type_specific_additional_args
 	mycmd = mycmd + ["--input"] + lbeds
-	import os
-	## check if bed file by variant types are their as well
-	## check if snvs.bed file
-	mycmdsnvs=None
-	lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
-	if all([os.path.isfile(f) for f in lbeds_snvs]):
-		mycmdsnvs = mycmd + ["--input"] + lbeds_snvs
-
-
-	## check if indels.bed file
-	mycmdindels=None
-	lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
-	if all([os.path.isfile(f) for f in lbeds_indels]):
-		mycmdindels = mycmd + ["--input"] + lbeds_indels
+	# import os
+	# ## check if bed file by variant types are their as well
+	# ## check if snvs.bed file
+	# mycmdsnvs=None
+	# lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
+	# if all([os.path.isfile(f) for f in lbeds_snvs]):
+	# 	mycmdsnvs = mycmd + ["--input"] + lbeds_snvs
+	#
+	#
+	# ## check if indels.bed file
+	# mycmdindels=None
+	# lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
+	# if all([os.path.isfile(f) for f in lbeds_indels]):
+	# 	mycmdindels = mycmd + ["--input"] + lbeds_indels
 
 	list_commands = []
-	for C in [mycmd, mycmdsnvs, mycmdindels]:
+	# for C in [mycmd, mycmdsnvs, mycmdindels]:
+	for C in [mycmd]:
 		if C is not None:
 			list_commands.append(C)
 

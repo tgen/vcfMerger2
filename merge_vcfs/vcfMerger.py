@@ -368,7 +368,15 @@ def main(args, cmdline):
 	if do_venn:
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option")
-		dvm.make_venn(ltoolnames, lbeds, saveOverlapsBool=False, upsetBool=False)
+		dvm.make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False)
+		## make Venn using only the SNVs
+		lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
+		if all([os.path.isfile(f) for f in lbeds_snvs]):
+			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False)
+		if all([os.path.isfile(f) for f in lbeds_snvs]):
+			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False)
+
+	## make Venn using only the Indels
 
 	dico_map_tool_acronym = {}
 	for tool_idx in range(len(ltoolnames)):
