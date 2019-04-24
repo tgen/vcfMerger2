@@ -28,16 +28,17 @@
 
 # from multiprocessing import Process, Queue, cpu_count
 import argparse
-from sys import exit
-from sys import argv
+import logging as log
+import time
+from collections import OrderedDict
 from os import linesep
 from re import search
+from sys import argv
+from sys import exit
+
 import dvmfuncs as dvm
 import vcfToDict
-import logging as log
-from collections import OrderedDict
 from natsort import natsorted
-import time
 
 '''
 ## STEPS so far:
@@ -137,7 +138,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		for toolname in list_tool_precedence_order:
 			indices.append(ltoolnames.index(toolname))
 		## we reallocate/reorder the vcfs files the same order of the list_tool_precedence_order
-		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: ".format(list_tool_precedence_order))
+		log.info("Re-Ordering the Toolnames and the list of VCFs based on the given precedence list: ".format("|".join([ list_tool_precedence_order])))
 		lvcfs = [lvcfs[i] for i in indices]
 		ltoolnames = list_tool_precedence_order;  ## we re-assigned the list
 
