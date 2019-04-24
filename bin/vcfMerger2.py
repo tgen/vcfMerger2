@@ -421,6 +421,9 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 	if data[tool]['do_venn']:
 		cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
 
+	if True:
+		cmdLine = ' '.join([cmdLine, "--delete-temps"])
+
 	# capture threshold AR found in json
 	TH_AR = data[tool]['threshold_AR']
 	if TH_AR is not None and TH_AR != "" and TH_AR != 0.9:
