@@ -171,7 +171,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		if dirout is not None:
 			data[ltoolnames[tool_idx]]['dir_work'] = dirout
 		else:
-			dirout = os.curdir
+			dirout = os.path.realpath(os.curdir)
 
 		# if os.path.dirname(lvcfs[tool_idx]) is None or os.path.dirname(lvcfs[tool_idx]) == "":
 		# 	data[ltoolnames[tool_idx]]['dir_work'] = "."
@@ -195,7 +195,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
 		if lprepped_vcf_outfilenames is not None:
-			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] =   os.path.sep.join([ str(dirout),  str(lprepped_vcf_outfilenames[tool_idx]) ])
+			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] =   os.path.sep.join([str(dirout),  str(lprepped_vcf_outfilenames[tool_idx]) ])
 		else:
 			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] = ""
 
@@ -627,7 +627,7 @@ def prepare_bed_for_venn(vcf):
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, cmdline=None):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=None):
 	"""
 
 	:param data:
@@ -1065,7 +1065,7 @@ def main(args, cmdline):
 		log.info(str(data))
 
 	if not skip_merge:  ## MERGING step Enabled
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, cmdline)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=cmdline)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
