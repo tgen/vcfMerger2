@@ -275,6 +275,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 	"""
 	for tool in data.keys():
 
+		dir_temp = data[tool]['dir_work']
 		vcf = data[tool]['prepped_vcf_outfilename']
 		log.info("%" * 10 + "  " + str(tool).upper() + "  " + "%" * 10)
 		log.info("Filtering vcf ...")
@@ -288,7 +289,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 		new_vcf_name = os.path.basename(os.path.splitext(vcf)[0] + ".filt.vcf")
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
-		data[tool]['prepped_vcf_outfilename'] = os.path.abspath(new_vcf_name)
+		data[tool]['prepped_vcf_outfilename'] = os.path.join(dir_temp, new_vcf_name)
 		if data[tool]['do_venn']:
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'])
 
