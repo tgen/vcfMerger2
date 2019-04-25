@@ -390,6 +390,7 @@ def main(args, cmdline):
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
 	## we do merging before the Venns, as Merging is more important that the venns
+	log.info(" " * 50) ; log.info(" " * 50) ;
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
 	log.info(" " * 50)
