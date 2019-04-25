@@ -365,6 +365,7 @@ def main(args, cmdline):
 		except Exception as e:
 			log.info(e)
 			exit(-1)
+		log.info("FULL PATH TEMP FOLDER: " + dirout)
 
 	# CHECK POINT
 	if lossy and lossless:
