@@ -207,7 +207,7 @@ function check_and_update_sample_names(){
 		echo -e "\tsample name in column 10 is  TUMOR and column 11 is named NORMAL" 1>&2
 		echo -e "\tas we decided that column 10 should be NORMAL sample and column 11 the TUMOR one" 1>&2
 		echo -e "\twe RENAME and SWAPPED the sample names." 1>&2
-		cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; next} ; if($1~/^CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print }  }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
+		cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; next} ; if($1~/^#CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print }  }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
 		check_ev $? "swap column 10 and 11"  1>&2
 		mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VCF_OUT}
 
