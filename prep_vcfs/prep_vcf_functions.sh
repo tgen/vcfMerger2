@@ -457,7 +457,7 @@ function run_tool(){
 			;;
 		vardict|vdt|vdj)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py"
-			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
+			#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_vardictjava_vcf ${VCF}
 			;;
 		haplotypecaller|hc)
