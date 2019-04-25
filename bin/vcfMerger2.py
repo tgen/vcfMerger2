@@ -154,7 +154,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False, dirout=None):
+                       TH_AR=0.9, do_venn=False, skip_prep_vcfs=False, dirout=None):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -195,9 +195,11 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
 
 		if lprepped_vcf_outfilenames is not None:
-			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] =   os.path.sep.join([str(dirout),  str(lprepped_vcf_outfilenames[tool_idx]) ])
+			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] =  os.path.sep.join([str(dirout),  str(lprepped_vcf_outfilenames[tool_idx]) ])
+		elif skip_prep_vcfs:
+			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] = lvcfs[tool_idx]
 		else:
-			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] = ""
+			raise("ERROR: No Prep-vcfs assign")
 
 		data[ltoolnames[tool_idx]]['vcf_indels'] = ""
 		data[ltoolnames[tool_idx]]['vcf_snvs'] = ""
@@ -1010,6 +1012,7 @@ def main(args, cmdline):
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn,
+	                          skip_prep_vcfs=skip_prep_vcfs,
 	                          dirout=dirout)
 	json_filename = "vcfMerger2_somatic.json" if not germline else "vcfMerger2_germline.json"
 	make_json(data, json_filename)
