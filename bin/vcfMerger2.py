@@ -969,6 +969,8 @@ def main(args, cmdline):
 	if args["do_venn"]:
 		do_venn = True
 		log.info("make venn enabled")
+		list_executables = ['Rscript', 'intervene']
+		check_if_executable_in_path(list_executables)
 
 	dirout = os.curdir
 	if args["dir_out"]:
@@ -1243,7 +1245,7 @@ if __name__ == '__main__':
 	print("   ")
 	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
 	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
-	list_executables = ['bedtools', 'bcftools', 'samtools', 'Rscript', 'python3', 'intervene']  ## list of executables required to be in path
+	list_executables = ['bedtools', 'bcftools', 'samtools', 'python3']  ## list of executables required to be in path
 	check_if_executable_in_path(list_executables)
 
 	##TODO check if ALL intended python packages are present in python3
