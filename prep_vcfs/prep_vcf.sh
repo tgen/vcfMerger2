@@ -27,6 +27,8 @@
 ### Major Contributors: Christophe Legendre 
 ### Minor Contributors:
 
+set -eu
+
 ## trap to capture the exit value from a function and from within a function
 trap "exit 1" TERM
 export TOP_PID=$$
