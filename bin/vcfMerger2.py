@@ -622,8 +622,8 @@ def prepare_bed_for_venn(vcf, dirout):
 	'''
 
 	# Build subprocess command
-	for F in ["prepare_input_file_for_Venn", "prepare_input_file_for_Venn_SplitbyVariantType"]:
-		mycmd = ["source", prep_vcf_functions_script_path, " && ", F, " " , vcf, dirout]
+	for FUNC in ["prepare_input_file_for_Venn", "prepare_input_file_for_Venn_SplitbyVariantType"]:
+		mycmd = ["source", prep_vcf_functions_script_path, " && ", FUNC, " " , vcf, dirout]
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		log.info(("Running bash function prep_input_file_for_venn command"))
@@ -644,7 +644,9 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	list_precedence_order = ""
 	for tool in data.keys():
 		vcf = data[tool]['vcf']
-		prepped_vcf = data[tool]['prepped_vcf_outfilename']
+
+
+		prepped_vcf = data[tool]['prepped_vcf_outfilename'] if not skip_prep_vcfs else  data[tool]['vcf']
 		acronym = data[tool]['tool_acronym'] if data[tool]['tool_acronym'] != "" else str(tool).upper()
 		list_tools = delim.join([list_tools, tool]) if list_tools != "" else tool
 		vcf_to_add = prepped_vcf if prepped_vcf != "" else vcf

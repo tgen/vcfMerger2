@@ -391,6 +391,8 @@ def main(args, cmdline):
 	## we do merging before the Venns, as Merging is more important that the venns
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
+	log.info(" " * 50)
+	log.info(" " * 50)
 	if do_venn:
 		log.info("###########  BEGIN SECTION MAKING VENN ###############")
 		if lbeds == "":
