@@ -191,11 +191,15 @@ function check_and_update_sample_names(){
 	COL10_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f10`
 	COL11_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f11`
 
-	if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ||  "${COL10_VALUE}" == "TUMOR" && "${COL11_VALUE}" == "NORMAL" ]] ;
+	if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ; #||  "${COL10_VALUE}" == "TUMOR" && "${COL11_VALUE}" == "NORMAL" ]] ;
 	then
 		echo -e "\tsample name in column 10 is  NORMAL and column 11 is named TUMOR" 1>&2
 		echo -e "\twe are updating the sample names appropriately here with the ones given by the user" 1>&2
 		cat  ${VCF}| sed "/^#CHROM/ s/NORMAL/${NORMAL_SNAME}/ ; /^#CHROM/ s/TUMOR/${TUMOR_SNAME}/" > temp_sname_${VCF}
+#		if [[ "${COL10_VALUE}" == "TUMOR" && "${COL11_VALUE}" == "NORMAL" ]] ;
+#		then
+#
+#		fi
 		mv temp_sname_${VCF} ${VCF_OUT}
 
 	elif [[ "${COL11_VALUE}" == "NORMAL" && "${COL10_VALUE}" == "TUMOR"  ]] ;
@@ -203,7 +207,7 @@ function check_and_update_sample_names(){
 		echo -e "\tsample name in column 10 is  TUMOR and column 11 is named NORMAL" 1>&2
 		echo -e "\tas we decided that column 10 should be NORMAL sample and column 11 the TUMOR one" 1>&2
 		echo -e "\twe RENAME and SWAPPED the sample names." 1>&2
-		cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; continue} ; if($1~/^CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print }  }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
+		cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; next} ; if($1~/^CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print }  }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
 		check_ev $? "swap column 10 and 11"  1>&2
 		mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VCF_OUT}
 
