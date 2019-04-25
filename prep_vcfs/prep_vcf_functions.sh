@@ -138,6 +138,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		esac
 		shift
 	done
+	if [[ ${DIR_OUTPUT} == "." ]] ; then LI="${LI}\nDIR_WORK==\"${DIR_OUTPUT}\"" ; fi
 }
 
 function delete_temporary_files(){
