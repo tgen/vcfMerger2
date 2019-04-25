@@ -99,6 +99,7 @@ function init_some_vars(){
 	TH_AR=""
 	MAKE_BED_FOR_VENN="no"
 	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
+	DIR_OUTPUT="."
 }
 
 function getOptions(){
