@@ -388,6 +388,9 @@ def main(args, cmdline):
 		dico_map_tool_acronym[ltoolnames[tool_idx]] = lacronyms[tool_idx]
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
+	## we do merging before the Venns, as Merging is more important that the venns
+	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
+
 	if do_venn:
 		log.info("###########  BEGIN SECTION MAKING VENN ###############")
 		if lbeds == "":
@@ -404,11 +407,6 @@ def main(args, cmdline):
 		if all([path.isfile(f) for f in lbeds_indels]):
 			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
 		log.info("###########  END SECTION MAKING VENN ###############")
-
-
-
-	## we do merging before the Venns, as Merging is more important that the venns
-	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
 
 
 def make_parser_args():
