@@ -357,10 +357,10 @@ def main(args, cmdline):
 	if args["dir_out"]:
 		dirout = args["dir_out"]
 		try:
-			if not os.path.exists(dirout):
-				log.info("creating temp directory recursively if not present")
+			if not path.exists(dirout):
+				log.info("creating temp directory recursively, present or not")
 				makedirs(dirout, exist_ok=True)
-			dirout = os.path.realpath(dirout)
+			dirout = path.realpath(dirout)
 			log.info(dirout + " created")
 		except Exception as e:
 			log.info(e)
