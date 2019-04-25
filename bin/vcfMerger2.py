@@ -791,7 +791,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		log.info("No Path given for SnpSift")
 	xx = filter_string_for_snpsift.split("###")
 	log.info(str(type(xx)) + str(len(xx)))
-	log.info(len()toolnames)
+	log.info(len(toolnames))
 	log.info("XXXXXXXXXXXXXXXXXXXXXXX")
 	if filter_string_for_snpsift.split("###") != len(ltoolnames):
 		log.error("ERROR: Number of triple-pound separated Values in --filter option does NOT match the number of given toolnames or number of given vcfs; "
