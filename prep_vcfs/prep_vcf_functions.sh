@@ -116,7 +116,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 	do
 		# for options with required arguments, an additional shift is required
 		case "$1" in
-		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nDIR_WORK==\"${DIR_OUTPUT}\"" ;  shift ;;
+		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nGIVEN_DIR_TEMP==\"${DIR_OUTPUT}\"" ;  shift ;;
 		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
 		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
 		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
@@ -138,17 +138,57 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		esac
 		shift
 	done
-	if [[ ${DIR_OUTPUT} == "." ]] ; then LI="${LI}\nDIR_WORK==\"${DIR_OUTPUT}\"" ; fi
+	check_inputs
 }
+
+function check_inputs(){
+
+    echo SSSS ${DIR_OUTPUT}
+
+    ##@@@@@@@@@@@@@@@@@##
+	##  check inputs   ##
+	##@@@@@@@@@@@@@@@@@##
+	echo -e "## Checking inputs ..."
+
+	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
+	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
+	if [[ ${TUMOR_SNAME} == ""  ]] ; then echo -e "ERROR: TUMOR Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
+	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
+
+    DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
+    if [[ ${DIR_OUTPUT} == "." ]] ;
+    then
+        LI="${LI}\nDIR_TEMP==\"${DIR_OUTPUT}\"" ;
+    fi
+    echo DNVCF ${DNVCF}
+    if [[ ${DNVCF} != "." ]]
+    then
+        DIR_OUTPUT=$( readlink -f ${DNVCF} )
+        export VCF_FINAL_USER_GIVEN_NAME=$(basename ${VCF_FINAL_USER_GIVEN_NAME})
+    fi
+    echo SSSS ${DIR_OUTPUT}
+    if [[ ! -e ${DIR_OUTPUT} ]]
+    then
+        echo -e "Creating DIR_OUTPUT where temporary files will be written: ${DIR_OUTPUT}"
+        mkdir -p ${DIR_OUTPUT} ;
+    fi
+
+	## check files and folders if exist
+	checkDir ${DIR_OUTPUT}
+	checkFile ${REF_GENOME_FASTA}
+
+
+}
+
 
 function delete_temporary_files(){
     local delete_temps=$1
 #    local PATTERN="sname.vcf$|sname.prep.vcf$|sname.prep.norm.vcf$|sname.decomp.vcf$|sname.decomp.prep.vcf$|sname.decomp.prep.norm.vcf"
-    local PATTERN="*sname.*.vcf"
-    if [[ ${delete_temp} == 1 ]]
+    local PATTERN="*sname*.vcf"
+    if [[ ${delete_temps} -eq 1 || ${delete_temps} == "1" ]]
     then
         echo -e "file with pattern \"${PATTERN}\" will be deleted ... "
-        rm $( find ${DIR_OUTPUT} -type f -name "${PATTERN}")
+        rm $( find ${DIR_OUTPUT} -type f -name "${PATTERN}" | grep -vE "$(basename ${VCF_FINAL_USER_GIVEN_NAME})")
         if [[ $? -ne 0 ]]
         then
             echo "ERROR in deleting files with pattern ${PATTERN}"
@@ -369,7 +409,7 @@ function final_msg(){
 	local VCF=$1
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
 	then
-		VCF_FINAL=${DIR_OUPUT}/${VCF_FINAL_USER_GIVEN_NAME}
+		VCF_FINAL=${DIR_OUTPUT}/${VCF_FINAL_USER_GIVEN_NAME}
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
@@ -384,7 +424,7 @@ function final_msg(){
 	echo -e "Extension should represent the steps performed on the given input VCF" 1>&2
 	echo -e "vcfMerger-compatible vcf file : << ${VCF} >>" 1>&2
 	echo -e "copy/renamed to: ${VCF_FINAL} " 1>&2
-	exit
+
 }
 
 function process_strelka2_vcf(){
@@ -487,20 +527,6 @@ function run_tool(){
 
 function main(){
 
-	##@@@@@@@@@@@@@@@@@##
-	##  check inputs   ##
-	##@@@@@@@@@@@@@@@@@##
-	echo -e "## Checking inputs ..."
-	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
-	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
-	if [[ ${TUMOR_SNAME} == ""  ]] ; then echo -e "ERROR: TUMOR Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
-	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
-
-
-	## check files and folders if exist
-	checkDir ${DIR_OUTPUT}
-	checkFile ${REF_GENOME_FASTA}
-
 
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
@@ -516,7 +542,7 @@ function main(){
 		fi
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
-		run_tool ${TOOLNAME} ${VCF}
+		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
 		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]
 	then
