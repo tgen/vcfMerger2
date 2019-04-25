@@ -789,9 +789,13 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		log.info("Well, you provided the path to snpSift probably before the options for filtering... that is ok. Otherwise, well you have not set the filter option. and provided the path to snpSift.jar for nothing :-) ")
 	else:
 		log.info("No Path given for SnpSift")
+	xx = filter_string_for_snpsift.split("###")
+	log.info(str(type(xx)) + str(len(xx)))
+	log.info(len()toolnames)
+	log.info("XXXXXXXXXXXXXXXXXXXXXXX")
 	if filter_string_for_snpsift.split("###") != len(ltoolnames):
-		log.error("ERROR: Number of triple-pounds separated Values in --filter options does NOT match the number of given toolnames or number of given vcfs; "
-		          ". Check your inputs")
+		log.error("ERROR: Number of triple-pound separated Values in --filter option does NOT match the number of given toolnames or number of given vcfs; "
+		          ". Check your inputs; Check if triple pouns are well used to separate out the values for that option.")
 		sys.exit(-1)
 
 
