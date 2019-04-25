@@ -461,8 +461,8 @@ def make_parser_args():
 	optional.add_argument('--cmdline',
 	                      help=' string of the command line you would like to add to the vcf header ',
 	                      action=UniqueStore)
-	optional.add_argument('-d','--dir-out', '--dir-temp',
-	                      help=' direcgtory where the outputs of vcfMerger2 will be written ',
+	optional.add_argument('-d', '--dir-out', '--dir-temp',
+	                      help=' directory where the temporary outputs of vcfMerger2 will be written ',
 	                      action=UniqueStore)
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',

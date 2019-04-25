@@ -663,7 +663,8 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	                       "--toolnames", double_quote_str(list_tools),
 	                       "--vcfs", double_quote_str(list_vcfs),
 	                       "-o", merged_vcf_outfilename,
-	                       "-a", double_quote_str(list_tools_acronyms)
+	                       "-a", double_quote_str(list_tools_acronyms),
+	                       "-d", dirout
 	                       ])
 
 	if list_precedence_order != "":
