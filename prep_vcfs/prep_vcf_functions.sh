@@ -191,15 +191,11 @@ function check_and_update_sample_names(){
 	COL10_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f10`
 	COL11_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f11`
 
-	if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ; #||  "${COL10_VALUE}" == "TUMOR" && "${COL11_VALUE}" == "NORMAL" ]] ;
+	if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ;
 	then
 		echo -e "\tsample name in column 10 is  NORMAL and column 11 is named TUMOR" 1>&2
 		echo -e "\twe are updating the sample names appropriately here with the ones given by the user" 1>&2
 		cat  ${VCF}| sed "/^#CHROM/ s/NORMAL/${NORMAL_SNAME}/ ; /^#CHROM/ s/TUMOR/${TUMOR_SNAME}/" > temp_sname_${VCF}
-#		if [[ "${COL10_VALUE}" == "TUMOR" && "${COL11_VALUE}" == "NORMAL" ]] ;
-#		then
-#
-#		fi
 		mv temp_sname_${VCF} ${VCF_OUT}
 
 	elif [[ "${COL11_VALUE}" == "NORMAL" && "${COL10_VALUE}" == "TUMOR"  ]] ;
