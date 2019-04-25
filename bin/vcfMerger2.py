@@ -970,13 +970,14 @@ def main(args, cmdline):
 		dirout = args["dir_out"]
 		try:
 			if not os.path.exists(dirout):
-				log.info("creating temp directory recursively if not present")
+				log.info("creating temp directory recursively, present or not")
 				os.makedirs(dirout, exist_ok=True)
 			dirout = os.path.realpath(dirout)
 			log.info(dirout + " created")
 		except Exception as e:
 			log.info(e)
 			sys.exit(-1)
+		log.info("TEMP FOLDER is:" + dirout )
 
 	dryrun = False
 	if args["dry_run"]:
