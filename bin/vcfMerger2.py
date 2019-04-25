@@ -807,7 +807,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; folder << {} >> NOT FOUND".format(
 			dn)
 		log.error(msg);
-		#raise(msg)
+		raise(msg)
 	elif os.path.exists(dn):
 		log.info("merged_vcf will be written into folder: " + dn)
 	else:
