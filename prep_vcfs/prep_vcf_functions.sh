@@ -166,7 +166,7 @@ function check_inputs(){
     if [[ ${DNVCF} != "." ]]
     then
         echo -e "Assigning DIR_TEMP with captured dirname from ${VCF_FINAL_USER_GIVEN_NAME} , i.e. ${DNVCF}"
-        DIR_OUTPUT=$( readlink -f ${DNVCF} )
+        DIR_OUTPUT=${DNVCF}
         export VCF_FINAL_USER_GIVEN_NAME=$(basename ${VCF_FINAL_USER_GIVEN_NAME})
     fi
     echo SSSS ${DIR_OUTPUT}
