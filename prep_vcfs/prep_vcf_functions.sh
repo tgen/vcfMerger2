@@ -433,6 +433,7 @@ function final_msg(){
 	then
 	    echo -e "preparing input file for intervene python module to make Venns" 1>&2
 	    prepare_input_file_for_Venn "${VCF_FINAL}" "${DIR_OUTPUT}"
+	    prepare_input_file_for_Venn_SplitbyVariantType "${VCF_FINAL}" "${DIR_OUTPUT}"
 	fi
 
 	echo -e "\n##---------------------------------------------------------------------------##" 1>&2
