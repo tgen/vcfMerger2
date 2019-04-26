@@ -410,12 +410,16 @@ function prepare_input_file_for_Venn_SplitbyVariantType(){
 
 function final_msg(){
 	local VCF=$1
+
+	if [[ ${DIR_OUTPUT} == "" ]] ; then DIR_OUTPUT="." ; fi  ## just to make sure that if dirout is not set we set it here to avoid raising an error
+
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
 	then
 		VCF_FINAL=${DIR_OUTPUT}/${VCF_FINAL_USER_GIVEN_NAME}
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
+    echo -e "WHY ERROR?"
 	cp ${VCF} ${VCF_FINAL}
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
