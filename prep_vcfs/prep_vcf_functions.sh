@@ -145,7 +145,6 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 
 function check_inputs(){
 
-    echo SSSS ${DIR_OUTPUT}
 
     ##@@@@@@@@@@@@@@@@@##
 	##  check inputs   ##
@@ -158,7 +157,6 @@ function check_inputs(){
 	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 
     DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
-    echo DNVCF ${DNVCF}
     if [[ ${DIR_OUTPUT} == "." ]] ;
     then
         LI="${LI}\nDIR_TEMP==\"${DIR_OUTPUT}\"" ;
@@ -166,16 +164,14 @@ function check_inputs(){
 
     if [[ ${DNVCF} != "." ]]
     then
-        echo -e "Assigning DIR_TEMP with captured dirname from ${VCF_FINAL_USER_GIVEN_NAME} , i.e. ${DNVCF}"
+
         mkdir -p ${DNVCF}
-        #DIR_OUTPUT=${DNVCF}
         if [[ ! ${DNVCF} =~ "^/" ]] ; ## this mean full path was not given
         then
             export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f ${DNVCF})/$(basename ${VCF_FINAL_USER_GIVEN_NAME})
-            #export VCF_FINAL_USER_GIVEN_NAME=$(basename ${VCF_FINAL_USER_GIVEN_NAME})
         fi
     fi
-    echo SSSS ${DIR_OUTPUT}
+
     if [[ ! -e ${DIR_OUTPUT} ]]
     then
         echo -e "Creating DIR_OUTPUT where temporary files will be written: ${DIR_OUTPUT}"
