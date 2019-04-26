@@ -85,6 +85,7 @@ function check_contig_file(){
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
+	REF_GENOME_FASTA=""
 	TOOLNAME=""
 	VCF_ALL_CALLS=""
 	NORMAL_SNAME=""
