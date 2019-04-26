@@ -8,7 +8,7 @@ function usage(){
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --list-valid-toolnames in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
 --make-bed-for-venn   enable making BED file for the Intervene python tool [default is disable] \\
---print-default-toolnames	Print default valid toolnames accepted so far (case insensitive) and exit \\
+--print-valid-toolnames 	Print default valid toolnames accepted so far (case insensitive) and exit \\
 --vcf			vcf having all types of variants already (no need to concatenate) \\
 --vcf-indels		tool's VCF with indels (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
 --vcf-snvs		tool's VCF with snvs (.vcf or .vcf.gz) ; note: toDate, concerns strelka2 only \\
@@ -136,7 +136,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
 		(*) break ; echo "$0: error --- unrecognized option $1" 1>&2 ; usage;  exit 1  ;;
 		esac
-		shift
+		#shift
 	done
 	echo -e "XXXXXXXXXXXXXXX"
 	check_inputs
