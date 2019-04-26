@@ -192,13 +192,14 @@ function delete_temporary_files(){
     local PATTERN="*sname*.vcf"
     if [[ ${delete_temps} -eq 1 || ${delete_temps} == "1" ]]
     then
-        echo -e "file with pattern \"${PATTERN}\" will be deleted ... "
+        echo -e "DELETION of temp files with pattern \"${PATTERN}\" ... "
         rm $( find ${DIR_OUTPUT} -type f -name "${PATTERN}" | grep -vE "$(basename ${VCF_FINAL_USER_GIVEN_NAME})")
         if [[ $? -ne 0 ]]
         then
             echo "ERROR in deleting files with pattern ${PATTERN}"
         fi
     fi
+    echo -e "DELETION of temp files with pattern \"${PATTERN}\" ... DONE"
 }
 
 function recap_input(){
