@@ -424,6 +424,7 @@ function final_msg(){
 	fi
     echo "command: cp ${VCF} ${VCF_FINAL}"
 	cp ${VCF} ${VCF_FINAL}
+	echo $?
 	check_ev $? "copy file"
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
