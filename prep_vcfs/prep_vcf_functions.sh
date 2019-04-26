@@ -137,11 +137,11 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
 		(*) break ; echo "$0: error --- unrecognized option $1" 1>&2 ; usage;  exit 1  ;;
 		esac
-		#shift
+		shift
 	done
-	echo -e "XXXXXXXXXXXXXXX"
 	check_inputs
 }
+
 
 function check_inputs(){
 
