@@ -168,7 +168,7 @@ function check_inputs(){
     then
         echo -e "Assigning DIR_TEMP with captured dirname from ${VCF_FINAL_USER_GIVEN_NAME} , i.e. ${DNVCF}"
         mkdir -p ${DNVCF}
-        DIR_OUTPUT=${DNVCF}
+        #DIR_OUTPUT=${DNVCF}
         if [[ ! ${DNVCF} =~ "^/" ]] ; ## this mean full path was not given
         then
             export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f ${DNVCF})/$(basename ${VCF_FINAL_USER_GIVEN_NAME})
