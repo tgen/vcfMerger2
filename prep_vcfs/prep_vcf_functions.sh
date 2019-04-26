@@ -424,8 +424,9 @@ function final_msg(){
 	fi
     echo "command: cp ${VCF} ${VCF_FINAL}"
 	cp ${VCF} ${VCF_FINAL}
-	echo $?
-	check_ev $? "copy file"
+	####check_ev $? "copy file" ## if files are the same cp will return an error so we cannot check the exit value; alternative: use rsync instead of cp
+
+
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
 	    echo -e "preparing input file for intervene python module to make Venns" 1>&2
