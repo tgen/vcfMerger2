@@ -192,14 +192,14 @@ function delete_temporary_files(){
     local PATTERN="*sname*.vcf"
     if [[ ${delete_temps} -eq 1 || ${delete_temps} == "1" ]]
     then
-        echo -e "DELETION of temp files with pattern \"${PATTERN}\" ... "
+        echo -e "DELETION of temp files with pattern \"${PATTERN}\" in temp folder ${DIR_OUTPUT} ... "
         rm $( find ${DIR_OUTPUT} -type f -name "${PATTERN}" | grep -vE "$(basename ${VCF_FINAL_USER_GIVEN_NAME})")
         if [[ $? -ne 0 ]]
         then
             echo "ERROR in deleting files with pattern ${PATTERN}"
         fi
     fi
-    echo -e "DELETION of temp files with pattern \"${PATTERN}\" ... DONE"
+    echo -e "DELETION of temp files with pattern \"${PATTERN}\" in temp folder ${DIR_OUTPUT} ... DONE"
 }
 
 function recap_input(){
@@ -422,9 +422,9 @@ function final_msg(){
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
-    echo -e "WHY ERROR?"
-    echo "cp ${VCF} ${VCF_FINAL}"
+    echo "command: cp ${VCF} ${VCF_FINAL}"
 	cp ${VCF} ${VCF_FINAL}
+	check_ev $? "copy file"
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
 	    echo -e "preparing input file for intervene python module to make Venns" 1>&2
