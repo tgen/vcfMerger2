@@ -138,6 +138,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		esac
 		shift
 	done
+	echo -e "XXXXXXXXXXXXXXX"
 	check_inputs
 }
 
