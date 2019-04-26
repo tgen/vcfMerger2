@@ -421,7 +421,7 @@ function final_msg(){
 
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
 	then
-		VCF_FINAL=${DIR_OUTPUT}/${VCF_FINAL_USER_GIVEN_NAME}
+		VCF_FINAL=${VCF_FINAL_USER_GIVEN_NAME}
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
