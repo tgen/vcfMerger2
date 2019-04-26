@@ -4,7 +4,7 @@ function usage(){
 	echo -e "\nUSAGE:"
 	echo -e "`basename $0` \\
 -d|--dir-work    	DIR_WORK directory where outputs will be written (needs to exist))  \\
--g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] \\
+-g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] (use for vcf normalization) \\
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --list-valid-toolnames in in-line command \\
 -o|--prepped-vcf-outfilename	Provide the name for the uptospecs vcf file that will be use as input for the vcfMerger2.0 tool \\
 --make-bed-for-venn   enable making BED file for the Intervene python tool [default is disable] \\
@@ -178,6 +178,7 @@ function check_inputs(){
         mkdir -p ${DIR_OUTPUT} ;
     fi
 
+    if [[  ${MAKE_BED_FOR_VENN} == "yes" ]] ; then DELETE_TEMPS=0 ; fi ## as we put all temps files in temp folder including the bed, if we need the files later for merging, and make venn we need to keep the temp files; LAternative would be to exclude the beds from the deletion in the function delete_temps
 	## check files and folders if exist
 	checkDir ${DIR_OUTPUT}
 	checkFile ${REF_GENOME_FASTA}
@@ -198,8 +199,9 @@ function delete_temporary_files(){
         then
             echo "ERROR in deleting files with pattern ${PATTERN}"
         fi
-    fi
     echo -e "DELETION of temp files with pattern \"${PATTERN}\" in temp folder ${DIR_OUTPUT} ... DONE"
+    fi
+
 }
 
 function recap_input(){
