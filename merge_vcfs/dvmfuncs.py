@@ -29,6 +29,7 @@
 import logging as log
 import re
 import sys
+import os
 
 from myGenotype import Genotype
 
@@ -765,5 +766,109 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
 
-def add_text_to_image(img_obj):
-	pass
+
+def get_os_fonts():
+
+	if sys.platform.startswith('linux'):
+		fonts_sys_dir = "/usr/share/fonts"
+		res = os.walk(fonts_sys_dir)
+	elif sys.platform.startswith('win'):
+		fonts_sys_dir = os.path.join(os.environ['WINDIR'], 'Fonts')
+		res = os.walk(fonts_sys_dir)
+	elif sys.platform.startswith('darwin'):
+		fonts_sys_dir = "/Library/Fonts/"
+		res = os.walk(fonts_sys_dir)
+	print("\n\nAvailable Fonts on Your System:")
+	print("\n".join(sorted([ str(f) for f in next(res)[2]])))
+	print("\n")
+
+def get_os_specific_system_font(my_os, user_font=None):
+	fpf = None
+	try:
+		if user_font is not None and os.path.exists(user_font):  ## relative or full path
+			return user_font
+		if my_os.startswith("linux"):
+			default_dir_font_lin = "/usr/share/fonts"
+			default_font_lin = "Arial Bold.ttf"
+			fpf = os.path.join(default_dir_font_lin, default_font_lin)
+		elif my_os.startswith("darwin"):
+			default_dir_font_mac = "/Library/Fonts/"
+			default_font_mac = "Arial Bold.ttf"
+			fpf = os.path.join(default_dir_font_mac, default_font_mac)
+		elif my_os.startswith("win"):
+			default_dir_font_win = os.path.join(os.environ['WINDIR'], 'Fonts')
+			default_font_win = "ARLRDBD.TTF"
+			fpf = os.path.join(default_dir_font_win, default_font_win)
+
+		if fpf is not None and os.path.exists(fpf):
+			print("Found Font: " + fpf + " and PATH to it EXISTS")
+			return fpf
+		else:
+			try:
+				get_os_fonts()
+			except Exception as e:
+				print(e)
+			print(
+				"ERROR: Operating System Could not dertermined automatically either the correct system, "
+				"could not find the correct font directory or find the default system font;\nAborting;\nPlease "
+				"install < Arial Bold.ttf> equivalent on your system ")
+			raise FileNotFoundError
+	except (TypeError, AttributeError) as n:
+		print(n)
+	except FileNotFoundError as fnf:
+		print(fnf)
+
+
+
+def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variants):
+	'''
+	Adds text to image; Here the Text will be the toolname and the number of variants;
+	ltoolnames and list_of_files_with_variants MUST be paired [ (t1, t2, t3) to (lv1, lv2, lv3) ]
+	:param image: image to update (i.e. filename of the image)
+	:param ltoolnames is the list of toolnames
+	:param list_of_files_with_variants:
+	:return: None
+	'''
+	lvarfiles = list_of_files_with_variants
+	if len(ltoolnames) != len(lvarfiles):
+		log.error("ERROR: number of toolnames MUST match the number of Given files that contain the variants")
+		raise("ERROR")
+	lanno = []
+	try:
+		for pair in zip(ltoolnames, lvarfiles):
+			tn = pair[0]
+			N = sum(1 for i in open(pair[1], 'rb'))
+			lanno.append(":".join([tn, str(N)]))
+			print(" -- ".join([str(x) for x in [tn, N]]))
+		print(str(lanno))
+
+		from PIL import Image, ImageDraw, ImageFont
+		import os
+		# create Image object with the input image
+		image = Image.open(finput_image)
+
+		# initialise the drawing context with the image object as background
+		draw = ImageDraw.Draw(image)
+
+		# create font object with the font file and specify desired size
+		font = ImageFont.truetype(get_os_specific_system_font(sys.platform), size=60)
+		#font = ImageFont.load_default(size=40)
+
+		# starting position of the message
+		(x, y) = (50, 50)
+		message = "  ;  ".join(lanno)
+		color = 'rgb(0, 0, 0)'  # black color
+		# draw the message on the background
+		draw.text((x, y), message, fill=color, font=font)
+		# save the edited image
+		anno_image_name = os.path.splitext(os.path.realpath(finput_image))[0]+ ".anno" + os.path.splitext(os.path.realpath(
+			finput_image))[1]
+		image.save( anno_image_name )
+		## uncomment line below if we decide to keep only the annotated image file
+		# os.rename(anno_image_name, finput_image)
+	except ImportError as ie:
+		raise(ie)
+	except FileNotFoundError as fnf:
+		raise(fnf)
+	except Exception as e:
+		raise(e)
