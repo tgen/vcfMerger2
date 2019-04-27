@@ -200,6 +200,7 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
     - gzip
     - json
     - logging
+    - Pillow
     - natsort
     - shutil
     - subprocess
@@ -299,5 +300,12 @@ If the variant caller is not listed above, users can make their own `prep` scrip
 ### Licence
 vcfMerger2 is under MIT licence.
 
-## Simplified Flowchart of the vcfMerger2 steps
+## vcfMerger2 Core tool 
+![flowchart](/vcfMerger2.Core.Functionality.png)
+
+
+## vcfMerger2 and wrapper utilities
+###### for know variant caller, we provide scripts allowing preparing the tool-specific vcf to specifications for the merger tool
+###### We provide a prep_vcf.sh script that allows to prep vcf independently from the main executable that is vcfMerger2.py located in the bin directory
+###### Furthermore, we also provide a simplified way of filtering input vcf by PASS and to filter prepped vcfs the same way you would using snpSift directly. 
 ![flowchart](/vcfMerger2.flowchart.png)
