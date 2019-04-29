@@ -640,6 +640,8 @@ def get_colors_for_venns(number):
 		log.info("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 		sys.exit("ERROR: Invalid Number; expected Integer between 2 and 10; Aborting Venn Diagram Creation")
 
+
+
 def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=None):
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
@@ -650,7 +652,6 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	type = "genomic"
 	colors = list(get_colors_for_venns(numberOfTools))
 	title = "\"Venn using " + str(numberOfTools) + " variant callers  [ " + variantType + "]\""
-	title = " "
 	figtype = "png"
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
@@ -674,7 +675,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	        "--figtype", figtype,
 	        "--dpi", str(dpi),
 	        "--project", project,
-	        "--output", output_name,
+	        "--output", output_name
 	        ]
 
 
@@ -766,18 +767,20 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 		if process.returncode is not 0:
 			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
+
+
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_ony and indels_only
+	project = path.splitext(project)[0]+"."+figtype+"_venn"+path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
 	path_to_image_file=path.realpath(path.join(output_name,project))
 	log.info("Venn in progress: "+path_to_image_file)
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
-
 def get_os_fonts():
 
 	if sys.platform.startswith('linux'):
-		fonts_sys_dir = "/usr/share/fonts"
+		fonts_sys_dir = "/usr/share/fonts/gnu-free"
 		res = os.walk(fonts_sys_dir)
 	elif sys.platform.startswith('win'):
 		fonts_sys_dir = os.path.join(os.environ['WINDIR'], 'Fonts')
@@ -795,8 +798,8 @@ def get_os_specific_system_font(my_os, user_font=None):
 		if user_font is not None and os.path.exists(user_font):  ## relative or full path
 			return user_font
 		if my_os.startswith("linux"):
-			default_dir_font_lin = "/usr/share/fonts"
-			default_font_lin = "Arial Bold.ttf"
+			default_dir_font_lin = "/usr/share/fonts/gnu-free"
+			default_font_lin = "FreeSansBold.ttf"
 			fpf = os.path.join(default_dir_font_lin, default_font_lin)
 		elif my_os.startswith("darwin"):
 			default_dir_font_mac = "/Library/Fonts/"
@@ -861,7 +864,7 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 		for pair in zip(ltoolnames, lvarfiles):
 			tn = pair[0]
 			N = sum(1 for i in open(pair[1], 'rb'))
-			lanno.append(":".join([tn, str(N)]))
+			lanno.append(" :  ".join([tn, str(N)]))
 			print(" -- ".join([str(x) for x in [tn, N]]))
 		print(str(lanno))
 
@@ -874,12 +877,12 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 		draw = ImageDraw.Draw(image)
 
 		# create font object with the font file and specify desired size
-		font = ImageFont.truetype(get_os_specific_system_font(sys.platform), size=60)
+		font = ImageFont.truetype(get_os_specific_system_font(sys.platform), size=40)
 		#font = ImageFont.load_default(size=40)
 
 		# starting position of the message
-		(x, y) = (50, 50)
-		message = "  ;  ".join(lanno)
+		(x, y) = (150, 200)
+		message = "\n".join(lanno)
 		color = 'rgb(0, 0, 0)'  # black color
 		# draw the message on the background
 		draw.text((x, y), message, fill=color, font=font)
@@ -888,7 +891,7 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 			finput_image))[1]
 		image.save( anno_image_name )
 		## uncomment line below if we decide to keep only the annotated image file
-		# os.rename(anno_image_name, finput_image)
+		os.rename(anno_image_name, finput_image)
 	except ImportError as ie:
 		raise(ie)
 	except FileNotFoundError as fnf:
