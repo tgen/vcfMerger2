@@ -768,7 +768,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 			sys.exit("Upset Creation FAILED")
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_ony and indels_only
-	add_annotation_to_image(os.path.realpath(os.path.join(project, output_name)), ltoolnames, lbeds)
+	path_to_image_file=path.realpath(path.join(project, output_name))
+	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
 
 def get_os_fonts():
