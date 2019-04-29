@@ -463,6 +463,7 @@ function process_mutect2_vcf(){
 function process_lancet_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
+	#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 	#VCF=$( modify_contig_info_in_lancet ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
@@ -504,18 +505,15 @@ function run_tool(){
 			;;
 		lancet|lct|lan)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/lancet/lancet.somatic.addFieldsForVcfMerger.py"
-			get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_lancet_vcf ${VCF}
 			;;
 		octopus|oct)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.addFieldsForVcfMerger.py"
 			PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION="${DIR_PATH_TO_SCRIPTS}/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py"
-			#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_octopus_vcf ${VCF}
 			;;
 		vardict|vdt|vdj)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py"
-			#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 			process_vardictjava_vcf ${VCF}
 			;;
 		haplotypecaller|hc)
