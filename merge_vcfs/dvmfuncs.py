@@ -650,6 +650,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	type = "genomic"
 	colors = list(get_colors_for_venns(numberOfTools))
 	title = "\"Venn using " + str(numberOfTools) + " variant callers  [ " + variantType + "]\""
+	title = " "
 	figtype = "png"
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
@@ -765,6 +766,9 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 		if process.returncode is not 0:
 			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
+	## annotate the images created by make_venn function
+	## We expect at least three files, snvs+indels, snvs_ony and indels_only
+	add_annotation_to_image(os.path.realpath(os.path.join(project, output_name)), ltoolnames, lbeds)
 
 
 def get_os_fonts():
@@ -809,16 +813,26 @@ def get_os_specific_system_font(my_os, user_font=None):
 			except Exception as e:
 				print(e)
 			print(
-				"ERROR: Operating System Could not dertermined automatically either the correct system, "
-				"could not find the correct font directory or find the default system font;\nAborting;\nPlease "
-				"install < Arial Bold.ttf> equivalent on your system ")
+				"ERROR: vcfMerger2 could not determine automatically either the correct system, "
+				"could not find the correct font directory or could not find the default preset system font;\nAborting;\nPlease "
+				"install < " + fpf + " > equivalent on your system ")
 			raise FileNotFoundError
 	except (TypeError, AttributeError) as n:
 		print(n)
 	except FileNotFoundError as fnf:
 		print(fnf)
 
-
+def check_if_files_in_list_exist(list_file):
+	"""
+	Check if the file in the given list of file exit and return only the files that exist or empty list if none exit
+	:param list_file: object list of files
+	:return: list_of_file or empty list
+	"""
+	lf = []
+	for f in list_file:
+		if os.path.exists(f):
+			lf.append(f)
+	return lf
 
 def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variants):
 	'''
@@ -829,10 +843,16 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 	:param list_of_files_with_variants:
 	:return: None
 	'''
-	lvarfiles = list_of_files_with_variants
+	lvarfiles = check_if_files_in_list_exist(list_of_files_with_variants)
+
+	if lvarfiles is None or lvarfiles == []:
+		log.error("Nonoe of the expected png files for annotatino were found; Skipping Image file annotation;")
+		return None
+
 	if len(ltoolnames) != len(lvarfiles):
-		log.error("ERROR: number of toolnames MUST match the number of Given files that contain the variants")
-		raise("ERROR")
+		msg = "ERROR: number of toolnames MUST match the number of Given files that contain the variants"
+		log.error(msg)
+		raise(msg)
 	lanno = []
 	try:
 		for pair in zip(ltoolnames, lvarfiles):
