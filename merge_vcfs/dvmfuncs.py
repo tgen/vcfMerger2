@@ -768,8 +768,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 			sys.exit("Upset Creation FAILED")
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_ony and indels_only
-	log.info("output_name = ", output_name)
-	path_to_image_file=path.realpath(output_name)
+	log.info("output_name = "+ output_name +"/"+ project)
+	path_to_image_file=path.realpath(path.join(output_name,project)
 	log.info("Venn in progress: "+path_to_image_file)
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
