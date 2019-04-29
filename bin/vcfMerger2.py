@@ -426,7 +426,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 	if data[tool]['do_venn']:
 		cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
 
-	if data[0]['delete_temps']:
+	if data[tool]['delete_temps']:
 		cmdLine = ' '.join([cmdLine, "--delete-temps"])
 
 	# capture threshold AR found in json
@@ -677,7 +677,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if lossy:
 		my_command = my_command + " --lossy "
 
-	if data[0]['delete_temps']:
+	if data[tool]['delete_temps']:
 		my_command = my_command + " --delete-temps "
 
 	if do_venn:
