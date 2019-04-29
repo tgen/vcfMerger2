@@ -1065,7 +1065,7 @@ def main(args, cmdline):
 
 		procs_exit_codes = {}
 		for p in procs:
-			log.info("task " + p + " started in background ...")
+			log.info("task " + str(p) + " started in background ...")
 			p.join()
 
 		for p in procs:
