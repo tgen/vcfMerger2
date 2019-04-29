@@ -190,7 +190,7 @@ by more than one tool. This Precedence is subjective to the user.
 All the following tools **must** be in your `PATH` before running `vcfMerger2` scripts 
 
 - linux system 
-- grep, awk 
+- grep, awk, sed, echo, find, ...
 - python 3.6.0 or up
     - cyvcf2 (tested with versions: 0.8.2 or 0.8.4 ; other versions not tested and not recommended)
     - intervene
@@ -287,12 +287,14 @@ To date, 4 somatic tools are supported.
 - mutect2
 - lancet
 - octopus
+- vardict
 
 To date, 3 germline callers are supported:
 - haplotype caller
 - freebayes
 - samtools mpileup
-
+- strelka2
+- deepvariant
 
 
 If the variant caller is not listed above, users can make their own `prep` script for their tool then create a pull-request on github, or open an issue with keyword `improvement` as first line in bloc text. 
