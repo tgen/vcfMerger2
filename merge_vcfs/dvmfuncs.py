@@ -769,6 +769,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_ony and indels_only
 	path_to_image_file=path.realpath(path.join(project, output_name))
+	log.info("Venn in progress: "+path_to_image_file)
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
 
