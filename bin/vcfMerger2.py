@@ -154,7 +154,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False, skip_prep_vcfs=False, dirout=None):
+                       TH_AR=0.9, do_venn=False, skip_prep_vcfs=False, dirout=None, delete_temps=False):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -229,6 +229,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
+		data[ltoolnames[tool_idx]]['delete_temps'] = delete_temps
 
 	return data
 
@@ -422,7 +423,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
 	if data[tool]['do_venn']:
 		cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
 
-	if True:
+	if delete_temps:
 		cmdLine = ' '.join([cmdLine, "--delete-temps"])
 
 	# capture threshold AR found in json
@@ -672,6 +673,9 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 
 	if lossy:
 		my_command = my_command + " --lossy "
+
+	if data[0]['delete_temps']:
+		my_command = my_command + " --delete-temps "
 
 	if do_venn:
 		for tool in data.keys():
@@ -960,6 +964,11 @@ def main(args, cmdline):
 				"Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.")
 		log.info("user given threshold for AR: " + str(TH_AR))
 
+	delete_temps=False
+	if args['delete_temps']:
+		delete_temps = True
+		log.info("Temps Files from prep_vcf stage will be DELETED")
+
 	lbeds = ""
 	if args["beds"]:
 		lbeds = str(args["beds"]).split(delim)
@@ -1021,7 +1030,8 @@ def main(args, cmdline):
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn,
 	                          skip_prep_vcfs=skip_prep_vcfs,
-	                          dirout=dirout)
+	                          dirout=dirout,
+	                          delete_temps=delete_temps)
 	json_filename = "vcfMerger2_somatic.json" if not germline else "vcfMerger2_germline.json"
 	make_json(data, json_filename)
 	# inFileJson = make_json(data, json_filename)
@@ -1038,7 +1048,7 @@ def main(args, cmdline):
 		# parse_json_data_and_run_prep_vcf(data, dryrun) if not germline else parse_json_data_and_run_prep_vcf_germline(
 		# 	data, dryrun)
 		time.sleep(1)
-		## TRY PARALLELIZE THIS SECTION OF MAKING PREP FILES
+		## PARALLELIZE OF MAKING PREP FILES
 		import multiprocessing
 		funcToUse = parse_json_data_and_run_prep_vcf_parallel if not germline else parse_json_data_and_run_prep_vcf_germline_parallel
 		procs = []
@@ -1052,6 +1062,7 @@ def main(args, cmdline):
 
 		procs_exit_codes = {}
 		for p in procs:
+			log.info("task " + p + " started in background ...")
 			p.join()
 
 		for p in procs:
@@ -1190,6 +1201,11 @@ def make_parser_args():
 	                      action='store_true',
 	                      help=' skip the step for preparing vcfs up to specs and only run the merge step; implies all prep-vcfs are ready already ; same options and inputs required as if prep step was run ')
 
+	optional.add_argument('--delete-temps',
+	                      required=False,
+	                      action='store_true',
+	                      help="if set, temporary files created during the prep_vcf stage will be deleted")
+
 	optional.add_argument('--filter-by-pass',
 	                      required=False,
 	                      action='store_true',
@@ -1218,6 +1234,7 @@ def make_parser_args():
 	optional.add_argument('--beds',
 	                      help='list of bed files to be used to make Venns or Upset plots; requires to enable --do-venn as well to validate making Venn/upset plots ; list MUST be delimited by DELIM character (--delim or default delim)',
 	                      action=UniqueStore)
+
 	optional.add_argument('--do-venn',
 	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
 	                      action='store_true')

@@ -467,6 +467,11 @@ def make_parser_args():
 	optional.add_argument('--verbose',
 	                      help='Output verbose information',
 	                      action='store_true')
+	optional.add_argument('--delete-temps',
+	                      required=False,
+	                      action='store_true',
+	                      help="if set, temporary files created during the prep_vcf stage will be deleted")
+
 	print(str(parser.prog) + "   " + str(parser.description))  ## cannot use log.info at this line because if we do, the counter in line does not show in stdout; Why??? No idea
 	return parser
 
