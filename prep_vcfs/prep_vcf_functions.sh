@@ -463,7 +463,7 @@ function process_mutect2_vcf(){
 function process_lancet_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	VCF=$( modify_contig_info_in_lancet ${VCF} )
+	#VCF=$( modify_contig_info_in_lancet ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
