@@ -661,7 +661,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
-	output_name = "upsetPlot_" + str(numberOfTools) + "_tools" if upsetBool else "venn_" + str(numberOfTools) + "_tools" ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
+	output_name = "upsetPlot_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_")  if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
 	from os import path
 	if dirout is None:
 		dirout = path.basename(path.curdir)
