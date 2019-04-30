@@ -1,5 +1,5 @@
 <p align="center">
-![logo](/vcfMerger2.logo.png)
+<img src="vcfMerger2.logo.png"/>
 </p>
 DEVEL Branch
 
