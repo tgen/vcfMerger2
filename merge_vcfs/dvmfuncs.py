@@ -776,9 +776,9 @@ def get_os_fonts():
 	elif sys.platform.startswith('darwin'):
 		fonts_sys_dir = "/Library/Fonts/"
 		res = os.walk(fonts_sys_dir)
-	print("\n\nAvailable Fonts on Your System:")
-	print("\n".join(sorted([ str(f) for f in next(res)[2]])))
-	print("\n")
+	log.info("\n\nAvailable Fonts on Your System:")
+	log.info("\n".join(sorted([ str(f) for f in next(res)[2]])))
+	log.info("\n")
 
 def get_os_specific_system_font(my_os, user_font=None):
 	fpf = None
@@ -799,22 +799,22 @@ def get_os_specific_system_font(my_os, user_font=None):
 			fpf = os.path.join(default_dir_font_win, default_font_win)
 
 		if fpf is not None and os.path.exists(fpf):
-			print("Found Font: " + fpf + " and PATH to it EXISTS")
+			log.info("Found Font: " + fpf + " and PATH to it EXISTS")
 			return fpf
 		else:
 			try:
 				get_os_fonts()
 			except Exception as e:
-				print(e)
-			print(
+				log.error(e)
+			log.error(
 				"ERROR: vcfMerger2 could not determine automatically either the correct system, "
 				"could not find the correct font directory or could not find the default preset system font;\nAborting;\nPlease "
 				"install < " + fpf + " > equivalent on your system ")
 			raise FileNotFoundError
 	except (TypeError, AttributeError) as n:
-		print(n)
+		log.error(n)
 	except FileNotFoundError as fnf:
-		print(fnf)
+		log.error(fnf)
 
 def check_if_files_in_list_exist(list_file):
 	"""
