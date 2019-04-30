@@ -45,7 +45,7 @@ The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bi
 
 vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants VCFs files. 
  
-###### Example_1:  
+###### Example_1  
 ``` 
 python vcfMerger2.py    
 -g hs37d5.fa  
@@ -319,7 +319,7 @@ vcfMerger2 is under MIT licence.
 ## vcfMerger2 Core tool 
 ###### This is the **CORE** functionnality of the vcfMerger2 tool
 ###### when user already has vcfMerger2-merge-ready VCFs, running vcfMerger2 executable is as easy as pie
-###### The example [Example_1](#Example_1:) above show the minimum inputs the user has to give.
+###### The example [Example_1](#Example_1) above show the minimum inputs the user has to give.
 ![flowchart](/vcfMerger2.Core.Functionality.png)
 
 
