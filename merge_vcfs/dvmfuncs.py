@@ -853,8 +853,8 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 			tn = pair[0]
 			N = sum(1 for i in open(pair[1], 'rb'))
 			lanno.append(" :  ".join([tn, str(N)]))
-			print(" -- ".join([str(x) for x in [tn, N]]))
-		print(str(lanno))
+			log.info(" -- ".join([str(x) for x in [tn, N]]))
+		log.info(str(lanno))
 
 		from PIL import Image, ImageDraw, ImageFont
 		import os
