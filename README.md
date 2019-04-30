@@ -306,6 +306,7 @@ To date, 3 germline callers are supported:
 - haplotype caller
 - freebayes
 - samtools mpileup
+###### Coming soon:
 - strelka2
 - deepvariant
 
@@ -318,7 +319,7 @@ vcfMerger2 is under MIT licence.
 ## vcfMerger2 Core tool 
 ###### This is the **CORE** functionnality of the vcfMerger2 tool
 ###### when user already has vcfMerger2-merge-ready VCFs, running vcfMerger2 executable is as easy as pie
-###### The example [Example0]#Example0 above show the minimum inputs the user has to give.
+###### The example [Example0](#Example0) above show the minimum inputs the user has to give.
 ![flowchart](/vcfMerger2.Core.Functionality.png)
 
 
