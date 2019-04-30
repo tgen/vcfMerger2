@@ -691,12 +691,13 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 
 	else:
 		vtype = "venn"
+		if saveOverlapsBool:
+			type_specific_additional_args = type_specific_additional_args + ["--save-overlaps"]
+
 		type_specific_additional_args = ["--bordercolors",  ",".join([color for color in bordercolors]),
 		                                  "--colors", "\""+','.join([color for color in colors])+"\"",
 		                                 "--fontsize", str(fontsize),
 		                                 "--title", title]
-		if saveOverlapsBool:
-			type_specific_additional_args = type_specific_additional_args + ["--save-overlaps"]
 
 
 
