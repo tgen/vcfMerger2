@@ -45,7 +45,7 @@ The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bi
 
 vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants VCFs files. 
  
-Example:  
+###### Example_1:  
 ``` 
 python vcfMerger2.py    
 -g hs37d5.fa  
@@ -212,7 +212,7 @@ All the following tools **must** be in your `PATH` before running `vcfMerger2` s
 - bcftools 1.7 or up
 - bedtools 2.26.0 or up
 - vt v0.57721 or up (tests done with v0.57721)
-- snpSift 4.3 or up (snpSift.jar)
+- snpSift 4.3t or up (snpSift.jar)
 
 
 ## FILTERING VCF
@@ -248,10 +248,10 @@ Users can prepare tool-specific vcf by only running the sub-step of vcfMerger2 c
 The script called `prep_vcf.sh` allows you to specifically bring up to vcfMerger2-specs vcfs for the supported tools *(see list of supported tools below)*.
 This script can be called directly and run independently for each vcf and tool. 
 
-Example_1:  
+###### Example_2:  
 `prep_vcf.sh --toolname lancet --vcf ./test_data/raw_tool_vcfs/lancet.raw.vcf -d ./test_data -g  ./ref_genome/grch37.22.fa` 
 
-Example_2:  
+###### Example_3:  
 `prep_vcf.sh --toolname lancet --normal-sname NORMAL --tumor-sname TUMOR --vcf raw_tool_vcfs/lancet.raw.vcf -g ref_genome/grch37.22.fa -o lancet.prepped.vcf --contigs-file ./contigs/contigs/txt`
  
 
@@ -265,21 +265,33 @@ This script can be called and run independently.
 vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic vcfs;  
 Bringing the vcfs up to vcfMerger2 specs is **mandatory** before running `vcfMerger.py` script ; this script can be found in the vcfMerger sub-directory 
 
-Example_3 (simplest way of running vcfMerger step only):  
+###### Example_4 (simplest way of running vcfMerger step only):  
 `vcfMerger.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf"`  
-Example_4 (adding the name of the output file; otherwise default is `input_vcf_filename.merge.vcf`):  
+###### Example_5 (adding the name of the output file; otherwise default is `input_vcf_filename.merge.vcf`):  
 `vcfMerger.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" -o merged.vcf `
-Example_3 (adding acronyms to reduce file size):  
+###### Example_6 (adding acronyms to reduce file size):  
 `vcfMerger.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" -o merged.vcf -a "SLK|MUT|LAN|OCT" `   
 
 _**HINT**_: You also can run the same command listed in `all-in-one` way by just adding the option `--skip-prep-vcfs`, and only vcfMerger step will be performed.
 
-Example_4 (Germline calls instead of somatic ; adding acronyms to reduce file size):  
+###### Example_7 (Germline calls instead of somatic ; adding acronyms to reduce file size):  
 `python3 /home/clegendre/qscripts/gits/vcfMerger2_devel_branch/bin/vcfMerger2.py -g ${REF_GENOME}  --toolnames "haplotypecaller|freebayes|samtools" --vcfs "testFile_HC.100000lines.vcf|testFile_FB.100000lines.vcf|testFile_ST.100000lines.vcf" --prep-outfilenames "HC_prep.vcf|FB_prep.vcf|ST_prep.vcf" --germline  --germline-snames "HAPI_0001_000001_OV_Whole_T1_TSWGS_A28333" -o "merged_germline_calls_3tools.vcf" -a "HC|FB|ST"`
 
-Example_5 (using filtering options [here both filtering options are being used]):
-python3 /home/clegendre/qscripts/gits/vcfMerger2_devel_branch/bin/vcfMerger2.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "strelka2.somatic.snvs_indels.vcf|mutect2.somatic.snvs_indels.FiltMutCallsTool.vcf|lancet.commpressed.somatic.snvs_indels.vcf.gz|octopus.legacy.vcf" --normal-sname "COLO829_C2" --tumor-sname "COLO829_T1"  -g ${REF_GENOME_FASTA_FILE} -o colo829.merged.vcf --prep-outfilenames "SLK.prep.vcf|MUT.prepped.vcf|LAN.prepped.vcf|OCT_prepped.vcf"  --filter "( GEN[0].DP>=10 && GEN[0].DP>=10 ) && ( GEN[0].AR<=0.02 && GEN[1].AR >= 0.05 )" --path-jar-snpsift /tools/snpEff/4.3/snpEff/SnpSift.jar --filter-by-pass --do-venn
-
+###### Example_8 (using filtering options [here both filtering options are being used]):
+```
+python3  ${VCFMERGER2_INSTALL_DIR}/bin/vcfMerger2.py 
+--toolnames "strelka2|mutect2|lancet|octopus" 
+--vcfs "strelka2.somatic.snvs_indels.vcf|mutect2.somatic.snvs_indels.FiltMutCallsTool.vcf|lancet.commpressed.somatic.snvs_indels.vcf.gz|octopus.legacy.vcf" 
+--normal-sname "COLO829_C2" 
+--tumor-sname "COLO829_T1"  
+-g ${REF_GENOME_FASTA_FILE} 
+-o colo829.merged.vcf 
+--path-jar-snpsift /tools/snpEff/4.3/snpEff/SnpSift.jar 
+--filter-by-pass 
+--prep-outfilenames "SLK.prep.vcf|MUT.prepped.vcf|LAN.prepped.vcf|OCT_prepped.vcf"  
+--filter "( GEN[0].DP>=10 && GEN[0].DP>=10 ) && ( GEN[0].AR<=0.02 && GEN[1].AR >= 0.05 )" 
+--do-venn`
+```
 
 #### what tool-specific raw vcfs are currently supported?
 To bring each vcf up to vcfMerger2 specs, a tool-specific script that modifies and update tool-specific vcf is provided. (see `prep_vcfs` directory) 
@@ -304,6 +316,9 @@ If the variant caller is not listed above, users can make their own `prep` scrip
 vcfMerger2 is under MIT licence.
 
 ## vcfMerger2 Core tool 
+###### This is the **CORE** functionnality of the vcfMerger2 tool
+###### when user already has vcfMerger2-merge-ready VCFs, running vcfMerger2 executable is as easy as pie
+###### The example [Example0]#Example0 above show the minimum inputs the user has to give.
 ![flowchart](/vcfMerger2.Core.Functionality.png)
 
 
