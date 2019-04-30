@@ -1,5 +1,6 @@
+<p align="center">
 ![logo](/vcfMerger2.logo.png)
-
+</p>
 DEVEL Branch
 
 # vcfMerger2 

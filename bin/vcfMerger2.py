@@ -1051,7 +1051,7 @@ def main(args, cmdline):
 		# parse_json_data_and_run_prep_vcf(data, dryrun) if not germline else parse_json_data_and_run_prep_vcf_germline(
 		# 	data, dryrun)
 		time.sleep(1)
-		## PARALLELIZE OF MAKING PREP FILES
+		## PARALLELIZING MAKING PREP FILES
 		import multiprocessing
 		funcToUse = parse_json_data_and_run_prep_vcf_parallel if not germline else parse_json_data_and_run_prep_vcf_germline_parallel
 		procs = []
@@ -1080,7 +1080,9 @@ def main(args, cmdline):
 				log.error(msg + " --> FAILED")
 				STOP = bool(True)
 
-		if STOP: sys.exit("Aborting vcMerger2 because preps FAILED")
+		if STOP:
+			log.info("prep step Elapsed time before failure:  {} secs".format(str(int(round((time.time() - start_time))))))
+			sys.exit("Aborting vcMerger2 because preps FAILED")
 
 		log.info("prep step Total Elapsed time in seconds:  {}".format(str(int(round((time.time() - start_time))))))
 		log.info("**** end PREP process section  ****".upper())
