@@ -642,7 +642,7 @@ def get_colors_for_venns(number):
 
 
 
-def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=False, upsetBool=False, dirout=None):
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=True, upsetBool=False, dirout=None):
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 	names = ','.join([name for name in ltoolnames])
 	numberOfTools = len(ltoolnames)
@@ -666,6 +666,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 	if dirout is None:
 		dirout = path.basename(path.curdir)
 	output_name = path.sep.join([dirout, output_name])
+
 	# Define command and arguments
 	command = 'intervene'
 
@@ -700,24 +701,10 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 
 
 
-	# Build subprocess command
+	## Build subprocess command
 	mycmd = [command, vtype]
 	mycmd = mycmd + common_args + type_specific_additional_args
 	mycmd = mycmd + ["--input"] + lbeds
-	# import os
-	# ## check if bed file by variant types are their as well
-	# ## check if snvs.bed file
-	# mycmdsnvs=None
-	# lbeds_snvs = [re.sub(r'\.bed$', '.snvs.bed', file) for file in lbeds]
-	# if all([os.path.isfile(f) for f in lbeds_snvs]):
-	# 	mycmdsnvs = mycmd + ["--input"] + lbeds_snvs
-	#
-	#
-	# ## check if indels.bed file
-	# mycmdindels=None
-	# lbeds_indels = [re.sub(r'\.bed$', '.indels.bed', file) for file in lbeds]
-	# if all([os.path.isfile(f) for f in lbeds_indels]):
-	# 	mycmdindels = mycmd + ["--input"] + lbeds_indels
 
 	list_commands = []
 	# for C in [mycmd, mycmdsnvs, mycmdindels]:
@@ -770,7 +757,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool
 
 
 	## annotate the images created by make_venn function
-	## We expect at least three files, snvs+indels, snvs_ony and indels_only
+	## We expect at least three files, snvs+indels, snvs_only and indels_only
 	project = path.splitext(project)[0]+"."+figtype+"_venn"+path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
 	path_to_image_file=path.realpath(path.join(output_name,project))
