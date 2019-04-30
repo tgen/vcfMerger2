@@ -405,11 +405,11 @@ def main(args, cmdline):
 		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.intervene.snvs.bed', file) for file in lbeds]
 		log.info(str(lbeds_snvs))
 		if all([path.isfile(f) for f in lbeds_snvs]):
-			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
+			dvm.make_venn(ltoolnames, lbeds_snvs, variantType="Snvs", saveOverlapsBool=True, upsetBool=False,  dirout=dirout)
 		## make Venn using only the Indels
 		lbeds_indels = [re.sub(r'\.intervene\.bed$', '.intervene.indels.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_indels]):
-			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=False, upsetBool=False,  dirout=dirout)
+			dvm.make_venn(ltoolnames, lbeds_indels, variantType="Indels", saveOverlapsBool=True, upsetBool=False,  dirout=dirout)
 		log.info("###########  END SECTION MAKING VENN ###############")
 
 
