@@ -298,9 +298,9 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 			time.sleep(1)
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
 			data[tool]['prepped_vcf_outfilename'] = os.path.join(dir_temp, os.path.basename(os.path.splitext(new_vcf_name)[0] + ".intervene.bed"))
-			log.info("{} ------  {} XXXXXXXXXXXXXXXX ---  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp, data[tool]['prepped_vcf_outfilename']))
-	log.info(str(data))
-	sys.exit()
+			#log.info("{} ------  {} XXXXXXXXXXXXXXXX ---  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp, data[tool]['prepped_vcf_outfilename']))
+	#log.info(str(data))
+
 	return data
 
 def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False):
