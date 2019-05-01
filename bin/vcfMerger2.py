@@ -294,8 +294,11 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		if data[tool]['do_venn']:
 			log.info("preparing bed files as --do-venn has been enabled.")
+			log.info("{} ------  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp))
 			time.sleep(10)
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
+			data[tool]['bed_for_venn'] = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".intervene.bed"))
+			log.info("{} ------  {} XXXXXXXXXXXXXXXX {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp, data[tool]['bed_for_venn']))
 	log.info(str(data))
 	return data
 
@@ -629,7 +632,8 @@ def prepare_bed_for_venn(vcf, dirout):
 	:return: none
 	'''
 
-	# Build subprocess command
+	# Build subprocess command;  ## I know this is defintely not the best implementation ever; I need to think about another strategy; Shame on me.
+	# We prepare the bed files for snvs+indels venn, for snvs_only venns and for indels-only venns
 	for FUNC in ["prepare_input_file_for_Venn", "prepare_input_file_for_Venn_SplitbyVariantType"]:
 		mycmd = ["source", prep_vcf_functions_script_path, " && ", FUNC, " " , vcf, dirout]
 		log.info(str(mycmd))
