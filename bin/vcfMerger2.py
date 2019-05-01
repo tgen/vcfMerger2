@@ -293,6 +293,8 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		if data[tool]['do_venn']:
+			log.info("preparing bed files as --do-venn has been enabled.")
+			time.sleep(10)
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
 	log.info(str(data))
 	return data
