@@ -75,7 +75,7 @@ This implies:
 If the user does not have the vcfs ready, vcfMerger2 includes a utility called `prep_vcf.sh` that can prepare the vcfs to specs.
 vcfMerger2 includes that utility tool and is automatically called unless `--skip-prep-vcfs` option is specified. 
 
-The following example show the minimal command to perform "All-in-One" run.
+<span style="color:red;">The following example show the minimal command to perform "All-in-One" run.</span>
  
 ###### Example_1  
 ``` 
@@ -83,7 +83,7 @@ vcfMerger2.py
 -g hs37d5.fa  
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "./raw_tool_vcfs/strelka2.raw.vcf|./raw_tool_vcfs/mutect2.raw.vcf|./raw_tool_vcfs/lancet.raw.vcf|./raw_tool_vcfs/octopus.raw.vcf" 
-<span style="color:red;">--prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf"</span>
+--prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf"
 --normal-sname NORMAL_SAMPLENAME  
 --tumor-sname TUMOR_SAMPLENAME 
 -o merged.vcf 
