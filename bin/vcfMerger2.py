@@ -297,8 +297,8 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 			log.info("{} ------  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp))
 			time.sleep(1)
 			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
-			data[tool]['prepped_vcf_outfilename'] = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".intervene.bed"))
-			log.info("{} ------  {} XXXXXXXXXXXXXXXX {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp, data[tool]['bed_for_venn']))
+			data[tool]['prepped_vcf_outfilename'] = os.path.join(dir_temp, os.path.basename(os.path.splitext(new_vcf_name)[0] + ".intervene.bed"))
+			log.info("{} ------  {} XXXXXXXXXXXXXXXX ---  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp, data[tool]['prepped_vcf_outfilename']))
 	log.info(str(data))
 	sys.exit()
 	return data
