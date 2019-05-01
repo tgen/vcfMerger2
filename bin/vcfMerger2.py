@@ -671,7 +671,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	                       "-d", dirout
 	                       ])
 
-	if list_precedence_order != "":
+	if list_precedence_order is not None and list_precedence_order != "":
 		my_command = my_command + " --precedence " + double_quote_str(delim.join(list_precedence_order))
 
 	if lossy:
