@@ -39,11 +39,43 @@ After installing, you may delete the test_data directory unless you want to run 
 
 
 # How to run vcfMerger2?
+The core utility and main purpose of that tool is to MERGE VCFs information into one VCF without losing any dat from any of the input vcfs files
+#### How to simply Merge VCFs
+
+The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bin` directory (normally in your `PATH`)  
+vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants VCFs files. 
+ 
+###### Example_0
+```
+python vcfMerger2.py    
+-g ${REF_GENOEM_FASTA_FILE}  
+--toolnames "strelka2|mutect2|lancet|octopus" 
+--vcfs "strelka2.merge-read.vcf|mutect2.merge-read.vcf|lancet.merge-read.vcf|octopus.merge-read.vcf" 
+--normal-sname NORMAL_SAMPLENAME  
+--tumor-sname TUMOR_SAMPLENAME
+-o merged.vcf
+--skip-prep-vcfs
+```
+
+The most important feature in that command above is the type of input vcf that *must* be used. 
+"merge-ready" is the most important term here. This means all the input vcfs must be to specs for merging.
+This implies:
+* vcfs must already be to VCF specifications version v4.2 or later 
+* vcfs must have the following flags present in the FORMAT fields:
+  * GT 
+  * DP
+  * AD
+  * AR*
+* vcf must contain the contigs information in the header
+
+*AR is often called AF in some VCFs; you can then rename the flag, or add the AR flag manually based on the AF value or recalculate it from the AD flag
+
 #### The All-in-One way [ prep + merge ]
 
-The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bin` directory (normally in your `PATH`) 
+If the user does not have the vcfs ready, vcfMerger2 includes a utility called `prep_vcf.sh` that can prepare the vcfs to specs.
+vcfMerger2 includes that utility tool and is automatically called unless `--skip-prep-vcfs` option is specified. 
 
-vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants VCFs files. 
+The following example show the minimal command to perform "All-in-One" run.
  
 ###### Example_1  
 ``` 
@@ -52,19 +84,17 @@ python vcfMerger2.py
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "./raw_tool_vcfs/strelka2.raw.vcf|./raw_tool_vcfs/mutect2.raw.vcf|./raw_tool_vcfs/lancet.raw.vcf|./raw_tool_vcfs/octopus.raw.vcf" 
 --prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" 
---normal-sname NORMAL  
---tumor-sname TUMOR 
+--normal-sname NORMAL_SAMPLENAME  
+--tumor-sname TUMOR_SAMPLENAME 
 -o merged.vcf 
---contigs-file "||contigs/contigs.txt|contigs/contigs.txt"
--a "SLK|MUT|LAN|OCT"
---precedence "MUT|LAN|SLK|OCT"    
 ```
  
-##  
-_**Note_1**: empty string information for the value of `--contigs-file` is necessary to match the number of values given to the `--vcfs` option even though the information for the 1st and 2nd tools is absent in this case._  
+## NOTES 
+_**Note_1**: about using option `--contigs-file "||contigs/contigs.txt|contigs/contigs.txt"` ; empty string information for the value of `--contigs-file` is necessary to match the number of values given to the `--vcfs` option even though the information for the 1st and 2nd tools is absent in this case._  
 _**Note_2**: run command above from top folder vcfMerger2._  
-_**Note_3**: hs37d5.fa filename for the reference genome should be replaced with your own version of the GRCh37._  
+_**Note_3**: hs37d5.fa filename for the reference genome should be replaced with your own version of the reference genome._  
 _**Note_4**: The given command line example uses 4 input vcfs. [ you may also test it using only 2, or 3 input vcfs ; for instance, run the same command by removing lancet and octopus tool from the lists ]_  
+
 
 [ run `python vcfMerger2.py --help` for more options ]
 
@@ -146,20 +176,19 @@ by more than one tool. This Precedence is subjective to the user.
                         List of Acronyms for toolnames to be used as PREFIXES
                         in INFO field ; same DELIM as --vcfs
                         
-  `--delim DELIM`         delimiter which will be use to create the arguments
+  `--delim DELIM`         delimiter which will be used to create the arguments
                         value for the vcfMerger2.0 tool ; default is "|"
-                        (a.k.a pipe character)
+                        (a.k.a pipe character). DO NOT CHANGE UNLESS 
                         
   `--lossy`               This will create a lossy merged vcf by only keeping
                         the infromation from the tool with precedence
                         
   `--skip-prep-vcfs`      skip the step for preparing vcfs up to specs and only
-                        run the merge step; implies all << given >> vcfs are 
-                        already up-to-specs (uts); whether or not this option is used, user has to provide the same 
-                        options and inputs required to run the prep step, so as if the prep step is run.
+                        run the merge step [i.e. which is is purpose of that tool :-) ]; **implies** all << given >> vcfs are 
+                        already up-to-specs (uts);
                         
   `--skip-merge`          enabling this flag prevents doing the merging step
-                        [useful if only the prep step needs to be done ]
+                        [useful if only the prep step needs to be run but not the merging stage ]
                         
   `--threshold-AR`        Threshold Allele Ratio (AR) to assign genotype GT value with 0/1 or 1/1 ; 
                           GT=0/1 if below threshold, GT=1/1 if equal or above threshold [ default is 0.90 ; range ]0,1] ] 
@@ -172,14 +201,17 @@ by more than one tool. This Precedence is subjective to the user.
 
 `--filter FILTER`   filter variants using snpSift in the backend; This filtering process is performed ONLY on up-to-specs vcf (so after the stage prep-vcf [if run] );
                     A string must be provided as if you were using snpSift (see snpSift user manual); For each tool, a string must be provided; If you have 3 tools, three string must be provided;
-                    Hint: if you want to apply the exact same filtering to all the tools because they do possess the same Flags, you may provide only one string. 
+                    `Hint:` if you want to apply the exact same filtering to all tools because they do possess the same exact Flags, you may provide only one string. 
 
-`--path-jar-snpsift`    FULL PATH to the SnpSift JAR file MUST be provided if any of the filter option is used. 
+`--path-jar-snpsift`    FULL PATH to the SnpSift JAR file MUST be provided if any of the filter option is used.  
 
- `--do-venn`    Will make a Venn diagram using the vcf files provided to the merging step. This is a simple vennDiagram.
+ `--do-venn`    Will make a Venn diagram using the vcf files provided to the merging step. This is a simple vennDiagram. 
  
- `--beds `      If the user already have the data in bed format to make the Venn Diagram, the user can provide these bed files here; The number of bed files MSUT be the same as the number of toolnames or VCFs files. 
-                If bed files are not provided and `--do-venn` is enabled, the bed files are created on the fly from the vcf files;
+  `-d DIR_OUT, --dir-out DIR_OUT, --dir-temp DIR_OUT`  directory where the temporary files and/or outputs of vcfMerger2 will be written
+
+ 
+ `--beds `      If the user already have the data in bed format to make the Venn Diagram, the user can provide these bed files here; The number of bed files MUST be the same as the number of toolnames and VCFs files. 
+                If bed files are not provided and `--do-venn` is enabled, vcfMerger2 will try to create the bed files are created on the fly from the vcf files;
                 If `--beds` is used, `--do-venn` must also be used otherwise the venn won't be created.   
 
 
