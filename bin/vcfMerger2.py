@@ -803,12 +803,14 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	else:
 		log.info("No Path given for SnpSift")
 
-	if len(filter_string_for_snpsift.split("###")) == 0 and filter_string_for_snpsift != "":
-		log.info("FYI: Using the same filtering for all the vcfs; This implies all the VCFs contains the correct flags and fields.")
-	elif filter_string_for_snpsift is not None and len(filter_string_for_snpsift.split("###")) != len(ltoolnames):
+
+	if filter_string_for_snpsift is not None and (len(filter_string_for_snpsift.split("###")) != len(ltoolnames) or len(filter_string_for_snpsift.split("###")) == 0 ):
 		log.error("ERROR: Number of triple-pound separated Values in --filter option does NOT match the number of given toolnames or number of given vcfs; "
 		          ". Check your inputs; Check if triple pouns are well used to separate out the values for that option.")
 		sys.exit(-1)
+	elif filter_string_for_snpsift is not None and ( len(filter_string_for_snpsift.split("###")) == 0 or filter_string_for_snpsift != ""):
+		log.info(
+			"FYI: Using the same filtering for all the vcfs; This implies all the VCFs contains the correct flags and fields.")
 
 
 	#checking if merged_vcf_outfilename has relative or full path included
