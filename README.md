@@ -30,9 +30,9 @@ You can install vcfMerger2 in three ways:
 
 2. clone the repository and add the bin directory to your `PATH` as described above. 
 3. clone a specific release version of vcfMerger2, such as for instance for the versio 0.5.0-beta, the following command:
-`git clone git@github.com:tgen/vcfMerger2.git --release  0.5.0-beta` 
+`git clone git@github.com:tgen/vcfMerger2.git --release  0.6.1-beta` 
 or
-`git clone https://github.com/tgen/vcfMerger2.git --release  0.5.0-beta`
+`git clone https://github.com/tgen/vcfMerger2.git --release  0.6.1-beta`
 
 
 After installing, you may delete the test_data directory unless you want to run the demo script. 
@@ -47,8 +47,8 @@ vcfMerger2 can merge from 2 to N vcfMerger2-upto-specs somatic variants VCFs fil
  
 ###### Example_0
 ```
-python vcfMerger2.py    
--g ${REF_GENOEM_FASTA_FILE}  
+vcfMerger2.py    
+-g ${REF_GENOME_FASTA_FILE}  
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "strelka2.merge-read.vcf|mutect2.merge-read.vcf|lancet.merge-read.vcf|octopus.merge-read.vcf" 
 --normal-sname NORMAL_SAMPLENAME  
@@ -79,11 +79,11 @@ The following example show the minimal command to perform "All-in-One" run.
  
 ###### Example_1  
 ``` 
-python vcfMerger2.py    
+vcfMerger2.py    
 -g hs37d5.fa  
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "./raw_tool_vcfs/strelka2.raw.vcf|./raw_tool_vcfs/mutect2.raw.vcf|./raw_tool_vcfs/lancet.raw.vcf|./raw_tool_vcfs/octopus.raw.vcf" 
---prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" 
+(&#x1F34E;)--prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" 
 --normal-sname NORMAL_SAMPLENAME  
 --tumor-sname TUMOR_SAMPLENAME 
 -o merged.vcf 
@@ -307,11 +307,11 @@ Bringing the vcfs up to vcfMerger2 specs is **mandatory** before running `vcfMer
 _**HINT**_: You also can run the same command listed in `all-in-one` way by just adding the option `--skip-prep-vcfs`, and only vcfMerger step will be performed.
 
 ###### Example_7 (Germline calls instead of somatic ; adding acronyms to reduce file size):  
-`python3 /home/clegendre/qscripts/gits/vcfMerger2_devel_branch/bin/vcfMerger2.py -g ${REF_GENOME}  --toolnames "haplotypecaller|freebayes|samtools" --vcfs "testFile_HC.100000lines.vcf|testFile_FB.100000lines.vcf|testFile_ST.100000lines.vcf" --prep-outfilenames "HC_prep.vcf|FB_prep.vcf|ST_prep.vcf" --germline  --germline-snames "HAPI_0001_000001_OV_Whole_T1_TSWGS_A28333" -o "merged_germline_calls_3tools.vcf" -a "HC|FB|ST"`
+`vcfMerger2.py -g ${REF_GENOME}  --toolnames "haplotypecaller|freebayes|samtools" --vcfs "testFile_HC.100000lines.vcf|testFile_FB.100000lines.vcf|testFile_ST.100000lines.vcf" --prep-outfilenames "HC_prep.vcf|FB_prep.vcf|ST_prep.vcf" --germline  --germline-snames "HAPI_0001_000001_OV_Whole_T1_TSWGS_A28333" -o "merged_germline_calls_3tools.vcf" -a "HC|FB|ST"`
 
 ###### Example_8 (using filtering options [here both filtering options are being used]):
 ```
-python3  ${VCFMERGER2_INSTALL_DIR}/bin/vcfMerger2.py 
+vcfMerger2.py 
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "strelka2.somatic.snvs_indels.vcf|mutect2.somatic.snvs_indels.FiltMutCallsTool.vcf|lancet.commpressed.somatic.snvs_indels.vcf.gz|octopus.legacy.vcf" 
 --normal-sname "COLO829_C2" 
