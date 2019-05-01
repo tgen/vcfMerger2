@@ -292,14 +292,19 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		new_vcf_name = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".filt.vcf") )
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
-		if data[tool]['do_venn']:
-			log.info("preparing bed files as --do-venn has been enabled.")
-			log.info("{} ------  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp))
-			time.sleep(1)
-			prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
-			data[tool]['prepped_vcf_outfilename'] = os.path.join(dir_temp, os.path.basename(os.path.splitext(new_vcf_name)[0] + ".intervene.bed"))
-			#log.info("{} ------  {} XXXXXXXXXXXXXXXX ---  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp, data[tool]['prepped_vcf_outfilename']))
-	#log.info(str(data))
+		data[tool]['vcf'] = new_vcf_name ## we consider that the input vcf is now the filtered vcf; which is also the prepped vcf ## TRICK here
+		# if data[tool]['do_venn']:
+		# 	log.info("preparing bed files as --do-venn has been enabled.")
+		# 	log.info("{} ------  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp))
+		# 	time.sleep(1)
+		# 	prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dir_temp)
+		# 	log.error(os.path.splitext(new_vcf_name)[0])
+		# 	data[tool]['bed_for_venn'] = os.path.join(dir_temp, os.path.basename(
+		# 		os.path.splitext(new_vcf_name)[0] + ".intervene.bed"))
+		# 	log.info("{} ------  {} XXXXXXXXXXXXXXXX ---  {}".format(data[tool]['prepped_vcf_outfilename'], dir_temp,
+		# 	                                                         data[tool]['prepped_vcf_outfilename']))
+		# log.info(str(data))
+		# sys.exit()
 
 	return data
 
@@ -694,6 +699,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 				                        list_vcfs.split(delim)])  ## extension intervene.bed defined in prep_vcf.sh
 				log.info("list_bed for venn is: " + str(list_beds))
 			elif lbeds == "":
+				## as we skipped the prparation of vcfs, we already assigned in code before the vcfs to the prepped_vcf_outfilename field; so they should be equivalent
 				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
 				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
 				log.info(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'] + " " + dirout)
