@@ -692,7 +692,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 				log.info(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'] + " " + dirout)
 				prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
 				list_beds = delim.join(
-					[str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in list_vcfs.split(delim)])
+					[os.path.join(dirout,str(os.path.splitext(vcf)[0] + ".intervene.bed")) for vcf in list_vcfs.split(delim)])
 			else:
 				list_beds = lbeds
 

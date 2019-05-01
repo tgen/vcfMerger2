@@ -75,7 +75,7 @@ This implies:
 If the user does not have the vcfs ready, vcfMerger2 includes a utility called `prep_vcf.sh` that can prepare the vcfs to specs.
 vcfMerger2 includes that utility tool and is automatically called unless `--skip-prep-vcfs` option is specified. 
 
-<span style="color:red;">The following example show the minimal command to perform "All-in-One" run.</span>
+The following example show the minimal command to perform "All-in-One" run
  
 ###### Example_1  
 ``` 
@@ -351,7 +351,7 @@ vcfMerger2 is under MIT licence.
 ## vcfMerger2 Core tool 
 ###### This is the **CORE** functionnality of the vcfMerger2 tool
 ###### when user already has vcfMerger2-merge-ready VCFs, running vcfMerger2 executable is as easy as pie
-###### The example [Example_1](#Example_1) above show the minimum inputs the user has to give.
+###### The example [Example_0](#Example_0) above show the minimum inputs the user has to give.
 ![flowchart](/vcfMerger2.Core.Functionality.png)
 
 
