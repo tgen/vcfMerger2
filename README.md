@@ -83,7 +83,7 @@ vcfMerger2.py
 -g hs37d5.fa  
 --toolnames "strelka2|mutect2|lancet|octopus" 
 --vcfs "./raw_tool_vcfs/strelka2.raw.vcf|./raw_tool_vcfs/mutect2.raw.vcf|./raw_tool_vcfs/lancet.raw.vcf|./raw_tool_vcfs/octopus.raw.vcf" 
-(&#x1F34E;)--prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" 
+<span style="color:red;">--prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf"</span>
 --normal-sname NORMAL_SAMPLENAME  
 --tumor-sname TUMOR_SAMPLENAME 
 -o merged.vcf 
