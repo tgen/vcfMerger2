@@ -314,7 +314,7 @@ function modify_contig_info_in_lancet(){
 	## Compared with other tools, lancet does add the assembly name to the contig definition
 	## here we remove the extra assembly info in order to get the same contig lines accross the tools
 	fout_name=${VCF%.*}.contigs.vcf
-	echo -e "## adding contigs to ${TOOLNAME}'s vcf header ..." 1>&2
+	echo -e "## updating contigs in ${TOOLNAME}'s vcf header ..." 1>&2
 	sed '/^##contig/s/,assembly.*>$/>/' ${VCF} > ${fout_name}
 	check_ev $? "addContigs " 1>&2
 	VCF=${fout_name}
@@ -463,6 +463,7 @@ function process_mutect2_vcf(){
 function process_lancet_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
+	VCF=$( modify_contig_info_in_lancet ${VCF} )
 	#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
 	#VCF=$( modify_contig_info_in_lancet ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
