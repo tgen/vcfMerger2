@@ -27,6 +27,7 @@
 
 
 
+import re
 import cyvcf2
 from collections import defaultdict
 import logging as log
@@ -69,6 +70,8 @@ class vcfToDict:
 		header_format = []
 		contigs = [] ;
 		header_minus_chrom_line = "" ;
+
+		regex = re.compile(r",assembly.*>$", re.IGNORECASE)
 		with(open(self.fvcf,'r')) as f:
 			for line in f:
 				line = line.strip()
@@ -80,6 +83,7 @@ class vcfToDict:
 					header_chrom_line = line
 					continue
 				if line.startswith("##contig"):
+					line = regex.sub(">", line) ## we remove any character after the string ",assembly" including assembly ; due to lancet ; and to avoid contigs duplicates
 					contigs.append(line)
 					continue
 				if line.startswith("##FILTER"): header_filters.append(line) ; continue
