@@ -300,34 +300,38 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 	# idxT = 0 if column_tumor == 10 else 1
 	# idxN = 0 if column_normal == 10 else 1
 
-	## get REF and ALT bases ; note: ALT is a list nt a character as multiple ALT can exist
-	## here we only deal with the first ALT ## TODO implement AR for each ALT
-	ref_tag = ''.join([v.REF, "U"])
-	alt_tag = ''.join([v.ALT[0], "U"])
-	## loop through samples to calculate AR for each one
-	for sidx in range(tot_number_samples):
-		refCounts = v.format(ref_tag)[sidx]
-		altCounts = v.format(alt_tag)[sidx]
-		## we only consider tier1, therefore only the index 0 is needed
-		ref_tier1 = int(refCounts[0])
-		alt_tier1 = int(altCounts[0])
-		try:
-			AR = float(alt_tier1/(alt_tier1 + ref_tier1))
-		except ZeroDivisionError:
-			log.debug("refcount {}, altCounts {}, refTier1 {}, altTier1 {}, locus {}:{}".format( refCounts, altCounts, str(ref_tier1), str(alt_tier1), str(v.CHROM), str(v.POS) ) )
-			log.debug("You can't divide by zero!")
-			AR = float(0.0)  ## so we make it zero manually
+	try:
+		## get REF and ALT bases ; note: ALT is a list nt a character as multiple ALT can exist
+		## here we only deal with the first ALT ## TODO implement AR for each ALT
+		ref_tag = ''.join([v.REF, "U"])
+		alt_tag = ''.join([v.ALT[0], "U"])
+		## loop through samples to calculate AR for each one
+		for sidx in range(tot_number_samples):
+			refCounts = v.format(ref_tag)[sidx]
+			altCounts = v.format(alt_tag)[sidx]
+			## we only consider tier1, therefore only the index 0 is needed
+			ref_tier1 = int(refCounts[0])
+			alt_tier1 = int(altCounts[0])
+			try:
+				AR = float(alt_tier1/(alt_tier1 + ref_tier1))
+			except ZeroDivisionError:
+				log.debug("refcount {}, altCounts {}, refTier1 {}, altTier1 {}, locus {}:{}".format( refCounts, altCounts, str(ref_tier1), str(alt_tier1), str(v.CHROM), str(v.POS) ) )
+				log.debug("You can't divide by zero!")
+				AR = float(0.0)  ## so we make it zero manually
 
-		ARs.append(AR)
-		AD = (ref_tier1, alt_tier1)
-		ADs.append(AD)
-		GTs.append((get_GT_value_from_AR(AR)))
+			ARs.append(AR)
+			AD = (ref_tier1, alt_tier1)
+			ADs.append(AD)
+			GTs.append((get_GT_value_from_AR(AR)))
 
 
-	v.set_format('GT', np.array(GTs))
-	v.set_format('AR', np.array(ARs))
-	v.set_format('AD', np.array(ADs))
+		v.set_format('GT', np.array(GTs))
+		v.set_format('AR', np.array(ARs))
+		v.set_format('AD', np.array(ADs))
 
+	except Exception as e:
+		log.error("The following record raised an error: {}".format(str(v)))
+		raise(e)
 	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
 	return v
 
