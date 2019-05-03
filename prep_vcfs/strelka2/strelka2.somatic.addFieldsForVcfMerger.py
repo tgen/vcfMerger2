@@ -259,30 +259,34 @@ def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 
 	ARs, ADs, GTs = [], [], []
 
-	## loop through samples to calculate AR for each one
-	for sidx in range(tot_number_samples):
-		DP = v.format('DP')[sidx][0]
-		TAR= v.format('TAR')[sidx][0] ## we only manage tier1 values
-		TIR = v.format('TIR')[sidx][0]  ## we only manage tier1 values
-		try:
-			log.debug("TIR={}, DP={}, locus {}:{}".format(str(TIR), str(DP),  str(v.CHROM), str(v.POS)))
-			AR = float(TIR/(TAR+TIR)) if TIR>0 else 0
-			#AD = (int(max(DP-TIR, 0)), int(TIR))
-			AD = (int(TAR), int(TIR))
-		except ZeroDivisionError:
-			log.debug("TAR= {}, TIR={}, DP={}, AR={} ; locus {}:{}".format(str(TAR), str(TIR),str(DP),str(AR),str(v.CHROM),str(v.POS)))
-			log.debug("You can't divide by zero!")
-			AR = float(0.0)  ## so we make it zero manually
+	try:
+		## loop through samples to calculate AR for each one
+		for sidx in range(tot_number_samples):
+			DP = v.format('DP')[sidx][0]
+			TAR= v.format('TAR')[sidx][0] ## we only manage tier1 values
+			TIR = v.format('TIR')[sidx][0]  ## we only manage tier1 values
+			try:
+				log.debug("TIR={}, DP={}, locus {}:{}".format(str(TIR), str(DP),  str(v.CHROM), str(v.POS)))
+				AR = float(TIR/(TAR+TIR)) if TIR>0 else 0
+				#AD = (int(max(DP-TIR, 0)), int(TIR))
+				AD = (int(TAR), int(TIR))
+			except ZeroDivisionError:
+				log.debug("TAR= {}, TIR={}, DP={}, AR={} ; locus {}:{}".format(str(TAR), str(TIR),str(DP),str(AR),str(v.CHROM),str(v.POS)))
+				log.debug("You can't divide by zero!")
+				AR = float(0.0)  ## so we make it zero manually
 
-		log.debug("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
-		ARs.append(AR)
-		ADs.append(AD)
-		GTs.append(get_GT_value_from_AR(AR))
-		log.debug("GT={} ".format(get_GT_value_from_AR(AR)))
-	v.set_format('GT', np.array(GTs))
-	v.set_format('AR', np.array(ARs))
-	v.set_format('AD', np.array(ADs))
+			log.debug("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
+			ARs.append(AR)
+			ADs.append(AD)
+			GTs.append(get_GT_value_from_AR(AR))
+			log.debug("GT={} ".format(get_GT_value_from_AR(AR)))
+		v.set_format('GT', np.array(GTs))
+		v.set_format('AR', np.array(ARs))
+		v.set_format('AD', np.array(ADs))
 
+	except Exception as e:
+		log.error("record raising ERROR: {}".format(str(v)))
+		raise(e)
 	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
 	return v
 
@@ -330,7 +334,7 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 		v.set_format('AD', np.array(ADs))
 
 	except Exception as e:
-		log.error("The following record raised an error: {}".format(str(v)))
+		log.error("record raising ERROR: {}".format(str(v)))
 		raise(e)
 	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
 	return v
