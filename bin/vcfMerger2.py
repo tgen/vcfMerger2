@@ -681,6 +681,10 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		my_command = my_command + " --delete-temps "
 
 	if do_venn:
+
+		if venn_title is not None or venn_title != "":
+			my_command = my_command + " --venn-title " + venn_title + "  "
+
 		for tool in data.keys():
 			if not skip_prep_vcfs:
 				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
@@ -990,6 +994,11 @@ def main(args, cmdline):
 		list_executables = ['Rscript', 'intervene']
 		check_if_executable_in_path(list_executables)
 
+	venn_title = ""
+	if args["venn_title"]:
+		venn_title = args['venn_title']
+		log.info("venn title will be: "+venn_title)
+
 	dirout = os.curdir
 	if args["dir_out"]:
 		dirout = args["dir_out"]
@@ -1038,6 +1047,7 @@ def main(args, cmdline):
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn,
+	                          venn_title=venn_title,
 	                          skip_prep_vcfs=skip_prep_vcfs,
 	                          dirout=dirout,
 	                          delete_temps=delete_temps)
@@ -1249,6 +1259,12 @@ def make_parser_args():
 	optional.add_argument('--do-venn',
 	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
 	                      action='store_true')
+
+	optional.add_argument('--venn-title',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help="Default is empty string")
+
 
 	optional.add_argument('-d','--dir-out', '--dir-temp',
 	                      help=' direcgtory where the outputs of vcfMerger2 will be written ',

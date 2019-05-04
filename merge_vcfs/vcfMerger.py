@@ -383,7 +383,7 @@ def main(args, cmdline):
 	if lacronyms is not None and len(lacronyms) != len(ltoolnames):
 		exit("ERROR: number of acronyms should match number of toolnames; order sensitive ; Aborting.")
 	elif lacronyms is None:
-		lacronyms = [ "" ]*len(ltoolnames)
+		lacronyms = [""]*len(ltoolnames)
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		log.error("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
 		exit(-1)
