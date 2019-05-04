@@ -154,7 +154,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False, skip_prep_vcfs=False, dirout=None, delete_temps=False):
+                       TH_AR=0.9, do_venn=False, venn_title="", skip_prep_vcfs=False, dirout=None, delete_temps=False):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -229,6 +229,8 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
+		data[ltoolnames[tool_idx]]['venn_title'] = venn_title
+
 		data[ltoolnames[tool_idx]]['delete_temps'] = delete_temps
 
 	return data
