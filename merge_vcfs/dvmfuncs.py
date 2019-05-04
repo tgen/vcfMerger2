@@ -651,7 +651,6 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		return 0
 	type = "genomic"
 	colors = list(get_colors_for_venns(numberOfTools))
-	#title = "\"Venn using " + str(numberOfTools) + " variant callers  [ " + variantType + "]\""
 	title = venn_title + " [ " + variantType + "]\""
 	figtype = "png"
 	dpi = 300
