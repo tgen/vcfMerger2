@@ -684,7 +684,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 
 	if do_venn:
 
-		if venn_title is not None or venn_title != "":
+		if data[tool]['venn_title'] is not None or data[tool]['venn_title'] != "":
 			my_command = my_command + " --venn-title " + venn_title + "  "
 
 		for tool in data.keys():
