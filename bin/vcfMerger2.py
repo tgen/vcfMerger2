@@ -748,7 +748,6 @@ def check_path_to_vcfs(lvcfs):
 		else:
 			log.info("VCF found: " + str(vcf))
 
-
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
