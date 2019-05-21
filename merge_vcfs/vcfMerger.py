@@ -102,6 +102,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 	l_snames = []
 	l_contigs = []
 
+
 	ListFieldsToProcessForOurFORMATColumn = ["GT", "DP", "AR", "AD"]  ## HARDCODED;
 
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -384,6 +385,7 @@ def main(args, cmdline):
 		exit("ERROR: number of acronyms should match number of toolnames; order sensitive ; Aborting.")
 	elif lacronyms is None:
 		lacronyms = [""]*len(ltoolnames)
+
 	if list_tool_precedence_order is not None and len(list_tool_precedence_order) != len(ltoolnames):
 		log.error("ERROR: number of precedence toolname should match number of toolnames; Aborting.")
 		exit(-1)
@@ -405,12 +407,14 @@ def main(args, cmdline):
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option; use --lbeds to provide the appropriate number of files to create the Venn.")
 		## make venn for snvs_and_indels altogether
+
 		dvm.make_venn(ltoolnames, lbeds, venn_title=venn_title, variantType="Snvs_and_Indels", saveOverlapsBool=True,
 		              upsetBool=False, dirout=dirout)
 		## make Venn using only the SNVs
 		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.intervene.snvs.bed', file) for file in lbeds]
 		log.info(str(lbeds_snvs))
 		if all([path.isfile(f) for f in lbeds_snvs]):
+
 			dvm.make_venn(ltoolnames, lbeds_snvs, venn_title=venn_title, variantType="Snvs", saveOverlapsBool=True,
 			              upsetBool=False,  dirout=dirout)
 		## make Venn using only the Indels
@@ -419,6 +423,7 @@ def main(args, cmdline):
 			dvm.make_venn(ltoolnames, lbeds_indels, venn_title=venn_title, variantType="Indels", saveOverlapsBool=True,
 			              upsetBool=False,  dirout=dirout)
 		log.info("###########  END SECTION MAKING VENN ###############")
+
 
 
 def make_parser_args():
@@ -479,6 +484,7 @@ def make_parser_args():
 	                      required=False,
 	                      action='store_true',
 	                      help="if set, temporary files created during the prep_vcf stage will be deleted")
+
 	optional.add_argument('--venn-title',
 	                      required=False,
 	                      action=UniqueStore,
