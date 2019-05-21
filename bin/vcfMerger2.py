@@ -154,7 +154,8 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False, venn_title="", skip_prep_vcfs=False, dirout=None, delete_temps=False):
+                       TH_AR=0.9, do_venn=False, venn_title="", skip_prep_vcfs=False,
+                       dirout=None, delete_temps=False):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -230,9 +231,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
 		data[ltoolnames[tool_idx]]['venn_title'] = venn_title
-
 		data[ltoolnames[tool_idx]]['delete_temps'] = delete_temps
-
 	return data
 
 def filter_unprepped_vcf(data, path_jar_snpsift):
@@ -264,7 +263,6 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 		new_vcf_name = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".pass.vcf"))
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['vcf'] = new_vcf_name
-
 	return data
 
 def filter_prepped_vcf(data, path_jar_snpsift):
