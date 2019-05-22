@@ -135,7 +135,7 @@ def update_header(vcf):
 		 'Type': 'String', 'Number': '.'})
 
 	## if Adding AR to FORMAT field
-	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt tier1 Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT', 'Type': 'Float', 'Number': 'A'})
+	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt Allelic Ratio', 'Type': 'Float', 'Number': '1'})
 
 	return vcf
 
