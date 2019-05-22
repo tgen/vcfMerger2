@@ -230,6 +230,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
+
 		data[ltoolnames[tool_idx]]['venn_title'] = venn_title
 		data[ltoolnames[tool_idx]]['delete_temps'] = delete_temps
 	return data
@@ -615,7 +616,6 @@ def subprocess_cmd(command):
 		log.error("ERROR: subprocess command for command <<\"{}\">> FAILED".format(command))
 		exit(ev)
 
-
 def prepare_bed_for_venn(vcf, dirout):
 	'''
 	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
@@ -993,11 +993,12 @@ def main(args, cmdline):
 		list_executables = ['Rscript', 'intervene']
 		check_if_executable_in_path(list_executables)
 
+
 	venn_title = ""
 	if args["venn_title"]:
 		venn_title = args['venn_title']
 		log.info("venn title will be: "+venn_title)
-
+    
 	dirout = os.curdir
 	if args["dir_out"]:
 		dirout = args["dir_out"]
