@@ -28,6 +28,7 @@
 ### Minor Contributors:
 
 ## set -ue ## DO not uncomment this line; it you do so, the script does not work anymore. Why? unknown
+set -x
 
 ## trap to capture the exit value from a function and from within a function
 trap "exit 1" TERM
