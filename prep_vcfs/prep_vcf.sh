@@ -28,7 +28,7 @@
 ### Minor Contributors:
 
 ## set -ue ## DO not uncomment this line; it you do so, the script does not work anymore. Why? unknown
-set -euo pipefail
+set -uo pipefail
 
 ## trap to capture the exit value from a function and from within a function
 trap "exit 1" TERM
@@ -36,8 +36,8 @@ export TOP_PID=$$
 
 
 ## CONSTANT VARIABLE (modified accordingly)
-DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
-
+DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
+echo -e "DIR_PATH_TO_SCRIPTS=${DIR_PATH_TO_SCRIPTS}"
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
 VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, vardictjava, VarDictJava, or their corresponding abbreviations, LAN|LCT, MUT,
