@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ## methods to filter the vcf reords already brought up to specs using by current tool or performed by user
 
 ### vcfMerger2
