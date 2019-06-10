@@ -1,5 +1,5 @@
 <p align="center">
-<img src="vcfMerger2.logo.png"/>
+<img src="images/vcfMerger2.logo.png"/>
 </p>
 
 # vcfMerger2 
@@ -351,11 +351,11 @@ vcfMerger2 is under MIT licence.
 ###### This is the **CORE** functionnality of the vcfMerger2 tool
 ###### when user already has vcfMerger2-merge-ready VCFs, running vcfMerger2 executable is as easy as pie
 ###### The example [Example_0](#Example_0) above show the minimum inputs the user has to give.
-![flowchart](/vcfMerger2.Core.Functionality.png)
+![flowchart](/images/vcfMerger2_Flowchart_Core_Functionality.rawVCF.png)
 
 
 ## vcfMerger2 and wrapper utilities
-###### for know variant caller, we provide scripts allowing preparing the tool-specific vcf to specifications for the merger tool
+###### for known variant caller, we provide scripts allowing preparing the tool-specific vcf to specifications for the merger tool
 ###### We provide a prep_vcf.sh script that allows to prep vcf independently from the main executable that is vcfMerger2.py located in the bin directory
 ###### Furthermore, we also provide a simplified way of filtering input vcf by PASS and to filter prepped vcfs the same way you would using snpSift directly. 
-![flowchart](/vcfMerger2.flowchart.png)
+![flowchart](/images/vcfMerger2.flowchart.png)
