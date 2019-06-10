@@ -38,7 +38,7 @@ After installing, you may delete the test_data directory unless you want to run 
 
 
 # How to run vcfMerger2?
-The core utility and main purpose of that tool is to MERGE VCFs information into one VCF without losing any dat from any of the input vcfs files
+The core utility and main purpose of that tool is to MERGE VCFs information into one VCF without losing any data from any of the input vcfs files
 #### How to simply Merge VCFs
 
 The easiest way to use vcfMerger2 is to call on the `vcfMerge2.py` script in `bin` directory (normally in your `PATH`)  
