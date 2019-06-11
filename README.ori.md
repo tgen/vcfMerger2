@@ -359,3 +359,58 @@ vcfMerger2 is under MIT licence.
 ###### We provide a prep_vcf.sh script that allows to prep vcf independently from the main executable that is vcfMerger2.py located in the bin directory
 ###### Furthermore, we also provide a simplified way of filtering input vcf by PASS and to filter prepped vcfs the same way you would using snpSift directly. 
 ![flowchart](/images/vcfMerger2.flowchart.png)
+
+
+(case_1) - OR -  the vcfs are `vcfMerger2-prepped-ready` vcfs (case_2)
+
+##### Case_1 [Most Cases and Easiest way to merge vcfs]
+See [Example_1](https://github.com/tgen/vcfMerger2/wiki/Examples#Example_1)
+vcfMerger2 inputs are raw vcfs from different variant callers. (see list of compatible variant caller vcfs in wiki page "Variant_Callers_compatible"). 
+In this case, before merging, the vcfs must be prepared to get them to vcfMerger2 specifications;
+this part is transparent to the user but can be achieved only with certain variant callers' vcfs 
+
+##### Case_2 [Advanced Users]
+See [Example_2](https://github.com/tgen/vcfMerger2/wiki/Examples#Example_2)
+vcfMerger2 inputs are ready-to-be-merged vcfs from different variant callers. Before running vcfMerger2, these vcfs have been prepared 
+to be vcfMerger2-ready for merging. User modifies the vcfs to make them compatible or uses the vcfMerger2 utilities 
+script provided for some variant caller (see "Variant_Callers_compatible" or "Examples" wiki pages) 
+
+**Note:** What we mean by raw vcf is a vcf that a tool outputs, that is, a vcf that is not fully compatible for vcfMerger2. 
+If the VCF comes from one of our vcfMerger2-compatible variant caller, vcfMerger2 will take care of making the vcf ready for Merging.
+
+### CASE 2: Inputs are [vcfMerger2-prepped-ready](Glossary) VCFs
+**Note:** What we mean by vcfMerger2-Ready VCF is a vcf that has specific features (field or flag) in the FORMAT columns
+
+###### Example_2
+```
+vcfMerger2.py    
+-g ${REF_GENOME_FASTA_FILE}
+-d ${DIROUT}  
+--toolnames "strelka2|mutect2|lancet|octopus" 
+--vcfs "strelka2.vcfMerger2-upto-specs-vcf.vcf|mutect2.vcfMerger2-upto-specs-vcf.vcf|lancet.vcfMerger2-upto-specs-vcf.vcf|octopus.vcfMerger2-upto-specs-vcf.vcf" 
+--normal-sname NORMAL_SAMPLENAME  
+--tumor-sname TUMOR_SAMPLENAME
+-o merged.vcf
+--skip-prep-vcfs
+```
+
+
+
+### CASE 2: Inputs are [vcfMerger2-prepped-ready](Glossary) VCFs
+**Note:** What we mean by vcfMerger2-Ready VCF is a vcf that has specific features (field or flag) in the FORMAT columns
+
+###### Example_2
+```
+vcfMerger2.py    
+-g ${REF_GENOME_FASTA_FILE}
+-d ${DIROUT}  
+--toolnames "strelka2|mutect2|lancet|octopus" 
+--vcfs "strelka2.vcfMerger2-upto-specs-vcf.vcf|mutect2.vcfMerger2-upto-specs-vcf.vcf|lancet.vcfMerger2-upto-specs-vcf.vcf|octopus.vcfMerger2-upto-specs-vcf.vcf" 
+--normal-sname NORMAL_SAMPLENAME  
+--tumor-sname TUMOR_SAMPLENAME
+-o merged.vcf
+--skip-prep-vcfs
+```
+
+
+
