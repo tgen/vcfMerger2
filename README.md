@@ -8,18 +8,20 @@ vcfMerger2 is a tool merger for 2 to N somatic variants vcf files.
 
 #### What is vcfMerger2?
 This tool allows merging from 2 to N somatic vcfs obtained after running different variant callers using the same bam file(s). 
-**vcfMerger2** will generate one vcf.
+**vcfMerger2** will generate one vcf. 
 
 #### How vcfMerger2 operates?
 vcfMerger2 can use two types of inputs vcfs;  
-Either the input vcfs are RAW vcfs (case_1) - OR -  the vcfs are vcfMerger2-prepped-ready vcfs (case_2)
+Either the input vcfs are `RAW vcfs` (case_1) - OR -  the vcfs are `vcfMerger2-prepped-ready` vcfs (case_2)
 
 ##### Case_1
+See [Example_1](https://github.com/tgen/vcfMerger2/wiki/Examples#Example_1)
 vcfMerger2 inputs are raw vcfs from different variant callers. (see list of compatible variant caller vcfs in wiki page "Variant_Callers_compatible"). 
 In this case, before merging, the vcfs must be prepared to get them to vcfMerger2 specifications;
 this part is transparent to the user but can be achieved only with certain variant callers' vcfs 
 
 ##### Case_2
+See [Example_2](https://github.com/tgen/vcfMerger2/wiki/Examples#Example_2)
 vcfMerger2 inputs are ready-to-be-merged vcfs from different variant callers. Before running vcfMerger2, these vcfs have been prepared 
 to be vcfMerger2-ready for merging. User modifies the vcfs to make them compatible or uses the vcfMerger2 utilities 
 script provided for some variant caller (see "Variant_Callers_compatible" or "Examples" wiki pages) 
@@ -40,5 +42,5 @@ See [QuickStart](https://github.com/tgen/vcfMerger2/wiki/QuickStart#QuickStart) 
 
 
 
-### Licence
+### License
 vcfMerger2 is under MIT licence.
