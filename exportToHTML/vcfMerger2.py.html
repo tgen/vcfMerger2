@@ -1,0 +1,873 @@
+<html>
+<head>
+<title>vcfMerger2.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #c7dd0c;}
+.s1 { color: #d8d8d8;}
+.s2 { color: #ffffff; font-weight: bold;}
+.s3 { color: #d8d8d8;}
+.s4 { color: #9cdd80;}
+.s5 { color: #ccdf32;}
+.s6 { color: #00ff00;}
+.ln { color: #d0d0d0; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#000000">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+vcfMerger2.py</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a><span class="s0">#!/usr/bin/env python3</span>
+
+### vcfMerger2
+###
+### MIT License
+###
+### Copyright (c) 2018 Translational Genomics Research Institute
+###
+### Permission is hereby granted, free of charge, to any person obtaining a copy
+### of this software and associated documentation files (the &quot;Software&quot;), to deal
+### in the Software without restriction, including without limitation the rights
+### to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+### copies of the Software, and to permit persons to whom the Software is
+### furnished to do so, subject to the following conditions:
+###
+### The above copyright notice and this permission notice shall be included in all
+### copies or substantial portions of the Software.
+###
+### THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+### IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+### FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+### AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+### LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+### SOFTWARE.
+###
+### Major Contributors: Christophe Legendre
+### Minor Contributors:
+
+
+
+<span class="s2">import </span><span class="s1">argparse</span>
+<span class="s2">import </span><span class="s1">json</span>
+<span class="s2">import </span><span class="s1">subprocess</span>
+<span class="s2">import </span><span class="s1">os</span>
+<span class="s2">from </span><span class="s1">os </span><span class="s2">import </span><span class="s1">path</span>
+<span class="s2">import </span><span class="s1">sys</span>
+<span class="s2">import </span><span class="s1">logging </span><span class="s2">as </span><span class="s1">log</span>
+<span class="s2">import </span><span class="s1">time</span>
+<span class="s2">import </span><span class="s1">gzip</span>
+<span class="s2">import </span><span class="s1">shutil</span>
+<span class="s2">import </span><span class="s1">re</span>
+
+
+<span class="s0"># CAPTURED VARIABLES AUTOMATICALLY</span>
+## capturing the current path of the current script
+<span class="s1">scriptDirectory </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">realpath</span><span class="s3">(</span><span class="s1">__file__</span><span class="s3">))</span>
+<span class="s0">## as the project should be installed by the user and not modified by the user, we know where the prep_vcf.sh script is</span>
+<span class="s1">prep_script_path </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">scriptDirectory</span><span class="s3">), </span><span class="s4">&quot;prep_vcfs&quot;</span><span class="s3">, </span><span class="s4">&quot;prep_vcf.sh&quot;</span><span class="s3">)</span>
+<span class="s1">prep_vcf_functions_script_path </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">scriptDirectory</span><span class="s3">), </span><span class="s4">&quot;prep_vcfs&quot;</span><span class="s3">, </span><span class="s4">&quot;prep_vcf_functions.sh&quot;</span><span class="s3">)</span>
+<span class="s1">vcfmerger_tool_path </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">scriptDirectory</span><span class="s3">), </span><span class="s4">&quot;merge_vcfs&quot;</span><span class="s3">, </span><span class="s4">&quot;vcfMerger.py&quot;</span><span class="s3">)</span>
+<span class="s1">snpsift_filter_script_path </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">scriptDirectory</span><span class="s3">), </span><span class="s4">&quot;prep_vcfs&quot;</span><span class="s3">, </span><span class="s4">&quot;utils&quot;</span><span class="s3">, </span><span class="s4">&quot;filter_vcf.sh&quot;</span><span class="s3">)</span>
+
+
+<span class="s2">class </span><span class="s1">UniqueStore</span><span class="s3">(</span><span class="s1">argparse</span><span class="s3">.</span><span class="s1">Action</span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l2"><span class="ln">2    </span></a>    class grabbed from stackOverflow (2018-11-08) 
+<a name="l3"><span class="ln">3    </span></a>    https://stackoverflow.com/questions/23032514/argparse-disable-same-argument-occurences 
+<a name="l4"><span class="ln">4    </span></a>    Thanks To the Community 
+<a name="l5"><span class="ln">5    </span></a>    We override the function __call__ from argparse to check if one option is given more than once 
+<a name="l6"><span class="ln">6    </span></a>    &quot;&quot;&quot;</span>
+
+	<span class="s2">def </span><span class="s1">__call__</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">parser</span><span class="s3">, </span><span class="s1">namespace</span><span class="s3">, </span><span class="s1">values</span><span class="s3">, </span><span class="s1">option_string</span><span class="s3">):</span>
+		<span class="s2">if </span><span class="s1">getattr</span><span class="s3">(</span><span class="s1">namespace</span><span class="s3">, </span><span class="s1">self</span><span class="s3">.</span><span class="s1">dest</span><span class="s3">, </span><span class="s1">self</span><span class="s3">.</span><span class="s1">default</span><span class="s3">) </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+			<span class="s1">parser</span><span class="s3">.</span><span class="s1">error</span><span class="s3">(</span><span class="s1">option_string </span><span class="s3">+ </span><span class="s4">&quot; appears several times.  Please modify your options.&quot;</span><span class="s3">)</span>
+		<span class="s1">setattr</span><span class="s3">(</span><span class="s1">namespace</span><span class="s3">, </span><span class="s1">self</span><span class="s3">.</span><span class="s1">dest</span><span class="s3">, </span><span class="s1">values</span><span class="s3">)</span>
+
+<span class="s2">def </span><span class="s1">is_gzip</span><span class="s3">(</span><span class="s1">path</span><span class="s3">, </span><span class="s1">magic_number</span><span class="s3">=</span><span class="s4">b'</span><span class="s6">\x1f\x8b</span><span class="s4">'</span><span class="s3">):</span>
+    <span class="s5">&quot;&quot;&quot;Returns True if the path is gzipped. Fucntion taken from JetStream and created by Ryan Richolt&quot;&quot;&quot;</span>
+    <span class="s2">if </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">exists</span><span class="s3">(</span><span class="s1">path</span><span class="s3">) </span><span class="s2">and not </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">isfile</span><span class="s3">(</span><span class="s1">path</span><span class="s3">):</span>
+        <span class="s1">err </span><span class="s3">= </span><span class="s4">'This should only be used with regular files because otherwise ' </span><span class="s1">\</span>
+              <span class="s4">'it will lose some data.'</span>
+        <span class="s2">raise </span><span class="s1">ValueError</span><span class="s3">(</span><span class="s1">err</span><span class="s3">)</span>
+
+    <span class="s2">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">path</span><span class="s3">, </span><span class="s4">'rb'</span><span class="s3">) </span><span class="s2">as </span><span class="s1">fp</span><span class="s3">:</span>
+        <span class="s2">if </span><span class="s1">fp</span><span class="s3">.</span><span class="s1">read</span><span class="s3">(</span><span class="s6">2</span><span class="s3">) == </span><span class="s1">magic_number</span><span class="s3">:</span>
+            <span class="s2">return </span><span class="s1">True</span>
+        <span class="s2">else</span><span class="s3">:</span>
+            <span class="s2">return </span><span class="s1">False</span>
+
+<span class="s2">def </span><span class="s1">check_if_vcf_is_compressed</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">):</span>
+	<span class="s5">'''check if vcfs are comporessed and if so, uncompress the vcf in current working directory 
+<a name="l7"><span class="ln">7    </span></a>    :param lvcfs 
+<a name="l8"><span class="ln">8    </span></a>    :return updated lvcfs 
+<a name="l9"><span class="ln">9    </span></a>    '''</span>
+
+	<span class="s2">for </span><span class="s1">i </span><span class="s2">in </span><span class="s1">range</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">)):</span>
+		<span class="s1">vcf </span><span class="s3">= </span><span class="s1">lvcfs</span><span class="s3">[</span><span class="s1">i</span><span class="s3">]</span>
+		<span class="s2">if </span><span class="s1">is_gzip</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">):</span>
+			<span class="s1">uvcf </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">basename</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">splitext</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)[</span><span class="s6">0</span><span class="s3">])</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;vcf file after decompression: &quot;</span><span class="s3">+</span><span class="s1">uvcf</span><span class="s3">)</span>
+			<span class="s2">with </span><span class="s1">gzip</span><span class="s3">.</span><span class="s1">open</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">, </span><span class="s4">'r'</span><span class="s3">) </span><span class="s2">as </span><span class="s1">f_in</span><span class="s3">, </span><span class="s1">open</span><span class="s3">(</span><span class="s1">uvcf</span><span class="s3">, </span><span class="s4">'wb'</span><span class="s3">) </span><span class="s2">as </span><span class="s1">f_out</span><span class="s3">:</span>
+				<span class="s1">shutil</span><span class="s3">.</span><span class="s1">copyfileobj</span><span class="s3">(</span><span class="s1">f_in</span><span class="s3">, </span><span class="s1">f_out</span><span class="s3">)</span>
+			<span class="s1">lvcfs</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] = </span><span class="s1">uvcf</span>
+	<span class="s2">return </span><span class="s1">lvcfs</span>
+
+<span class="s2">def </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">s</span><span class="s3">):</span>
+	<span class="s5">''' 
+<a name="l10"><span class="ln">10   </span></a>    This is an important function to get the empty string with appropriate quotes in order to 
+<a name="l11"><span class="ln">11   </span></a>    avoid errors with the bash command in the subprocesses functions ; empty string MUST show in the bash command 
+<a name="l12"><span class="ln">12   </span></a> 
+<a name="l13"><span class="ln">13   </span></a>    :param s: input is a string (empty or not) 
+<a name="l14"><span class="ln">14   </span></a>    :return: a string (with new quotes around or as is) 
+<a name="l15"><span class="ln">15   </span></a>    '''</span>
+	<span class="s2">if </span><span class="s1">s </span><span class="s3">== </span><span class="s4">&quot;&quot;</span><span class="s3">:</span>
+		<span class="s2">return </span><span class="s4">''</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s4">&quot;</span><span class="s6">\&quot;\'</span><span class="s4">&quot;</span><span class="s3">, </span><span class="s1">s</span><span class="s3">, </span><span class="s4">&quot;</span><span class="s6">\'\&quot;</span><span class="s4">&quot;</span><span class="s3">])</span>
+	<span class="s2">return </span><span class="s1">s</span>
+
+<span class="s2">def </span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">s</span><span class="s3">):</span>
+	<span class="s5">''' 
+<a name="l16"><span class="ln">16   </span></a>    This is an important function to get the empty string with appropriate quotes in order to avoid 
+<a name="l17"><span class="ln">17   </span></a>    error with the bash or python commands in the subprocess ; empty string MUST show in the bash command 
+<a name="l18"><span class="ln">18   </span></a> 
+<a name="l19"><span class="ln">19   </span></a>    :param s: input is a string (empty or not) 
+<a name="l20"><span class="ln">20   </span></a>    :return: a double-quoted string 
+<a name="l21"><span class="ln">21   </span></a>    '''</span>
+	<span class="s2">return </span><span class="s4">''</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">, </span><span class="s1">s</span><span class="s3">, </span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">])</span>
+
+<span class="s2">def </span><span class="s1">make_json</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">f</span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l22"><span class="ln">22   </span></a>    create the json file for further processing ... I know, I know, I could avoid this intermediate step 
+<a name="l23"><span class="ln">23   </span></a>    but I started this script with json file manually made as input of this script. So read_json function 
+<a name="l24"><span class="ln">24   </span></a>    got created first along with other functions; so I am recycling :-) 
+<a name="l25"><span class="ln">25   </span></a>    :param data: dictionary or other object that can be converted to json format 
+<a name="l26"><span class="ln">26   </span></a>    :param f: filename 
+<a name="l27"><span class="ln">27   </span></a>    :return: filename f 
+<a name="l28"><span class="ln">28   </span></a>    &quot;&quot;&quot;</span>
+	<span class="s2">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">f</span><span class="s3">, </span><span class="s4">&quot;w&quot;</span><span class="s3">) </span><span class="s2">as </span><span class="s1">write_file</span><span class="s3">:</span>
+		<span class="s1">json</span><span class="s3">.</span><span class="s1">dump</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">write_file</span><span class="s3">, </span><span class="s1">indent</span><span class="s3">=</span><span class="s6">4</span><span class="s3">)</span>
+	<span class="s2">return </span><span class="s1">f</span>
+
+<span class="s2">def </span><span class="s1">read_json</span><span class="s3">(</span><span class="s1">f</span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l29"><span class="ln">29   </span></a>    read the json file with specific format for the vcfMerger 
+<a name="l30"><span class="ln">30   </span></a> 
+<a name="l31"><span class="ln">31   </span></a>    :param f: json file as input 
+<a name="l32"><span class="ln">32   </span></a>    :return: dictionary of converted json data into a dictionary 
+<a name="l33"><span class="ln">33   </span></a> 
+<a name="l34"><span class="ln">34   </span></a>    &quot;&quot;&quot;</span>
+	<span class="s2">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">f</span><span class="s3">, </span><span class="s4">&quot;r&quot;</span><span class="s3">) </span><span class="s2">as </span><span class="s1">read_file</span><span class="s3">:</span>
+		<span class="s1">data </span><span class="s3">= </span><span class="s1">json</span><span class="s3">.</span><span class="s1">load</span><span class="s3">(</span><span class="s1">read_file</span><span class="s3">)</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">debug</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">) + </span><span class="s4">'</span><span class="s6">\n</span><span class="s4">'</span><span class="s3">)</span>
+	<span class="s2">return </span><span class="s1">data</span>
+
+<span class="s2">def </span><span class="s1">make_data_for_json</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">,</span>
+                       <span class="s1">ltoolnames</span><span class="s3">,</span>
+                       <span class="s1">normal_sname</span><span class="s3">,</span>
+                       <span class="s1">tumor_sname</span><span class="s3">,</span>
+                       <span class="s1">ref_genome_fasta</span><span class="s3">,</span>
+                       <span class="s1">lossy</span><span class="s3">,</span>
+                       <span class="s1">ltpo</span><span class="s3">=</span><span class="s1">None</span><span class="s3">,</span>
+                       <span class="s1">lacronyms</span><span class="s3">=</span><span class="s1">None</span><span class="s3">,</span>
+                       <span class="s1">lprepped_vcf_outfilenames</span><span class="s3">=</span><span class="s1">None</span><span class="s3">,</span>
+                       <span class="s1">lbams</span><span class="s3">=</span><span class="s1">None</span><span class="s3">,</span>
+                       <span class="s1">lcontigs</span><span class="s3">=</span><span class="s1">None</span><span class="s3">,</span>
+                       <span class="s1">filter_string_for_snpsift</span><span class="s3">=</span><span class="s1">None</span><span class="s3">,</span>
+                       <span class="s1">TH_AR</span><span class="s3">=</span><span class="s6">0.9</span><span class="s3">,</span>
+                       <span class="s1">do_venn</span><span class="s3">=</span><span class="s1">False</span><span class="s3">):</span>
+	<span class="s0"># TODO : Check if tool precedence is different from order of toolnames</span>
+	# if different, reorder the list;
+	# otherwise, currently the order of precedence is the same as the toolnames given list
+	<span class="s1">data </span><span class="s3">= {}</span>
+	<span class="s2">for </span><span class="s1">tool_idx </span><span class="s2">in </span><span class="s1">range</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">)):</span>
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]] = {}</span>
+
+		<span class="s2">if </span><span class="s1">lacronyms </span><span class="s2">is </span><span class="s1">None</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'tool_acronym'</span><span class="s3">] = </span><span class="s4">&quot;&quot;</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'tool_acronym'</span><span class="s3">] = </span><span class="s1">lacronyms</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]</span>
+
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'dir_work'</span><span class="s3">] = </span><span class="s4">&quot;.&quot;</span>
+
+		<span class="s0"># if os.path.dirname(lvcfs[tool_idx]) is None or os.path.dirname(lvcfs[tool_idx]) == &quot;&quot;:</span>
+		#    data[ltoolnames[tool_idx]]['dir_work'] = &quot;.&quot;
+		# elif &quot;/&quot; in lvcfs[tool_idx] and (lvcfs[tool_idx].startswith(&quot;./&quot;) or lvcfs[tool_idx].startswith(&quot;/&quot;)):
+		#   if os.path.exists(lvcfs[tool_idx]):
+		#        data[ltoolnames[tool_idx]]['dir_work'] = os.path.dirname(lvcfs[tool_idx])
+		#  else:
+		#      sys.exit(&quot;ERROR: vcf path NOT FOUND from current directory '{}'\npath must be the basename, relative path or full path to the vcf file&quot;.format(lvcfs[tool_idx]))
+		# else:
+		#    sys.exit(&quot;ERROR: vcf pathname is INVALID '{}'\npathname must be the basename, relative path or full path to the vcf file&quot;.format(lvcfs[tool_idx]))
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'normal'</span><span class="s3">] = </span><span class="s1">normal_sname</span>
+		data<span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'tumor'</span><span class="s3">] = </span><span class="s1">tumor_sname</span>
+		data<span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'vcf'</span><span class="s3">] = </span><span class="s1">lvcfs</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">] </span><span class="s1">; </span><span class="s0"># manages wherever is the vcf (relative of full path to the current directory)</span>
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'ref_genome_fasta'</span><span class="s3">] = </span><span class="s1">ref_genome_fasta</span>
+
+		<span class="s2">if </span><span class="s1">lprepped_vcf_outfilenames </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">] = </span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">] = </span><span class="s4">&quot;&quot;</span>
+
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'vcf_indels'</span><span class="s3">] = </span><span class="s4">&quot;&quot;</span>
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'vcf_snvs'</span><span class="s3">] = </span><span class="s4">&quot;&quot;</span>
+
+		<span class="s2">if </span><span class="s1">lbams </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'bam'</span><span class="s3">] = </span><span class="s1">lbams</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'bam'</span><span class="s3">] = </span><span class="s4">&quot;&quot;</span>
+
+		<span class="s2">if </span><span class="s1">lcontigs </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'contigs_file'</span><span class="s3">] = </span><span class="s1">lcontigs</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'contigs_file'</span><span class="s3">] = </span><span class="s4">&quot;&quot;</span>
+
+		<span class="s0"># lossy do not need to be added to the json file because it applies to vcfMerger not prep</span>
+		# we keep it here just in case we use the json file as a reminder of what was run
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'lossy'</span><span class="s3">] = </span><span class="s1">lossy</span>
+
+		<span class="s2">if  </span><span class="s1">len</span><span class="s3">(</span><span class="s1">re</span><span class="s3">.</span><span class="s1">findall</span><span class="s3">(</span><span class="s4">&quot;###&quot;</span><span class="s3">,</span><span class="s1">filter_string_for_snpsift</span><span class="s3">)) == </span><span class="s6">0</span><span class="s3">:  </span><span class="s0">## HARDCODED DELIMITER</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'filter_string_snpsift'</span><span class="s3">] = </span><span class="s1">filter_string_for_snpsift</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'filter_string_snpsift'</span><span class="s3">] = </span><span class="s1">filter_string_for_snpsift</span><span class="s3">.</span><span class="s1">split</span><span class="s3">(</span><span class="s4">&quot;###&quot;</span><span class="s3">)[</span><span class="s1">tool_idx</span><span class="s3">]  </span><span class="s1">; </span><span class="s0">## HARDCODED DELIMITER</span>
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'threshold_AR'</span><span class="s3">] = </span><span class="s1">TH_AR</span>
+		data<span class="s3">[</span><span class="s1">ltoolnames</span><span class="s3">[</span><span class="s1">tool_idx</span><span class="s3">]][</span><span class="s4">'do_venn'</span><span class="s3">] = </span><span class="s1">do_venn</span>
+
+	<span class="s2">return </span><span class="s1">data</span>
+
+<span class="s2">def </span><span class="s1">filter_unprepped_vcf</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">path_jar_snpsift</span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l35"><span class="ln">35   </span></a>    1) parse the data object 
+<a name="l36"><span class="ln">36   </span></a>    2) prepare command for running the filter bash script 
+<a name="l37"><span class="ln">37   </span></a>    3) call and run bash script 
+<a name="l38"><span class="ln">38   </span></a>    4) update the data object with new vcf file 
+<a name="l39"><span class="ln">39   </span></a> 
+<a name="l40"><span class="ln">40   </span></a>    :param data: dictionary of converted json data 
+<a name="l41"><span class="ln">41   </span></a>    :return: updated data object 
+<a name="l42"><span class="ln">42   </span></a>    &quot;&quot;&quot;</span>
+	<span class="s1">CONSTANT_STRING_FOR_PASS_RECORDS</span><span class="s3">=</span><span class="s4">&quot;( FILTER == 'PASS' )&quot; </span><span class="s0">## HARDCODED</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Filtering vcf ... &quot;</span><span class="s3">+</span><span class="s1">CONSTANT_STRING_FOR_PASS_RECORDS</span><span class="s3">)</span>
+
+	<span class="s2">for </span><span class="s1">tool </span><span class="s2">in </span><span class="s1">data</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">():</span>
+
+		<span class="s1">vcf </span><span class="s3">= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'vcf'</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10 </span><span class="s3">+ </span><span class="s4">&quot;  &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">).</span><span class="s1">upper</span><span class="s3">() + </span><span class="s4">&quot;  &quot; </span><span class="s3">+ </span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10</span><span class="s3">)</span>
+
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;input: </span><span class="s6">\t</span><span class="s4">tool</span><span class="s6">\t</span><span class="s4">==</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">)))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;input: </span><span class="s6">\t</span><span class="s4">vcf</span><span class="s6">\t</span><span class="s4">==</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)))</span>
+		<span class="s1">mycmd </span><span class="s3">= [</span><span class="s4">&quot;bash&quot;</span><span class="s3">, </span><span class="s1">snpsift_filter_script_path</span><span class="s3">, </span><span class="s1">path_jar_snpsift</span><span class="s3">, </span><span class="s4">&quot;pass&quot;</span><span class="s3">, </span><span class="s1">str</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">+</span><span class="s1">CONSTANT_STRING_FOR_PASS_RECORDS</span><span class="s3">+</span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">), </span><span class="s1">vcf</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">mycmd</span><span class="s3">))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot; &quot;</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">x </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">]))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">((</span><span class="s4">&quot;Running filter stage for vcf: {}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)))</span>
+		<span class="s1">subprocess_cmd</span><span class="s3">(</span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">str</span><span class="s3">(</span><span class="s1">x</span><span class="s3">) </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">]))</span>
+		<span class="s1">new_vcf_name </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">basename</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">splitext</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)[</span><span class="s6">0</span><span class="s3">]+</span><span class="s4">&quot;.pass.vcf&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Expected new filename for the input vcfs for the next stage is: &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">new_vcf_name</span><span class="s3">)))</span>
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'vcf'</span><span class="s3">] = </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">abspath</span><span class="s3">(</span><span class="s1">new_vcf_name</span><span class="s3">)</span>
+
+	<span class="s2">return </span><span class="s1">data</span>
+
+<span class="s2">def </span><span class="s1">filter_prepped_vcf</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">path_jar_snpsift</span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l43"><span class="ln">43   </span></a>    1) parse the data object 
+<a name="l44"><span class="ln">44   </span></a>    2) prepare command for running the filter bash script 
+<a name="l45"><span class="ln">45   </span></a>    3) call and run bash script 
+<a name="l46"><span class="ln">46   </span></a>    4) update the data object with new vcf file 
+<a name="l47"><span class="ln">47   </span></a> 
+<a name="l48"><span class="ln">48   </span></a>    :param data: dictionary of converted json data 
+<a name="l49"><span class="ln">49   </span></a>    :return: updated data object 
+<a name="l50"><span class="ln">50   </span></a>    &quot;&quot;&quot;</span>
+	<span class="s2">for </span><span class="s1">tool </span><span class="s2">in </span><span class="s1">data</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">():</span>
+
+		<span class="s1">vcf </span><span class="s3">= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10 </span><span class="s3">+ </span><span class="s4">&quot;  &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">).</span><span class="s1">upper</span><span class="s3">() + </span><span class="s4">&quot;  &quot; </span><span class="s3">+ </span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Filtering vcf ...&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;input: </span><span class="s6">\t</span><span class="s4">tool</span><span class="s6">\t</span><span class="s4">==</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">)))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;input: </span><span class="s6">\t</span><span class="s4">vcf</span><span class="s6">\t</span><span class="s4">==</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)))</span>
+		<span class="s1">mycmd </span><span class="s3">= [</span><span class="s4">&quot;bash&quot;</span><span class="s3">, </span><span class="s1">snpsift_filter_script_path</span><span class="s3">, </span><span class="s1">path_jar_snpsift</span><span class="s3">, </span><span class="s4">&quot;filt&quot;</span><span class="s3">, </span><span class="s1">str</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">+</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'filter_string_snpsift'</span><span class="s3">]+</span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">), </span><span class="s1">vcf</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">mycmd</span><span class="s3">))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot; &quot;</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">x </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">]))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">((</span><span class="s4">&quot;Running filter stage for vcf: {}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)))</span>
+		<span class="s1">subprocess_cmd</span><span class="s3">(</span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">str</span><span class="s3">(</span><span class="s1">x</span><span class="s3">) </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">]))</span>
+		<span class="s1">new_vcf_name </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">basename</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">splitext</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)[</span><span class="s6">0</span><span class="s3">]+</span><span class="s4">&quot;.filt.vcf&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Expected new filename for the input vcfs for the next stage is: &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">new_vcf_name</span><span class="s3">)))</span>
+		<span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">] = </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">abspath</span><span class="s3">(</span><span class="s1">new_vcf_name</span><span class="s3">)</span>
+		<span class="s2">if </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'do_venn'</span><span class="s3">]:</span>
+			<span class="s1">prepare_bed_for_venn</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">])</span>
+
+	<span class="s2">return </span><span class="s1">data</span>
+
+<span class="s2">def </span><span class="s1">parse_json_data_and_run_prep_vcf</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">dryrun</span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l51"><span class="ln">51   </span></a>    1) parse the data from the json file 
+<a name="l52"><span class="ln">52   </span></a>    2) run prep_vcf program for each tool's vcf 
+<a name="l53"><span class="ln">53   </span></a> 
+<a name="l54"><span class="ln">54   </span></a>    :param data: dictionary of converted json data 
+<a name="l55"><span class="ln">55   </span></a>    :return: list of expected prep_vcfs from each tool unless error 
+<a name="l56"><span class="ln">56   </span></a>    &quot;&quot;&quot;</span>
+
+	<span class="s2">for </span><span class="s1">tool </span><span class="s2">in </span><span class="s1">data</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">():</span>
+
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10 </span><span class="s3">+ </span><span class="s4">&quot;  &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">).</span><span class="s1">upper</span><span class="s3">() + </span><span class="s4">&quot;  &quot; </span><span class="s3">+ </span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;recap inputs captured from json file&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;input: </span><span class="s6">\t</span><span class="s4">tool</span><span class="s6">\t</span><span class="s4">==</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">)))</span>
+
+		<span class="s2">for </span><span class="s1">var</span><span class="s3">, </span><span class="s1">val </span><span class="s2">in </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">].</span><span class="s1">items</span><span class="s3">():</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;input:</span><span class="s6">\t</span><span class="s4">{} </span><span class="s6">\t</span><span class="s4">==</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">var</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">val</span><span class="s3">)))</span>
+		<span class="s2">print</span><span class="s3">()</span>
+
+		<span class="s0"># check if outfilename for prep_vcf is Null or None</span>
+		<span class="s2">if </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">] </span><span class="s2">is </span><span class="s1">None </span><span class="s2">or </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">] == </span><span class="s4">&quot;&quot;</span><span class="s3">:</span>
+			<span class="s1">msg </span><span class="s3">= </span><span class="s4">&quot;prepped_vcf_outfilename has not been defined injson file for tool {} ; Aborting.&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">)</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">msg</span><span class="s3">))</span>
+		<span class="s0"># check if outfilename will be outputted in current working folder or not; important for vcfMerger2.0 to</span>
+		# know where the prep vcfs are located (users can provide full path for prep vcf outfilename otherwise ; no relative path in json )
+		<span class="s2">if </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">curdir </span><span class="s3">!= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'dir_work'</span><span class="s3">]:</span>
+			<span class="s2">if not </span><span class="s1">str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">]).</span><span class="s1">startswith</span><span class="s3">(</span><span class="s4">&quot;/&quot;</span><span class="s3">):</span>
+				<span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">] = </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">abspath</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">curdir</span><span class="s3">),</span>
+				                                                     <span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">basename</span><span class="s3">(</span>
+					                                                     <span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">]))</span>
+
+		<span class="s0"># make string from all options for the future bash command line</span>
+		<span class="s1">cmdLine </span><span class="s3">= </span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span>
+			[
+				<span class="s4">&quot;-d&quot;</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'dir_work'</span><span class="s3">]),</span>
+				<span class="s4">'--toolname'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">),</span>
+				<span class="s4">'--normal-sname'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'normal'</span><span class="s3">]),</span>
+				<span class="s4">'--tumor-sname'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'tumor'</span><span class="s3">]),</span>
+				<span class="s4">'--vcf'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'vcf'</span><span class="s3">]),</span>
+				<span class="s4">'-g'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'ref_genome_fasta'</span><span class="s3">]),</span>
+				<span class="s4">'-o'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">]),</span>
+				<span class="s4">'--vcf-indels'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'vcf_indels'</span><span class="s3">]),</span>
+				<span class="s4">'--vcf-snvs'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'vcf_snvs'</span><span class="s3">]),</span>
+				<span class="s4">'--bam'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'bam'</span><span class="s3">]),</span>
+				<span class="s4">'--contigs-file'</span><span class="s3">, </span><span class="s1">quote_str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'contigs_file'</span><span class="s3">]),</span>
+
+			]
+		)
+
+		<span class="s0">## capture if user wants to make the Venn/upset plots later on before merging vcfs</span>
+		<span class="s2">if </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'do_venn'</span><span class="s3">]:</span>
+			<span class="s1">cmdLine </span><span class="s3">= </span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">cmdLine</span><span class="s3">, </span><span class="s4">&quot;--make-bed-for-venn&quot;</span><span class="s3">])</span>
+
+		<span class="s0"># capture threshold AR found in json</span>
+		<span class="s1">TH_AR </span><span class="s3">= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'threshold_AR'</span><span class="s3">]</span>
+		<span class="s2">if </span><span class="s1">TH_AR </span><span class="s2">is not </span><span class="s1">None </span><span class="s2">and </span><span class="s1">TH_AR </span><span class="s3">!= </span><span class="s4">&quot;&quot; </span><span class="s2">and </span><span class="s1">TH_AR </span><span class="s3">!= </span><span class="s6">0.9</span><span class="s3">:</span>
+			<span class="s1">cmdLine </span><span class="s3">= </span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">cmdLine</span><span class="s3">, </span><span class="s4">&quot;--threshold-AR&quot;</span><span class="s3">, </span><span class="s1">TH_AR</span><span class="s3">])</span>
+
+		<span class="s0"># display the command line for log purposes</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">prep_script_path </span><span class="s3">+ </span><span class="s4">&quot; &quot; </span><span class="s3">+ </span><span class="s1">cmdLine</span><span class="s3">)</span>
+		<span class="s1">my_command </span><span class="s3">= </span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s4">&quot;bash&quot;</span><span class="s3">, </span><span class="s1">prep_script_path</span><span class="s3">, </span><span class="s1">cmdLine</span><span class="s3">])</span>
+		<span class="s1">logFilename </span><span class="s3">= </span><span class="s4">&quot;log_prep_vcf_{}.logs&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">)</span>
+		<span class="s1">subp_logfile </span><span class="s3">= </span><span class="s1">open</span><span class="s3">(</span><span class="s1">logFilename</span><span class="s3">, </span><span class="s4">&quot;w&quot;</span><span class="s3">)</span>
+		<span class="s2">if not </span><span class="s1">dryrun</span><span class="s3">:</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;&quot;</span><span class="s3">)</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10 </span><span class="s3">+ </span><span class="s4">&quot; prep {} vcf &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">).</span><span class="s1">upper</span><span class="s3">() + </span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10</span><span class="s3">)</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;logging prep steps to file: &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">logFilename</span><span class="s3">))</span>
+			<span class="s1">process </span><span class="s3">= </span><span class="s1">subprocess</span><span class="s3">.</span><span class="s1">Popen</span><span class="s3">(</span><span class="s1">my_command</span><span class="s3">,</span>
+			                           <span class="s1">shell</span><span class="s3">=</span><span class="s1">True</span><span class="s3">,</span>
+			                           <span class="s1">universal_newlines</span><span class="s3">=</span><span class="s1">True</span><span class="s3">,</span>
+			                           <span class="s1">stdout</span><span class="s3">=</span><span class="s1">subp_logfile</span><span class="s3">,</span>
+			                           <span class="s1">stderr</span><span class="s3">=</span><span class="s1">subp_logfile</span><span class="s3">)</span>
+			<span class="s1">process</span><span class="s3">.</span><span class="s1">wait</span><span class="s3">()</span>
+			<span class="s2">print</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">process</span><span class="s3">.</span><span class="s1">returncode</span><span class="s3">))</span>
+			<span class="s1">subp_logfile</span><span class="s3">.</span><span class="s1">close</span><span class="s3">()</span>
+			<span class="s2">if </span><span class="s1">process</span><span class="s3">.</span><span class="s1">returncode </span><span class="s2">is not </span><span class="s6">0</span><span class="s3">:</span>
+				<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;{} FAILED for tool {} &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">prep_script_path</span><span class="s3">, </span><span class="s1">tool</span><span class="s3">))</span>
+
+<span class="s2">def </span><span class="s1">subprocess_cmd</span><span class="s3">(</span><span class="s1">command</span><span class="s3">):</span>
+	<span class="s1">os</span><span class="s3">.</span><span class="s1">system</span><span class="s3">(</span><span class="s1">command</span><span class="s3">)</span>
+
+<span class="s2">def </span><span class="s1">prepare_bed_for_venn</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">):</span>
+	<span class="s5">''' 
+<a name="l57"><span class="ln">57   </span></a>    if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ... 
+<a name="l58"><span class="ln">58   </span></a>    the skip-prep-vcf is used, we can make the beds from the vcf file(s) provided. As we already have the 
+<a name="l59"><span class="ln">59   </span></a>    function &lt;&lt; prepare_input_file_for_Venn &gt;&gt; in the bash script named &lt;&lt; prep_vcf.sh &gt;&gt;, we will source the function 
+<a name="l60"><span class="ln">60   </span></a>    and run it using system.command() 
+<a name="l61"><span class="ln">61   </span></a>    :param vcf: 
+<a name="l62"><span class="ln">62   </span></a>    :return: none 
+<a name="l63"><span class="ln">63   </span></a>    '''</span>
+
+	<span class="s0"># Build subprocess command</span>
+	<span class="s1">mycmd </span><span class="s3">= [</span><span class="s4">&quot;source&quot;</span><span class="s3">, </span><span class="s1">prep_vcf_functions_script_path</span><span class="s3">, </span><span class="s4">&quot; &amp;&amp; &quot;</span><span class="s3">, </span><span class="s4">&quot;prepare_input_file_for_Venn &quot;</span><span class="s3">, </span><span class="s1">vcf</span><span class="s3">]</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">mycmd</span><span class="s3">))</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot; &quot;</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">x </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">]))</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">((</span><span class="s4">&quot;Running bash function prep_input_file_for_venn command&quot;</span><span class="s3">))</span>
+	<span class="s1">subprocess_cmd</span><span class="s3">(</span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">x</span><span class="s3">) </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">]))</span>
+
+<span class="s2">def </span><span class="s1">merging_prepped_vcfs</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">merged_vcf_outfilename</span><span class="s3">, </span><span class="s1">delim</span><span class="s3">, </span><span class="s1">lossy</span><span class="s3">, </span><span class="s1">dryrun</span><span class="s3">, </span><span class="s1">do_venn</span><span class="s3">, </span><span class="s1">lbeds</span><span class="s3">, </span><span class="s1">skip_prep_vcfs</span><span class="s3">, ):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l64"><span class="ln">64   </span></a> 
+<a name="l65"><span class="ln">65   </span></a>    :param data: 
+<a name="l66"><span class="ln">66   </span></a>    :param merged_vcf_outfilename: 
+<a name="l67"><span class="ln">67   </span></a>    :return: None 
+<a name="l68"><span class="ln">68   </span></a>    &quot;&quot;&quot;</span>
+
+	<span class="s1">list_vcfs </span><span class="s3">= </span><span class="s4">&quot;&quot;</span>
+	<span class="s1">list_tools </span><span class="s3">= </span><span class="s4">&quot;&quot;</span>
+	<span class="s1">list_tools_acronyms </span><span class="s3">= </span><span class="s4">&quot;&quot;</span>
+	<span class="s2">for </span><span class="s1">tool </span><span class="s2">in </span><span class="s1">data</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">():</span>
+		<span class="s1">vcf </span><span class="s3">= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'vcf'</span><span class="s3">]</span>
+		<span class="s1">prepped_vcf </span><span class="s3">= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">]</span>
+		<span class="s1">acronym </span><span class="s3">= </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'tool_acronym'</span><span class="s3">] </span><span class="s2">if </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'tool_acronym'</span><span class="s3">] != </span><span class="s4">&quot;&quot; </span><span class="s2">else </span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">).</span><span class="s1">upper</span><span class="s3">()</span>
+		<span class="s1">list_tools </span><span class="s3">= </span><span class="s1">delim</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">list_tools</span><span class="s3">, </span><span class="s1">tool</span><span class="s3">]) </span><span class="s2">if </span><span class="s1">list_tools </span><span class="s3">!= </span><span class="s4">&quot;&quot; </span><span class="s2">else </span><span class="s1">tool</span>
+		vcf_to_add <span class="s3">= </span><span class="s1">prepped_vcf </span><span class="s2">if </span><span class="s1">prepped_vcf </span><span class="s3">!= </span><span class="s4">&quot;&quot; </span><span class="s2">else </span><span class="s1">vcf</span>
+		list_vcfs <span class="s3">= </span><span class="s1">delim</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">list_vcfs</span><span class="s3">, </span><span class="s1">vcf_to_add</span><span class="s3">]) </span><span class="s2">if </span><span class="s1">list_vcfs </span><span class="s3">!= </span><span class="s4">&quot;&quot; </span><span class="s2">else </span><span class="s1">vcf_to_add</span>
+		list_tools_acronyms <span class="s3">= </span><span class="s1">delim</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">list_tools_acronyms</span><span class="s3">, </span><span class="s1">acronym</span><span class="s3">]) </span><span class="s2">if </span><span class="s1">list_tools_acronyms </span><span class="s3">!= </span><span class="s4">&quot;&quot; </span><span class="s2">else </span><span class="s1">acronym</span>
+
+	log<span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">list_tools_acronyms</span><span class="s3">))</span>
+	<span class="s1">my_command </span><span class="s3">= </span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s4">&quot;python&quot;</span><span class="s3">, </span><span class="s1">vcfmerger_tool_path</span><span class="s3">,</span>
+	                       <span class="s4">&quot;--toolnames&quot;</span><span class="s3">, </span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_tools</span><span class="s3">),</span>
+	                       <span class="s4">&quot;--vcfs&quot;</span><span class="s3">, </span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_vcfs</span><span class="s3">),</span>
+	                       <span class="s4">&quot;-o&quot;</span><span class="s3">, </span><span class="s1">merged_vcf_outfilename</span><span class="s3">,</span>
+	                       <span class="s4">&quot;-a&quot;</span><span class="s3">, </span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_tools_acronyms</span><span class="s3">)</span>
+	                       ])
+
+	<span class="s2">if </span><span class="s1">lossy</span><span class="s3">:</span>
+		<span class="s1">my_command </span><span class="s3">= </span><span class="s1">my_command </span><span class="s3">+ </span><span class="s4">&quot; --lossy&quot;</span>
+
+	<span class="s2">if </span><span class="s1">do_venn</span><span class="s3">:</span>
+		<span class="s2">for </span><span class="s1">tool </span><span class="s2">in </span><span class="s1">data</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">():</span>
+			<span class="s2">if not </span><span class="s1">skip_prep_vcfs</span><span class="s3">:</span>
+				<span class="s1">list_beds </span><span class="s3">= </span><span class="s1">delim</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">str</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">splitext</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)[</span><span class="s6">0</span><span class="s3">]+</span><span class="s4">&quot;.intervene.bed&quot;</span><span class="s3">) </span><span class="s2">for </span><span class="s1">vcf </span><span class="s2">in </span><span class="s1">list_vcfs</span><span class="s3">.</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)]) </span><span class="s0">## extension intervene.bed defined in prep_vcf.sh</span>
+				<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;list_bed for venn is: &quot;</span><span class="s3">+</span><span class="s1">str</span><span class="s3">(</span><span class="s1">list_beds</span><span class="s3">))</span>
+			<span class="s2">elif </span><span class="s1">lbeds </span><span class="s3">== </span><span class="s4">&quot;&quot;</span><span class="s3">:</span>
+				<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;for intervene tool, making bed from vcf intended to be merged : &quot;</span><span class="s3">+</span><span class="s1">str</span><span class="s3">(</span><span class="s1">tool</span><span class="s3">))</span>
+				<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;trying to create on the fly the bed file using function in prep_vcf.sh script&quot;</span><span class="s3">)</span>
+				<span class="s2">print</span><span class="s3">(</span><span class="s1">tool </span><span class="s3">+ </span><span class="s4">&quot; __ prepare_bed_for_venn __  &quot; </span><span class="s3">+ </span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">])</span>
+				<span class="s1">prepare_bed_for_venn</span><span class="s3">(</span><span class="s1">data</span><span class="s3">[</span><span class="s1">tool</span><span class="s3">][</span><span class="s4">'prepped_vcf_outfilename'</span><span class="s3">])</span>
+				<span class="s1">list_beds </span><span class="s3">= </span><span class="s1">delim</span><span class="s3">.</span><span class="s1">join</span><span class="s3">([</span><span class="s1">str</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">splitext</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">)[</span><span class="s6">0</span><span class="s3">] + </span><span class="s4">&quot;.intervene.bed&quot;</span><span class="s3">) </span><span class="s2">for </span><span class="s1">vcf </span><span class="s2">in </span><span class="s1">list_vcfs</span><span class="s3">.</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)])</span>
+			<span class="s2">else</span><span class="s3">:</span>
+				<span class="s1">list_beds </span><span class="s3">= </span><span class="s1">lbeds</span>
+
+
+		<span class="s2">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">list_beds</span><span class="s3">) == </span><span class="s6">0</span><span class="s3">:</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;ERROR: --do-venn provided, but list_beds file EMPTY ; check you inputs. Aborting.&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_beds</span><span class="s3">))</span>
+		<span class="s2">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">list_beds</span><span class="s3">.</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)) != </span><span class="s1">len</span><span class="s3">(</span><span class="s1">list_tools</span><span class="s3">.</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)):</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;ERROR: --do-venn provided, but number of bed files ({}) DO NOT matched number of tools ({})  ; check you input or contact your IT/HPC admin&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">list_beds</span><span class="s3">,</span><span class="s1">list_tools</span><span class="s3">))</span>
+		<span class="s1">my_command </span><span class="s3">= </span><span class="s1">my_command </span><span class="s3">+ </span><span class="s4">&quot; --do-venn --beds &quot; </span><span class="s3">+ </span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_beds</span><span class="s3">)</span>
+
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_tools</span><span class="s3">))</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">double_quote_str</span><span class="s3">(</span><span class="s1">list_vcfs</span><span class="s3">))</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;merging vcfs ...&quot;</span><span class="s3">)</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">my_command</span><span class="s3">)</span>
+
+	<span class="s2">if not </span><span class="s1">dryrun</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10 </span><span class="s3">+ </span><span class="s4">&quot; starting vcfMerger ... &quot;</span><span class="s3">.</span><span class="s1">upper</span><span class="s3">() + </span><span class="s4">&quot;%&quot; </span><span class="s3">* </span><span class="s6">10</span><span class="s3">)</span>
+		<span class="s1">process </span><span class="s3">= </span><span class="s1">subprocess</span><span class="s3">.</span><span class="s1">Popen</span><span class="s3">(</span><span class="s1">my_command</span><span class="s3">, </span><span class="s1">shell</span><span class="s3">=</span><span class="s1">True</span><span class="s3">)</span>
+		<span class="s1">process</span><span class="s3">.</span><span class="s1">wait</span><span class="s3">()</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;vcfMerger2.0 exit value: &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">process</span><span class="s3">.</span><span class="s1">returncode</span><span class="s3">))</span>
+		<span class="s2">if </span><span class="s1">process</span><span class="s3">.</span><span class="s1">returncode </span><span class="s2">is not </span><span class="s6">0</span><span class="s3">:</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;{} FAILED with vcfs files: {} &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">vcfmerger_tool_path</span><span class="s3">, </span><span class="s1">list_vcfs</span><span class="s3">))</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">zvcf </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">merged_vcf_outfilename</span><span class="s3">+</span><span class="s4">&quot;.gz&quot;</span><span class="s3">)</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;compressing vcf file using bcftools; final merged vcf name : &quot; </span><span class="s3">+ </span><span class="s1">zvcf</span><span class="s3">)</span>
+			<span class="s1">mycmd </span><span class="s3">= [ </span><span class="s4">&quot;bcftools view -O z -o &quot;</span><span class="s3">, </span><span class="s1">zvcf</span><span class="s3">, </span><span class="s1">merged_vcf_outfilename</span><span class="s3">, </span><span class="s4">&quot;;&quot;</span><span class="s3">, </span><span class="s4">&quot;bcftools index --tbi &quot;</span><span class="s3">, </span><span class="s1">zvcf </span><span class="s3">]</span>
+			<span class="s1">subprocess_cmd</span><span class="s3">(</span><span class="s4">&quot; &quot;</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">x</span><span class="s3">) </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">mycmd</span><span class="s3">))</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">()</span>
+
+
+<span class="s2">def </span><span class="s1">check_path_to_vcfs</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">):</span>
+	<span class="s1">iterator </span><span class="s3">= </span><span class="s1">iter</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">)</span>
+	<span class="s2">while </span><span class="s1">True</span><span class="s3">:</span>
+		<span class="s2">try</span><span class="s3">:</span>
+			<span class="s1">vcf </span><span class="s3">= </span><span class="s1">next</span><span class="s3">(</span><span class="s1">iterator</span><span class="s3">)</span>
+			<span class="s2">if not </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">exists</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">):</span>
+				<span class="s1">log</span><span class="s3">.</span><span class="s1">error</span><span class="s3">(</span><span class="s4">&quot;ERROR:  FILE NOT FOUND  ---&gt;  Check your input for vcf:&quot;</span><span class="s3">+</span><span class="s1">vcf</span><span class="s3">)</span>
+				<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(-</span><span class="s6">1</span><span class="s3">)</span>
+		<span class="s2">except </span><span class="s1">StopIteration</span><span class="s3">:</span>
+			<span class="s2">break  </span><span class="s0"># Iterator exhausted: stop the loop</span>
+		<span class="s2">else</span><span class="s3">:</span>
+			<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;VCF found: &quot;</span><span class="s3">+</span><span class="s1">str</span><span class="s3">(</span><span class="s1">vcf</span><span class="s3">))</span>
+
+<span class="s2">def </span><span class="s1">check_inputs</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">, </span><span class="s1">ltoolnames</span><span class="s3">, </span><span class="s1">ltpo</span><span class="s3">=</span><span class="s1">None</span><span class="s3">, </span><span class="s1">lacronyms</span><span class="s3">=</span><span class="s1">None</span><span class="s3">, </span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">=</span><span class="s1">None</span><span class="s3">, </span><span class="s1">lbeds</span><span class="s3">=</span><span class="s1">None </span><span class="s3">):</span>
+	<span class="s5">&quot;&quot;&quot; 
+<a name="l69"><span class="ln">69   </span></a> 
+<a name="l70"><span class="ln">70   </span></a>    :param lvcfs: 
+<a name="l71"><span class="ln">71   </span></a>    :param ltoolnames: 
+<a name="l72"><span class="ln">72   </span></a>    :param ltpo: 
+<a name="l73"><span class="ln">73   </span></a>    :param acronyms: 
+<a name="l74"><span class="ln">74   </span></a>    :param delim: 
+<a name="l75"><span class="ln">75   </span></a>    :param lprepped_vcf_outfilenames: 
+<a name="l76"><span class="ln">76   </span></a>    :return: 
+<a name="l77"><span class="ln">77   </span></a>    &quot;&quot;&quot;</span>
+	<span class="s2">if </span><span class="s1">lvcfs </span><span class="s2">is </span><span class="s1">None</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ERROR: Found list of input vcfs to be prepped or to be merged empty&quot;</span><span class="s3">)</span>
+		<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;ERROR: list of vcfs empty&quot;</span><span class="s3">)</span>
+	<span class="s2">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">) == </span><span class="s6">1</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;&quot;</span><span class="s3">)</span>
+		<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;ERROR: list of vcfs length of 1 vcf only&quot;</span><span class="s3">)</span>
+	<span class="s2">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">) != </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">):</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ERROR: Found {} vcfs provided and {} tools given &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">), </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">)))</span>
+		<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span>
+			<span class="s4">&quot;ERROR: list vcfs files MUST be equal to the number of tools given ; check if delimiter is adequate and do not interfere&quot;</span><span class="s3">)</span>
+	<span class="s2">if </span><span class="s1">ltpo </span><span class="s2">is not </span><span class="s1">None </span><span class="s2">and </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">) != </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltpo</span><span class="s3">):</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ERROR: Found {} tools in precedence list and {} toolnames given&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltpo</span><span class="s3">), </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">)))</span>
+		<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span>
+			<span class="s4">&quot;ERROR: Number of toolnames MUST be equal to the number of tools given in the list of precedence ; &quot;</span>
+			&quot;check if delimiter is adequate and do not interfere with splitting the given lists of tools&quot;<span class="s3">)</span>
+	<span class="s2">if </span><span class="s1">lacronyms </span><span class="s2">is not </span><span class="s1">None </span><span class="s2">and </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">) != </span><span class="s1">len</span><span class="s3">(</span><span class="s1">lacronyms</span><span class="s3">):</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ERROR: Found {} in acronyms list and {} toolnames given&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">lacronyms</span><span class="s3">), </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">)))</span>
+		<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span>
+			<span class="s4">&quot;ERROR: Number of toolnames MUST be equal to the number of acronyms given ;</span><span class="s6">\n</span><span class="s4">&quot;</span>
+			&quot;ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools&quot;<span class="s3">)</span>
+	<span class="s2">if </span><span class="s1">lprepped_vcf_outfilenames </span><span class="s2">is not </span><span class="s1">None </span><span class="s2">and </span><span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">) != </span><span class="s1">len</span><span class="s3">(</span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">):</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span>
+			<span class="s4">&quot;ERROR: Found {} in list of given prep-filenames and {} toolnames given&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">),</span>
+			                                                                         <span class="s1">len</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">)))</span>
+		<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span>
+			<span class="s4">&quot;ERROR: Number of toolnames MUST be equal to the number of intermediate prep-outfilenames given ;</span><span class="s6">\n</span><span class="s4">check if delimiter is adequate and do not interfere with splitting the given lists of tools&quot;</span><span class="s3">)</span>
+	<span class="s1">check_path_to_vcfs</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">)</span>
+
+<span class="s2">def </span><span class="s1">main</span><span class="s3">(</span><span class="s1">args</span><span class="s3">, </span><span class="s1">cmdline</span><span class="s3">):</span>
+
+	<span class="s1">FORMAT_LOGGING </span><span class="s3">= </span><span class="s4">'%(levelname)s %(asctime)-15s %(module)s %(lineno)d</span><span class="s6">\t </span><span class="s4">%(message)s'</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">basicConfig</span><span class="s3">(</span><span class="s1">format</span><span class="s3">=</span><span class="s1">FORMAT_LOGGING</span><span class="s3">, </span><span class="s1">level</span><span class="s3">=</span><span class="s1">log</span><span class="s3">.</span><span class="s1">INFO</span><span class="s3">)</span>
+
+	<span class="s1">delim </span><span class="s3">= </span><span class="s4">&quot;|&quot;</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;delim&quot;</span><span class="s3">]:</span>
+		<span class="s1">delim </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;delim&quot;</span><span class="s3">]</span>
+		<span class="s2">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">) != </span><span class="s6">1</span><span class="s3">:</span>
+			<span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;the list delimiter given with --delim should be one character only and NOT a space; found {}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">len</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">))))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;delimiter is:</span><span class="s6">\t</span><span class="s4">&quot; </span><span class="s3">+ </span><span class="s1">delim</span><span class="s3">)</span>
+
+	<span class="s1">lvcfs </span><span class="s3">= []</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;vcfs&quot;</span><span class="s3">]:</span>
+		<span class="s1">lvcfs </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;vcfs&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ordered list of vcfs given:</span><span class="s6">\t\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">)))</span>
+
+	<span class="s1">ltoolnames </span><span class="s3">= []</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;toolnames&quot;</span><span class="s3">]:</span>
+		<span class="s1">ltoolnames </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;toolnames&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">ltoolnames </span><span class="s3">= [</span><span class="s1">x</span><span class="s3">.</span><span class="s1">lower</span><span class="s3">() </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">ltoolnames</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ordered list of toolnames given:</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">ltoolnames</span><span class="s3">)))</span>
+
+	<span class="s1">ref_genome_fasta </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;refgenome&quot;</span><span class="s3">]:</span>
+		<span class="s1">ref_genome_fasta </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;refgenome&quot;</span><span class="s3">]</span>
+		<span class="s2">if not </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">exists</span><span class="s3">(</span><span class="s1">ref_genome_fasta</span><span class="s3">):</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s4">&quot;reference genome {} NOT FOUND; Aborting.&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">ref_genome_fasta</span><span class="s3">))</span>
+
+	<span class="s1">list_tool_precedence_order </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;precedence&quot;</span><span class="s3">]:</span>
+		<span class="s1">list_tool_precedence_order </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;precedence&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">list_tool_precedence_order </span><span class="s3">= [</span><span class="s1">x</span><span class="s3">.</span><span class="s1">upper</span><span class="s3">() </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">list_tool_precedence_order</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;given precedence: {} &quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">list_tool_precedence_order</span><span class="s3">)))</span>
+
+	<span class="s1">lacronyms </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;toolacronyms&quot;</span><span class="s3">]:</span>
+		<span class="s1">lacronyms </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;toolacronyms&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">lacronyms </span><span class="s3">= [</span><span class="s1">x</span><span class="s3">.</span><span class="s1">upper</span><span class="s3">() </span><span class="s2">for </span><span class="s1">x </span><span class="s2">in </span><span class="s1">lacronyms</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;tool acronyms given:</span><span class="s6">\t\t\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">lacronyms</span><span class="s3">))</span>
+
+	<span class="s1">lossy </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;lossy&quot;</span><span class="s3">]:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;lossy enabled&quot;</span><span class="s3">)</span>
+		<span class="s1">lossy </span><span class="s3">= </span><span class="s1">True</span>
+
+	normal_sname <span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'normal_sname'</span><span class="s3">]:</span>
+		<span class="s1">normal_sname </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'normal_sname'</span><span class="s3">]</span>
+
+	<span class="s1">tumor_sname </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'tumor_sname'</span><span class="s3">]:</span>
+		<span class="s1">tumor_sname </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'tumor_sname'</span><span class="s3">]</span>
+
+	<span class="s1">lprepped_vcf_outfilenames </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;prep_outfilenames&quot;</span><span class="s3">]:</span>
+		<span class="s1">lprepped_vcf_outfilenames </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;prep_outfilenames&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;tool-specific filenames for intermediate upto vcfMerger2-specs: &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">))</span>
+		<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;skip_prep_vcfs&quot;</span><span class="s3">] == </span><span class="s1">True</span><span class="s3">:</span>
+			<span class="s1">lprepped_vcf_outfilenames </span><span class="s3">= </span><span class="s1">None</span>
+
+	lbams <span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;bams&quot;</span><span class="s3">]:</span>
+		<span class="s1">lbams </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;bams&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ordered list of bams given:</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">lbams</span><span class="s3">)))</span>
+
+	<span class="s1">lcontigs </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;contigs_file_for_vcf_header&quot;</span><span class="s3">]:</span>
+		<span class="s1">lcontigs </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;contigs_file_for_vcf_header&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ordered list of contigs files given:</span><span class="s6">\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">lcontigs</span><span class="s3">)))</span>
+
+	<span class="s1">merged_vcf_outfilename </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;merged_vcf_outfilename&quot;</span><span class="s3">]:</span>
+		<span class="s1">merged_vcf_outfilename </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;merged_vcf_outfilename&quot;</span><span class="s3">])</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;filename for the uncompressed merged output vcf will be: &quot; </span><span class="s3">+ </span><span class="s1">merged_vcf_outfilename</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;filename for the bgzip-compressed merged output vcf will be: &quot; </span><span class="s3">+ </span><span class="s1">merged_vcf_outfilename</span><span class="s3">+</span><span class="s4">&quot;.gz&quot;</span><span class="s3">)</span>
+
+	<span class="s1">skip_prep_vcfs </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;skip_prep_vcfs&quot;</span><span class="s3">]:</span>
+		<span class="s1">skip_prep_vcfs </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;skip_prep_vcfs&quot;</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;skip_prep_vcfs:&quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">skip_prep_vcfs</span><span class="s3">))</span>
+
+	<span class="s1">filter_by_pass </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'filter_by_pass'</span><span class="s3">]:</span>
+		<span class="s1">filter_by_pass </span><span class="s3">= </span><span class="s1">True</span>
+		log<span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;filtering by PASS variant enabled; This filter will be applied before the PREP_VCF step&quot;</span><span class="s3">)</span>
+
+	<span class="s1">filter_string_for_snpsift </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;filter&quot;</span><span class="s3">] </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+		<span class="s1">filter_string_for_snpsift </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;filter&quot;</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;filtering variant enabled and filter string to be used with snpSift: </span><span class="s6">\&quot;</span><span class="s4">&quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">filter_string_for_snpsift</span><span class="s3">) +</span><span class="s4">&quot;</span><span class="s6">\&quot;</span><span class="s4">&quot;</span><span class="s3">)</span>
+
+	<span class="s1">path_jar_snpsift </span><span class="s3">= </span><span class="s1">None</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;filter&quot;</span><span class="s3">] </span><span class="s2">is not </span><span class="s1">None </span><span class="s2">and </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'path_jar_snpsift'</span><span class="s3">] </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+		<span class="s1">path_jar_snpsift </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'path_jar_snpsift'</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Path to provided snpSift.jar file:&quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">path_jar_snpsift</span><span class="s3">))</span>
+		<span class="s2">if not </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">exists</span><span class="s3">(</span><span class="s1">path_jar_snpsift</span><span class="s3">):</span>
+			<span class="s2">raise </span><span class="s1">Exception</span><span class="s3">(</span><span class="s4">&quot;ERROR: snpSift.jar FILE NOT FOUND. Aborting!&quot;</span><span class="s3">)</span>
+	<span class="s2">elif </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;filter&quot;</span><span class="s3">] </span><span class="s2">is not </span><span class="s1">None </span><span class="s2">and </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'path_jar_snpsift'</span><span class="s3">] </span><span class="s2">is </span><span class="s1">None</span><span class="s3">:</span>
+		<span class="s2">raise </span><span class="s1">Exception</span><span class="s3">(</span><span class="s4">&quot;Please provide the Full PATH to a snpSift.jar file using the option --path-jar-snpsift. Aborting!&quot;</span><span class="s3">)</span>
+	<span class="s2">else</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Well, you provided the path to snpSift for nothing as you have not set the filter option. :-) &quot;</span><span class="s3">)</span>
+
+	<span class="s1">germline </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;germline&quot;</span><span class="s3">]:</span>
+		<span class="s1">germline </span><span class="s3">= </span><span class="s1">True</span>
+		log<span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;GERMLINE analysis enabled&quot;</span><span class="s3">)</span>
+
+	<span class="s1">skip_merge </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;skip_merge&quot;</span><span class="s3">]:</span>
+		<span class="s1">skip_merge </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;skip_merge&quot;</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;skip_merge:&quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">skip_merge</span><span class="s3">))</span>
+
+	<span class="s1">TH_AR </span><span class="s3">= </span><span class="s6">0.90</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'threshold_AR'</span><span class="s3">]:</span>
+		<span class="s1">TH_AR </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">'threshold_AR'</span><span class="s3">]</span>
+		<span class="s2">if </span><span class="s1">isinstance</span><span class="s3">(</span><span class="s1">TH_AR</span><span class="s3">, (</span><span class="s1">int</span><span class="s3">, </span><span class="s1">float</span><span class="s3">, </span><span class="s1">complex</span><span class="s3">)):</span>
+			<span class="s2">raise </span><span class="s1">Exception</span><span class="s3">(</span><span class="s4">&quot;Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.&quot;</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;user given threshold for AR: &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">TH_AR</span><span class="s3">))</span>
+
+	<span class="s1">lbeds </span><span class="s3">= </span><span class="s4">&quot;&quot;</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;beds&quot;</span><span class="s3">]:</span>
+		<span class="s1">lbeds </span><span class="s3">= </span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;beds&quot;</span><span class="s3">]).</span><span class="s1">split</span><span class="s3">(</span><span class="s1">delim</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;ordered list of beds given:</span><span class="s6">\t\t</span><span class="s4">{}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">lbeds</span><span class="s3">)))</span>
+
+	<span class="s1">do_venn </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;do_venn&quot;</span><span class="s3">]:</span>
+		<span class="s1">do_venn </span><span class="s3">= </span><span class="s1">True</span>
+		log<span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;make venn enabled&quot;</span><span class="s3">)</span>
+
+	<span class="s1">dryrun </span><span class="s3">= </span><span class="s1">False</span>
+	<span class="s2">if </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;dry_run&quot;</span><span class="s3">]:</span>
+		<span class="s1">dryrun </span><span class="s3">= </span><span class="s1">args</span><span class="s3">[</span><span class="s4">&quot;dry_run&quot;</span><span class="s3">]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;dry-run?:&quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">dryrun</span><span class="s3">))</span>
+
+	<span class="s0"># if inFileJson is None:</span>
+	##@@@@@@@@@
+	## MAIN  ##
+	##@@@@@@@@@
+	<span class="s1">check_inputs</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">, </span><span class="s1">ltoolnames</span><span class="s3">, </span><span class="s1">ltpo</span><span class="s3">=</span><span class="s1">list_tool_precedence_order</span><span class="s3">, </span><span class="s1">lacronyms</span><span class="s3">=</span><span class="s1">lacronyms</span><span class="s3">,</span>
+	             <span class="s1">lprepped_vcf_outfilenames</span><span class="s3">=</span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">, </span><span class="s1">lbeds</span><span class="s3">=</span><span class="s1">lbeds</span><span class="s3">)</span>
+
+	<span class="s1">lvcfs </span><span class="s3">= </span><span class="s1">check_if_vcf_is_compressed</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">)</span>
+	<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">))</span>
+
+
+	<span class="s1">data </span><span class="s3">= </span><span class="s1">make_data_for_json</span><span class="s3">(</span><span class="s1">lvcfs</span><span class="s3">,</span>
+	                          <span class="s1">ltoolnames</span><span class="s3">,</span>
+	                          <span class="s1">normal_sname</span><span class="s3">,</span>
+	                          <span class="s1">tumor_sname</span><span class="s3">,</span>
+	                          <span class="s1">ref_genome_fasta</span><span class="s3">,</span>
+	                          <span class="s1">lossy</span><span class="s3">,</span>
+	                          <span class="s1">ltpo</span><span class="s3">=</span><span class="s1">list_tool_precedence_order</span><span class="s3">,</span>
+	                          <span class="s1">lacronyms</span><span class="s3">=</span><span class="s1">lacronyms</span><span class="s3">,</span>
+	                          <span class="s1">lprepped_vcf_outfilenames</span><span class="s3">=</span><span class="s1">lprepped_vcf_outfilenames</span><span class="s3">,</span>
+	                          <span class="s1">lbams</span><span class="s3">=</span><span class="s1">lbams</span><span class="s3">,</span>
+	                          <span class="s1">lcontigs</span><span class="s3">=</span><span class="s1">lcontigs</span><span class="s3">,</span>
+	                          <span class="s1">filter_string_for_snpsift</span><span class="s3">=</span><span class="s1">filter_string_for_snpsift</span><span class="s3">,</span>
+	                          <span class="s1">TH_AR</span><span class="s3">=</span><span class="s1">TH_AR</span><span class="s3">,</span>
+	                          <span class="s1">do_venn</span><span class="s3">=</span><span class="s1">do_venn</span><span class="s3">)</span>
+	<span class="s1">json_filename </span><span class="s3">= </span><span class="s4">&quot;vcfMerger.json&quot;</span>
+	<span class="s1">make_json</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">json_filename</span><span class="s3">)</span>
+	<span class="s0">#inFileJson = make_json(data, json_filename)</span>
+	#data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
+
+	## filter the PASS records before preparing the vcf for vcfMerger step
+	<span class="s2">if </span><span class="s1">filter_by_pass</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Performing PASS only filtering for ALL the provided input vcfs ...&quot;</span><span class="s3">)</span>
+		<span class="s1">data </span><span class="s3">= </span><span class="s1">filter_unprepped_vcf</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">path_jar_snpsift</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">))</span>
+
+	<span class="s2">if not </span><span class="s1">skip_prep_vcfs</span><span class="s3">:  </span><span class="s0">## PREP_VCF step Enabled</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;**** prep vcf steps section ***&quot;</span><span class="s3">.</span><span class="s1">upper</span><span class="s3">())</span>
+		<span class="s1">parse_json_data_and_run_prep_vcf</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">dryrun</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;**** merge process section  ****&quot;</span><span class="s3">.</span><span class="s1">upper</span><span class="s3">())</span>
+	<span class="s2">else</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;**** SKIPPED prep vcfs step SKIPPED ****&quot;</span><span class="s3">)</span>
+
+	<span class="s0">## FILTERING STEP Enabled for Already PREPPED VCFS (note: Filtering must not be applied on un-prepped vcfs unless user knows what he/she is doing</span>
+	<span class="s2">if </span><span class="s1">filter_string_for_snpsift </span><span class="s2">is not </span><span class="s1">None</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;Performing vcf filtering for ALL the provided prepped vcfs ...&quot;</span><span class="s3">)</span>
+		<span class="s1">data </span><span class="s3">= </span><span class="s1">filter_prepped_vcf</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">path_jar_snpsift</span><span class="s3">)</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">data</span><span class="s3">))</span>
+
+
+	<span class="s2">if not </span><span class="s1">skip_merge</span><span class="s3">:  </span><span class="s0">## MERGING step Enabled</span>
+		<span class="s1">merging_prepped_vcfs</span><span class="s3">(</span><span class="s1">data</span><span class="s3">, </span><span class="s1">merged_vcf_outfilename</span><span class="s3">, </span><span class="s1">delim</span><span class="s3">, </span><span class="s1">lossy</span><span class="s3">, </span><span class="s1">dryrun</span><span class="s3">, </span><span class="s1">do_venn</span><span class="s3">, </span><span class="s1">lbeds</span><span class="s3">, </span><span class="s1">skip_prep_vcfs</span><span class="s3">)</span>
+	<span class="s2">else</span><span class="s3">:</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;**** SKIPPED merge step SKIPPED ****&quot;</span><span class="s3">)</span>
+
+	<span class="s0">## MESSAGES END of WORK</span>
+	<span class="s2">if not </span><span class="s1">skip_prep_vcfs </span><span class="s2">and not </span><span class="s1">skip_merge</span><span class="s3">: </span><span class="s0">## we perform the ALL in one [ PREP_VCF + MERGE ]</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;prep and merge vcfs Elapsed time in seconds:  {}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">int</span><span class="s3">(</span><span class="s1">round</span><span class="s3">((</span><span class="s1">time</span><span class="s3">.</span><span class="s1">time</span><span class="s3">() - </span><span class="s1">start_time</span><span class="s3">))))))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;prep and merge vcfs completed successfully&quot;</span><span class="s3">)</span>
+	<span class="s2">elif </span><span class="s1">skip_prep_vcfs</span><span class="s3">:    </span><span class="s0">## Here we only performed MERGING</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;merge vcfs Elapsed time in seconds:  {}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">int</span><span class="s3">(</span><span class="s1">round</span><span class="s3">((</span><span class="s1">time</span><span class="s3">.</span><span class="s1">time</span><span class="s3">() - </span><span class="s1">start_time</span><span class="s3">))))))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;merge vcfs completed successfully&quot;</span><span class="s3">)</span>
+	<span class="s2">elif </span><span class="s1">skip_merge</span><span class="s3">:    </span><span class="s0">## here we only performed PREP_VCF</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;prep Elapsed time in seconds:  {}&quot;</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">int</span><span class="s3">(</span><span class="s1">round</span><span class="s3">((</span><span class="s1">time</span><span class="s3">.</span><span class="s1">time</span><span class="s3">() - </span><span class="s1">start_time</span><span class="s3">))))))</span>
+		<span class="s1">log</span><span class="s3">.</span><span class="s1">info</span><span class="s3">(</span><span class="s4">&quot;prep vcfs completed successfully&quot;</span><span class="s3">)</span>
+
+<span class="s2">def </span><span class="s1">make_parser_args</span><span class="s3">():</span>
+	<span class="s1">parser </span><span class="s3">= </span><span class="s1">argparse</span><span class="s3">.</span><span class="s1">ArgumentParser</span><span class="s3">(</span><span class="s1">description</span><span class="s3">=</span><span class="s4">'Processing options ...'</span><span class="s3">)</span>
+	<span class="s1">parser</span><span class="s3">.</span><span class="s1">_action_groups</span><span class="s3">.</span><span class="s1">pop</span><span class="s3">()</span>
+	<span class="s1">required </span><span class="s3">= </span><span class="s1">parser</span><span class="s3">.</span><span class="s1">add_argument_group</span><span class="s3">(</span><span class="s4">'required arguments'</span><span class="s3">)</span>
+	<span class="s1">optional </span><span class="s3">= </span><span class="s1">parser</span><span class="s3">.</span><span class="s1">add_argument_group</span><span class="s3">(</span><span class="s4">'optional arguments'</span><span class="s3">)</span>
+	<span class="s1">isRequired </span><span class="s3">= </span><span class="s1">True</span>
+
+
+	required<span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--vcfs'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">isRequired</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'List of vcfs file delimited by DELIM character; default DELIM is &quot;|&quot; (piped character) ; if needed re-assign DELIM '</span>
+	                           'using --delim option'<span class="s3">)</span>
+	<span class="s1">required</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--toolnames'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">isRequired</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'List of vcfs file delimited by DELIM character; default DELIM is pipe unless --delim '</span>
+	                           'option is used using --delim option'<span class="s3">)</span>
+	<span class="s1">required</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'-g'</span><span class="s3">,</span><span class="s4">'--refgenome'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">isRequired</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'reference genome used with bcftools norm ; must match reference used for alignment'</span><span class="s3">)</span>
+
+	<span class="s1">required</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--normal-sname'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">isRequired</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'expected name of normal sample in vcf file'</span><span class="s3">)</span>
+
+	<span class="s1">required</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--tumor-sname'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">isRequired</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'expected name of tumor sample in vcf file'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--prep-outfilenames'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'delim-separated names to the tool-specific prepared vcf files'</span><span class="s3">)</span>
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'-c'</span><span class="s3">, </span><span class="s4">'--precedence'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">' sorted delim-separated list of the toolnames as listed in --toolnames ; '</span>
+	                           'This list stipulates an order of precedence for the tools different from the '
+	                           'default order given by the --toolnames list'<span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--bams'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'List of bams necessary for capturing contigs if not present in input vcf; otherwise put empty_string as value for each tool '</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--contigs-file-for-vcf-header'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'List of contigs necessary for capturing adding them to tool vcf header if needed; otherwise put empty_string as value for each tool  ;do not provide if bam file is given instead '</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'-a'</span><span class="s3">, </span><span class="s4">'--toolacronyms'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs '</span><span class="s3">)</span>
+
+	<span class="s1">required</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'-o'</span><span class="s3">, </span><span class="s4">'--merged-vcf-outfilename'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">isRequired</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'outfilename for the merge vcf (can be relative or full path)'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--delim'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'delimiter which will be use to create the arguments value for the vcfMerger2.0 tool ; default is &quot;|&quot; (a.k.a pipe character)'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--threshold-AR'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'AlleRatio threshold value to assign genotype; 0/1 if less than threshold, 1/1 if equal or above threshold; default is 0.90 ; range ]0,1] '</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--lossy'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'This will create a lossy merged vcf by only keeping the information from the tool with first hand precedence'</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s4">'store_true'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--skip-prep-vcfs'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s4">'store_true'</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">' skip the step for preparing vcfs up to specs and only run the merge step; implies all prep-vcfs are ready already ; same options and inputs required as if prep step was run '</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--filter-by-pass'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s4">'store_true'</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'enable vcf filtering of PASS variant using snpSift tool; String to snpSift hardcoded as (FILTER == &quot;PASS&quot;) '</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--filter'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'enable vcf filtering using snpSift tool; A string argument is passed to this filter option; </span><span class="s6">\ 
+<a name="l78"><span class="ln">78   </span></a>	                      </span><span class="s4">This string MUST be formatted as if you were using it for snpSift, i.e. we used &quot;as_is&quot; the string provided; </span><span class="s6">\ 
+<a name="l79"><span class="ln">79   </span></a>	                      </span><span class="s4">Therefore a valid format is mandatory; Check snpSift manual ; IMPORTANT NOTE: the filtering MUST use FLAG and TAGs </span><span class="s6">\ 
+<a name="l80"><span class="ln">80   </span></a>	                      </span><span class="s4">that are COMMON to ALL the tools involved ; The Prepped vcfs have some common flags in the GENOTYPE fields (so far GT, DP, AR, AD), </span><span class="s6">\ 
+<a name="l81"><span class="ln">81   </span></a>	                      </span><span class="s4">and the CC flag is common to ALL records. The filtering takes place after the prep_vcf step and before merging the vcfs; Example of String: </span><span class="s6">\ 
+<a name="l82"><span class="ln">82   </span></a>	                      \&quot;</span><span class="s4">( GEN[TUMOR].AR &gt;= 0.10 ) &amp; ( GEN[NORMAL].AR &lt;= 0.02 ) &amp; ( CC &gt;= 2 ) &amp; ( GEN[TUMOR].DP &gt;= 10 &amp; GEN[NORMAL].DP&gt;=10 )</span><span class="s6">\&quot;</span><span class="s4">, where NORMAL or TUMOR can be replaced with appropriate indices or other given names'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--path-jar-snpsift'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'Provide full Path of the snpSift.jar you want to use for filtering the vcf before merging them'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--skip-merge'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s4">'store_true'</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'enabling this flag prevents doing the merging step [useful if only the prep step needs to be done ]'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--beds'</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'list of bed files to be used to make Venns or Upset plots; requires to enable --do-venn as well to validate making Venn/upset plots ; list MUST be delimited by DELIM character (--delim or default delim)'</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s1">UniqueStore</span><span class="s3">)</span>
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'--do-venn'</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">'using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames '</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s4">'store_true'</span><span class="s3">)</span>
+
+	<span class="s1">optional</span><span class="s3">.</span><span class="s1">add_argument</span><span class="s3">(</span><span class="s4">'-n'</span><span class="s3">, </span><span class="s4">'--dry-run'</span><span class="s3">,</span>
+	                      <span class="s1">required</span><span class="s3">=</span><span class="s1">False</span><span class="s3">,</span>
+	                      <span class="s1">action</span><span class="s3">=</span><span class="s4">'store_true'</span><span class="s3">,</span>
+	                      <span class="s1">help</span><span class="s3">=</span><span class="s4">' perform a dry run to just see the commands lines that will be run behind the scenes '</span><span class="s3">)</span>
+
+	<span class="s2">print</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">parser</span><span class="s3">.</span><span class="s1">prog</span><span class="s3">) + </span><span class="s4">&quot;   &quot; </span><span class="s3">+ </span><span class="s1">str</span><span class="s3">(</span><span class="s1">parser</span><span class="s3">.</span><span class="s1">description</span><span class="s3">))</span>
+	<span class="s2">return </span><span class="s1">parser</span>
+
+<span class="s2">def </span><span class="s1">check_if_executable_in_path</span><span class="s3">(</span><span class="s1">list_executables</span><span class="s3">):</span>
+
+	<span class="s2">for </span><span class="s1">executable </span><span class="s2">in </span><span class="s1">list_executables</span><span class="s3">:</span>
+		<span class="s2">if </span><span class="s1">shutil</span><span class="s3">.</span><span class="s1">which</span><span class="s3">(</span><span class="s1">executable</span><span class="s3">) </span><span class="s2">is </span><span class="s1">None</span><span class="s3">:</span>
+			<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">executable</span><span class="s3">) + </span><span class="s4">&quot;  NOT IN PATH ; Aborting;&quot;</span><span class="s3">)</span>
+
+<span class="s2">if </span><span class="s1">__name__ </span><span class="s3">== </span><span class="s4">'__main__'</span><span class="s3">:</span>
+
+	<span class="s1">list_executables </span><span class="s3">= [</span><span class="s4">'bedtools'</span><span class="s3">, </span><span class="s4">'samtools'</span><span class="s3">, </span><span class="s4">'Rscript'</span><span class="s3">, </span><span class="s4">'python3'</span><span class="s3">, </span><span class="s4">'intervene'</span><span class="s3">]</span>
+	<span class="s1">check_if_executable_in_path</span><span class="s3">(</span><span class="s1">list_executables</span><span class="s3">)</span>
+
+	<span class="s0">##TODO check if ALL intended python packages are present in python3</span>
+
+	# capture time for calculating vcfMerger's runtime
+	<span class="s1">start_time </span><span class="s3">= </span><span class="s1">time</span><span class="s3">.</span><span class="s1">time</span><span class="s3">()</span>
+	<span class="s0"># capture commandline for adding it to vcf header</span>
+	<span class="s1">cmdline </span><span class="s3">= </span><span class="s4">' '</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">sys</span><span class="s3">.</span><span class="s1">argv</span><span class="s3">)</span>
+	<span class="s1">parser </span><span class="s3">= </span><span class="s1">make_parser_args</span><span class="s3">()</span>
+	<span class="s1">args </span><span class="s3">= </span><span class="s1">vars</span><span class="s3">(</span><span class="s1">parser</span><span class="s3">.</span><span class="s1">parse_args</span><span class="s3">())  </span><span class="s0"># vars() function returns a dictionary of key-value arguments</span>
+	<span class="s2">print</span><span class="s3">(</span><span class="s1">str</span><span class="s3">(</span><span class="s1">args</span><span class="s3">))</span>
+	<span class="s1">main</span><span class="s3">(</span><span class="s1">args</span><span class="s3">, </span><span class="s1">cmdline</span><span class="s3">)</span>
+	<span class="s1">sys</span><span class="s3">.</span><span class="s1">exit</span><span class="s3">()</span>
+</pre>
+</body>
+</html>
