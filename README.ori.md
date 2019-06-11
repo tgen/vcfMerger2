@@ -414,3 +414,5 @@ vcfMerger2.py
 
 
 
+
+After installing, you may delete the test_data directory unless you want to run the demo script. 
