@@ -9,7 +9,9 @@ vcfMerger2 is a tool merger for 2 to N somatic variants vcf files.
 #### What is vcfMerger2?
 This tool allows merging from 2 to N somatic vcfs obtained after running different variant callers using the same bam file(s). 
 
-**vcfMerger2** will generate one vcf. 
+**vcfMerger2** will generate one vcf.   
+
+![flowchart](https://github.com/tgen/vcfMerger2/blob/master/images/vcfMerger2_Flowchart_Core_Functionality.rawVCF.png) 
 
 #### How vcfMerger2 operates?
 vcfMerger2 takes `RAW` VCFs as inputs and outputs a Merged VCF. [click here for the RAW VCF Definition] 
