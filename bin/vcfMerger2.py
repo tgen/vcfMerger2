@@ -154,7 +154,8 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
                        ref_genome_fasta, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
-                       TH_AR=0.9, do_venn=False, skip_prep_vcfs=False, dirout=None, delete_temps=False):
+                       TH_AR=0.9, do_venn=False, venn_title="", skip_prep_vcfs=False,
+                       dirout=None, delete_temps=False):
 	# TODO : Check if tool precedence is different from order of toolnames
 	# if different, reorder the list;
 	# otherwise, currently the order of precedence is the same as the toolnames given list
@@ -229,8 +230,9 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 
 		data[ltoolnames[tool_idx]]['threshold_AR'] = TH_AR
 		data[ltoolnames[tool_idx]]['do_venn'] = do_venn
-		data[ltoolnames[tool_idx]]['delete_temps'] = delete_temps
 
+		data[ltoolnames[tool_idx]]['venn_title'] = venn_title
+		data[ltoolnames[tool_idx]]['delete_temps'] = delete_temps
 	return data
 
 def filter_unprepped_vcf(data, path_jar_snpsift):
@@ -262,7 +264,6 @@ def filter_unprepped_vcf(data, path_jar_snpsift):
 		new_vcf_name = os.path.join(dir_temp, os.path.basename(os.path.splitext(vcf)[0] + ".pass.vcf"))
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['vcf'] = new_vcf_name
-
 	return data
 
 def filter_prepped_vcf(data, path_jar_snpsift):
@@ -615,7 +616,6 @@ def subprocess_cmd(command):
 		log.error("ERROR: subprocess command for command <<\"{}\">> FAILED".format(command))
 		exit(ev)
 
-
 def prepare_bed_for_venn(vcf, dirout):
 	'''
 	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
@@ -681,6 +681,10 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		my_command = my_command + " --delete-temps "
 
 	if do_venn:
+
+		if data[tool]['venn_title'] is not None or data[tool]['venn_title'] != "":
+			my_command = my_command + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
+
 		for tool in data.keys():
 			if not skip_prep_vcfs:
 				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
@@ -743,7 +747,6 @@ def check_path_to_vcfs(lvcfs):
 			break  # Iterator exhausted: stop the loop
 		else:
 			log.info("VCF found: " + str(vcf))
-
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
@@ -990,6 +993,12 @@ def main(args, cmdline):
 		list_executables = ['Rscript', 'intervene']
 		check_if_executable_in_path(list_executables)
 
+
+	venn_title = ""
+	if args["venn_title"]:
+		venn_title = args['venn_title']
+		log.info("venn title will be: "+venn_title)
+    
 	dirout = os.curdir
 	if args["dir_out"]:
 		dirout = args["dir_out"]
@@ -1038,6 +1047,7 @@ def main(args, cmdline):
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
 	                          TH_AR=TH_AR,
 	                          do_venn=do_venn,
+	                          venn_title=venn_title,
 	                          skip_prep_vcfs=skip_prep_vcfs,
 	                          dirout=dirout,
 	                          delete_temps=delete_temps)
@@ -1249,6 +1259,12 @@ def make_parser_args():
 	optional.add_argument('--do-venn',
 	                      help='using the bed files listed in --beds option, Venns or Upset plot will be created ; need to match the number of tools listed in --toolnames ',
 	                      action='store_true')
+
+	optional.add_argument('--venn-title',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help="Default is empty string")
+
 
 	optional.add_argument('-d','--dir-out', '--dir-temp',
 	                      help=' direcgtory where the outputs of vcfMerger2 will be written ',

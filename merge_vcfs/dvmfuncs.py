@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ### vcfMerger2
 ###
 ### MIT License
@@ -642,16 +644,19 @@ def get_colors_for_venns(number):
 
 
 
-def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", saveOverlapsBool=True, upsetBool=False, dirout=None):
-	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True, upsetBool=False, dirout=None):
+
 	names = ','.join([name for name in ltoolnames])
+	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
+
 	numberOfTools = len(ltoolnames)
 	if len(lbeds) != numberOfTools:
 		log.info("WARNING: Number of Tools and number of BED files do NOT match; we skip the creation of Venn")
 		return 0
 	type = "genomic"
 	colors = list(get_colors_for_venns(numberOfTools))
-	title = "\"Venn using " + str(numberOfTools) + " variant callers  [ " + variantType + "]\""
+
+	title = venn_title + " [ " + variantType + "]\""
 	figtype = "png"
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools

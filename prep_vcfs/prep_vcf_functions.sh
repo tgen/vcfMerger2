@@ -1,8 +1,35 @@
 #!/usr/bin/env bash
+### vcfMerger2
+###
+### MIT License
+###
+### Copyright (c) 2018 Translational Genomics Research Institute
+###
+### Permission is hereby granted, free of charge, to any person obtaining a copy
+### of this software and associated documentation files (the "Software"), to deal
+### in the Software without restriction, including without limitation the rights
+### to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+### copies of the Software, and to permit persons to whom the Software is
+### furnished to do so, subject to the following conditions:
+###
+### The above copyright notice and this permission notice shall be included in all
+### copies or substantial portions of the Software.
+###
+### THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+### IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+### FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+### AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+### LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+### SOFTWARE.
+###
+### Major Contributors: Christophe Legendre 
+### Minor Contributors:
+
 
 function usage(){
 	echo -e "\nUSAGE:"
-	echo -e "`basename $0` \\
+	echo -e "`basename $(readlink -f $0)` \\
 -d|--dir-work    	DIR_WORK directory where outputs will be written (needs to exist))  \\
 -g|--ref-genome   	REFERENCE GENOME FASTA FILE  [Required] (use for vcf normalization) \\
 -t|--toolname		Provide the toolname associated to the input vcf [REQUIRED]; see valid toolnames in prep_vcf_defaults.ini file, or use --list-valid-toolnames in in-line command \\
@@ -155,6 +182,7 @@ function check_inputs(){
 	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
 	if [[ ${TUMOR_SNAME} == ""  ]] ; then echo -e "ERROR: TUMOR Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
+	if [[ ${VCF_FINAL_USER_GIVEN_NAME} == ""  ]] ; then echo -e "ERROR: VCF OUT FILENAME MUST be provided ; Missing Values Found ; Check your inputs; use -o|--prepped-vcf-outfilename option to fix it;  Aborting." ; fexit ; fi
 
     DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
     if [[ ${DIR_OUTPUT} == "." ]] ;
@@ -182,7 +210,7 @@ function check_inputs(){
 	## check files and folders if exist
 	checkDir ${DIR_OUTPUT}
 	checkFile ${REF_GENOME_FASTA}
-
+	echo -e "End Checking inputs .."
 
 }
 
@@ -235,7 +263,7 @@ function check_and_update_sample_names(){
 
 	local VCF=$1
 	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
-	echo " in ${funcname} :  ${VCF} ${TOOLNAME} ${NORMAL_SNAME} ${TUMOR_SNAME} " 1>&2
+	echo " in ${FUNCNAME} :  ${VCF} ${TOOLNAME} ${NORMAL_SNAME} ${TUMOR_SNAME} " 1>&2
 
 	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
 	COL10_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f10`
@@ -379,7 +407,7 @@ function make_vcf_upto_specs_for_VcfMerger(){
 function normalize_vcf(){
 	## normalize the VCF using bcftools
 	local VCF=$1
-	echo "in ${funcname}:  ${VCF} and refgenome is ${REF_GENOME_FASTA}" 1>&2
+	echo "in ${FUNCNAME}:  ${VCF} and refgenome is ${REF_GENOME_FASTA}" 1>&2
 	echo "## Normalizing vcf ..."  1>&2
 	fout_name=${VCF%.*}.norm.vcf
 	echo -e "## bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}" 1>&2
@@ -537,7 +565,7 @@ function run_tool(){
 
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
 	esac
-	echo "${SCRIPT_FP}" ## we return the full path of the script
+
 }
 
 function main(){
@@ -557,6 +585,12 @@ function main(){
 		fi
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
+		## if vcf is compressed vcf with gz extension, we uncompressed it to process it; then we will delete the file once processed as it may be big
+		if [[ "${VCF##*.}" == "gz" ]] ; 
+		then
+			zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
+			VCF=$( basename -s ".gz" ${VCF})
+		fi
 		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
 		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]

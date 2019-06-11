@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ### vcfMerger2
 ###
 ### MIT License
@@ -157,7 +159,7 @@ def update_header(vcf):
 		 'Type': 'String', 'Number': '.'})
 
 	## Adding AR and new AD to FORMAT field
-	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt tier1 Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT', 'Type': 'Float', 'Number': 'A'})
+	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT', 'Type': 'Float', 'Number': '1'})
 	vcf.add_format_to_header({'ID': 'AD',
 	                          'Description': 'Reformatted Allele Depth according to specs (AD=ADP-ADO,ADO)',
 	                          'Type': 'Integer', 'Number': '2'})
