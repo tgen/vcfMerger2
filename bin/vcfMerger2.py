@@ -1051,7 +1051,7 @@ def main(args, cmdline):
 	                          skip_prep_vcfs=skip_prep_vcfs,
 	                          dirout=dirout,
 	                          delete_temps=delete_temps)
-	json_filename = "vcfMerger2_somatic.json" if not germline else "vcfMerger2_germline.json"
+	json_filename = os.path.join(dirout, "vcfMerger2_somatic.json") if not germline else os.path.join(dirout, "vcfMerger2_germline.json")
 	make_json(data, json_filename)
 	# inFileJson = make_json(data, json_filename)
 	# data = read_json(inFileJson) ## uncomment for debugging if necessary ; data is already created above
