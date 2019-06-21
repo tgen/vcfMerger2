@@ -81,7 +81,7 @@ def is_gzip(path, magic_number=b'\x1f\x8b'):
 			return False
 
 
-def check_if_vcf_is_compressed(lvcfs, user_tempdir):
+def check_if_vcf_is_compressed(lvcfs, dirout):
 	'''check if vcfs are comporessed and if so, uncompress the vcf in current working directory
 	:param lvcfs
 	:return updated lvcfs
@@ -90,7 +90,7 @@ def check_if_vcf_is_compressed(lvcfs, user_tempdir):
 	for i in range(len(lvcfs)):
 		vcf = lvcfs[i]
 		if is_gzip(vcf):
-			uvcf = os.path.basename(os.path.splitext(vcf)[0])
+			uvcf = os.path.join(dirout, os.path.basename(os.path.splitext(vcf)[0]))
 			log.info("vcf file after decompression: " + uvcf)
 			with gzip.open(vcf, 'r') as f_in, open(uvcf, 'wb') as f_out:
 				shutil.copyfileobj(f_in, f_out)
@@ -1029,7 +1029,7 @@ def main(args, cmdline):
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
 	             path_jar_snpsift=path_jar_snpsift)
 
-	lvcfs = check_if_vcf_is_compressed(lvcfs, user_tempdir=dirout)
+	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
 	log.info(str(lvcfs))
 
 	data = make_data_for_json(lvcfs,
