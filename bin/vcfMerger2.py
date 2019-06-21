@@ -81,7 +81,7 @@ def is_gzip(path, magic_number=b'\x1f\x8b'):
 			return False
 
 
-def check_if_vcf_is_compressed(lvcfs):
+def check_if_vcf_is_compressed(lvcfs, user_tempdir):
 	'''check if vcfs are comporessed and if so, uncompress the vcf in current working directory
 	:param lvcfs
 	:return updated lvcfs
@@ -1029,7 +1029,7 @@ def main(args, cmdline):
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
 	             path_jar_snpsift=path_jar_snpsift)
 
-	lvcfs = check_if_vcf_is_compressed(lvcfs)
+	lvcfs = check_if_vcf_is_compressed(lvcfs, user_tempdir=dirout)
 	log.info(str(lvcfs))
 
 	data = make_data_for_json(lvcfs,
