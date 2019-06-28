@@ -1321,9 +1321,9 @@ if __name__ == '__main__':
 	args = vars(parser.parse_args())  # vars() function returns a dictionary of key-value arguments
 	log.info(str(args))
 	log.info(' '.join(["Command Line captured: ", cmdline]))
-	try:
-		main(args, cmdline)
-	except Exception as e:
-		log.error("ERROR: Exception got Raised; Check you inputs and/or options".format(e))
-		sys.exit(1)
+	# try:
+	main(args, cmdline)
+	# except Exception as e:
+	# 	log.error("ERROR: Exception got Raised; Check you inputs and/or options".format(e))
+	# 	sys.exit(1)
 	sys.exit()
