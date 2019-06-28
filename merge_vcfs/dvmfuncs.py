@@ -149,7 +149,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	index_map = {v: i for i, v in enumerate(list_contig_from_fastadict_captured_as_is)}
 
 	try: ## if an error is raised here, it is mostly because the a contig present in the input vcfs is absent from the fasta dictionnary file
-		d3 = sorted(d2.items(), key=lambda pair: index_map[pair[0]])
+		d3 = sorted(dtemp.items(), key=lambda pair: index_map[pair[0]])
 	except KeyError as e:
 		log.error("KeyError: ({0})".format(e))
 		log.info("ERROR raised because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
