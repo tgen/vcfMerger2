@@ -786,7 +786,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
-	if fastaDicoFile is None:
+	if ref_genome_fasta_dict is None:
 		log.info("ERROR: fasta dictionary file MUST be provided to sort the contigs in the header correctly")
 		sys.exit("ERROR: fasta dico file missing ; use --dict option and provide full path to the  dict file ")
 	## Checking snpsift path to jar
