@@ -33,6 +33,7 @@ import re
 import sys
 import os
 
+from natsort import natsorted
 from myGenotype import Genotype
 
 
@@ -121,7 +122,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			l_contigs.append(contig)
 	l_contigs = set(l_contigs)
 	## adding the contigs to the list of strings called "lh"
-	for contig in sorted(l_contigs):
+	for contig in natsorted(l_contigs):
 		lh.append(contig)
 	## prefixing the header with the toolname, the same way the INFO Fields Flag are prefixed
 	reference=""
