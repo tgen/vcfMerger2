@@ -194,6 +194,7 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		data[ltoolnames[tool_idx]]['vcf'] = lvcfs[
 			tool_idx];  # manages wherever is the vcf (relative of full path to the current directory)
 		data[ltoolnames[tool_idx]]['ref_genome_fasta'] = ref_genome_fasta
+		data[ltoolnames[tool_idx]]['ref_genome_fasta_dict'] = ref_genome_fasta_dict
 
 		if lprepped_vcf_outfilenames is not None:
 			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] =  os.path.sep.join([str(dirout),  str(lprepped_vcf_outfilenames[tool_idx]) ])
@@ -661,6 +662,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		list_precedence_order = data[tool]['tool_precedence_order'] if list_precedence_order != "" else None
 		if list_precedence_order is not None and ( list_precedence_order != "" and len(list_precedence_order) != len(data.keys())):
 			list_precedence_order = ""
+		ref_genome_fasta_dict = data[tool]['ref_genome_fasta_dict']
 
 	log.info(str(list_tools_acronyms))
 	my_command = ' '.join(["python", vcfmerger_tool_path,
@@ -668,6 +670,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	                       "--vcfs", double_quote_str(list_vcfs),
 	                       "-o", merged_vcf_outfilename,
 	                       "-a", double_quote_str(list_tools_acronyms),
+	                       "--dict", ref_genome_fasta_dict,
 	                       "-d", dirout
 	                       ])
 
@@ -751,7 +754,7 @@ def check_path_to_vcfs(lvcfs):
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
-                 path_jar_snpsift=None):
+                 path_jar_snpsift=None, fastaDicoFile=None):
 	"""
 
 	:param lvcfs:
@@ -783,6 +786,9 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
+	if fastaDicoFile is None:
+		log.info("ERROR: fasta dictionary file MUST be provided to sort the contigs in the header correctly")
+		sys.exit("ERROR: fasta dico file missing ; use --dict option and provide full path to the  dict file ")
 	## Checking snpsift path to jar
 	if (filter_by_pass or filter_string_for_snpsift is not None) and path_jar_snpsift is None:
 		log.error("ERROR: You enabled a filter option but did not provide any path to snpSift.jar ; please provide the FULL PATH to SnpSift.jar file; Aborting!")
@@ -883,6 +889,12 @@ def main(args, cmdline):
 		ref_genome_fasta = args["refgenome"]
 		if not os.path.exists(ref_genome_fasta):
 			sys.exit("reference genome {} NOT FOUND; Aborting.".format(ref_genome_fasta))
+
+	ref_genome_fasta_dict = None
+	if args["dict"]:
+		ref_genome_fasta_dict = args["dict"]
+		if not os.path.exists(ref_genome_fasta_dict):
+			sys.exit("dictionnary file of reference genome {} NOT FOUND; Aborting.".format(ref_genome_fasta_dict))
 
 	list_tool_precedence_order = None
 	if args["precedence"]:
@@ -1027,7 +1039,8 @@ def main(args, cmdline):
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
-	             path_jar_snpsift=path_jar_snpsift)
+	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict)
+
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
 	log.info(str(lvcfs))
@@ -1037,6 +1050,7 @@ def main(args, cmdline):
 	                          normal_sname,
 	                          tumor_sname,
 	                          ref_genome_fasta,
+	                          ref_genome_fasta_dict,
 	                          lossy,
 	                          germline_snames=germline_snames,
 	                          ltpo=list_tool_precedence_order,
@@ -1150,6 +1164,11 @@ def make_parser_args():
 	                      required=isRequired,
 	                      action=UniqueStore,
 	                      help='reference genome used with bcftools norm ; must match reference used for alignment')
+
+	required.add_argument('--dict',
+	                      required=isRequired,
+	                      action=UniqueStore,
+	                      help='dictionary file of reference genome; required to get correct order of contig names; this should be a .dict file created by picard or samtools sequence dictionary module')
 
 	required.add_argument('-o', '--merged-vcf-outfilename',
 	                      required=isRequired,
@@ -1302,5 +1321,9 @@ if __name__ == '__main__':
 	args = vars(parser.parse_args())  # vars() function returns a dictionary of key-value arguments
 	log.info(str(args))
 	log.info(' '.join(["Command Line captured: ", cmdline]))
-	main(args, cmdline)
+	try:
+		main(args, cmdline)
+	except Exception as e:
+		log.error("ERROR: Exception got Raised; Check you inputs and/or options".format(e))
+		sys.exit(1)
 	sys.exit()

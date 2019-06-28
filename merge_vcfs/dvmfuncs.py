@@ -32,8 +32,8 @@ import logging as log
 import re
 import sys
 import os
+import csv
 
-from natsort import natsorted
 from myGenotype import Genotype
 
 
@@ -66,6 +66,20 @@ def compareTuples(LoT, msg):
 			sys.exit(2)
 	log.info("Comparison of << " + msg + " >> between VCFs: PASSED")
 
+def get_list_contig_from_fasta_dict_file(dicofilename):
+	'''
+	Extract Conti Names from fasta.dict file and return the list of contigs ordered the same way it is in the fasta.dict file
+	:param dicofilename:
+	:return:  list of contig names
+	'''
+	lcontigs = []
+	with open(dicofilename, newline='') as f:
+		data = csv.reader(f, delimiter='\t')
+		for line in data:
+			if line[0] == '@SQ':
+				lcontigs.append(str(line[1].replace("SN:", "")))
+	return lcontigs
+
 def addHeaderToOutVcf(t_obj, f):
 		log.info("in function")
 
@@ -87,7 +101,7 @@ def prefix_headers_other_information_line_with_toolname(myHeaderString, toolname
 	"""
 	return re.sub(r"^##", ''.join(["##", toolname.upper(), "_"]), str(myHeaderString))
 
-def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific, dico_map_tool_acronym):
+def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific, dico_map_tool_acronym, list_contig_from_fastadict_captured_as_is):
 	'''
 	Manage the Headers from all the input VCFs and recreate a brand new updated Header
 	:param: tuple of vcf2dict objects which containg ALL the information about each input vcfs
@@ -102,7 +116,6 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	## prefixing the INFO IDS with toolname ;
 	## we will also need to add the new header such as the command line that geenrated the out vcf file.
 	## we will need to ad only the FORMAT field from the list of common field found in FORMAT
-
 
 	log.info("creating new header")
 	lh = [] ## list headers
@@ -120,9 +133,35 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		# print("vtdo.contigs is of type : "+str(type(vtdo.contigs)))
 		for contig in vtdo.contigs:
 			l_contigs.append(contig)
+	## removing duplicates with the set function
 	l_contigs = set(l_contigs)
-	## adding the contigs to the list of strings called "lh"
-	for contig in natsorted(l_contigs):
+	## Manipulate l_contigs to have a sortable object by key and values
+	dtemp = {} ## dico with key as contig names and values thetail of the string
+	for item in l_contigs:
+		strip_item = item.replace('##contig=<ID=', '') ## need to strip off the prefix
+		k, v = strip_item.split(',', 1)
+		if k in dtemp:
+			dtemp[k].append(v)
+		else:
+			dtemp[k] = [v]
+
+	## performing a sort of a dictionary with a list of contigs
+	index_map = {v: i for i, v in enumerate(list_contig_from_fastadict_captured_as_is)}
+
+	try: ## if an error is raised here, it is mostly because the a contig present in the input vcfs is absent from the fasta dictionnary file
+		d3 = sorted(d2.items(), key=lambda pair: index_map[pair[0]])
+	except KeyError as e:
+		log.error("KeyError: ({0})".format(e))
+		log.info("ERROR raised because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
+		exit()
+
+	## rebuilding the contigs header lines after the correct sorting
+	nlc = [] ## new list contig
+	for pair in d3:
+		nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
+
+	## adding the contigs to the list of strings called "lh" ; We DO NOT SORT or touch the list of contigs to keep the order defined in the fasta dictionary above
+	for contig in nlc:
 		lh.append(contig)
 	## prefixing the header with the toolname, the same way the INFO Fields Flag are prefixed
 	reference=""

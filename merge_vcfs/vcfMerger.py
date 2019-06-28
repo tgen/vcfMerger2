@@ -82,7 +82,7 @@ class UniqueStore(argparse.Action):
 			parser.error(option_string + " appears several times.")
 		setattr(namespace, self.dest, values)
 
-def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline):
+def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, l_contigs_ref_genome_fasta_dict, cmdline):
 	"""
 	process the merging after having checked all the inputs
 	:param lvcfs: list of vcf tools delimited by the delim value
@@ -301,6 +301,12 @@ def main(args, cmdline):
 				delim))))
 		log.info("delimiter is:\t" + delim)
 
+	ref_genome_fasta_dict = None
+	if args["dict"]:
+		ref_genome_fasta_dict = args["dict"]
+		if not os.path.exists(ref_genome_fasta_dict):
+			sys.exit("dictionnary file of reference genome {} NOT FOUND; Aborting.".format(ref_genome_fasta_dict))
+
 	lvcfs = []
 	if args["vcfs"]:
 		lvcfs = str(args["vcfs"]).split(delim)
@@ -396,9 +402,12 @@ def main(args, cmdline):
 		dico_map_tool_acronym[ltoolnames[tool_idx]] = lacronyms[tool_idx]
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
+	## getting the list of contigs from fasta dictionary
+	l_contigs_ref_genome_fasta_dict = get_list_contig_from_fasta_dict_file(ref_genome_fasta_dict)
+
 	## we do merging before the Venns, as Merging is more important that the venns
 	log.info(" " * 50) ; log.info(" " * 50) ;
-	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, cmdline)
+	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, l_contigs_ref_genome_fasta_dict, cmdline)
 
 	log.info(" " * 50)
 	log.info(" " * 50)
@@ -451,6 +460,10 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help=' sorted delim-separated list of the toolnames defined also with --toolnames ')
+	required.add_argument('--dict',
+	                      required=True,
+	                      action=UniqueStore,
+	                      help='dictionary file of reference genome; required to get correct order of contig names; this should be a .dict file created by picard or samtools sequence dictionary module')
 	optional.add_argument('--delim',
 	                      required=False,
 	                      default="|",
