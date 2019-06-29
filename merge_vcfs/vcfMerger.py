@@ -466,7 +466,7 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help=' sorted delim-separated list of the toolnames defined also with --toolnames ')
-optional.add_argument('--delim',
+	optional.add_argument('--delim',
 	                      required=False,
 	                      default="|",
 	                      help=' sorted delim-separated list of the toolnames defined also with --toolnames ')
