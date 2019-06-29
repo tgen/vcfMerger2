@@ -233,7 +233,8 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 	                                                         cmdline,
 	                                                         vcfMerger_Format_Fields_Specific,
 	                                                         vcfMerger_Info_Fields_Specific,
-	                                                         dico_map_tool_acronym
+	                                                         dico_map_tool_acronym,
+	                                                         l_contigs_ref_genome_fasta_dict
 	                                                         )
 	# 2) we add the modified header lines to the output merger file
 	log.info("adding the header to the out vcf file ...")
