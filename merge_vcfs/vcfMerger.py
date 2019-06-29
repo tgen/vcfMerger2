@@ -403,7 +403,7 @@ def main(args, cmdline):
 	log.info("dico mapping toolnames <--> acronyms: ".format(str(dico_map_tool_acronym)))
 
 	## getting the list of contigs from fasta dictionary
-	l_contigs_ref_genome_fasta_dict = get_list_contig_from_fasta_dict_file(ref_genome_fasta_dict)
+	l_contigs_ref_genome_fasta_dict = dvm.get_list_contig_from_fasta_dict_file(ref_genome_fasta_dict)
 
 	## we do merging before the Venns, as Merging is more important that the venns
 	log.info(" " * 50) ; log.info(" " * 50) ;
