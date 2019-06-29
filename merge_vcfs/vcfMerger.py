@@ -304,7 +304,7 @@ def main(args, cmdline):
 	ref_genome_fasta_dict = None
 	if args["dict"]:
 		ref_genome_fasta_dict = args["dict"]
-		if not os.path.exists(ref_genome_fasta_dict):
+		if not path.exists(ref_genome_fasta_dict):
 			sys.exit("dictionnary file of reference genome {} NOT FOUND; Aborting.".format(ref_genome_fasta_dict))
 
 	lvcfs = []
