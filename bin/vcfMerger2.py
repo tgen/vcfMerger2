@@ -151,7 +151,7 @@ def read_json(f):
 
 
 def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
-                       ref_genome_fasta, lossy, germline_snames=None,
+                       ref_genome_fasta, ref_genome_fasta_dict, lossy, germline_snames=None,
                        ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None,
                        lbams=None, lcontigs=None, filter_string_for_snpsift=None,
                        TH_AR=0.9, do_venn=False, venn_title="", skip_prep_vcfs=False,
@@ -1065,6 +1065,7 @@ def main(args, cmdline):
 	                          skip_prep_vcfs=skip_prep_vcfs,
 	                          dirout=dirout,
 	                          delete_temps=delete_temps)
+
 	json_filename = os.path.join(dirout, "vcfMerger2_somatic.json") if not germline else os.path.join(dirout, "vcfMerger2_germline.json")
 	make_json(data, json_filename)
 	# inFileJson = make_json(data, json_filename)
