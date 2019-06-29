@@ -457,15 +457,16 @@ def make_parser_args():
 	                      required=True,
 	                      action=UniqueStore,
 	                      help='given name to the merge vcf output file')
-	optional.add_argument('-c', '--precedence',
-	                      required=False,
-	                      action=UniqueStore,
-	                      help=' sorted delim-separated list of the toolnames defined also with --toolnames ')
 	required.add_argument('--dict',
 	                      required=True,
 	                      action=UniqueStore,
 	                      help='dictionary file of reference genome; required to get correct order of contig names; this should be a .dict file created by picard or samtools sequence dictionary module')
-	optional.add_argument('--delim',
+
+	optional.add_argument('-c', '--precedence',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help=' sorted delim-separated list of the toolnames defined also with --toolnames ')
+optional.add_argument('--delim',
 	                      required=False,
 	                      default="|",
 	                      help=' sorted delim-separated list of the toolnames defined also with --toolnames ')
