@@ -128,7 +128,7 @@ class vcfToDict:
 		"""
 		log.info("creating variant dictionary for " + self.toolname)
 		for variant in ovcf:
-			self.ds[str(variant.CHROM)+"_"+str(variant.POS)+"_"+str(variant.REF)+"_"+str("".join(x for x in variant.ALT)) ] = [self.toolname, variant ]
+			self.ds[str(variant.CHROM)+"__"+str(variant.POS)+"_"+str(variant.REF)+"_"+str("".join(x for x in variant.ALT)) ] = [self.toolname, variant ]
 		return(self.ds)
 
 	def workflow(self):
