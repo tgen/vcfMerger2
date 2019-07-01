@@ -293,7 +293,7 @@ def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, 
 	for key, value in ordered_list_of_list:
 		sod[key] = value
 
-	return sod
+	return sod.keys()
 
 def isOfTYPE(ref, alt, v):  # we need to elaborate here ALL the possibilities to Define an INDEL, SNV or Complex
 	# Variant ;
