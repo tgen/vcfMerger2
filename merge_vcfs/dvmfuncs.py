@@ -245,54 +245,54 @@ def add_new_header_to_merged_file(f, list_lines_header, header_chrom_line):
 		                    list_lines_header]));  ## header lines already have \n embedded in it so no need for extra
 		outf.write(str(header_chrom_line))
 
-	def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, ordered_l_contigs_ref_genome_fasta_dict):
-		"""
-		takes keys from an ordered dictionary which has our special keys formated as follow CHR__POS_REF_ALT
-		and sort the keys according to the ordered list of contigs given and returns the ordered dictionary;
-		Warning: sorting the contigs and the position in a different way that sorting by natural sort will not be compatible with bcftools sort
-		:param ordered_l_contigs_ref_genome_fasta_dict:
-		:return: ordered dictionary
-		"""
-		dtemp = {}
-		##1) we extract the contigs from the keys
-		for item in dd.keys():  ## we capture the keys from dd dico and slipt the contig names from the pos_ref_alt string using the keyword '__'
-			k, v = item.split('__', 1)
-			if k in dtemp:
-				dtemp[k].append(v)
-			else:
-				dtemp[k] = [v]
-		##2) we sort the contigs using the ordered contig list
-		index_map = {v: i for i, v in enumerate(ordered_l_contigs_ref_genome_fasta_dict)}
-		try:  ## if an error is raised here, it is mostly because the a contig present in the input vcfs is absent from the fasta dictionnary file
-			ordered_list_of_list = sorted(dtemp.items(), key=lambda pair: index_map[pair[0]])
-		except KeyError as e:
-			log.error("KeyError: ({0})".format(e))
-			log.info(
-				"ERROR raised because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
-			exit()
-		##3) we rebuilt the keys from the ordered list of list
-		d4 = []
-		for key, value in ordered_list_of_list:
-			## normally, the list representing the values are ordered in ascending order but if we want them reordered, please uncomment next line
-			## value = natsorted(values)
-			for pos in value:
-				d4.append(str(key) + "__" + str(pos))
+def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, ordered_l_contigs_ref_genome_fasta_dict):
+	"""
+	takes keys from an ordered dictionary which has our special keys formated as follow CHR__POS_REF_ALT
+	and sort the keys according to the ordered list of contigs given and returns the ordered dictionary;
+	Warning: sorting the contigs and the position in a different way that sorting by natural sort will not be compatible with bcftools sort
+	:param ordered_l_contigs_ref_genome_fasta_dict:
+	:return: ordered dictionary
+	"""
+	dtemp = {}
+	##1) we extract the contigs from the keys
+	for item in dd.keys():  ## we capture the keys from dd dico and slipt the contig names from the pos_ref_alt string using the keyword '__'
+		k, v = item.split('__', 1)
+		if k in dtemp:
+			dtemp[k].append(v)
+		else:
+			dtemp[k] = [v]
+	##2) we sort the contigs using the ordered contig list
+	index_map = {v: i for i, v in enumerate(ordered_l_contigs_ref_genome_fasta_dict)}
+	try:  ## if an error is raised here, it is mostly because the a contig present in the input vcfs is absent from the fasta dictionnary file
+		ordered_list_of_list = sorted(dtemp.items(), key=lambda pair: index_map[pair[0]])
+	except KeyError as e:
+		log.error("KeyError: ({0})".format(e))
+		log.info(
+			"ERROR raised because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
+		exit()
+	##3) we rebuilt the keys from the ordered list of list
+	d4 = []
+	for key, value in ordered_list_of_list:
+		## normally, the list representing the values are ordered in ascending order but if we want them reordered, please uncomment next line
+		## value = natsorted(values)
+		for pos in value:
+			d4.append(str(key) + "__" + str(pos))
 
-		##4) again we have an ordered list of string which maps the list of keys found in dd, but probably in a different order
-		index_map = {v: i for i, v in enumerate(d4)}
-		try:  ## if an error is raised here, it is mostly because the a contig present in the input vcfs is absent from the fasta dictionnary file
-			ordered_list_of_list = sorted(dd.items(), key=lambda pair: index_map[pair[0]])
-		except KeyError as e:
-			log.error("KeyError: ({0})".format(e))
-			log.info(
-				"ERROR raised WHY?? because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
-			exit()
-		##5) final rebuilt of the ordered dictionary
-		sod = {}
-		for key, value in ordered_list_of_list:
-			sod[key] = value
+	##4) again we have an ordered list of string which maps the list of keys found in dd, but probably in a different order
+	index_map = {v: i for i, v in enumerate(d4)}
+	try:  ## if an error is raised here, it is mostly because the a contig present in the input vcfs is absent from the fasta dictionnary file
+		ordered_list_of_list = sorted(dd.items(), key=lambda pair: index_map[pair[0]])
+	except KeyError as e:
+		log.error("KeyError: ({0})".format(e))
+		log.info(
+			"ERROR raised WHY?? because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
+		exit()
+	##5) final rebuilt of the ordered dictionary
+	sod = {}
+	for key, value in ordered_list_of_list:
+		sod[key] = value
 
-		return sod
+	return sod
 
 def isOfTYPE(ref, alt, v):  # we need to elaborate here ALL the possibilities to Define an INDEL, SNV or Complex
 	# Variant ;

@@ -252,8 +252,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		if False:  ## if necessary, and requested by users later, we will activate the sorting of teh variants themselves  by contigs order as in fastadict file
 			natural_sorted_keys = natsorted(dd.keys())
 		else:
-			natural_sorted_keys = output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd,
-			                                                                                              l_contigs_ref_genome_fasta_dict)
+			natural_sorted_keys = output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, l_contigs_ref_genome_fasta_dict)
 		# dd.keys --> they are the KEYS that are represented by the PATTERN --> CHROM_POS_REF_ALT
 		# dd.values --> represents the calls and their information from each tool having call the variant at position CHROM_POS
 		# (the number of list in values may go from 1 to len(lvcfs); where len(lvcfs) represents the total number
