@@ -34,6 +34,7 @@ import sys
 import os
 import csv
 
+from natsort import natsorted
 from myGenotype import Genotype
 
 
