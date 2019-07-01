@@ -275,7 +275,7 @@ def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, 
 	d4 = []
 	for key, value in ordered_list_of_list:
 		## normally, the list representing the values are ordered in ascending order but if we want them reordered, please uncomment next line
-		value = natsorted(values)
+		value = natsorted(value)
 		for pos in value:
 			d4.append(str(key) + "__" + str(pos))
 
