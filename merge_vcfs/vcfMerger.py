@@ -249,10 +249,11 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		# sort dico by keys before iterating over it ...  ## normally the Keys are not sorted because we deal with a dictionary which do not keep the order
 
 		# dd = OrderedDict(sorted(dd.items()))
-		if False:  ## if necessary, and requested by users later, we will activate the sorting of teh variants themselves  by contigs order as in fastadict file
-			natural_sorted_keys = natsorted(dd.keys())
-		else:
-			natural_sorted_keys = dvm.output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, l_contigs_ref_genome_fasta_dict)
+		# if flag_natsorted :  ## if necessary, and requested by users later, we will activate the sorting of teh variants themselves  by contigs order as in fastadict file
+		# 	sorted_keys = natsorted(dd.keys())
+		# else:
+		## in this next line, the variants are sorted in the same order the contigs are in the HEADER (the line above aka "sorted_keys = natsorted(dd.keys())" sorts the key in natural order that can be different from contgis order in header.
+		sorted_keys = dvm.output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, l_contigs_ref_genome_fasta_dict)
 		# dd.keys --> they are the KEYS that are represented by the PATTERN --> CHROM_POS_REF_ALT
 		# dd.values --> represents the calls and their information from each tool having call the variant at position CHROM_POS
 		# (the number of list in values may go from 1 to len(lvcfs); where len(lvcfs) represents the total number
@@ -271,7 +272,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		counter = 0
 		# step is ~10% of tot_variants and round to the nearest nth value
 		step = int(round(tot_variants_count / 10, -(len(str(round(tot_variants_count / 10))) - 1)))
-		for K in [k for k in natural_sorted_keys]:  # sub is list__list__o.ovcf_variant ;
+		for K in [k for k in sorted_keys]:  # sub is list__list__o.ovcf_variant ;
 			counter += 1;
 			if counter % step == 0:
 				log.info("processed {} variants ...".format(counter))

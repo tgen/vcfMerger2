@@ -288,11 +288,7 @@ def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, 
 		log.info(
 			"ERROR raised WHY?? because a contig present in the input vcfs is actually absent from the given fasta dictionary file")
 		exit()
-	##5) final rebuilt of the ordered dictionary
-	sod = {}
-	for key, value in ordered_list_of_list:
-		sod[key] = value
-
+	##5) final rebuilt of the ordered list of keys
 	sod = []
 	for key, value in ordered_list_of_list:
 		sod.append(key)
