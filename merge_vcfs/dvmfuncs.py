@@ -252,7 +252,7 @@ def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, 
 	and sort the keys according to the ordered list of contigs given and returns the ordered dictionary;
 	Warning: sorting the contigs and the position in a different way that sorting by natural sort will not be compatible with bcftools sort
 	:param ordered_l_contigs_ref_genome_fasta_dict:
-	:return: ordered dictionary
+	:return: ordered list of dictionary's keys
 	"""
 	dtemp = {}
 	##1) we extract the contigs from the keys
@@ -293,7 +293,11 @@ def output_list_variant_sorted_by_contigs_as_same_order_as_in_fastdict_file(dd, 
 	for key, value in ordered_list_of_list:
 		sod[key] = value
 
-	return sod.keys()
+	sod = []
+	for key, value in ordered_list_of_list:
+		sod.append(key)
+
+	return sod
 
 def isOfTYPE(ref, alt, v):  # we need to elaborate here ALL the possibilities to Define an INDEL, SNV or Complex
 	# Variant ;
