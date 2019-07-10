@@ -24,8 +24,13 @@
 ### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ### SOFTWARE.
 ###
-### Major Contributors: Christophe Legendre'a0
+### Major Contributors: 'Christophe Legendre'
 ### Minor Contributors:
+
+### cyvcf2 is a cython wrapper around htslib built for fast parsing of Variant Call Format (VCF) files.
+### Attributes like variant.gt_ref_depths return a numpy array directly so they are immediately ready for downstream use.
+### note that the array is backed by the underlying C data, so, once variant goes out of scope. The array will contain nonsense.
+### To persist a copy, use: cpy = np.array(variant.gt_ref_depths) instead of just arr = variant.gt_ref_depths.
 
 
 

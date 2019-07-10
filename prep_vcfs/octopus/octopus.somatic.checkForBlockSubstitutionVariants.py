@@ -112,10 +112,10 @@ def parseArgs(scriptname, argv):
 
 def collapse_variants(LOV):
 	'''
-	After going throught several tests, it looks like the variant is the LOV object can be considered as
-	a block-substitution variant, and therefore need to be collpase into one variant; to keep track of which
-	variants record were collapsed we add the INFO field  BLOCSUBSFROM  which gather a comam separated list
-	of CHROM_POS  variant record information found in the original octopus output file.
+	After going through several tests, it looks like the variants in the LOV object can be considered as
+	a block-substitution variant, and therefore need to be collapsed into one line;
+	To keep track of which variants record were collapsed we add the INFO field  BLOCSUBSFROM  which gathers
+	a comma-separated list of CHROM_POS  variant record information found in the original octopus output file.
 	The First record is taken as a template and the ALT is going to be replaced with the concatenated string
 	of all the ALTs in the LOV records
 
