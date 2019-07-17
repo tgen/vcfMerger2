@@ -1217,7 +1217,7 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='List of contigs necessary for capturing adding them to tool vcf header if needed; otherwise put empty_string as value for each tool  ;do not provide if bam file is given instead ')
 
-	optional.add_argument('-a', '--toolacronyms',
+	optional.add_argument('-a', '--toolacronyms', '--acronyms',
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
