@@ -242,9 +242,57 @@ def get_GT_value_from_AR(AR_value):
 
 
 	try:
+		AR_value = float(AR_value)
 		if AR_value < AR_threshold_for_GT:
 			return [2, 4]
 		if AR_value >= AR_threshold_for_GT:
+			return [4, 4]
+	except ValueError:
+		print("ERROR: AR value not a number")
+	except TypeError:
+		print("ERROR: AR value not of type Float")
+
+def get_GT_value_from_AR_for_Normal_Sample(AR_value, AR_threshold_for_GT_for_refref=float(0.200)):
+	'''
+		return the GT value according to AR threshold values
+		This is based off TGen's current thresholds of assigning the genotype
+		1/1 if AR>=0.90 and 0/1 if AR<0.90
+
+		Genotype representation for cyvcf2
+		0 --> Unknown ; 1 --> Unknown_phased
+		2 --> 0     ; 3 --> 0_PHASED_if_secondValue
+		4 --> 1     ; 5 --> 1_PHASED_if_secondValue
+		6 --> 2     ; 7 --> 2_PHASED_if_secondValue
+		[0,0] == ./. ; [1,1] == .|.
+		[1,0] == ./. ; [0,1] == .|.
+		[2,2] == 0/0 ; [2,2] == 0/0
+		[2,3] == 0|0 ; [3,2] == 0/0
+		[2,4] == 0/1 ; [4,2] == 1/0
+		[2,5] == 0|1 ; [5,2] == 1/0
+		[2,6] == 0/2 ; [6,2] == 2/0
+		[3,6] == 0/2 ; [6,3] == 2|0
+		[4,6] == 1/2 ; [6,4] == 2/1
+		[5,6] == 1/2 ; [6,5] == 2|1
+		[9,8] == 3/3 ; [8,9] == 3|3
+
+		[2,2] == 0/0 ; [4,4] == 1/1
+		[3,3] == 0|0 ; [5,5] == 1|1
+		[6,6] == 2/2 ; [7,7] == 2|2
+		[8,8] == 3/3 ; [9,9] == 3|3
+
+		return [int(2),int(4)] ; --> 0/1
+		return [int(4),int(4)] ; --> 1/1
+
+		'''
+	log.debug("AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
+	try:
+		##TODO, adding an option to dynamically assigning it for reference reference/reference in Normal Sample
+		AR_value = float(AR_value)
+		if AR_value < AR_threshold_for_GT_for_refref: ## HARDCODED value
+			return [2, 2]
+		elif AR_value < AR_threshold_for_GT:
+			return [2, 4]
+		elif AR_value >= AR_threshold_for_GT:
 			return [4, 4]
 	except ValueError:
 		print("ERROR: AR value not a number")
@@ -297,6 +345,13 @@ def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 
 	ARs, ADs, GTs = [], [], []
 
+	if column_tumor == column_normal:
+		msg = "value for column_normal and column_tumor in function process_snvs_records are identical; Aborting."
+		log.error(msg)
+		raise ValueError(msg)
+	idxT = 0 if column_tumor == 10 else 1
+	idxN = 0 if column_normal == 10 else 1
+
 	try:
 		## loop through samples to calculate AR for each one
 		for sidx in range(tot_number_samples):
@@ -316,7 +371,14 @@ def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 			log.debug("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
 			ARs.append(AR)
 			ADs.append(AD)
-			GTs.append(get_GT_value_from_AR(AR))
+
+			if sidx == idxN:
+				GTs.append((get_GT_value_from_AR_for_Normal_Sample(AR)))
+			elif sidx == idxT:
+				GTs.append((get_GT_value_from_AR(AR)))
+			else:
+				raise IndexError("Neither 0 or 1 were found as index in range of samples; Aborting")
+
 			log.debug("GT={} ".format(get_GT_value_from_AR(AR)))
 		v.set_format('GT', np.array(GTs))
 		v.set_format('AR', np.array(ARs))
@@ -339,8 +401,12 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 
 	## need to know the column number to be sure that we filter on the correct sample
 	# col_tumor = 11 ; col_normal = 10 or vice-versa ;
-	# idxT = 0 if column_tumor == 10 else 1
-	# idxN = 0 if column_normal == 10 else 1
+	if column_tumor == column_normal:
+		msg = "value for column_normal and column_tumor in function process_snvs_records are identical; Aborting."
+		log.error(msg)
+		raise ValueError(msg)
+	idxT = 0 if column_tumor == 10 else 1
+	idxN = 0 if column_normal == 10 else 1
 
 	try:
 		## get REF and ALT bases ; note: ALT is a list nt a character as multiple ALT can exist
@@ -349,6 +415,7 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 		alt_tag = ''.join([v.ALT[0], "U"])
 		## loop through samples to calculate AR for each one
 		for sidx in range(tot_number_samples):
+
 			refCounts = v.format(ref_tag)[sidx]
 			altCounts = v.format(alt_tag)[sidx]
 			## we only consider tier1, therefore only the index 0 is needed
@@ -364,7 +431,13 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 			ARs.append(AR)
 			AD = (ref_tier1, alt_tier1)
 			ADs.append(AD)
-			GTs.append((get_GT_value_from_AR(AR)))
+
+			if sidx == idxN:
+				GTs.append((get_GT_value_from_AR_for_Normal_Sample(AR)))
+			elif sidx == idxT:
+				GTs.append((get_GT_value_from_AR(AR)))
+			else:
+				raise IndexError("Neither 0 or 1 were found as index in range of samples; Aborting")
 
 
 		v.set_format('GT', np.array(GTs))
