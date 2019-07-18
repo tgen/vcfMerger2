@@ -189,7 +189,7 @@ def update_header(vcf):
 	return vcf
 
 
-def get_GT_value_from_AR(AR_value):
+def get_GT_value_from_AR(AR_value, GT_value):
 	'''
 		return the GT value according to AR threshold values
 		This is based off TGen's current thresholds of assigning the genotype
@@ -223,10 +223,16 @@ def get_GT_value_from_AR(AR_value):
 		'''
 	log.debug("AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
 
+
+
 	try:
 		if AR_value < AR_threshold_for_GT:
+			if "|" in GT_value:
+				return [2, 5]
 			return [2, 4]
 		if AR_value >= AR_threshold_for_GT:
+			if "|" in GT_value:
+				return [5, 5]
 			return [4, 4]
 	except ValueError:
 		print("ERROR: AR value not a number")
@@ -293,7 +299,7 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	## we nee to keep the order of the information based on the index; so the list GTs MUST be ordered;
 	GTs[idxN] = get_GT_value_from_GT_value(GTOs[idxN])  ## we do not modify the GT field for the Normal sample
 	GTs[idxT] = get_GT_value_from_AR(
-		ARs[idxT][0])  ## we do modify the GT field for the Tumor Sample based on defined threshold
+		ARs[idxT][0], GTOs[idxT])  ## we do modify the GT field for the Tumor Sample based on defined threshold
 	v.set_format('GT', np.array(GTs))
 	return v
 
