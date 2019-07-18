@@ -36,10 +36,15 @@ import logging as log
 import warnings
 
 global AR_threshold_for_GT
-AR_threshold_for_GT = 0.90  ## value HARDCODED
+AR_threshold_for_GT = 0.90  ## value HARDCODED but dynamically modify it with --threshold_AR option
 
 
 class Genotype(object):
+    '''
+    # genotypes = [Genotype(li) for li in variant.genotypes ]
+	# print genotypes
+	# which shows: [./., ./., ./., 1/1, 0/0, 0/0, 0/0]
+    '''
     __slots__ = ('alleles', 'phased')
 
     def __init__(self, li):
@@ -48,12 +53,39 @@ class Genotype(object):
 
     def __str__(self):
         sep = "/|"[int(self.phased)]
-        return sep.join("0123."[a] for a in self.alleles)
+        return sep.join("0123456."[a] for a in self.alleles)
     __repr__ = __str__
-	## genotypes = [Genotype(li) for li in variant.genotypes ]
-	## print genotypes
-	## which shows: [./., ./., ./., 1/1, 0/0, 0/0, 0/0]
 
+class GenotypeInv(object):
+
+	def __init__(self, li):
+
+		self.allele1 = li[0]
+		self.phased = bool(0) if li[1] == "/" else bool(1)
+		self.allele2 = li[2]
+		self.GT = []
+
+	def get_gt_numpy_compatible(self):
+		self.GT = [] ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_
+		if self.phased:
+			if self.allele1 != "." :
+				self.GT.append((2*int(self.allele1)) + 3)
+			else:
+				self.GT.append(1)
+			if self.allele2 != ".":
+				self.GT.append((2*int(self.allele2)) + 3)
+			else:
+				self.GT.append(1)
+		else:
+			if self.allele1 != ".":
+				self.GT.append((2*int(self.allele1)) + 2)
+			else:
+				self.GT.append(0)
+			if self.allele2 != ".":
+				self.GT.append((2*int(self.allele2)) + 2)
+			else:
+				self.GT.append(0)
+		return self.GT
 
 
 def usage(scriptname):
@@ -153,7 +185,7 @@ def update_header(vcf):
 	'''
 	## if Adding Fields to INFO field
 	vcf.add_info_to_header(
-		{'ID': 'OMGT', 'Description': ''.join([ 'Original Mutect2 GT fields for each sample before reassigning the GT value based on AR threshold (GT_0/1 < AR_', str(AR_threshold_for_GT) ,
+		{'ID': 'OGT', 'Description': ''.join([ 'Original Mutect2 GT fields for each sample before reassigning the GT value based on AR threshold (GT_0/1 < AR_', str(AR_threshold_for_GT) ,
 		                                       ' and GT_1/1 >= AR_', str(AR_threshold_for_GT),  ' )' ]) , 'Type': 'String', 'Number': '.'})
 
 	## if Adding Fields to FORMAT field
@@ -209,15 +241,77 @@ def get_GT_value_from_AR(AR_value):
 	except TypeError:
 		print("ERROR: AR value not of type Float")
 
+def get_GT_value_from_GT_value(GT_value):
+	'''
+		return the numpy array compatible GT value according to string GT value
+		See also Genotype representation for cyvcf2 in Class Genotype
+	'''
+
+	dico_mapping_GT = {
+		"./.": [0, 0],
+		"0/0": [2, 2],
+		"0/1": [2, 4], "1/0": [4, 2], "1/1": [4, 4],
+		"0/2": [2, 6], "2/0": [6, 2], "2/2": [6, 6],
+		"0/3": [2, 8], "3/0": [8, 2], "3/3": [8, 8],
+		".|.": [1, 1],
+		"0|0": [3, 3],
+		"0|1": [2, 5], "1|0": [4, 3],
+		"0|2": [2, 7], "2|0": [6, 3],
+		"0|3": [2, 9], "3|0": [8, 3], "3|3": [8, 9],
+		"1|1": [4, 5], "1|2": [4, 7], "1|3": [4, 9], "1|4": [4, 11],
+		"2|2": [6, 7], "2|3": [6, 9], "2|4": [6, 11], "2|5": [6, 13],
+
+	}  ## unused value ; kept only for the mapping informatino
+
+	x = GenotypeInv(list(GT_value))
+	try:
+		return x.get_gt_numpy_compatible()
+	except ValueError:
+		print("ERROR: GT value ")
+	except TypeError:
+		print("ERROR: GT value not of right type ")
+	except Exception as e:
+		print("ERROR: Unknown Error ; Check with the Author :-( ; "+str(e))
+
 def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	'''
 	Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
 
 	:param tot_number_samples:
-	:param v:
+	:param v: variant record
 	:param col_tumor:
 	:param col_normal:
-	:return:
+	:return: updated variant record
+	'''
+
+	if tot_number_samples != 2:
+		msg = "Expected 2 Samples in VCF found {}. We are suppose to treat the vcf as a SOMATIC vcf and expect two samples;  Aborting.".format(tot_number_samples)
+		raise Exception(msg)
+	## capturing original GTs and adding them to INFO field
+	v.INFO["OGT"] = ','.join([ str(Genotype(li)) for li in v.genotypes ])
+	## ReAssiging GT with value based on AR thresholds comparison to CONSTANT threshold value
+	GTs = [[0], [0]]  ; # need to init  list as we used index later for the list to replace values
+	GTOs = [ str(Genotype(li)) for li in v.genotypes ]
+	ARs = v.format('AR')
+	idxN = 0 if col_normal == 10 else 1
+	idxT = 1 if col_tumor == 11 else 0
+	## we need to keep the order of the information based on the index; so the list GTs MUST be ordered;
+	GTs[idxN] = get_GT_value_from_GT_value(GTOs[idxN]) ## we do not modify the GT field for the Normal sample
+	GTs[idxT] = get_GT_value_from_AR(ARs[idxT][0]) ## we do modify the GT field for the Tumor Sample based on defined threshold
+	v.set_format('GT', np.array(GTs))
+	log.debug("v after reassigning GT: " + str(v))
+	return v
+
+
+def process_GTs_Deprecated(tot_number_samples, v, col_tumor, col_normal):
+	'''
+	Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
+
+	:param tot_number_samples:
+	:param v: v
+	:param col_tumor:
+	:param col_normal:
+	:return: v
 	'''
 
 	## capturing original GTs and adding them to INFO field
