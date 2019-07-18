@@ -205,7 +205,7 @@ def update_header(vcf):
 
 	return vcf
 
-def get_GT_value_from_AR(AR_value, GT_value):
+def get_GT_value_from_AR(AR_value):
 	'''
 		return the GT value according to AR threshold values
 		This is based off TGen's current thresholds of assigning the genotype
@@ -243,100 +243,13 @@ def get_GT_value_from_AR(AR_value, GT_value):
 
 	try:
 		if AR_value < AR_threshold_for_GT:
-			if "|" in GT_value:
-				return [2, 5]
 			return [2, 4]
 		if AR_value >= AR_threshold_for_GT:
-			if "|" in GT_value:
-				return [5, 5]
 			return [4, 4]
 	except ValueError:
 		print("ERROR: AR value not a number")
 	except TypeError:
 		print("ERROR: AR value not of type Float")
-
-def get_GT_value_from_GT_value(GT_value):
-	'''
-		return the numpy array compatible GT value according to string GT value
-		See also Genotype representation for cyvcf2 in Class Genotype
-	'''
-
-	dico_mapping_GT = {
-		"./.": [0, 0],
-		"0/0": [2, 2],
-		"0/1": [2, 4], "1/0": [4, 2], "1/1": [4, 4],
-		"0/2": [2, 6], "2/0": [6, 2], "2/2": [6, 6],
-		"0/3": [2, 8], "3/0": [8, 2], "3/3": [8, 8],
-		".|.": [1, 1],
-		"0|0": [3, 3],
-		"0|1": [2, 5], "1|0": [4, 3],
-		"0|2": [2, 7], "2|0": [6, 3],
-		"0|3": [2, 9], "3|0": [8, 3], "3|3": [8, 9],
-		"1|1": [4, 5], "1|2": [4, 7], "1|3": [4, 9], "1|4": [4, 11],
-		"2|2": [6, 7], "2|3": [6, 9], "2|4": [6, 11], "2|5": [6, 13],
-
-	}  ## unused value ; kept only for the mapping informatino
-
-	x = GenotypeInv(list(GT_value))
-	try:
-		return x.get_gt_numpy_compatible()
-	except ValueError:
-		print("ERROR: GT value ")
-	except TypeError:
-		print("ERROR: GT value not of right type ")
-	except Exception as e:
-		print("ERROR: Unknown Error ; Check with the Author :-( ; "+str(e))
-
-def process_GTs_strelka2(tot_number_samples, v, col_tumor, col_normal):
-	'''
-	Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
-
-	:param tot_number_samples:
-	:param v: variant record
-	:param col_tumor:
-	:param col_normal:
-	:return: updated variant record
-	'''
-
-	if tot_number_samples != 2:
-		msg = "Expected 2 Samples in VCF found {}. We are suppose to treat the vcf as a SOMATIC vcf and expect two samples;  Aborting.".format(tot_number_samples)
-		raise Exception(msg)
-	## capturing original GTs and adding them to INFO field
-	v.INFO["OGT"] = ','.join([ str(Genotype(li)) for li in v.genotypes ])
-	## ReAssiging GT with value based on AR thresholds comparison to CONSTANT threshold value
-	GTs = [[0], [0]]  ; # need to init  list as we used index later for the list to replace values
-	GTOs = [ str(Genotype(li)) for li in v.genotypes ]
-	ARs = v.format('AR')
-	idxN = 0 if col_normal == 10 else 1
-	idxT = 1 if col_tumor == 11 else 0
-	## we need to keep the order of the information based on the index; so the list GTs MUST be ordered;
-	GTs[idxN] = get_GT_value_from_GT_value(GTOs[idxN]) ## we do not modify the GT field for the Normal sample
-	GTs[idxT] = get_GT_value_from_AR(ARs[idxT][0], GTOs[idxT]) ## we do modify the GT field for the Tumor Sample based on defined threshold
-	v.set_format('GT', np.array(GTs))
-	log.debug("v after reassigning GT: " + str(v))
-	return v
-
-
-def process_GTs_Deprecated(tot_number_samples, v, col_tumor, col_normal):
-	'''
-	Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
-
-	:param tot_number_samples:
-	:param v:
-	:param col_tumor:
-	:param col_normal:
-	:return:
-	'''
-
-	## capturing original GTs and adding them to INFO field
-	v.INFO["OSGT"] = ','.join([ str(Genotype(li)) for li in v.genotypes ])
-	## ReAssiging GT with value based on AR thresholds comparison to CONSTANT threshold value
-	GTs = []
-	ARs = v.format('AR')
-	for sidx in range(tot_number_samples):
-		GTs.append(get_GT_value_from_AR(ARs[sidx][0]))
-	v.set_format('GT', np.array(GTs))
-	return v
 
 def update_flags(tot_number_samples, v, column_tumor, column_normal):
 
@@ -352,142 +265,7 @@ def update_flags(tot_number_samples, v, column_tumor, column_normal):
 	else:
 		return process_snvs_records(tot_number_samples, v, column_tumor, column_normal)
 
-def process_indels_records(tot_number_samples, v, col_tumor, col_normal):
-	'''
-	Calculate the AR for indel in each sample in the variant record v
-	The Total number of Samples in the VCF file is given by the variable tot_number_samples
-	We assume that the number of sample does not vary form one record to another as recommended in VCF specs.
-	Within that function we then can calculate GTs because we have AR available
-	'''
-	'''
-	excerpt from: https://www.biostars.org/p/51965/
-	Per the Strelka paper, tier1 counts are simply more stringent than tier2. I'd recommend using tier1 counts...
-	So, as in a normal VCF, DP would be your total depth across the site. In a normal VCF, the AD tag is a comma-delimited
-	list of REF and ALT counts. There is a caveat mentioned at this link, but a workaround is to use the first entry
-	under TIR as your ALT count, and the remainder in DP as your REF count.
-    '''
-	'''
-	The closest number to what you are looking for is TAR. Strictly this is reads strongly support the reference 
-	allele or an alternate overlapping indel. So TIR/(TIR+TAR) will give you approximately fraction of reads supporting
-	the variant allele among all reads strongly supporting one local haplotype.
-	TAR might not look like the right value in some contexts compared to the way reads appear in IGV because of 
-	local repeat structures.Many reads provide very similar support to two or more alleles even though 
-	they are mapped/appear in IGV in such a way so as to apparently support the reference.
-	'''
-	'''	
-	TGen NOTE: we found out that sometimes DP value is less that TIR value (if 100% alternate indel) or 
-	DP value is less then TAR value when no indels present like in normal sample, or DP value is less
-	than TAR+TIR even though we could expect DP=TAR+TIR+TOR ; this might be due to what was explained in the 
-	BioStar thread that due to error in strelka DP reads count may be less thatn TAR+TIR+TOR ; so calulating the REF 
-	becomes tricky.
-	'''
-
-	ARs, ADs, GTs = [], [], [[0], [0]]
-
-	if tot_number_samples != 2:
-		msg = "Expected 2 Samples in VCF found {}. We are suppose to treat the vcf as a SOMATIC vcf and expect two samples;  Aborting.".format(tot_number_samples)
-		raise Exception(msg)
-	idxN = 0 if col_normal == 10 else 1
-	idxT = 1 if col_tumor == 11 else 0
-	GTOs = [str(Genotype(li)) for li in v.genotypes]
-
-	try:
-		## loop through samples to calculate AR for each one
-		for sidx in range(tot_number_samples):
-			DP = v.format('DP')[sidx][0]
-			TAR= v.format('TAR')[sidx][0] ## we only manage tier1 values
-			TIR = v.format('TIR')[sidx][0]  ## we only manage tier1 values
-			try:
-				log.debug("TIR={}, DP={}, locus {}:{}".format(str(TIR), str(DP),  str(v.CHROM), str(v.POS)))
-				AR = float(TIR/(TAR+TIR)) if TIR>0 else 0
-				#AD = (int(max(DP-TIR, 0)), int(TIR))
-				AD = (int(TAR), int(TIR))
-			except ZeroDivisionError:
-				log.debug("TAR= {}, TIR={}, DP={}, AR={} ; locus {}:{}".format(str(TAR), str(TIR),str(DP),str(AR),str(v.CHROM),str(v.POS)))
-				log.debug("You can't divide by zero!")
-				AR = float(0.0)  ## so we make it zero manually
-
-			log.debug("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
-			ARs.append(AR)
-			ADs.append(AD)
-			if sidx == idxT:
-				GTs[idxT] = get_GT_value_from_AR(AR, GTOs[sidx])
-			elif sidx == idxN:
-				GTs[idxN] = get_GT_value_from_GT_value(GTOs[sidx])
-			else:
-				raise IndexError("Index out of Range for capturing the GTs of the variant "+str(v))
-			log.debug("GT={} ".format(get_GT_value_from_AR(AR)))
-		v.set_format('GT', np.array(GTs))
-		v.set_format('AR', np.array(ARs))
-		v.set_format('AD', np.array(ADs))
-
-	except Exception as e:
-		log.error("record raising ERROR: {}".format(str(v)))
-		raise(e)
-	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
-	return v
-
-def process_snvs_records(tot_number_samples, v, col_tumor, col_normal):
-	'''
-	Calculate the AR for each sample in the variant record v
-	The Total number of Sample in the VCF file is given by the variable tot_number_samples
-	We assume that the number of sample does not vary form one record to another as recommended in VCF specs.
-	Within that function we then can calculate GTs because we have AR available
-	'''
-	ARs, ADs, DPs, GTs = [], [], [], [[0], [0]]
-
-	## need to know the column number to be sure that we filter on the correct sample
-	# col_tumor = 11 ; col_normal = 10 or vice-versa ;
-	# idxT = 0 if column_tumor == 10 else 1
-	# idxN = 0 if column_normal == 10 else 1
-
-	if tot_number_samples != 2:
-		msg = "Expected 2 Samples in VCF found {}. We are suppose to treat the vcf as a SOMATIC vcf and expect two samples;  Aborting.".format(tot_number_samples)
-		raise Exception(msg)
-	idxN = 0 if col_normal == 10 else 1
-	idxT = 1 if col_tumor == 11 else 0
-	GTOs = [str(Genotype(li)) for li in v.genotypes]
-
-	try:
-		## get REF and ALT bases ; note: ALT is a list nt a character as multiple ALT can exist
-		## here we only deal with the first ALT ## TODO implement AR for each ALT
-		ref_tag = ''.join([v.REF, "U"])
-		alt_tag = ''.join([v.ALT[0], "U"])
-		## loop through samples to calculate AR for each one
-		for sidx in range(tot_number_samples):
-			refCounts = v.format(ref_tag)[sidx]
-			altCounts = v.format(alt_tag)[sidx]
-			## we only consider tier1, therefore only the index 0 is needed
-			ref_tier1 = int(refCounts[0])
-			alt_tier1 = int(altCounts[0])
-			try:
-				AR = float(alt_tier1/(alt_tier1 + ref_tier1))
-			except ZeroDivisionError:
-				log.debug("refcount {}, altCounts {}, refTier1 {}, altTier1 {}, locus {}:{}".format( refCounts, altCounts, str(ref_tier1), str(alt_tier1), str(v.CHROM), str(v.POS) ) )
-				log.debug("You can't divide by zero!")
-				AR = float(0.0)  ## so we make it zero manually
-
-			ARs.append(AR)
-			AD = (ref_tier1, alt_tier1)
-			ADs.append(AD)
-			if sidx == idxT:
-				GTs[idxT] = get_GT_value_from_AR(AR, GTOs[sidx])
-			elif sidx == idxN:
-				GTs[idxN] = get_GT_value_from_GT_value(GTOs[sidx])
-			else:
-				raise IndexError("Index out of Range for capturing the GTs of the variant "+str(v))
-
-		v.set_format('GT', np.array(GTs))
-		v.set_format('AR', np.array(ARs))
-		v.set_format('AD', np.array(ADs))
-
-	except Exception as e:
-		log.error("record raising ERROR: {}".format(str(v)))
-		raise(e)
-	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
-	return v
-
-def process_indels_records_Deprecated(tot_number_samples, v, column_tumor, column_normal):
+def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 	'''
 	Calculate the AR for indel in each sample in the variant record v
 	The Total number of Samples in the VCF file is given by the variable tot_number_samples
@@ -550,7 +328,7 @@ def process_indels_records_Deprecated(tot_number_samples, v, column_tumor, colum
 	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
 	return v
 
-def process_snvs_records_Deprecated(tot_number_samples, v, column_tumor, column_normal):
+def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 	'''
 	Calculate the AR for each sample in the variant record v
 	The Total number of Sample in the VCF file is given by the variable tot_number_samples
