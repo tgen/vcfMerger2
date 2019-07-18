@@ -352,7 +352,7 @@ def update_flags(tot_number_samples, v, column_tumor, column_normal):
 	else:
 		return process_snvs_records(tot_number_samples, v, column_tumor, column_normal)
 
-def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
+def process_indels_records(tot_number_samples, v, col_tumor, col_normal):
 	'''
 	Calculate the AR for indel in each sample in the variant record v
 	The Total number of Samples in the VCF file is given by the variable tot_number_samples
@@ -427,7 +427,7 @@ def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 	## returning the updated variant; if v is None, this means the variant got filtered out based on rules
 	return v
 
-def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
+def process_snvs_records(tot_number_samples, v, col_tumor, col_normal):
 	'''
 	Calculate the AR for each sample in the variant record v
 	The Total number of Sample in the VCF file is given by the variable tot_number_samples
