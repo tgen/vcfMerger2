@@ -43,14 +43,14 @@ import time
 ## capturing the current path of the current script
 scriptDirectory = os.path.dirname(os.path.realpath(__file__))
 ## as the project should be installed by the user and not modified by the user, we know where the prep_vcf.sh script is
-prep_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
-prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf_functions.sh")
+prep_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_somatic", "prep_vcf.sh")
+prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_somatic", "prep_vcf_functions.sh")
 prep_germline_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline",
                                              "prep_vcf_germline.sh")
 prep_germline_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline",
                                                        "prep_vcf_functions_germline.sh")
 vcfmerger_tool_path = os.path.join(os.path.dirname(scriptDirectory), "merge_vcfs", "vcfMerger.py")
-snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "utils", "filter_vcf.sh")
+snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_somatic", "utils", "filter_vcf.sh")
 
 
 class UniqueStore(argparse.Action):
