@@ -489,7 +489,7 @@ if __name__ == "__main__":
 		log.warning("KEY AR was already found defined in the VCF header; So we do not process the Strelka2's vcf as it seems the vcf had already been processed somehow ...")
 		log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
 		try:
-			copyfile(vcf, newvcf)
+			copyfile(vcf, new_vcf)
 		except IOError as e:
 			msg = "The Target directory may no be writable; Check your access permission."
 			log.error(msg)
