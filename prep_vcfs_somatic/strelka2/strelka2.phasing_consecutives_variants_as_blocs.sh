@@ -90,7 +90,7 @@ check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
 if [[ $(cat ${VCF}.consPos.txt | wc -l ) -lt 2 ]] ;
 then
     echo -e "No Consecutive Position found in VCF; ending Phasing section now"
-    echo-e "renaming input file to match expected outfile from phasing section"
+    echo -e "renaming input file to match expected outfile from phasing section"
     cp ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
     echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
     check_ev $? "cp command"
