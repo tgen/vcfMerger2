@@ -110,6 +110,66 @@ function check_contig_file(){
 	checkFile "${F}" 1>&2
 }
 
+function init_some_vars(){
+	LI="RECAP_INPUTS_USED:"
+	REF_GENOME_FASTA=""
+	TOOLNAME=""
+	VCF_ALL_CALLS=""
+	NORMAL_SNAME=""
+	TUMOR_SNAME=""
+	VCF_INDELS_FILE=""
+	VCF_SNVS_FILE=""
+	BAM_FILE=""
+	NORMALIZE="yes"
+	TARGETS_BED_FILE_FTT=""
+	CONTIGS_FILE=""
+	VCF_FINAL_USER_GIVEN_NAME=""
+	TH_AR=""
+	MAKE_BED_FOR_VENN="no"
+	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
+	export DIR_OUTPUT="."
+}
+
+function getOptions(){
+# options may be followed by one colon to indicate they have a required argument
+# NOTE: long option are not working on MacOS Sierra
+if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn,delete-temps,th-AR:,threshold-AR: -- "$@" `
+	then
+	# something went wrong, getopt will put out an error message for us
+		echo "ERROR in Arguments" ; usage
+		fexit
+	fi
+	eval set -- "$options"
+	while [[ $# -gt 0 ]]
+	do
+		# for options with required arguments, an additional shift is required
+		case "$1" in
+		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nGIVEN_DIR_TEMP==\"${DIR_OUTPUT}\"" ;  shift ;;
+		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
+		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
+		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
+		--vcf-indels)	export VCF_INDELS_FILE="$2"  ; LI="${LI}\nVCF_INDELS_FILE==\"${VCF_INDELS_FILE}\"";  shift ;;
+		--vcf-snvs) export VCF_SNVS_FILE="$2"  ; LI="${LI}\nVCF_SNVS_FILE==\"${VCF_SNVS_FILE}\"";  shift ;;
+		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
+		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
+		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
+		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
+		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
+		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module
+		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
+		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
+		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
+		--th-AR|--threshold-AR) export TH_AR=$2 ; LI="${LI}\nTH_AR==\"${TH_AR}\"" ;;
+		-h|--help) usage ; exit ;;
+		(--) shift ;;
+		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
+		(*) break ; echo "$0: error --- unrecognized option $1" 1>&2 ; usage;  exit 1  ;;
+		esac
+		shift
+	done
+	check_inputs
+}
+
 function check_inputs(){
 
 
@@ -250,65 +310,6 @@ function check_and_update_sample_names(){
 	echo "${VCF_OUT}"
 }
 
-function init_some_vars(){
-	LI="RECAP_INPUTS_USED:"
-	REF_GENOME_FASTA=""
-	TOOLNAME=""
-	VCF_ALL_CALLS=""
-	NORMAL_SNAME=""
-	TUMOR_SNAME=""
-	VCF_INDELS_FILE=""
-	VCF_SNVS_FILE=""
-	BAM_FILE=""
-	NORMALIZE="yes"
-	TARGETS_BED_FILE_FTT=""
-	CONTIGS_FILE=""
-	VCF_FINAL_USER_GIVEN_NAME=""
-	TH_AR=""
-	MAKE_BED_FOR_VENN="no"
-	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
-	export DIR_OUTPUT="."
-}
-
-function getOptions(){
-# options may be followed by one colon to indicate they have a required argument
-# NOTE: long option are not working on MacOS Sierra
-if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn,delete-temps,th-AR:,threshold-AR: -- "$@" `
-	then
-	# something went wrong, getopt will put out an error message for us
-		echo "ERROR in Arguments" ; usage
-		fexit
-	fi
-	eval set -- "$options"
-	while [[ $# -gt 0 ]]
-	do
-		# for options with required arguments, an additional shift is required
-		case "$1" in
-		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nGIVEN_DIR_TEMP==\"${DIR_OUTPUT}\"" ;  shift ;;
-		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
-		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
-		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
-		--vcf-indels)	export VCF_INDELS_FILE="$2"  ; LI="${LI}\nVCF_INDELS_FILE==\"${VCF_INDELS_FILE}\"";  shift ;;
-		--vcf-snvs) export VCF_SNVS_FILE="$2"  ; LI="${LI}\nVCF_SNVS_FILE==\"${VCF_SNVS_FILE}\"";  shift ;;
-		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
-		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
-		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
-		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
-		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module
-		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
-		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
-		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
-		--th-AR|--threshold-AR) export TH_AR=$2 ; LI="${LI}\nTH_AR==\"${TH_AR}\"" ;;
-		-h|--help) usage ; exit ;;
-		(--) shift ;;
-		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
-		(*) break ; echo "$0: error --- unrecognized option $1" 1>&2 ; usage;  exit 1  ;;
-		esac
-		shift
-	done
-	check_inputs
-}
 
 function get_contigs_file(){
 	local TN=$1
