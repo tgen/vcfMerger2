@@ -56,7 +56,7 @@ VCF_ORIGINAL_INPUT=${VCF}
 if [[ "23236669" == $( xxd ${VCF_ORIGINAL_INPUT} | head -n 1 | cut -d" " -f2-3 | sed 's/ \+//' ) ]]
 then
     echo -e "we are dealing with a VCF file ..."
-    if [[ ${VCF_ORIGINAL_INPUT#*.} == "vcf" ]]
+    if [[ ${VCF_ORIGINAL_INPUT##*.} == "vcf" ]]
     then
         bcftools view --threads 2 -O z -o ${VCF_ORIGINAL_INPUT}.gz ${VCF_ORIGINAL_INPUT}
         bcftools index --tbi ${VCF_ORIGINAL_INPUT}.gz
@@ -79,8 +79,9 @@ else
     exit -1
 fi
 
+VCF=${VCF_ORIGINAL_INPUT}
 
-if [[ 1 == 1 ]] ;then 
+if [[ 1 == 1 ]] ;then
 
 echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
 python ${SCRIPT_GET_CONSPOS} ${VCF}
@@ -166,19 +167,22 @@ check_ev $? "bcftools index ${VCF_OUT}"
 
 
 
-echo -e "Concatenating unphased and phased vcfs ... " 
+echo -e "Concatenating unphased and phased vcfs ... "
 VCF_IN_UNPHASED=${VCF_ORIGINAL_INPUT/vcf.gz/TempNoConsPos.vcf.gz}
 VCF_IN_PHASED=${VCF_OUT}
-VCF_OUT=${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
-bcftools concat -a -O v ${VCF_IN_UNPHASED} ${VCF_IN_PHASED} | bcftools sort -O z -T ${PWD} --max-mem 2G  - > ${VCF_OUT}
+## WE OUTPUT An UNcompressed VCF;
+VCF_OUT=${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}
+mycmd="bcftools concat -a -O v ${VCF_IN_UNPHASED} ${VCF_IN_PHASED} | bcftools sort -O v -T ${PWD} --max-mem 2G  - > ${VCF_OUT}"
+echo ${mycmd}
+eval ${mycmd}
 check_ev $? "bcftools concat ${VCF_OUT}"
 
-bcftools index --tbi --threads 2 ${VCF_OUT}
-check_ev $? "bcftools index ${VCF_OUT}"
+## WE OUTPUT An UNcompressed VCF; if we nee to go back to block-compressedwe will need to uncomment the two lines below
+#bcftools index --tbi --threads 2 ${VCF_OUT}
+#check_ev $? "bcftools index ${VCF_OUT}"
 
 touch Completed_Recomposition_Strelka2_for_VCF_$(basename ${VCF_ORIGINAL_INPUT}).flag
 
+echo ${VCF_OUT} 2>&1
+
 exit 0
-
-
-
