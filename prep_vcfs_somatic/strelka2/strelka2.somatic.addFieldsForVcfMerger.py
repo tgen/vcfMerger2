@@ -482,19 +482,22 @@ if __name__ == "__main__":
 	# we first Add/Modify/Update Fields to the Header
 	update_header(vcf)
 	try:
-		vcf.get_header_type('AR')
+		if 'FORMAT=<ID=AR' in vcf.raw_header:
+			log.warning(
+				"KEY AR was already found defined in the VCF header; So we do not process the Strelka2's vcf as it seems the vcf had already been processed somehow ...")
+			log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
+			try:
+				copyfile(vcf_path, new_vcf)
+				exit()
+			except IOError as e:
+				msg = "The Target directory may no be writable; Check your access permission."
+				log.error(msg)
+				print(e)
+		else:
+			log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
 	except Exception:
 		log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
-	else:
-		log.warning("KEY AR was already found defined in the VCF header; So we do not process the Strelka2's vcf as it seems the vcf had already been processed somehow ...")
-		log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
-		try:
-			copyfile(vcf_path, new_vcf)
-			exit()
-		except IOError as e:
-			msg = "The Target directory may no be writable; Check your access permission."
-			log.error(msg)
-			print(e)
+
 
 	# create a new vcf Writer using the updated 'vcf' object above as a template for the header (mostly).
 	w = Writer(new_vcf, vcf)

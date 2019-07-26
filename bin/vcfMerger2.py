@@ -991,7 +991,7 @@ def main(args, cmdline):
 				"Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.")
 		log.info("user given threshold for AR: " + str(TH_AR))
 
-	delete_temps=False
+	delete_temps = False
 	if args['delete_temps']:
 		delete_temps = True
 		log.info("Temps Files from prep_vcf stage will be DELETED")
@@ -1007,7 +1007,6 @@ def main(args, cmdline):
 		log.info("make venn enabled")
 		list_executables = ['Rscript', 'intervene']
 		check_if_executable_in_path(list_executables)
-
 
 	venn_title = ""
 	if args["venn_title"]:
@@ -1043,7 +1042,7 @@ def main(args, cmdline):
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
 	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
-	             skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
+	             skip_merge=False, skip_prep_vcfs=False)
 
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
@@ -1059,7 +1058,7 @@ def main(args, cmdline):
 	                          germline_snames=germline_snames,
 	                          ltpo=list_tool_precedence_order,
 	                          lacronyms=lacronyms,
-	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
+	                          lprepped_vc f_outfilenames=lprepped_vcf_outfilenames,
 	                          lbams=lbams,
 	                          lcontigs=lcontigs,
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
