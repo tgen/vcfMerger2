@@ -123,6 +123,10 @@ function check_inputs(){
 	if [[ ${TUMOR_SNAME} == ""  ]] ; then echo -e "ERROR: TUMOR Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} == ""  ]] ; then echo -e "ERROR: VCF OUT FILENAME MUST be provided ; Missing Values Found ; Check your inputs; use -o|--prepped-vcf-outfilename option to fix it;  Aborting." ; fexit ; fi
+	if [[ $( echo ${TOOLNAME} | tr '[A-Z]' '[a-z]' | sed 's/ \+//g')  =~ "strelka" ]] ;
+	then
+	    if [[ ${BAM} == "" ]] ; then echo -e "ERROR: BAM file MUST be given to PREP the Strelka VCF in order to perform phasing; Aborting." ; fexit ; fi
+	fi
 
     DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
     if [[ ${DIR_OUTPUT} == "." ]] ;

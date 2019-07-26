@@ -52,6 +52,32 @@ if [[ ${CPUS} -ge ${MAX_CPUS_IN_CPUINFO} ]] ; then CPUS=$((${MAX_CPUS_IN_CPUINFO
 
 VCF_ORIGINAL_INPUT=${VCF}
 
+## WARNING: INPUT VCF MUST BE block-compressed vcf with extension .vcf.gz and associated with an index file
+if [[ "23236669" == $( xxd ${VCF_ORIGINAL_INPUT} | head -n 1 | cut -d" " -f2-3 | sed 's/ \+//' ) ]]
+then
+    echo -e "we are dealing with a VCF file ..."
+    if [[ ${VCF_ORIGINAL_INPUT#*.} == "vcf" ]]
+    then
+        bcftools view --threads 2 -O z -o ${VCF_ORIGINAL_INPUT}.gz ${VCF_ORIGINAL_INPUT}
+        bcftools index --tbi ${VCF_ORIGINAL_INPUT}.gz
+        VCF_ORIGINAL_INPUT=${VCF_ORIGINAL_INPUT}.gz
+    else
+        bcftools view --threads 2 -O z -o ${VCF_ORIGINAL_INPUT}.vcf.gz ${VCF_ORIGINAL_INPUT}
+        bcftools index --tbi ${VCF_ORIGINAL_INPUT}.vcf.gz
+        VCF_ORIGINAL_INPUT=${VCF_ORIGINAL_INPUT}.vcf.gz
+    fi
+elif [[ "1f8b0804" != $(xxd ${VCF_ORIGINAL_INPUT} | head -n 1 | cut -d" " -f2-3 | sed 's/ \+//' ) ]]
+then
+    echo -e "we deal with a .vcf.gz file type ...; checking extension "
+    if [[ $(echo -e ${VCF_ORIGINAL_INPUT} | grep -o -m 1 -E ".vcf.gz$") != ".vcf.gz" ]]
+    then
+        mv ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT}.vcf.gz
+        VCF_ORIGINAL_INPUT=${VCF_ORIGINAL_INPUT}.vcf.gz
+    fi
+else
+    echo -e "ERROR: INPUT FILE is NOT a VALID VCF ; Aborting; "
+    exit -1
+fi
 
 
 if [[ 1 == 1 ]] ;then 
@@ -60,6 +86,15 @@ echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
 python ${SCRIPT_GET_CONSPOS} ${VCF}
 check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
 
+if [[ $(cat ${VCF}.consPos.txt | wc -l ) -lt 2 ]] ;
+then
+    echo -e "No Consecutive Position found in VCF; ending Phasing section now"
+    echo-e "renaming input file to match expected outfile from phasing section"
+    cp ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
+    echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
+    check_ev $? "cp command"
+    exit 0
+fi
 
 echo -e "Subset VCF file with only the captured position form step above ..."
 bcftools filter --threads 2 -O z -T ${VCF}.consPos.txt -o ${VCF/vcf.gz/subByConsPos.vcf.gz} ${VCF}
