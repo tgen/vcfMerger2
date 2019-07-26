@@ -754,7 +754,8 @@ def check_path_to_vcfs(lvcfs):
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
-                 path_jar_snpsift=None, ref_genome_fasta_dict=None):
+                 path_jar_snpsift=None, ref_genome_fasta_dict=None,
+                 skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs):
 	"""
 
 	:param lvcfs:
@@ -768,7 +769,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if lvcfs is None:
 		log.info("ERROR: Found list of input vcfs to be prepped or to be merged empty")
 		sys.exit("ERROR: list of vcfs empty")
-	if len(lvcfs) == 1:
+	if len(lvcfs) == 1 and not skip_merge:
 		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
 		sys.exit("ERROR: list of vcfs length of 1 vcf only")
 	if len(lvcfs) != len(ltoolnames):
@@ -1039,7 +1040,8 @@ def main(args, cmdline):
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
-	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict)
+	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
+	             skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
 
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
