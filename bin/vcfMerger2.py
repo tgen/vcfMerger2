@@ -754,7 +754,7 @@ def check_path_to_vcfs(lvcfs):
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
-                 path_jar_snpsift=None, ref_genome_fasta_dict=None, skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs):
+                 path_jar_snpsift=None, ref_genome_fasta_dict=None, skip_merge=False, skip_prep_vcfs=False):
 	"""
 
 	:param lvcfs:
@@ -1042,7 +1042,7 @@ def main(args, cmdline):
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
 	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
-	             skip_merge=False, skip_prep_vcfs=False)
+	             skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
 
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
