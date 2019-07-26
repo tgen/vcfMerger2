@@ -28,9 +28,9 @@
 ### Minor Contributors:
 
 
-import sys, os
+from sys import exit
 from os import path
-from shutils import copyfile
+from shutil import copyfile
 import getopt
 from sys import argv	;# Used to bring in the feature argv, variables or arguments
 from cyvcf2 import VCF, Writer, VCFReader
@@ -130,15 +130,15 @@ def parseArgs(scriptname, argv):
 		log.info(opts)
 	except getopt.GetoptError:
 		usage(scriptname)
-		sys.exit(2)
+		exit(2)
 
 	for opt, arg in opts:
 		if opt == '-h':
 			usage(scriptname)
-			sys.exit()
+			exit()
 		if opt == '--help':
 			usage(scriptname)
-			sys.exit()
+			exit()
 		elif opt in ("", "--pass"):
 			generate_vcf_pass_calls_only = True
 		elif opt in ("", "--threshold_AR"):
@@ -148,7 +148,7 @@ def parseArgs(scriptname, argv):
 				log.info("threshold AR reassigned by user: "+str(AR_threshold_for_GT))
 			except TypeValueError:
 				log.info("ERROR: threshold values MUST be integer or float")
-				sys.exit(2)
+				exit(2)
 		elif opt in ("", "--tumor_column"):
 			column_tumor = int(arg)
 		elif opt in ("", "--normal_column"):
@@ -163,7 +163,7 @@ def parseArgs(scriptname, argv):
 		elif opt in ("-i", "--vcfs"):
 			fvcf = arg
 			if not path.exists(fvcf):
-				sys.exit("ERROR: FNF --> " +fvcf)
+				exit("ERROR: FNF --> " +fvcf)
 
 
 
@@ -172,10 +172,10 @@ def parseArgs(scriptname, argv):
 
 	if column_tumor is None or column_normal is None:
 		usage(scriptname, opts)
-		sys.exit(
+		exit(
 			"Please Provide column number for tumor and normal Samples; should be 10 and 11  - or -  11 and 10 respectively; Aborting. ")
 	if column_normal == column_tumor:
-		sys.exit("ERROR: number for the columns Tumor and Normal MUST be different")
+		exit("ERROR: number for the columns Tumor and Normal MUST be different")
 
 	return(fvcf, new_vcf_name, column_tumor, column_normal, generate_vcf_pass_calls_only)
 
@@ -514,5 +514,5 @@ if __name__ == "__main__":
 	vcf.close()
 	log.info("work completed")
 	log.info('new vcf is << {} >>'.format(new_vcf))
-	sys.exit()
+	exit()
 
