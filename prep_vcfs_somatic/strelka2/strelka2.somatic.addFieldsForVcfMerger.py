@@ -29,6 +29,8 @@
 
 
 import sys, os
+from os import path
+from shutils import copyfile
 import getopt
 from sys import argv	;# Used to bring in the feature argv, variables or arguments
 from cyvcf2 import VCF, Writer, VCFReader
@@ -160,7 +162,7 @@ def parseArgs(scriptname, argv):
 			new_vcf_name = arg.strip()
 		elif opt in ("-i", "--vcfs"):
 			fvcf = arg
-			if not os.path.exists(fvcf):
+			if not path.exists(fvcf):
 				sys.exit("ERROR: FNF --> " +fvcf)
 
 
@@ -409,6 +411,10 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 	idxN = 0 if column_normal == 10 else 1
 
 	try:
+		if len(v.REF) == len(v.ALT) and len(v.REF)>1:
+			## we are dealing with Block substitutio-like type of event; WE therefore just report the variant because
+			## normally Strelka does not output these; This mean that the vcf had already been prepared or modified
+			return v
 		## get REF and ALT bases ; note: ALT is a list nt a character as multiple ALT can exist
 		## here we only deal with the first ALT ## TODO implement AR for each ALT
 		ref_tag = ''.join([v.REF, "U"])
@@ -462,7 +468,7 @@ if __name__ == "__main__":
 	log.info("vcf_path = " + str(vcf_path))
 
 	vcf = VCFReader(vcf_path)
-	filebasename = str(os.path.splitext(vcf_path)[0])
+	filebasename = str(path.splitext(vcf_path)[0])
 	if new_vcf_name is None:
 		new_vcf = '.'.join([filebasename, "uts.vcf"])
 	else:
@@ -475,6 +481,19 @@ if __name__ == "__main__":
 
 	# we first Add/Modify/Update Fields to the Header
 	update_header(vcf)
+	try:
+		vcf.get_header_type('AR')
+	except Exception:
+		log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
+	else:
+		log.warning("KEY AR was already found defined in the VCF header; So we do not process the Strelka2's vcf as it seems the vcf had already been processed somehow ...")
+		log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
+		try:
+			copyfile(vcf, newvcf)
+		except IOError as e:
+			msg = "The Target directory may no be writable; Check your access permission."
+			log.error(msg)
+			print(e)
 
 	# create a new vcf Writer using the updated 'vcf' object above as a template for the header (mostly).
 	w = Writer(new_vcf, vcf)
