@@ -482,11 +482,13 @@ if __name__ == "__main__":
 	# we first Add/Modify/Update Fields to the Header
 	update_header(vcf)
 	try:
+		log.info("'FORMAT=<ID=AR' in vcf.raw_header == "+str('FORMAT=<ID=AR' in vcf.raw_header))
 		if 'FORMAT=<ID=AR' in vcf.raw_header:
 			log.warning(
 				"KEY AR was already found defined in the VCF header; So we do not process the Strelka2's vcf as it seems the vcf had already been processed somehow ...")
 			log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
 			try:
+				log.warning("SRC = {},  and the DST = {} ".format(str(vcf_path),str(vcf)))
 				copyfile(vcf_path, new_vcf)
 				exit()
 			except IOError as e:

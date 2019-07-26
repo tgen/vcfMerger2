@@ -417,7 +417,7 @@ function normalize_vcf(){
 	echo "## Normalizing vcf ..."  1>&2
 	fout_name=${VCF%.*}.norm.vcf
 	echo -e "## bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}" 1>&2
-	bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}
+	bcftools sort -O b ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}
 	check_ev $? "bcftools with ${VCF} " 1>&2
 	VCF=${fout_name}
 	echo "${VCF}"
