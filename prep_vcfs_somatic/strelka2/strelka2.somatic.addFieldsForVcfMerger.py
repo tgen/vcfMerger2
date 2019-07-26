@@ -479,12 +479,7 @@ if __name__ == "__main__":
 		new_vcf_pass_only = ".".join([ new_vcf[:-4], "pass.vcf" ])
 		print("filename for vcf with PASS calls only: " + str(new_vcf_pass_only))
 
-	# we first Add/Modify/Update Fields to the Header
-	update_header(vcf)
 	try:
-		f = open("NONONONONONONONON.txt", 'w')
-		f.write(str(vcf.raw_header))
-		f.close()
 		log.info("'FORMAT=<ID=AR' in vcf.raw_header == "+str('FORMAT=<ID=AR' in vcf.raw_header))
 		if 'FORMAT=<ID=AR' in vcf.raw_header:
 			log.warning(
@@ -503,6 +498,8 @@ if __name__ == "__main__":
 	except Exception:
 		log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
 
+	# we first Add/Modify/Update Fields to the Header
+	update_header(vcf)
 
 	# create a new vcf Writer using the updated 'vcf' object above as a template for the header (mostly).
 	w = Writer(new_vcf, vcf)
