@@ -36,7 +36,7 @@ export TOP_PID=$$
 
 
 ## CONSTANT VARIABLE (modified accordingly)
-DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
+export DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 echo -e "DIR_PATH_TO_SCRIPTS=${DIR_PATH_TO_SCRIPTS}"
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
@@ -67,7 +67,7 @@ type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but
 if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi
 
 # sourcing functions
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcf_functions.sh
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcf_somatic_functions.sh
 ## init variables
 init_some_vars
 ## get options given by user

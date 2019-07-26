@@ -106,7 +106,7 @@ def usage(scriptname):
 	      "in column 11;")
 	print("if not like this, update manually your vcf file to these specs; and the vcf has to be decomposed as "
 	      "well ... " )
-	print("or you may use the script 'prep_vcf.sh' to do it for you\n")
+	print("or you may use the script 'prep_vcf_somatic.sh' to do it for you\n")
 
 	print("List of INDEL Field already in Original Mutect2's VCF FORMAT columns: "
 	      "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")

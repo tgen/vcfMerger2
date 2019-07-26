@@ -71,7 +71,7 @@ This implies:
 
 #### The All-in-One way [ prep + merge ]
 
-If the user does not have the vcfs ready, vcfMerger2 includes a utility called `prep_vcf.sh` that can prepare the vcfs to specs.
+If the user does not have the vcfs ready, vcfMerger2 includes a utility called `prep_vcf_somatic.sh` that can prepare the vcfs to specs.
 vcfMerger2 includes that utility tool and is automatically called unless `--skip-prep-vcfs` option is specified. 
 
 The following example show the minimal command to perform "All-in-One" run
@@ -276,17 +276,17 @@ Users can run these two steps independently if needed, even though this can be a
 
 #### How to _**only**_ prepare the vcf files using vcfMerger2?
 Users can prepare tool-specific vcf by only running the sub-step of vcfMerger2 called `prep_vcf` independently of the `all-in-one` way described above. 
-The script called `prep_vcf.sh` allows you to specifically bring up to vcfMerger2-specs vcfs for the supported tools *(see list of supported tools below)*.
+The script called `prep_vcf_somatic.sh` allows you to specifically bring up to vcfMerger2-specs vcfs for the supported tools *(see list of supported tools below)*.
 This script can be called directly and run independently for each vcf and tool. 
 
 ###### Example_2:  
-`prep_vcf.sh --toolname lancet --vcf ./test_data/raw_tool_vcfs/lancet.raw.vcf -d ./test_data -g  ./ref_genome/grch37.22.fa` 
+`prep_vcf_somatic.sh --toolname lancet --vcf ./test_data/raw_tool_vcfs/lancet.raw.vcf -d ./test_data -g  ./ref_genome/grch37.22.fa` 
 
 ###### Example_3:  
-`prep_vcf.sh --toolname lancet --normal-sname NORMAL --tumor-sname TUMOR --vcf raw_tool_vcfs/lancet.raw.vcf -g ref_genome/grch37.22.fa -o lancet.prepped.vcf --contigs-file ./contigs/contigs/txt`
+`prep_vcf_somatic.sh --toolname lancet --normal-sname NORMAL --tumor-sname TUMOR --vcf raw_tool_vcfs/lancet.raw.vcf -g ref_genome/grch37.22.fa -o lancet.prepped.vcf --contigs-file ./contigs/contigs/txt`
  
 
-_**HINT**_: if you already have the command line from `all-in-one` way style, you just add the option `--skip-merge` to that command and only the `prep` step will be performed for all the given vcfs instead of running one by one the `prep_vcf.sh` script
+_**HINT**_: if you already have the command line from `all-in-one` way style, you just add the option `--skip-merge` to that command and only the `prep` step will be performed for all the given vcfs instead of running one by one the `prep_vcf_somatic.sh` script
 
 
 #### How to **_only_** merge vcfs? 
@@ -356,7 +356,7 @@ vcfMerger2 is under MIT licence.
 
 ## vcfMerger2 and wrapper utilities
 ###### for known variant caller, we provide scripts allowing preparing the tool-specific vcf to specifications for the merger tool
-###### We provide a prep_vcf.sh script that allows to prep vcf independently from the main executable that is vcfMerger2.py located in the bin directory
+###### We provide a prep_vcf_somatic.sh script that allows to prep vcf independently from the main executable that is vcfMerger2.py located in the bin directory
 ###### Furthermore, we also provide a simplified way of filtering input vcf by PASS and to filter prepped vcfs the same way you would using snpSift directly. 
 ![flowchart](/images/vcfMerger2.flowchart.png)
 
