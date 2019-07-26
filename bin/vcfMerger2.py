@@ -1058,7 +1058,7 @@ def main(args, cmdline):
 	                          germline_snames=germline_snames,
 	                          ltpo=list_tool_precedence_order,
 	                          lacronyms=lacronyms,
-	                          lprepped_vc f_outfilenames=lprepped_vcf_outfilenames,
+	                          lprepped_vcf_outfilenames=lprepped_vcf_outfilenames,
 	                          lbams=lbams,
 	                          lcontigs=lcontigs,
 	                          filter_string_for_snpsift=filter_string_for_snpsift,
