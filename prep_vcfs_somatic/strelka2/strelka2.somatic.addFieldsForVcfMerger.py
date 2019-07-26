@@ -482,6 +482,9 @@ if __name__ == "__main__":
 	# we first Add/Modify/Update Fields to the Header
 	update_header(vcf)
 	try:
+		f = open("NONONONONONONONON.txt", 'w')
+		f.write(str(vcf.raw_header))
+		f.close()
 		log.info("'FORMAT=<ID=AR' in vcf.raw_header == "+str('FORMAT=<ID=AR' in vcf.raw_header))
 		if 'FORMAT=<ID=AR' in vcf.raw_header:
 			log.warning(
