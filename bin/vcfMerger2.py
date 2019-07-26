@@ -754,8 +754,7 @@ def check_path_to_vcfs(lvcfs):
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
-                 path_jar_snpsift=None, ref_genome_fasta_dict=None,
-                 skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs):
+                 path_jar_snpsift=None, ref_genome_fasta_dict=None, skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs):
 	"""
 
 	:param lvcfs:
@@ -770,6 +769,9 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		log.info("ERROR: Found list of input vcfs to be prepped or to be merged empty")
 		sys.exit("ERROR: list of vcfs empty")
 	if len(lvcfs) == 1 and not skip_merge:
+		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
+		sys.exit("ERROR: list of vcfs length of 1 vcf only")
+	if len(lvcfs) == 1 and skip_prep_vcfs:
 		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
 		sys.exit("ERROR: list of vcfs length of 1 vcf only")
 	if len(lvcfs) != len(ltoolnames):
