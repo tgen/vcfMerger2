@@ -95,6 +95,7 @@ then
     echo ${mycmd} ; eval ${mycmd}
     check_ev $? "cp command"
     echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
+    bcftools view -O v --threads 2 -o ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
     exit 0
 fi
 
