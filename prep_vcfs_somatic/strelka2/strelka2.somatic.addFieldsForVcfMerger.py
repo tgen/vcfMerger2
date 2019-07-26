@@ -490,6 +490,7 @@ if __name__ == "__main__":
 		log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
 		try:
 			copyfile(vcf_path, new_vcf)
+			exit()
 		except IOError as e:
 			msg = "The Target directory may no be writable; Check your access permission."
 			log.error(msg)
