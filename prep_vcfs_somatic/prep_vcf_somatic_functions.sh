@@ -498,11 +498,11 @@ function final_msg(){
 
 function process_strelka2_vcf(){
 	local VCF=$1
-#	VCF=$( check_and_update_sample_names ${VCF} )
-#	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
-#	VCF=$( normalize_vcf ${VCF})
-#	echo "after normalize ((((((   ${VCF}"
-#	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
+	VCF=$( check_and_update_sample_names ${VCF} )
+	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+	VCF=$( normalize_vcf ${VCF})
+	echo "after normalize ((((((   ${VCF}"
+	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
 	echo "after recomposition ()()()()()()()()() ${VCF}"
 	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
