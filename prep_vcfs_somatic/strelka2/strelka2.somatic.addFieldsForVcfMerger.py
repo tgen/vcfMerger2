@@ -468,6 +468,12 @@ if __name__ == "__main__":
 	log.info("vcf_path = " + str(vcf_path))
 
 	vcf = VCFReader(vcf_path)
+	tot_variants_count = 0
+	for v in vcf:
+		tot_variants_count += 1
+
+
+	vcf = VCFReader(vcf_path) ## as the generator has been consumed above entirely we need to re-generate it
 	filebasename = str(path.splitext(vcf_path)[0])
 	if new_vcf_name is None:
 		new_vcf = '.'.join([filebasename, "uts.vcf"])
@@ -495,8 +501,8 @@ if __name__ == "__main__":
 				print(e)
 		else:
 			log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
-	except Exception:
-		log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
+	except Exception as e:
+		log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ..."+str(e))
 
 	# we first Add/Modify/Update Fields to the Header
 	update_header(vcf)
@@ -507,8 +513,15 @@ if __name__ == "__main__":
 
 	tot_number_samples = len(vcf.samples)
 
+	counter = 0
+	# step is ~10% of tot_variants and round to the nearest nth value
+	step = int(round(tot_variants_count / 10, -(len(str(round(tot_variants_count / 10))) - 1)))
+
 	log.info("looping over records ...")
 	for v in vcf: ## v for variant which represents one "variant record"
+		counter += 1;
+		if counter % step == 0:
+			log.info("processed {} variants ...".format(counter))
 		v = update_flags(tot_number_samples, v, column_tumor, column_normal)
 		if v is not None:
 			w.write_record(v)
