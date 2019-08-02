@@ -33,7 +33,6 @@ import argparse
 import logging as log
 import re
 import time
-from collections import OrderedDict
 from collections import defaultdict
 from os import linesep
 from os import makedirs
