@@ -139,12 +139,26 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	## Manipulate l_contigs to have a sortable object by key and values
 	dtemp = {} ## dico with key as contig names and values thetail of the string
 	for item in l_contigs:
-		strip_item = item.replace('##contig=<ID=', '') ## need to strip off the prefix
+		strip_item = item.replace('##contig=<ID=', '').replace(">", '')   ## need to strip off the prefix and suffix
+		if not "," in strip_item:
+			strip_item = strip_item+","
 		k, v = strip_item.split(',', 1)
+		v = v + ">"
 		if k in dtemp:
 			dtemp[k].append(v)
 		else:
 			dtemp[k] = [v]
+	## The Contigs are not well managed here; Need to Improve ##TODO
+	## Here below we test if the values are more than one (should be one) and contains the keyword "length" as expected ;
+	## If not, we should capture expection ##TODO
+	for k, v in dtemp.items():
+		if len(v)>1:
+			for litem in v:
+				if "length" in litem:
+					newval = [ litem ]
+					break
+			dtemp[k] = newval
+
 
 	## performing a sort of a dictionary with a list of contigs
 	index_map = {v: i for i, v in enumerate(list_contig_from_fastadict_captured_as_is)}
