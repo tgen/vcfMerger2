@@ -77,7 +77,7 @@ class GenotypeInv(object):
 		self.GT = []
 
 	def get_gt_numpy_compatible(self):
-		self.GT = [] ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_
+		self.GT = [] ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_ ; I am probably missing knowledge in some python features behaviour for classes.
 		if self.phased:
 			if self.allele1 != "." :
 				self.GT.append((2*int(self.allele1)) + 3)
@@ -253,9 +253,11 @@ def get_GT_value_from_AR(AR_value, GT_value):
 				return [5, 5]
 			return [4, 4]
 	except ValueError:
-		print("ERROR: AR value not a number")
+		log.error("ERROR: AR value not a number")
+		return "."
 	except TypeError:
-		print("ERROR: AR value not of type Float")
+		log.error("ERROR: AR value not of type Float")
+		return "."
 
 def get_GT_value_from_GT_value(GT_value):
 	'''
@@ -283,11 +285,14 @@ def get_GT_value_from_GT_value(GT_value):
 	try:
 		return x.get_gt_numpy_compatible()
 	except ValueError:
-		print("ERROR: GT value ")
+		log.error("ERROR: GT value ")
+		return "."
 	except TypeError:
-		print("ERROR: GT value not of right type ")
+		log.error("ERROR: GT value not of right type ")
+		return "."
 	except Exception as e:
-		print("ERROR: Unknown Error ; Check with the Author :-( ; "+str(e))
+		log.error("ERROR: Unknown Error ; Check with the Author :-( ; "+str(e))
+		return "."
 
 def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	'''
@@ -313,33 +318,11 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	idxT = 1 if col_tumor == 11 else 0
 	## we need to keep the order of the information based on the index; so the list GTs MUST be ordered;
 	GTs[idxN] = get_GT_value_from_GT_value(GTOs[idxN]) ## we do not modify the GT field for the Normal sample
-	GTs[idxT] = get_GT_value_from_AR(ARs[idxT][0], GTOs[idxT]) ## we do modify the GT field for the Tumor Sample based on defined threshold
+	GTs[idxT] = get_GT_value_from_AR(ARs[idxT], GTOs[idxT]) ## we do modify the GT field for the Tumor Sample based on defined threshold
 	v.set_format('GT', np.array(GTs))
 	log.debug("v after reassigning GT: " + str(v))
 	return v
 
-
-def process_GTs_Deprecated(tot_number_samples, v, col_tumor, col_normal):
-	'''
-	Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
-
-	:param tot_number_samples:
-	:param v:
-	:param col_tumor:
-	:param col_normal:
-	:return:
-	'''
-
-	## capturing original GTs and adding them to INFO field
-	v.INFO["OCGT"] = ','.join([ str(Genotype(li)) for li in v.genotypes ])
-	## ReAssiging GT with value based on AR thresholds comparison to CONSTANT threshold value
-	GTs = []
-	ARs = v.format('AR')
-	for sidx in range(tot_number_samples):
-		GTs.append(get_GT_value_from_AR(ARs[sidx][0]))
-	v.set_format('GT', np.array(GTs))
-	log.debug("v after reassigning GT: "+str(v))
-	return v
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of_fields_to_check):
 	v1 = next(iter(vcf_cyobj))
@@ -367,7 +350,8 @@ def if_dot_assign_negative_value(obj):
 	if obj != ".":
 		return obj
 	else:
-		return -2
+		return 0
+		# return -2
 
 
 def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
@@ -404,11 +388,11 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		AD_normal = int(if_dot_assign_negative_value(AD_normal))
 		ADP_tumor = int(if_dot_assign_negative_value(ADP_tumor))
 		ADP_normal = int(if_dot_assign_negative_value(ADP_normal))
-		ADOs = [AD_tumor,AD_normal] if idxT == 0 else [AD_normal,AD_tumor]
+		ADOs = [AD_normal, AD_tumor] if idxT == 1 else [AD_tumor, AD_normal]
 		log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ")
 		v.set_format('ADO', np.array(ADOs))
 
-		## Calculate AR (allele ration using AD and ADP)
+		## Calculate AR (allele ratio using AD and ADP)
 		try:
 			log.debug("before calcul AR, AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
 			log.debug("before calcul AR, ADP = ---->>    " + str(ADP_normal) + " -----  " + str(ADP_tumor))
@@ -463,8 +447,17 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		# Because Octopus does not provide enough information to calculate AD, we assign default
 		# values of 0,0 ## can be discussed and modify if users think differently
 		dummy_value = int(-2)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
-		AR_tumor = [dummy_value, dummy_value]
-		AR_normal = [dummy_value, dummy_value]
+		dummy_value = int(0)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
+		# AR_tumor = [dummy_value, dummy_value] ; old line, Why did I assign two values to AR where only one was enough???
+		# AR_normal = [dummy_value, dummy_value]
+
+		if 'MAP_VAF' in v.FORMAT:
+			AR_tumor = v.format('MAP_VAF')[idxT]
+			AR_normal = v.format('MAP_VAF')[idxN] if not isnan(v.format('MAP_VAF')[idxN]) else  [ float(0.00) ]
+		else:
+			AR_tumor = [ dummy_value ]
+			AR_normal = [ dummy_value ]
+
 		DP_tumor = v.format('DP')[idxT][0]
 		DP_normal = v.format('DP')[idxN][0]
 		AD_tumor = [dummy_value, dummy_value]
