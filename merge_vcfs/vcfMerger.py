@@ -43,7 +43,7 @@ from sys import exit
 
 import dvmfuncs as dvm
 import vcfToDict
-from natsort import natsorted
+
 
 '''
 ## STEPS so far:

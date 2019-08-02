@@ -34,8 +34,8 @@ import sys
 import os
 import csv
 
-from natsort import natsorted
 from myGenotype import Genotype
+from natsort import natsorted
 
 
 def get_dictOfLoci(vcfToDict_instance):
