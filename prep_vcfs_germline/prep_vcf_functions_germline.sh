@@ -174,7 +174,7 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 	echo -e "## VCF == ${VCF}" 1>&2
 	echo -e "## outVCF == ${fout_name}" 1>&2
 
-	mycmd="python -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --outfilename ${fout_name}"
+	mycmd="python3 -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --outfilename ${fout_name}"
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"

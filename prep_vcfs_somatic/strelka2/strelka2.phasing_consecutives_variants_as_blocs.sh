@@ -9,8 +9,8 @@ CPUS=$4
 set -euo pipefail
 #module add python/3.6.0 samtools/1.9 R/3.4.1 BEDTools/2.26.0
 MAX_CPUS_IN_CPUINFO=$(cat /proc/cpuinfo | grep processor | wc -l)
-PHASER_EXE=/home/clegendre/tools/phASER/v1.1.1/phaser/phaser/phaser.py  ; ## phASER requires python 2.xx  (not 3)
-echo ${PHASER_EXE}
+PHASER_EXE=phaser.py  ; ## phASER requires python2.xx  (not 3)
+echo -e "expected phASER executable: ${PHASER_EXE}"
 DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 SCRIPT_GET_CONSPOS=${DIR_PATH_TO_SCRIPTS}/get_consecutive_list_of_numbers_from_vcfFileInput.py
 SCRIPT_PYTHON_RECOMPOSE_VARIANTS=${DIR_PATH_TO_SCRIPTS}/strelka2.recompose_phased_variants.py
@@ -84,7 +84,7 @@ VCF=${VCF_ORIGINAL_INPUT}
 if [[ 1 == 1 ]] ;then
 
 echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
-python ${SCRIPT_GET_CONSPOS} ${VCF}
+python3 ${SCRIPT_GET_CONSPOS} ${VCF}
 check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
 
 if [[ $(cat ${VCF}.consPos.txt | wc -l ) -lt 2 ]] ;
@@ -126,11 +126,11 @@ VCF_OUT_PHASER=phased_${VCF_IN}
 TEMP_DIR=$(dirname ${VCF_IN} )/temp_phASER
 mkdir -p ${TEMP_DIR}
 
-mycmd="python ${PHASER_EXE} --bam ${TBAM} --sample ${SNAME_T}  --vcf ${VCF_IN}  --o ${VCF_OUT_PHASER}  --mapq 20 --baseq 20 --paired_end 1 --gw_phase_vcf 0  --remove_dups 1 --write_vcf 1  --gw_af_field AR --gw_phase_vcf 2 --temp_dir ${TEMP_DIR} --max_block_size 10 --threads ${CPUS}"  ## HARDCODED value for options here ; NOTE: 10 CPUS is a good trade-off between I/O and CPUS; Too amany cpus leads to too many samtools view which increases I/O and waiting time
+mycmd="python2 ${PHASER_EXE} --bam ${TBAM} --sample ${SNAME_T}  --vcf ${VCF_IN}  --o ${VCF_OUT_PHASER}  --mapq 20 --baseq 20 --paired_end 1 --gw_phase_vcf 0  --remove_dups 1 --write_vcf 1  --gw_af_field AR --gw_phase_vcf 2 --temp_dir ${TEMP_DIR} --max_block_size 10 --threads ${CPUS}"  ## HARDCODED value for options here ; NOTE: 10 CPUS is a good trade-off between I/O and CPUS; Too amany cpus leads to too many samtools view which increases I/O and waiting time
 echo -e "${mycmd}"
 eval ${mycmd} | tee log_for_phASER_$(basename ${VCF_OUT_PHASER} ).log
 check_ev $? "phASER using ${PHASER_EXE} with python-2.7.13"
-module unload python/2.7.13
+#module unload python/2.7.13
 
 
 
@@ -150,8 +150,8 @@ check_ev $? "bcftools index"
 echo -e "Merged as one Block the Consecutive newly-Phased Variants ..."
 VCF_IN=${VCF_OUT} ## can be vcf or block-compressed vcf
 VCF_OUT=${VCF_IN/vcf.gz/blocs.vcf}
-python  ${SCRIPT_PYTHON_RECOMPOSE_VARIANTS} --tumor-col 11 --normal-col 10 -i ${VCF_IN} -o ${VCF_OUT}
-check_ev $? "python strelka2.recompose_phased_variants.py"
+python3  ${SCRIPT_PYTHON_RECOMPOSE_VARIANTS} --tumor-col 11 --normal-col 10 -i ${VCF_IN} -o ${VCF_OUT}
+check_ev $? "python3 strelka2.recompose_phased_variants.py"
 
 
 echo -e "Block Size Distribution in new recomposed variants ..."

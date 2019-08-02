@@ -372,10 +372,10 @@ function look_for_block_substitution_in_octopus(){
 	local VCF=$1
 	echo -e "## look for block substitution in ${TOOLNAME}'s vcf ... and collapse the variants "  1>&2
 	fout_name=${VCF%.*}.blocs.vcf
-	mycmd="python ${PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION} --normal_column 10 --tumor_column 11 -i ${VCF} -o ${fout_name}"
+	mycmd="python3 ${PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION} --normal_column 10 --tumor_column 11 -i ${VCF} -o ${fout_name}"
 	echo ${mycmd} 1>&2 ;
 	eval ${mycmd} 1>&2 ;
-	check_ev $? " python look_for_bloc_substitution_in_${TOOLNAME} " 2>&1
+	check_ev $? " python3 look_for_bloc_substitution_in_${TOOLNAME} " 2>&1
 	VCF=${fout_name}
 	echo ${VCF}
 }
@@ -398,7 +398,7 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	local VCF=$1
 	echo -e "## prep vcf for vcfMerger2 ..." 1>&2
 	fout_name=${VCF%.*}.prep.vcf
-	mycmd="python -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
+	mycmd="python3 -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
@@ -484,7 +484,7 @@ function final_msg(){
 
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
-	    echo -e "preparing input file for intervene python module to make Venns" 1>&2
+	    echo -e "preparing input file for intervene python3 module to make Venns" 1>&2
 	    prepare_input_file_for_Venn "${VCF_FINAL}" "${DIR_OUTPUT}"
 	    prepare_input_file_for_Venn_SplitbyVariantType "${VCF_FINAL}" "${DIR_OUTPUT}"
 	fi

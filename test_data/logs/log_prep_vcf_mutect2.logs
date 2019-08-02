@@ -42,7 +42,7 @@ stats: no. variants                 : 59
 Time elapsed: 0.00s
 
 ## prep vcf for vcfMerger2 ...
-python ./vcfMerger2/prep_vcfs/mutect2/mutect2.somatic.addFieldsForVcfMerger.py -i mutect2.raw.decomp.vcf --normal_column 10 --tumor_column 11 --outfilename mutect2.raw.decomp.prep.vcf
+python3 ./vcfMerger2/prep_vcfs/mutect2/mutect2.somatic.addFieldsForVcfMerger.py -i mutect2.raw.decomp.vcf --normal_column 10 --tumor_column 11 --outfilename mutect2.raw.decomp.prep.vcf
 INFO 2018-11-14 10:50:22,755 mutect2.somatic.addFieldsForVcfMerger 86	 [('-i', 'mutect2.raw.decomp.vcf'), ('--normal_column', '10'), ('--tumor_column', '11'), ('--outfilename', 'mutect2.raw.decomp.prep.vcf')]
 INFO 2018-11-14 10:50:22,772 mutect2.somatic.addFieldsForVcfMerger 299	 looping on records ...
 INFO 2018-11-14 10:50:22,812 mutect2.somatic.addFieldsForVcfMerger 307	 work completed

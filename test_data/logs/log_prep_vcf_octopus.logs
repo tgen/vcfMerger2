@@ -30,7 +30,7 @@ processing vcf:  octopus.raw.vcf
 	sample name in column 10 is  NORMAL and column 11 is named TUMOR
 	we are updating the sample names appropriately here with the ones given by the user
 ## look for block substitution in octopus's vcf ... and collapse the variants 
-python ./vcfMerger2/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py --normal_column 10 --tumor_column 11 -i octopus.raw.contigs.vcf -o octopus.raw.contigs.blocs.vcf
+python3 ./vcfMerger2/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py --normal_column 10 --tumor_column 11 -i octopus.raw.contigs.vcf -o octopus.raw.contigs.blocs.vcf
 %%%%%%%%%%%%%%%%%%%%
 [('--normal_column', '10'), ('--tumor_column', '11'), ('-i', 'octopus.raw.contigs.vcf'), ('-o', 'octopus.raw.contigs.blocs.vcf')]
 %%%%%%%%%%%%%%%%%%%%
@@ -52,7 +52,7 @@ stats: no. variants                 : 734
 Time elapsed: 0.01s
 
 ## prep vcf for vcfMerger2 ...
-python ./vcfMerger2/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py -i octopus.raw.contigs.blocs.decomp.vcf --normal_column 10 --tumor_column 11 --outfilename octopus.raw.contigs.blocs.decomp.prep.vcf
+python3 ./vcfMerger2/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py -i octopus.raw.contigs.blocs.decomp.vcf --normal_column 10 --tumor_column 11 --outfilename octopus.raw.contigs.blocs.decomp.prep.vcf
 INFO 2018-11-14 10:50:30,883 octopus.somatic.addFieldsForVcfMerger 81	 [('-i', 'octopus.raw.contigs.blocs.decomp.vcf'), ('--normal_column', '10'), ('--tumor_column', '11'), ('--outfilename', 'octopus.raw.contigs.blocs.decomp.prep.vcf')]
 INFO 2018-11-14 10:50:30,899 octopus.somatic.addFieldsForVcfMerger 263	 looping over records ...
 INFO 2018-11-14 10:50:31,310 octopus.somatic.addFieldsForVcfMerger 271	 work completed

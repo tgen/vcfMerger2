@@ -25,7 +25,7 @@ processing vcf:  strelka2.raw.vcf
 	sample name in column 10 is  NORMAL and column 11 is named TUMOR
 	we are updating the sample names appropriately here with the ones given by the user
 ## prep vcf for vcfMerger2 ...
-python ./vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py -i strelka2.raw.vcf --normal_column 10 --tumor_column 11 --outfilename strelka2.raw.prep.vcf
+python3 ./vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py -i strelka2.raw.vcf --normal_column 10 --tumor_column 11 --outfilename strelka2.raw.prep.vcf
 INFO 2018-11-14 10:50:20,432 strelka2.somatic.addFieldsForVcfMerger 65	 [('-i', 'strelka2.raw.vcf'), ('--normal_column', '10'), ('--tumor_column', '11'), ('--outfilename', 'strelka2.raw.prep.vcf')]
 INFO 2018-11-14 10:50:20,453 strelka2.somatic.addFieldsForVcfMerger 340	 looping over records ...
 INFO 2018-11-14 10:50:22,036 strelka2.somatic.addFieldsForVcfMerger 351	 work completed

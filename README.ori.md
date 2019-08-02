@@ -95,7 +95,7 @@ _**Note_3**: hs37d5.fa filename for the reference genome should be replaced with
 _**Note_4**: The given command line example uses 4 input vcfs. [ you may also test it using only 2, or 3 input vcfs ; for instance, run the same command by removing lancet and octopus tool from the lists ]_  
 
 
-[ run `python vcfMerger2.py --help` for more options ]
+[ run `python3 vcfMerger2.py --help` for more options ]
 
 -----------
 
