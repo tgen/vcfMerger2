@@ -49,7 +49,7 @@ OCT, SLK, VDJ|VDT, respectively [case Insensitive]"  ## if tools are later added
 ### START HERE
 ###@@@@@@@@@@@@@@
 
-type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting."; exit
+type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable but it's not in the PATH.  Aborting."; exit
 1; } || python3 -V
 
 for NEEDED_MODULE in cyvcf2 intervene collections argparse getopt gzip json logging PIL natsort shutil subprocess warnings

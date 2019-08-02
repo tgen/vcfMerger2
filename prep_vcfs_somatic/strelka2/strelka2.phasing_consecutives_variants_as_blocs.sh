@@ -120,7 +120,7 @@ fi
 echo -e "Phasing the Consecutive positions using phASER ..."
 echo -e "RUNNING phASER ... "
 echo -e "Command:"
-module load python/2.7.13
+#module load python/2.7.13
 VCF_IN=${VCF/vcf.gz/subByConsPos.vcf.gz}
 VCF_OUT_PHASER=phased_${VCF_IN}
 TEMP_DIR=$(dirname ${VCF_IN} )/temp_phASER

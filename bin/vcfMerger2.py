@@ -665,7 +665,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		ref_genome_fasta_dict = data[tool]['ref_genome_fasta_dict']
 
 	log.info(str(list_tools_acronyms))
-	my_command = ' '.join(["python", vcfmerger_tool_path,
+	my_command = ' '.join(["python3", vcfmerger_tool_path,
 	                       "--toolnames", double_quote_str(list_tools),
 	                       "--vcfs", double_quote_str(list_vcfs),
 	                       "-o", merged_vcf_outfilename,
