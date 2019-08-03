@@ -45,12 +45,12 @@ VALID_TOOLNAMES="deepvariant, haplotypecaller,  freebayes,  octopus,  strelka2, 
 ### START HERE
 ###@@@@@@@@@@@@@@
 
-type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting."; exit
-1; } || python -V
+type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable but it's not in the PATH.  Aborting."; exit
+1; } || python3 -V
 for NEEDED_MODULE in cyvcf2 intervene collections argparse getopt gzip json logging PIL natsort shutil subprocess warnings
 do
-    python -c "import ${NEEDED_MODULE}"
-    if [[ $? -ne 0 ]] ; then echo -e "ERROR: module << ${NEEDED_MODULE} NOT FOUND >> with this python version `python -V`; \nPlease Install module cyvcf2 or change the python version accrodingly; ABORTING\n" ; fi
+    python3 -c "import ${NEEDED_MODULE}"
+    if [[ $? -ne 0 ]] ; then echo -e "ERROR: module << ${NEEDED_MODULE} NOT FOUND >> with this python version `python3 -V`; \nPlease Install module cyvcf2 or change the python version accrodingly; ABORTING\n" ; fi
 done
 
 #python_main_version_number=`python3 -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `

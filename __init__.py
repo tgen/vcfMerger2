@@ -1,4 +1,4 @@
-#from prep_vcfs import *
-from prep_vcfs import utils
+#from prep_vcfs_somatic import *
+from prep_vcfs_somatic import utils
 from merge_vcfs.myGenotype import Genotype
 

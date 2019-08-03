@@ -42,15 +42,15 @@ import time
 # CAPTURED VARIABLES AUTOMATICALLY
 ## capturing the current path of the current script
 scriptDirectory = os.path.dirname(os.path.realpath(__file__))
-## as the project should be installed by the user and not modified by the user, we know where the prep_vcf.sh script is
-prep_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf.sh")
-prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "prep_vcf_functions.sh")
+## as the project should be installed by the user and not modified by the user, we know where the prep_vcf_somatic.sh script is
+prep_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_somatic", "prep_vcf_somatic.sh")
+prep_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_somatic", "prep_vcf_somatic_functions.sh")
 prep_germline_vcf_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline",
                                              "prep_vcf_germline.sh")
 prep_germline_vcf_functions_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_germline",
                                                        "prep_vcf_functions_germline.sh")
 vcfmerger_tool_path = os.path.join(os.path.dirname(scriptDirectory), "merge_vcfs", "vcfMerger.py")
-snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs", "utils", "filter_vcf.sh")
+snpsift_filter_script_path = os.path.join(os.path.dirname(scriptDirectory), "prep_vcfs_somatic", "utils", "filter_vcf.sh")
 
 
 class UniqueStore(argparse.Action):
@@ -621,7 +621,7 @@ def prepare_bed_for_venn(vcf, dirout):
 	'''
 	if no beds have been provided to vcfMerge2.py using --beds option and --do-venn has been enabled, and ...
 	the skip-prep-vcf is used, we can make the beds from the vcf file(s) provided. As we already have the
-	function << prepare_input_file_for_Venn >> in the bash script named << prep_vcf.sh >>, we will source the function
+	function << prepare_input_file_for_Venn >> in the bash script named << prep_vcf_somatic.sh >>, we will source the function
 	and run it using system.command()
 	:param vcf:
 	:return: none
@@ -665,7 +665,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		ref_genome_fasta_dict = data[tool]['ref_genome_fasta_dict']
 
 	log.info(str(list_tools_acronyms))
-	my_command = ' '.join(["python", vcfmerger_tool_path,
+	my_command = ' '.join(["python3", vcfmerger_tool_path,
 	                       "--toolnames", double_quote_str(list_tools),
 	                       "--vcfs", double_quote_str(list_vcfs),
 	                       "-o", merged_vcf_outfilename,
@@ -691,12 +691,12 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		for tool in data.keys():
 			if not skip_prep_vcfs:
 				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
-				                        list_vcfs.split(delim)])  ## extension intervene.bed defined in prep_vcf.sh
+				                        list_vcfs.split(delim)])  ## extension intervene.bed defined in prep_vcf_somatic.sh
 				log.info("list_bed for venn is: " + str(list_beds))
 			elif lbeds == "":
 				## as we skipped the prparation of vcfs, we already assigned in code before the vcfs to the prepped_vcf_outfilename field; so they should be equivalent
 				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
-				log.info("trying to create on the fly the bed file using function in prep_vcf.sh script")
+				log.info("trying to create on the fly the bed file using function in prep_vcf_somatic.sh script")
 				log.info(tool + " __ prepare_bed_for_venn __  " + data[tool]['prepped_vcf_outfilename'] + " " + dirout)
 				prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
 				list_beds = delim.join(
@@ -754,7 +754,7 @@ def check_path_to_vcfs(lvcfs):
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
-                 path_jar_snpsift=None, ref_genome_fasta_dict=None):
+                 path_jar_snpsift=None, ref_genome_fasta_dict=None, skip_merge=False, skip_prep_vcfs=False):
 	"""
 
 	:param lvcfs:
@@ -768,7 +768,10 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if lvcfs is None:
 		log.info("ERROR: Found list of input vcfs to be prepped or to be merged empty")
 		sys.exit("ERROR: list of vcfs empty")
-	if len(lvcfs) == 1:
+	if len(lvcfs) == 1 and not skip_merge:
+		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
+		sys.exit("ERROR: list of vcfs length of 1 vcf only")
+	if len(lvcfs) == 1 and skip_prep_vcfs:
 		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
 		sys.exit("ERROR: list of vcfs length of 1 vcf only")
 	if len(lvcfs) != len(ltoolnames):
@@ -988,7 +991,7 @@ def main(args, cmdline):
 				"Threshold-AR must be a float or integer value between 0 and 1 (range ]0,1]). Check your inputs.")
 		log.info("user given threshold for AR: " + str(TH_AR))
 
-	delete_temps=False
+	delete_temps = False
 	if args['delete_temps']:
 		delete_temps = True
 		log.info("Temps Files from prep_vcf stage will be DELETED")
@@ -1004,7 +1007,6 @@ def main(args, cmdline):
 		log.info("make venn enabled")
 		list_executables = ['Rscript', 'intervene']
 		check_if_executable_in_path(list_executables)
-
 
 	venn_title = ""
 	if args["venn_title"]:
@@ -1039,7 +1041,8 @@ def main(args, cmdline):
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
-	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict)
+	             path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
+	             skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
 
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
@@ -1176,6 +1179,11 @@ def make_parser_args():
 	                      action=UniqueStore,
 	                      help='outfilename for the merge vcf (can be relative or full path)')
 
+	required.add_argument('--bams',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help='List of TUMOR/CASES bams used to call variants; Note1: if Strelka2 tool is give, the TUMOR BAM file is MANDATORY; Note2: If you do not have the bam put empty value in given piped ordered list; Note3: this option will be improved LATER to avoid confusion and misunderstanding of the BAM usage in vcfMerger2 ')
+
 	optional.add_argument('--germline',
 	                      required=False,
 	                      action='store_true',
@@ -1207,10 +1215,6 @@ def make_parser_args():
 	                           'This list stipulates an order of precedence for the tools different from the '
 	                           'default order given by the --toolnames list')
 
-	optional.add_argument('--bams',
-	                      required=False,
-	                      action=UniqueStore,
-	                      help='List of bams necessary for capturing contigs if not present in input vcf; otherwise put empty_string as value for each tool ')
 
 	optional.add_argument('--contigs-file-for-vcf-header',
 	                      required=False,

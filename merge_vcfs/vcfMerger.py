@@ -33,7 +33,6 @@ import argparse
 import logging as log
 import re
 import time
-from collections import OrderedDict
 from collections import defaultdict
 from os import linesep
 from os import makedirs
@@ -44,7 +43,7 @@ from sys import exit
 
 import dvmfuncs as dvm
 import vcfToDict
-from natsort import natsorted
+
 
 '''
 ## STEPS so far:

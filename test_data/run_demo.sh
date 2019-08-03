@@ -45,7 +45,7 @@ then
 	exit 1
 fi
 
-type python >/dev/null 2>&1 || { echo >&2 "Require \"\python\" executable but it's not in the PATH.  Aborting."; exit 1; } || python -V 
+type python3 >/dev/null 2>&1 || { echo >&2 "Require \"\python\" executable but it's not in the PATH.  Aborting."; exit 1; } || python3 -V
 if [[ ! `python3 -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 ` == "3" ]] ; then echo -e "ERROR: Python 3 or up
 Expected in PATH; Aborting " ; exit 1 ; fi
 
@@ -87,7 +87,7 @@ fi
 
 echo "BASH `date` ---> Starting vcfMerger2 ..."
 
-python ../../bin/vcfMerger2.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "../raw_tool_vcfs/strelka2.raw.vcf|../raw_tool_vcfs/mutect2.raw.vcf|../raw_tool_vcfs/lancet.raw.vcf|../raw_tool_vcfs/octopus.raw.vcf" -a "SLK|MUT|LAN|OCT"  -g ../ref_genome/grch37.22.fa --prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" --normal-sname NORMAL  --tumor-sname TUMOR -o merged.vcf --contigs-file "||../contigs/contigs.txt|../contigs/contigs.txt"
+python3 ../../bin/vcfMerger2.py --toolnames "strelka2|mutect2|lancet|octopus" --vcfs "../raw_tool_vcfs/strelka2.raw.vcf|../raw_tool_vcfs/mutect2.raw.vcf|../raw_tool_vcfs/lancet.raw.vcf|../raw_tool_vcfs/octopus.raw.vcf" -a "SLK|MUT|LAN|OCT"  -g ../ref_genome/grch37.22.fa --prep-outfilenames "strelka2.prepped.vcf|mutect2.prepped.vcf|lancet.prepped.vcf|octopus.prepped.vcf" --normal-sname NORMAL  --tumor-sname TUMOR -o merged.vcf --contigs-file "||../contigs/contigs.txt|../contigs/contigs.txt"
 
 if [[ $? -eq 0 ]] ; 
 then

@@ -36,7 +36,7 @@ export TOP_PID=$$
 
 
 ## CONSTANT VARIABLE (modified accordingly)
-DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
+export DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 echo -e "DIR_PATH_TO_SCRIPTS=${DIR_PATH_TO_SCRIPTS}"
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
@@ -49,13 +49,13 @@ OCT, SLK, VDJ|VDT, respectively [case Insensitive]"  ## if tools are later added
 ### START HERE
 ###@@@@@@@@@@@@@@
 
-type python >/dev/null 2>&1 || { echo >&2 "Require \"python\" executable but it's not in the PATH.  Aborting."; exit
-1; } || python -V
+type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable but it's not in the PATH.  Aborting."; exit
+1; } || python3 -V
 
 for NEEDED_MODULE in cyvcf2 intervene collections argparse getopt gzip json logging PIL natsort shutil subprocess warnings
 do
-    python -c "import ${NEEDED_MODULE}"
-    if [[ $? -ne 0 ]] ; then echo -e "ERROR: module << ${NEEDED_MODULE} NOT FOUND >> with this python version `python -V`; \nPlease Install module cyvcf2 or change the python version accrodingly; ABORTING\n" ; fi
+    python3 -c "import ${NEEDED_MODULE}"
+    if [[ $? -ne 0 ]] ; then echo -e "ERROR: module << ${NEEDED_MODULE} NOT FOUND >> with this python version `python3 -V`; \nPlease Install module cyvcf2 or change the python version accrodingly; ABORTING\n" ; fi
 done
 
 #python_main_version_number=`python3 -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
@@ -67,7 +67,7 @@ type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but
 if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi
 
 # sourcing functions
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcf_functions.sh
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcf_somatic_functions.sh
 ## init variables
 init_some_vars
 ## get options given by user

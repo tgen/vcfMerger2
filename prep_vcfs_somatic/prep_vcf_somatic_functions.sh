@@ -130,47 +130,6 @@ function init_some_vars(){
 	export DIR_OUTPUT="."
 }
 
-function getOptions(){
-# options may be followed by one colon to indicate they have a required argument
-# NOTE: long option are not working on MacOS Sierra
-if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn,delete-temps,th-AR:,threshold-AR: -- "$@" `
-	then
-	# something went wrong, getopt will put out an error message for us
-		echo "ERROR in Arguments" ; usage
-		fexit
-	fi
-	eval set -- "$options"
-	while [[ $# -gt 0 ]]
-	do
-		# for options with required arguments, an additional shift is required
-		case "$1" in
-		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nGIVEN_DIR_TEMP==\"${DIR_OUTPUT}\"" ;  shift ;;
-		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
-		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
-		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
-		--vcf-indels)	export VCF_INDELS_FILE="$2"  ; LI="${LI}\nVCF_INDELS_FILE==\"${VCF_INDELS_FILE}\"";  shift ;;
-		--vcf-snvs) export VCF_SNVS_FILE="$2"  ; LI="${LI}\nVCF_SNVS_FILE==\"${VCF_SNVS_FILE}\"";  shift ;;
-		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
-		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
-		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
-		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
-		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module
-		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
-		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
-		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
-		--th-AR|--threshold-AR) export TH_AR=$2 ; LI="${LI}\nTH_AR==\"${TH_AR}\"" ;;
-		-h|--help) usage ; exit ;;
-		(--) shift ;;
-		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
-		(*) break ; echo "$0: error --- unrecognized option $1" 1>&2 ; usage;  exit 1  ;;
-		esac
-		shift
-	done
-	check_inputs
-}
-
-
 function check_inputs(){
 
 
@@ -184,6 +143,10 @@ function check_inputs(){
 	if [[ ${TUMOR_SNAME} == ""  ]] ; then echo -e "ERROR: TUMOR Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${NORMAL_SNAME} == ""  ]] ; then echo -e "ERROR: NORMAL Sample Name MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} == ""  ]] ; then echo -e "ERROR: VCF OUT FILENAME MUST be provided ; Missing Values Found ; Check your inputs; use -o|--prepped-vcf-outfilename option to fix it;  Aborting." ; fexit ; fi
+	if [[ $( echo ${TOOLNAME} | tr '[A-Z]' '[a-z]' | sed 's/ \+//g')  =~ "strelka" ]] ;
+	then
+	    if [[ ${BAM_FILE} == "" ]] ; then echo -e "ERROR: BAM file MUST be given to PREP the Strelka VCF in order to perform phasing; Aborting." ; fexit ; fi
+	fi
 
     DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
     if [[ ${DIR_OUTPUT} == "." ]] ;
@@ -214,7 +177,6 @@ function check_inputs(){
 	echo -e "End Checking inputs .."
 
 }
-
 
 function delete_temporary_files(){
     local delete_temps=$1
@@ -253,6 +215,48 @@ function concatenate_snvs_indels(){
 	VCF=${fout_name}
 	echo "${VCF}"
 }
+
+function getOptions(){
+# options may be followed by one colon to indicate they have a required argument
+# NOTE: long option are not working on MacOS Sierra
+if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,normal-sname:,vcf-indels:,vcf-snvs:,vcf:,toolname:,prepped-vcf-outfilename:,bam:,contigs-file:,print-valid-toolnames,do-not-normalize,make-bed-for-venn,delete-temps,th-AR:,threshold-AR: -- "$@" `
+	then
+	# something went wrong, getopt will put out an error message for us
+		echo "ERROR in Arguments" ; usage ;
+
+		fexit
+	fi
+	eval set -- "$options"
+	while [[ $# -gt 0 ]]
+	do
+		# for options with required arguments, an additional shift is required
+		case "$1" in
+		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\nGIVEN_DIR_TEMP==\"${DIR_OUTPUT}\"" ;  shift ;;
+		--tumor-sname) export TUMOR_SNAME=$2 ; LI="${LI}\nTUMOR_SNAME==\"${TUMOR_SNAME}\"" ; shift ;; ## TUMOR SAMPLE NAME as represented in SM tag in BAM
+		--normal-sname) export NORMAL_SNAME=$2 ; LI="${LI}\nNORMAL_SNAME==\"${NORMAL_SNAME}\"";  shift ;; ## NORMAL SAMPLE NAME as represented in SM tag in BAM
+		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
+		--vcf-indels)	export VCF_INDELS_FILE="$2"  ; LI="${LI}\nVCF_INDELS_FILE==\"${VCF_INDELS_FILE}\"";  shift ;;
+		--vcf-snvs) export VCF_SNVS_FILE="$2"  ; LI="${LI}\nVCF_SNVS_FILE==\"${VCF_SNVS_FILE}\"";  shift ;;
+		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
+		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
+		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
+		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
+		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
+		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module
+		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
+		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
+		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
+		--th-AR|--threshold-AR) export TH_AR=$2 ; LI="${LI}\nTH_AR==\"${TH_AR}\"" ;;
+		-h|--help) usage ; exit ;;
+		(--) shift ;;
+		(-*) echo -e "$0: error - unrecognized option $1\n\n" 1>&2   ; usage;  exit 1  ;;
+		(*) break ; echo "$0: error --- unrecognized option $1" 1>&2 ; usage;  exit 1  ;;
+		esac
+		shift
+	done
+	check_inputs
+}
+
 
 function check_and_update_sample_names(){
 	##@@@@@@@@@@@@@@@@@@@@@@@
@@ -307,6 +311,7 @@ function check_and_update_sample_names(){
 	## return value which is the vcf filename
 	echo "${VCF_OUT}"
 }
+
 
 function get_contigs_file(){
 	local TN=$1
@@ -367,10 +372,10 @@ function look_for_block_substitution_in_octopus(){
 	local VCF=$1
 	echo -e "## look for block substitution in ${TOOLNAME}'s vcf ... and collapse the variants "  1>&2
 	fout_name=${VCF%.*}.blocs.vcf
-	mycmd="python ${PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION} --normal_column 10 --tumor_column 11 -i ${VCF} -o ${fout_name}"
+	mycmd="python3 ${PYTHON_SCRIPT_OCTOPUS_BLOCK_SUBSTITUTION} --normal_column 10 --tumor_column 11 -i ${VCF} -o ${fout_name}"
 	echo ${mycmd} 1>&2 ;
 	eval ${mycmd} 1>&2 ;
-	check_ev $? " python look_for_bloc_substitution_in_${TOOLNAME} " 2>&1
+	check_ev $? " python3 look_for_bloc_substitution_in_${TOOLNAME} " 2>&1
 	VCF=${fout_name}
 	echo ${VCF}
 }
@@ -393,7 +398,7 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	local VCF=$1
 	echo -e "## prep vcf for vcfMerger2 ..." 1>&2
 	fout_name=${VCF%.*}.prep.vcf
-	mycmd="python -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
+	mycmd="python3 -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
@@ -412,10 +417,29 @@ function normalize_vcf(){
 	echo "## Normalizing vcf ..."  1>&2
 	fout_name=${VCF%.*}.norm.vcf
 	echo -e "## bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}" 1>&2
-	bcftools sort -O v ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}
+	bcftools sort -O b ${VCF} | bcftools norm -c x -f ${REF_GENOME_FASTA} -O v - > ${fout_name}
 	check_ev $? "bcftools with ${VCF} " 1>&2
 	VCF=${fout_name}
 	echo "${VCF}"
+}
+
+function phasing_consecutive_variants_in_strelka2(){
+	## normalize the VCF using bcftools
+	local VCF=$1
+	local BAM=$2
+	local TUMOR_SNAME=$3
+	local CPUS=$4
+
+	echo "in ${FUNCNAME}:  ${VCF} and BAM file is ${BAM}" 1>&2
+	echo "## Phasing 0bp-apart consecutives variants ..."  1>&2
+
+    mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS}"
+	echo ${mycmd} 1>&2 ;
+	eval ${mycmd} 1>&2 ;
+	check_ev $? "bash_look_blocs_substitution_in_${TOOLNAME} " 2>&1
+	VCF_OUT=${VCF%.*}.blocs.vcf.gz
+	echo "${VCF_OUT}"
+
 }
 
 function prepare_input_file_for_Venn(){
@@ -460,7 +484,7 @@ function final_msg(){
 
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
-	    echo -e "preparing input file for intervene python module to make Venns" 1>&2
+	    echo -e "preparing input file for intervene python3 module to make Venns" 1>&2
 	    prepare_input_file_for_Venn "${VCF_FINAL}" "${DIR_OUTPUT}"
 	    prepare_input_file_for_Venn_SplitbyVariantType "${VCF_FINAL}" "${DIR_OUTPUT}"
 	fi
@@ -477,6 +501,12 @@ function process_strelka2_vcf(){
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
+	echo "after normalize ((((((   ${VCF}"
+	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
+	echo "after recomposition ()()()()()()()()() ${VCF}"
+	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("
+	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
+	echo ${VCF}
 	final_msg ${VCF}
 }
 
@@ -587,7 +617,7 @@ function main(){
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
 		## if vcf is compressed vcf with gz extension, we uncompressed it to process it; then we will delete the file once processed as it may be big
-		if [[ "${VCF##*.}" == "gz" ]] ; 
+		if [[ "${VCF##*.}" == "gz" ]] ;
 		then
 			zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
 			VCF=$( basename -s ".gz" ${VCF})
@@ -606,4 +636,3 @@ function main(){
 	fi
 
 }
-

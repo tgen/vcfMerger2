@@ -28,7 +28,9 @@
 ### Minor Contributors:
 
 
-import sys, os
+from sys import exit
+from os import path
+from shutil import copyfile
 import getopt
 from sys import argv	;# Used to bring in the feature argv, variables or arguments
 from cyvcf2 import VCF, Writer, VCFReader
@@ -128,15 +130,15 @@ def parseArgs(scriptname, argv):
 		log.info(opts)
 	except getopt.GetoptError:
 		usage(scriptname)
-		sys.exit(2)
+		exit(2)
 
 	for opt, arg in opts:
 		if opt == '-h':
 			usage(scriptname)
-			sys.exit()
+			exit()
 		if opt == '--help':
 			usage(scriptname)
-			sys.exit()
+			exit()
 		elif opt in ("", "--pass"):
 			generate_vcf_pass_calls_only = True
 		elif opt in ("", "--threshold_AR"):
@@ -146,7 +148,7 @@ def parseArgs(scriptname, argv):
 				log.info("threshold AR reassigned by user: "+str(AR_threshold_for_GT))
 			except TypeValueError:
 				log.info("ERROR: threshold values MUST be integer or float")
-				sys.exit(2)
+				exit(2)
 		elif opt in ("", "--tumor_column"):
 			column_tumor = int(arg)
 		elif opt in ("", "--normal_column"):
@@ -160,8 +162,8 @@ def parseArgs(scriptname, argv):
 			new_vcf_name = arg.strip()
 		elif opt in ("-i", "--vcfs"):
 			fvcf = arg
-			if not os.path.exists(fvcf):
-				sys.exit("ERROR: FNF --> " +fvcf)
+			if not path.exists(fvcf):
+				exit("ERROR: FNF --> " +fvcf)
 
 
 
@@ -170,10 +172,10 @@ def parseArgs(scriptname, argv):
 
 	if column_tumor is None or column_normal is None:
 		usage(scriptname, opts)
-		sys.exit(
+		exit(
 			"Please Provide column number for tumor and normal Samples; should be 10 and 11  - or -  11 and 10 respectively; Aborting. ")
 	if column_normal == column_tumor:
-		sys.exit("ERROR: number for the columns Tumor and Normal MUST be different")
+		exit("ERROR: number for the columns Tumor and Normal MUST be different")
 
 	return(fvcf, new_vcf_name, column_tumor, column_normal, generate_vcf_pass_calls_only)
 
@@ -409,6 +411,10 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 	idxN = 0 if column_normal == 10 else 1
 
 	try:
+		if len(v.REF) == len(v.ALT) and len(v.REF)>1:
+			## we are dealing with Block substitutio-like type of event; WE therefore just report the variant because
+			## normally Strelka does not output these; This mean that the vcf had already been prepared or modified
+			return v
 		## get REF and ALT bases ; note: ALT is a list nt a character as multiple ALT can exist
 		## here we only deal with the first ALT ## TODO implement AR for each ALT
 		ref_tag = ''.join([v.REF, "U"])
@@ -462,7 +468,13 @@ if __name__ == "__main__":
 	log.info("vcf_path = " + str(vcf_path))
 
 	vcf = VCFReader(vcf_path)
-	filebasename = str(os.path.splitext(vcf_path)[0])
+	tot_variants_count = 0
+	for v in vcf:
+		tot_variants_count += 1
+
+
+	vcf = VCFReader(vcf_path) ## as the generator has been consumed above entirely we need to re-generate it
+	filebasename = str(path.splitext(vcf_path)[0])
 	if new_vcf_name is None:
 		new_vcf = '.'.join([filebasename, "uts.vcf"])
 	else:
@@ -473,6 +485,25 @@ if __name__ == "__main__":
 		new_vcf_pass_only = ".".join([ new_vcf[:-4], "pass.vcf" ])
 		print("filename for vcf with PASS calls only: " + str(new_vcf_pass_only))
 
+	try:
+		log.info("'FORMAT=<ID=AR' in vcf.raw_header == "+str('FORMAT=<ID=AR' in vcf.raw_header))
+		if 'FORMAT=<ID=AR' in vcf.raw_header:
+			log.warning(
+				"KEY AR was already found defined in the VCF header; So we do not process the Strelka2's vcf as it seems the vcf had already been processed somehow ...")
+			log.warning("creating the expected outfilename anyway to avoid breaking the pipe")
+			try:
+				log.warning("SRC = {},  and the DST = {} ".format(str(vcf_path),str(vcf)))
+				copyfile(vcf_path, new_vcf)
+				exit()
+			except IOError as e:
+				msg = "The Target directory may no be writable; Check your access permission."
+				log.error(msg)
+				print(e)
+		else:
+			log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ...")
+	except Exception as e:
+		log.warning("KEY AR not Found; So we process the Strelka2's vcf as expected ..."+str(e))
+
 	# we first Add/Modify/Update Fields to the Header
 	update_header(vcf)
 
@@ -482,8 +513,15 @@ if __name__ == "__main__":
 
 	tot_number_samples = len(vcf.samples)
 
+	counter = 0
+	# step is ~10% of tot_variants and round to the nearest nth value
+	step = int(round(tot_variants_count / 10, -(len(str(round(tot_variants_count / 10))) - 1)))
+
 	log.info("looping over records ...")
 	for v in vcf: ## v for variant which represents one "variant record"
+		counter += 1;
+		if counter % step == 0:
+			log.info("processed {} variants ...".format(counter))
 		v = update_flags(tot_number_samples, v, column_tumor, column_normal)
 		if v is not None:
 			w.write_record(v)
@@ -495,5 +533,5 @@ if __name__ == "__main__":
 	vcf.close()
 	log.info("work completed")
 	log.info('new vcf is << {} >>'.format(new_vcf))
-	sys.exit()
+	exit()
 

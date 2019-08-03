@@ -28,8 +28,8 @@
 
 ## CONSTANT VARIABLE (modified accordingly)
 DIR_PATH_TO_SCRIPTS=$(dirname $( dirname $(readlink -f ${BASH_SOURCE[0]}) )  )
-echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh" 1>&2
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
+echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" 1>&2
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_somatic_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
 DIR_PATH_TO_SCRIPTS="$( dirname $(readlink -f ${BASH_SOURCE[0]}) )"
 
 
@@ -174,7 +174,7 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 	echo -e "## VCF == ${VCF}" 1>&2
 	echo -e "## outVCF == ${fout_name}" 1>&2
 
-	mycmd="python -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --outfilename ${fout_name}"
+	mycmd="python3 -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --outfilename ${fout_name}"
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
