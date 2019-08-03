@@ -254,10 +254,9 @@ def get_GT_value_from_AR(AR_value, GT_value):
 			return [4, 4]
 	except ValueError:
 		log.error("ERROR: AR value not a number")
-		return "."
 	except TypeError:
 		log.error("ERROR: AR value not of type Float")
-		return "."
+
 
 def get_GT_value_from_GT_value(GT_value):
 	'''
@@ -286,13 +285,10 @@ def get_GT_value_from_GT_value(GT_value):
 		return x.get_gt_numpy_compatible()
 	except ValueError:
 		log.error("ERROR: GT value ")
-		return "."
 	except TypeError:
 		log.error("ERROR: GT value not of right type ")
-		return "."
 	except Exception as e:
 		log.error("ERROR: Unknown Error ; Check with the Author :-( ; "+str(e))
-		return "."
 
 def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	'''
