@@ -868,7 +868,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_only and indels_only
-	project = path.splitext(project)[0]+"."+figtype+"_venn"+path.splitext(project)[1]
+	project = path.splitext(project)[0]+"."+figtype+"_"+vtype+path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
 	path_to_image_file=path.realpath(path.join(output_name,project))
 	log.info("Venn in progress: "+path_to_image_file)
