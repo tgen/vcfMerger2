@@ -453,7 +453,6 @@ def main(args, cmdline):
 		log.info("###########  END SECTION MAKING VENN ###############")
 
 
-
 def make_parser_args():
 	parser = argparse.ArgumentParser(description='Processing options in vcfMerger.py ...')
 	parser._action_groups.pop()
@@ -492,7 +491,7 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
-	optional.add_argument('-p', '--ppf', '--prefix-plot-filename',
+	optional.add_argument('-p', '--prefix-plot-filename',
 	                      required=False,
 	                      action=UniqueStore,
 	                      default="vcfMerger2",
