@@ -422,7 +422,7 @@ def main(args, cmdline):
 	##@@@@@@@@@@@@@@@@
 	## we do merging before the Venns, as Merging is more important that the venns
 	log.info(" " * 50) ; log.info(" " * 50) ;
-	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, l_contigs_ref_genome_fasta_dict, cmdline, prefixPngFilenames=prefix_for_png_plots)
+	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, l_contigs_ref_genome_fasta_dict, cmdline)
 
 	log.info(" " * 50)
 	log.info(" " * 50)
@@ -434,7 +434,6 @@ def main(args, cmdline):
 		log.info("###########  BEGIN SECTION MAKING VENN ###############")
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option; use --lbeds to provide the appropriate number of files to create the Venn.")
-		prefix_for_png_plots = "vcfMerger4"
 		## make venn for snvs_and_indels altogether
 		dvm.make_venn(ltoolnames, lbeds, venn_title=venn_title, variantType="Snvs_and_Indels", saveOverlapsBool=True,
 		              upsetBool=False, dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
@@ -491,7 +490,7 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
-	optional.add_argument('-p', '--prefix-plot-filename',
+	optional.add_argument('--prefix-plot-filename',
 	                      required=False,
 	                      action=UniqueStore,
 	                      default="vcfMerger2",

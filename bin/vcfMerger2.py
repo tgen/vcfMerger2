@@ -684,9 +684,10 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 		my_command = my_command + " --delete-temps "
 
 	if do_venn:
+		my_command = my_command + " --prefix-plot-filename " + prefixPngFilenames + " "
 
 		if data[tool]['venn_title'] is not None or data[tool]['venn_title'] != "":
-			my_command = my_command + " --prefix-plot-filename " + prefixPngFilenames + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
+			my_command = my_command + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
 
 		for tool in data.keys():
 			if not skip_prep_vcfs:
