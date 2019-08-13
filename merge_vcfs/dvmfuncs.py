@@ -885,9 +885,9 @@ def modify_acces_permissions_to_files_recursively(path):
 	import os
 	for root, dirs, files in os.walk(path):
 		for d in dirs:
-			os.chmod(os.path.join(root, d), 0755)
+			os.chmod(os.path.join(root, d), 0o755)
 		for f in files:
-			os.chmod(os.path.join(root, f), 0755)
+			os.chmod(os.path.join(root, f), 0o755)
 
 def get_os_fonts():
 
