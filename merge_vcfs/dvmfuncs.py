@@ -869,7 +869,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 			sys.exit("Upset Creation FAILED")
 
 	if not upsetBool:
-		modify_acces_permissions_to_files_recursively(output_name, 0755)
+		modify_acces_permissions_to_files_recursively(output_name)
 
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_only and indels_only
@@ -881,14 +881,13 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
 
-def modify_acces_permissions_to_files_recursively(path, mode=0755):
+def modify_acces_permissions_to_files_recursively(path):
 	import os
-	pritn(str(mode))
 	for root, dirs, files in os.walk(path):
 		for d in dirs:
-			os.chmod(os.path.join(root, d), mode)
+			os.chmod(os.path.join(root, d), 0755)
 		for f in files:
-			os.chmod(os.path.join(root, f), mode)
+			os.chmod(os.path.join(root, f), 0755)
 
 def get_os_fonts():
 
