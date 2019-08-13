@@ -33,6 +33,8 @@ import re
 import sys
 import os
 import csv
+import subprocess
+#from os import path (see line775)
 
 from myGenotype import Genotype
 from natsort import natsorted
@@ -770,11 +772,12 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
-	output_name = "upsetPlot_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_")  if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
-	from os import path
+	#output_name = "upsetPlot_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_")  if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
+	output_name = "SummaryPlots" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
+	
 	if dirout is None:
-		dirout = path.basename(path.curdir)
-	output_name = path.sep.join([dirout, output_name])
+		dirout = os.path.basename(path.curdir)
+	output_name = os.path.sep.join([dirout, output_name])
 
 	# Define command and arguments
 	command = 'intervene'
@@ -826,7 +829,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		log.info(str(mycmd))
 		log.info(" ".join([x for x in mycmd]))
 		# check_output will run the command and store to result
-		import subprocess
+		#import subprocess
 		log.info("*" * 50)
 		log.info("full command run intervene")
 		process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
@@ -871,7 +874,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	project = path.splitext(project)[0]+"."+figtype+"_"+vtype+path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
 	path_to_image_file=path.realpath(path.join(output_name,project))
-	log.info("Venn in progress: "+path_to_image_file)
+	log.info("Venn Annotation in progress for ... "+path_to_image_file)
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
 def get_os_fonts():
