@@ -750,7 +750,8 @@ def get_colors_for_venns(number):
 
 
 
-def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True, upsetBool=False, dirout=None, prefixPngFilenames="vcfMerger2"):
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True,
+              upsetBool=False, dirout=None, prefixPngFilenames="vcfMerger2"):
 
 	names = ','.join([name for name in ltoolnames])
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
@@ -849,10 +850,10 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		for bedfile in lbeds:
 			## fast way of counting lines without loading file in memory
 			number_lines = sum(1 for line in open(bedfile))
-			number_lines = 0
 			if number_lines == 0:
-				cmd_touch = "touch " + output_name + os.path.sep + project + "_PlotNotgeneratedBecauseFoundToolWithoutVariants.png"
-				print(str(cmd_touch))
+				cmd_touch = "touch " + output_name + os.path.sep + project + "_PlotNotGeneratedBecauseFoundToolWithoutVariants.png"
+				log.info(str(cmd_touch))
+				log.warning("WARNING: Upset plots NOT generated because one of the given tool returned no-variant; Please Check the Rscript to generate manually the plot for "+output_name)
 				os.system(cmd_touch)
 				return None
 

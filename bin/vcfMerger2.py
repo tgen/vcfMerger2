@@ -637,7 +637,7 @@ def prepare_bed_for_venn(vcf, dirout):
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=None):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=None, prefixPngFilenames="vcfMerger2"):
 	"""
 
 	:param data:
@@ -686,7 +686,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if do_venn:
 
 		if data[tool]['venn_title'] is not None or data[tool]['venn_title'] != "":
-			my_command = my_command + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
+			my_command = my_command + " --ppf " + prefixPngFilenames + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
 
 		for tool in data.keys():
 			if not skip_prep_vcfs:
@@ -1047,6 +1047,15 @@ def main(args, cmdline):
 
 	lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
 	log.info(str(lvcfs))
+	## make prefix png plots here as we need to know if we are dealing with somatic or germline
+	prefix_png_plots = "vcfMerger2"
+	if tumor_sname is not None:
+		if normal_sname is not None:
+			prefix_png_plots = normal_sname + "-" + tumor_sname
+		else:
+			prefix_png_plots = tumor_sname
+	elif germline_snames is not None:
+		prefix_png_plots = germline_snames
 
 	data = make_data_for_json(lvcfs,
 	                          ltoolnames,
@@ -1131,7 +1140,7 @@ def main(args, cmdline):
 		log.info(str(data))
 
 	if not skip_merge:  ## MERGING step Enabled
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=cmdline)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=cmdline, prefixPngFilenames=prefix_png_plots)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
@@ -1192,7 +1201,7 @@ def make_parser_args():
 	optional.add_argument('--germline-snames',
 	                      required=False,
 	                      action=UniqueStore,
-	                      help='expected name of germline sample(s) in vcf file if option --germline is in use')
+	                      help='expected name of germline sample(s) in vcf file if option --germline is in use; currently dealing with only one sample per vcf is implemented ; more samples will lead to error;')
 
 	optional.add_argument('--normal-sname',
 	                      required=False,
