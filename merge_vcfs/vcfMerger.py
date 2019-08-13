@@ -384,7 +384,9 @@ def main(args, cmdline):
 			exit(-1)
 		log.info("FULL PATH TEMP FOLDER: " + dirout)
 
-	# CHECK POINT
+	###############
+	# CHECK POINT #
+	###############
 	if lossy and lossless:
 		exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
 	if lvcfs is None:
@@ -410,12 +412,19 @@ def main(args, cmdline):
 	## getting the list of contigs from fasta dictionary
 	l_contigs_ref_genome_fasta_dict = dvm.get_list_contig_from_fasta_dict_file(ref_genome_fasta_dict)
 
+	##@@@@@@@@@@@@@@@@
+    ## MERGING VCFs ##
+	##@@@@@@@@@@@@@@@@
 	## we do merging before the Venns, as Merging is more important that the venns
 	log.info(" " * 50) ; log.info(" " * 50) ;
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, l_contigs_ref_genome_fasta_dict, cmdline)
 
 	log.info(" " * 50)
 	log.info(" " * 50)
+
+	##@@@@@@@@@@@@@@@@@
+	## MAKING VENNs  ##
+	##@@@@@@@@@@@@@@@@@
 	if do_venn:
 		log.info("###########  BEGIN SECTION MAKING VENN ###############")
 		if lbeds == "":

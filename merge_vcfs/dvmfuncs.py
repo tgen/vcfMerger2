@@ -493,7 +493,7 @@ def process_Unknown_field(field, totnum_samples, dicField, v):
 		this	dictionnary everytime we encounter a new Field in the v.FORMAT value
 		:param: v stands for variant and is the object variant created by cyvcf2 module
 		:return: the updated dictField
-		'''
+	'''
 	if field not in v.FORMAT:
 		log.debug("%" * 10 + " UNKOWN not FOUND in FORMAT " + "%" * 10)
 		for i in range(totnum_samples):
@@ -776,7 +776,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	output_name = "SummaryPlots" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
 	
 	if dirout is None:
-		dirout = os.path.basename(path.curdir)
+		dirout = os.path.basename(os.path.curdir)
 	output_name = os.path.sep.join([dirout, output_name])
 
 	# Define command and arguments
