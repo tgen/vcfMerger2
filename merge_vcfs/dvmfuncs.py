@@ -851,7 +851,9 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 			number_lines = sum(1 for line in open(bedfile))
 			number_lines = 0
 			if number_lines == 0:
-				os.system("touch "+output_name+os.path.sep()+project+"_PlotNotgeneratedBecauseFoundToolWithoutVariants.png")
+				cmd_touch = "touch " + output_name + os.path.sep() + project + "_PlotNotgeneratedBecauseFoundToolWithoutVariants.png"
+				print(str(cmd_touch))
+				os.system(cmd_touch)
 				return None
 
 
