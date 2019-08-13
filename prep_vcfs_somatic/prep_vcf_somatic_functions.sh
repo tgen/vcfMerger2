@@ -448,8 +448,13 @@ function prepare_input_file_for_Venn(){
     if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
     local INPUT_FILE_FOR_VENN=$( basename ${VCF} ".vcf" ).intervene.bed
     #echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
-    grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN}
-    check_ev $? "prepare_input_file_for_Venn"
+    if [[ $(grep -vE "^#" ${VCF} | wc -l) -ne 0 ]] ;
+    then
+        grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN}
+        check_ev $? "prepare_input_file_for_Venn"
+    else
+        touch ${DIROUT}/${INPUT_FILE_FOR_VENN}
+    fi
 }
 
 
@@ -459,7 +464,8 @@ function prepare_input_file_for_Venn_SplitbyVariantType(){
     if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
     local INPUT_FILE_FOR_VENN_SNVS=$( basename ${VCF} ".vcf" ).intervene.snvs.bed
     local INPUT_FILE_FOR_VENN_INDELS=$( basename ${VCF} ".vcf" ).intervene.indels.bed
-    #echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
+
+    ## echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
     grep -vE "^#" ${VCF} | awk -F"\t" ' $4~/[ATCG]/ && $5~/[ATCG]/ && length($4)==1 && length($5)==1 || ( length($4)>1 && length($4)==length($5) ) {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN_SNVS}
     check_ev $? "prepare_input_file_for_Venn_SNVS"
     grep -vE "^#" ${VCF} | awk -F"\t" ' length($4)>length($5) || length($5)>length($4) || $4=="." || $5=="."  {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN_INDELS}
