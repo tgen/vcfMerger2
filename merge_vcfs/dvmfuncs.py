@@ -750,7 +750,7 @@ def get_colors_for_venns(number):
 
 
 
-def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True, upsetBool=False, dirout=None):
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True, upsetBool=False, dirout=None, prefixPngFilenames="vcfMerger2"):
 
 	names = ','.join([name for name in ltoolnames])
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
@@ -767,7 +767,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
-	project = "vcfMerger2_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
+	project = prefixPngFilenames + "XXX_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 
 	# Define the type of venn
 	if numberOfTools >= 5:
