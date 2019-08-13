@@ -432,19 +432,19 @@ def main(args, cmdline):
 		## make venn for snvs_and_indels altogether
 
 		dvm.make_venn(ltoolnames, lbeds, venn_title=venn_title, variantType="Snvs_and_Indels", saveOverlapsBool=True,
-		              upsetBool=False, dirout=dirout)
+		              upsetBool=False, dirout=dirout, prefixPngFilenames="vcfMerger3")
 		## make Venn using only the SNVs
 		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.intervene.snvs.bed', file) for file in lbeds]
 		log.info(str(lbeds_snvs))
 		if all([path.isfile(f) for f in lbeds_snvs]):
 
 			dvm.make_venn(ltoolnames, lbeds_snvs, venn_title=venn_title, variantType="Snvs", saveOverlapsBool=True,
-			              upsetBool=False,  dirout=dirout)
+			              upsetBool=False,  dirout=dirout, prefixPngFilenames="vcfMerger3")
 		## make Venn using only the Indels
 		lbeds_indels = [re.sub(r'\.intervene\.bed$', '.intervene.indels.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_indels]):
 			dvm.make_venn(ltoolnames, lbeds_indels, venn_title=venn_title, variantType="Indels", saveOverlapsBool=True,
-			              upsetBool=False,  dirout=dirout)
+			              upsetBool=False,  dirout=dirout, prefixPngFilenames="vcfMerger3")
 		log.info("###########  END SECTION MAKING VENN ###############")
 
 
