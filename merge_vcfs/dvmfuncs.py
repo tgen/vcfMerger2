@@ -871,6 +871,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_only and indels_only
+	import os
 	project = os.path.splitext(project)[0]+"."+figtype+"_"+vtype+os.path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
 	path_to_image_file=os.path.realpath(os.path.join(output_name,project))
