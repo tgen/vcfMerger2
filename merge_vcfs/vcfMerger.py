@@ -328,10 +328,8 @@ def main(args, cmdline):
 		list_tool_precedence_order = [x.upper() for x in list_tool_precedence_order]
 		log.info("precedence given: {} ".format(str(list_tool_precedence_order)))
 
-
-	# prefix_for_png_plots = "vcfMerger2" ## default value; see args definition
-	if args["prefix_plot_filename"]:
-		prefix_for_png_plots = args['prefix_plot_filename']
+	if args["prefix_plot"]:
+		prefix_for_png_plots = args['prefix_plot']
 		log.info("prefix for Venn or Upset plots has be given as: "+str(prefix_for_png_plots))
 
 	lossless = True
@@ -490,7 +488,7 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
-	optional.add_argument('--prefix-plot-filename',
+	optional.add_argument('--prefix-plot',
 	                      required=False,
 	                      action=UniqueStore,
 	                      default="vcfMerger2",
