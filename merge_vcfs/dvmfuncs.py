@@ -493,7 +493,7 @@ def process_Unknown_field(field, totnum_samples, dicField, v):
 		this	dictionnary everytime we encounter a new Field in the v.FORMAT value
 		:param: v stands for variant and is the object variant created by cyvcf2 module
 		:return: the updated dictField
-		'''
+	'''
 	if field not in v.FORMAT:
 		log.debug("%" * 10 + " UNKOWN not FOUND in FORMAT " + "%" * 10)
 		for i in range(totnum_samples):
@@ -750,10 +750,12 @@ def get_colors_for_venns(number):
 
 
 
-def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True, upsetBool=False, dirout=None):
+def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", saveOverlapsBool=True,
+              upsetBool=False, dirout=None, prefixPngFilenames="vcfMerger2"):
 
 	names = ','.join([name for name in ltoolnames])
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
+
 
 	numberOfTools = len(ltoolnames)
 	if len(lbeds) != numberOfTools:
@@ -767,16 +769,17 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
-	project = "vcfMerger2_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
+	project = prefixPngFilenames + "_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
+
 	#output_name = "upsetPlot_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_")  if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
-	output_name = "SummaryPlots" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
-	
+	output_name = "SummaryPlots_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
+	import os
 	if dirout is None:
-		dirout = os.path.basename(path.curdir)
+		dirout = os.path.basename(os.path.curdir)
 	output_name = os.path.sep.join([dirout, output_name])
 
 	# Define command and arguments
@@ -841,6 +844,21 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 	## update Rscript to colorize the intersection of all tools
 	if upsetBool:
+		## before doing any further steps, checking here if at least one of the bed file has NO variants; If so, UpSetR package has a bug when dealing with sets with zeros.
+		## in order to avoid getting an error and breaking any pipeline, we will skip Running the Rscript;
+		## but we need to fake the Folders and Files in order to keep consistency (mostly for pipelines)
+		for bedfile in lbeds:
+			## fast way of counting lines without loading file in memory
+			number_lines = sum(1 for line in open(bedfile))
+			if number_lines == 0:
+				cmd_touch = "touch " + output_name + os.path.sep + project + "_PlotNotGeneratedBecauseFoundToolWithoutVariants.png"
+				log.info(str(cmd_touch))
+				log.warning("WARNING: Upset plots NOT generated because one of the given tool returned no-variant; Please Check the Rscript to generate manually the plot for "+output_name)
+				os.system(cmd_touch)
+				return None
+
+
+		## Processing with the Rscript created by Intervene for UpSet plots
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
 		pattern = "nsets"
 		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), nsets"
@@ -868,14 +886,27 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
 
+	if not upsetBool:
+		## this means with deal with Venns and therefore teh sets directory got created with too limited access permissions we need to change
+		modify_acces_permissions_to_files_recursively(output_name)
 
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_only and indels_only
-	project = path.splitext(project)[0]+"."+figtype+"_"+vtype+path.splitext(project)[1]
+
+	project = os.path.splitext(project)[0]+"."+figtype+"_"+vtype+os.path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
-	path_to_image_file=path.realpath(path.join(output_name,project))
+	path_to_image_file=os.path.realpath(os.path.join(output_name,project))
 	log.info("Venn Annotation in progress for ... "+path_to_image_file)
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
+
+
+def modify_acces_permissions_to_files_recursively(path):
+	import os
+	for root, dirs, files in os.walk(path):
+		for d in dirs:
+			os.chmod(os.path.join(root, d), 0o755)
+		for f in files:
+			os.chmod(os.path.join(root, f), 0o755)
 
 def get_os_fonts():
 
@@ -936,8 +967,15 @@ def check_if_files_in_list_exist(list_file):
 	"""
 	lf = []
 	for f in list_file:
-		if os.path.exists(f):
-			lf.append(f)
+		try:
+			if os.path.exists(f):
+				lf.append(f)
+		except FileExistsError as fee:
+			log.warning("FILE NOT EXIST: "+f+"  with error traceback: "+fee)
+			return None
+		except FileNotFoundError as fnf:
+			log.warning("FILE NOT FOUND: "+f+"  with error traceback: "+fnf)
+			return None
 	return lf
 
 def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variants):
@@ -952,7 +990,7 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 	lvarfiles = check_if_files_in_list_exist(list_of_files_with_variants)
 
 	if lvarfiles is None or lvarfiles == []:
-		log.error("Nonoe of the expected png files for annotatino were found; Skipping Image file annotation;")
+		log.error("None of the expected png files for annotation were found; Skipping Image file annotation;")
 		return None
 
 	if len(ltoolnames) != len(lvarfiles):

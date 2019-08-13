@@ -301,8 +301,7 @@ def main(args, cmdline):
 	if args["delim"]:
 		delim = args["delim"]
 		if len(delim) != 1:
-			exit("the list delimiter given with --delim should be one character only and NOT a space; found {"
-			     "}".format(str(len(
+			exit("the list delimiter given with --delim should be one character only and NOT a space; found {}".format(str(len(
 				delim))))
 		log.info("delimiter is:\t" + delim)
 
@@ -328,6 +327,11 @@ def main(args, cmdline):
 		list_tool_precedence_order = str(args["precedence"]).split(delim)
 		list_tool_precedence_order = [x.upper() for x in list_tool_precedence_order]
 		log.info("precedence given: {} ".format(str(list_tool_precedence_order)))
+
+	prefix_for_png_plots = "vcfMerger2"
+	if args["prefix_plot_filename"]:
+		prefix_for_png_plots = args['prefix_plot_filename']
+		log.info("prefix for Venn or Upset plots has be given as: "+str(prefix_for_png_plots))
 
 	lossless = True
 	lossy = False
@@ -384,7 +388,9 @@ def main(args, cmdline):
 			exit(-1)
 		log.info("FULL PATH TEMP FOLDER: " + dirout)
 
-	# CHECK POINT
+	###############
+	# CHECK POINT #
+	###############
 	if lossy and lossless:
 		exit("lossy and lossless are mutually exclusive options, please use one or the other but not both.")
 	if lvcfs is None:
@@ -410,34 +416,39 @@ def main(args, cmdline):
 	## getting the list of contigs from fasta dictionary
 	l_contigs_ref_genome_fasta_dict = dvm.get_list_contig_from_fasta_dict_file(ref_genome_fasta_dict)
 
+	##@@@@@@@@@@@@@@@@
+    ## MERGING VCFs ##
+	##@@@@@@@@@@@@@@@@
 	## we do merging before the Venns, as Merging is more important that the venns
 	log.info(" " * 50) ; log.info(" " * 50) ;
 	process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool_acronym, lossless, merge_vcf_outfilename, l_contigs_ref_genome_fasta_dict, cmdline)
 
 	log.info(" " * 50)
 	log.info(" " * 50)
+
+	##@@@@@@@@@@@@@@@@@
+	## MAKING VENNs  ##
+	##@@@@@@@@@@@@@@@@@
 	if do_venn:
 		log.info("###########  BEGIN SECTION MAKING VENN ###############")
 		if lbeds == "":
 			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option; use --lbeds to provide the appropriate number of files to create the Venn.")
 		## make venn for snvs_and_indels altogether
-
 		dvm.make_venn(ltoolnames, lbeds, venn_title=venn_title, variantType="Snvs_and_Indels", saveOverlapsBool=True,
-		              upsetBool=False, dirout=dirout)
+		              upsetBool=False, dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
 		## make Venn using only the SNVs
 		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.intervene.snvs.bed', file) for file in lbeds]
 		log.info(str(lbeds_snvs))
 		if all([path.isfile(f) for f in lbeds_snvs]):
 
 			dvm.make_venn(ltoolnames, lbeds_snvs, venn_title=venn_title, variantType="Snvs", saveOverlapsBool=True,
-			              upsetBool=False,  dirout=dirout)
+			              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
 		## make Venn using only the Indels
 		lbeds_indels = [re.sub(r'\.intervene\.bed$', '.intervene.indels.bed', file) for file in lbeds]
 		if all([path.isfile(f) for f in lbeds_indels]):
 			dvm.make_venn(ltoolnames, lbeds_indels, venn_title=venn_title, variantType="Indels", saveOverlapsBool=True,
-			              upsetBool=False,  dirout=dirout)
+			              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
 		log.info("###########  END SECTION MAKING VENN ###############")
-
 
 
 def make_parser_args():
@@ -478,6 +489,10 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
+	optional.add_argument('--prefix-plot-filename',
+	                      required=False,
+	                      action=UniqueStore,
+	                      help=' prefix to be given to the Venns or Upset Plots png filenames; Default is "vcfMerger2" ')
 	optional.add_argument('--lossless',
 	                      help='This will create a lossless merged vcf by adding FORMAT columns of secondaries tools into the INFO field',
 	                      action='store_true')

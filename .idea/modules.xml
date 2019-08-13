@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/vcfMerger2.iml" filepath="$PROJECT_DIR$/.idea/vcfMerger2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../vcfMerger2.wiki/.idea/vcfMerger2.wiki.iml" filepath="$PROJECT_DIR$/../vcfMerger2.wiki/.idea/vcfMerger2.wiki.iml" />
     </modules>
   </component>
 </project>
