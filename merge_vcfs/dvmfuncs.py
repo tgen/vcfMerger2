@@ -755,6 +755,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	names = ','.join([name for name in ltoolnames])
 	## TODO we could check if any of the tools or any of the vcfs filenames already contains a comma; if so raise error
 
+
 	numberOfTools = len(ltoolnames)
 	if len(lbeds) != numberOfTools:
 		log.info("WARNING: Number of Tools and number of BED files do NOT match; we skip the creation of Venn")
@@ -772,6 +773,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	# Define the type of venn
 	if numberOfTools >= 5:
 		upsetBool = True
+
 	#output_name = "upsetPlot_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_")  if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
 	output_name = "SummaryPlots_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
 	import os
@@ -841,6 +843,19 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 	## update Rscript to colorize the intersection of all tools
 	if upsetBool:
+		## before doing any further steps, checking here if at least one of the bed file has NO variants; If so, UpSetR package has a bug when dealing with sets with zeros.
+		## in order to avoid getting an error and breaking any pipeline, we will skip Running the Rscript;
+		## but we need to fake the Folders and Files in order to keep consistency (mostly for pipelines)
+		for bedfile in lbeds:
+			## fast way of counting lines without loading file in memory
+			number_lines = sum(1 for line in open(bedfile))
+			number_lines = 0
+			if number_lines == 0:
+				os.system("touch "+output_name+os.path.sep()+project+"_PlotNotgeneratedBecauseFoundToolWithoutVariants.png")
+				return None
+
+
+		## Processing with the Rscript created by Intervene for UpSet plots
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
 		pattern = "nsets"
 		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), nsets"
@@ -869,6 +884,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 			sys.exit("Upset Creation FAILED")
 
 	if not upsetBool:
+		## this means with deal with Venns and therefore teh sets directory got created with too limited access permissions we need to change
 		modify_acces_permissions_to_files_recursively(output_name)
 
 	## annotate the images created by make_venn function
@@ -948,8 +964,15 @@ def check_if_files_in_list_exist(list_file):
 	"""
 	lf = []
 	for f in list_file:
-		if os.path.exists(f):
-			lf.append(f)
+		try:
+			if os.path.exists(f):
+				lf.append(f)
+		except FileExistsError as fee:
+			log.warning("FILE NOT EXIST: "+f+"  with error traceback: "+fee)
+			return None
+		except FileNotFoundError as fnf:
+			log.warning("FILE NOT FOUND: "+f+"  with error traceback: "+fnf)
+			return None
 	return lf
 
 def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variants):
@@ -964,7 +987,7 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 	lvarfiles = check_if_files_in_list_exist(list_of_files_with_variants)
 
 	if lvarfiles is None or lvarfiles == []:
-		log.error("Nonoe of the expected png files for annotatino were found; Skipping Image file annotation;")
+		log.error("None of the expected png files for annotation were found; Skipping Image file annotation;")
 		return None
 
 	if len(ltoolnames) != len(lvarfiles):
