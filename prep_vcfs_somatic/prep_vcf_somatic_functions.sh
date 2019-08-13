@@ -552,18 +552,24 @@ function process_lancet_vcf(){
 
 function process_octopus_vcf(){
 	local VCF=$1
-	VCF=$( check_and_update_sample_names ${VCF} )
-	VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
-	VCF=$( decompose ${VCF} )
-	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
-	VCF=$( normalize_vcf ${VCF})
-	final_msg ${VCF}
+	if [[ $(zcat -f ${VCF} | grep -vE "^#" | wc -l ) -ne 0 ]] ;
+	then
+        VCF=$( check_and_update_sample_names ${VCF} )
+        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
+        VCF=$( decompose ${VCF} )
+        VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+        VCF=$( normalize_vcf ${VCF})
+        final_msg ${VCF}
+	else:
+        VCF=$( check_and_update_sample_names ${VCF} )
+	    final_msg ${VCF}
+    fi
 }
 
 function process_vardictjava_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	#VCF=$( add_Contigs ${VCF} )
+	#VCF=$( add_Contigs ${VCF} ) ## deprecated as we expect vcf having correct contig list after vardictjava update
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
