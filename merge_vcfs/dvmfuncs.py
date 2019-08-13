@@ -769,7 +769,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
-	project = prefixPngFilenames + "XXX_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
+	project = prefixPngFilenames + "_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 
 	# Define the type of venn
 	if numberOfTools >= 5:

@@ -328,8 +328,9 @@ def main(args, cmdline):
 		list_tool_precedence_order = [x.upper() for x in list_tool_precedence_order]
 		log.info("precedence given: {} ".format(str(list_tool_precedence_order)))
 
-	if args["prefix_plot"]:
-		prefix_for_png_plots = args['prefix_plot']
+	prefix_for_png_plots = "vcfMerger2"
+	if args["prefix_plot_filename"]:
+		prefix_for_png_plots = args['prefix_plot_filename']
 		log.info("prefix for Venn or Upset plots has be given as: "+str(prefix_for_png_plots))
 
 	lossless = True
@@ -488,10 +489,9 @@ def make_parser_args():
 	                      required=False,
 	                      action=UniqueStore,
 	                      help='List of Acronyms for toolnames to be used as PREFIXES in INFO field ; same DELIM as --vcfs ')
-	optional.add_argument('--prefix-plot',
+	optional.add_argument('--prefix-plot-filename',
 	                      required=False,
 	                      action=UniqueStore,
-	                      default="vcfMerger2",
 	                      help=' prefix to be given to the Venns or Upset Plots png filenames; Default is "vcfMerger2" ')
 	optional.add_argument('--lossless',
 	                      help='This will create a lossless merged vcf by adding FORMAT columns of secondaries tools into the INFO field',
