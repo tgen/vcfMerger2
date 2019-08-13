@@ -773,7 +773,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	if numberOfTools >= 5:
 		upsetBool = True
 	#output_name = "upsetPlot_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_")  if upsetBool else "venn_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
-	output_name = "SummaryPlots" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
+	output_name = "SummaryPlots_" + str(numberOfTools) + "_tools_"+ variantType.replace(" ", "_") ## this is the name of the directory created by intervene where the filename (aka project) above will be in.
 	import os
 	if dirout is None:
 		dirout = os.path.basename(os.path.curdir)
@@ -871,10 +871,10 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 	## annotate the images created by make_venn function
 	## We expect at least three files, snvs+indels, snvs_only and indels_only
-	project = path.splitext(project)[0]+"."+figtype+"_"+vtype+path.splitext(project)[1]
+	project = os.path.splitext(project)[0]+"."+figtype+"_"+vtype+os.path.splitext(project)[1]
 	log.info("output_name = "+ output_name +"/"+ project)
-	path_to_image_file=path.realpath(path.join(output_name,project))
-	log.info("Venn Annotation in progress for ... "+path_to_image_file)
+	path_to_image_file=os.path.realpath(os.path.join(output_name,project))
+	log.info("Venn Annotation in progress for ... "+os.path_to_image_file)
 	add_annotation_to_image(path_to_image_file, ltoolnames, lbeds)
 
 def get_os_fonts():
