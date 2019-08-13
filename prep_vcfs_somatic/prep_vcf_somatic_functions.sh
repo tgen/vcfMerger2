@@ -554,8 +554,9 @@ function process_octopus_vcf(){
 	local VCF=$1
 	if [[ $(zcat -f ${VCF} | grep -vE "^#" | wc -l ) -ne 0 ]] ;
 	then
+	    echo -e "In Function process_octopus_vcf ... "
         VCF=$( check_and_update_sample_names ${VCF} )
-        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
+        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( decompose ${VCF} )
         VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
         VCF=$( normalize_vcf ${VCF})
