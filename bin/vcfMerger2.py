@@ -686,7 +686,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 	if do_venn:
 
 		if data[tool]['venn_title'] is not None or data[tool]['venn_title'] != "":
-			my_command = my_command + " --ppf " + prefixPngFilenames + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
+			my_command = my_command + " -p " + prefixPngFilenames + " --venn-title " + double_quote_str(data[tool]['venn_title']) + "  "
 
 		for tool in data.keys():
 			if not skip_prep_vcfs:
