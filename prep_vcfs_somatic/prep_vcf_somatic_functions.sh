@@ -497,7 +497,7 @@ function final_msg(){
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
-    echo "command: cp ${VCF} ${VCF_FINAL}"
+    echo "command: cp ${VCF} ${VCF_FINAL}"  1>&2
 	cp ${VCF} ${VCF_FINAL}
 	####check_ev $? "copy file" ## if files are the same cp will return an error so we cannot check the exit value; alternative: use rsync instead of cp
 
@@ -521,10 +521,10 @@ function process_strelka2_vcf(){
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
-	echo "after normalize ((((((   ${VCF}"
+	echo "after normalize ((((((   ${VCF}"  1>&2
 	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
-	echo "after recomposition ()()()()()()()()() ${VCF}"
-	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("
+	echo "after recomposition ()()()()()()()()() ${VCF}"  1>&2
+	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
 	echo ${VCF}
 	final_msg ${VCF}
@@ -554,7 +554,7 @@ function process_octopus_vcf(){
 	local VCF=$1
 	if [[ $(zcat -f ${VCF} | grep -vE "^#" | wc -l ) -ne 0 ]] ;
 	then
-	    echo -e "In Function process_octopus_vcf ... "
+	    echo -e "In Function process_octopus_vcf ... "  1>&2
         VCF=$( check_and_update_sample_names ${VCF} )
         VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( decompose ${VCF} )
@@ -562,7 +562,7 @@ function process_octopus_vcf(){
         VCF=$( normalize_vcf ${VCF})
         final_msg ${VCF}
 	else:
-	    echo -e "OCTOPUS's VCF has no Variants; Processing only sample name checking and final vcf renaming; "
+	    echo -e "OCTOPUS's VCF has no Variants; Processing only sample name checking and final vcf renaming; " 1>&2
         VCF=$( check_and_update_sample_names ${VCF} )
 	    final_msg ${VCF}
     fi
