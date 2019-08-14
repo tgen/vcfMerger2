@@ -492,9 +492,11 @@ if __name__ == "__main__":
 	try:
 		next(iter(vcf)) ## we just try to check if we have no variant in VCF
 	except StopIteration as si:
+		## we bring the header upto specs and write down the output file
 		log.warning("No Variants found in VCF; Creating Final Empty VCF now ..." + str(si))
-		from shutil import copyfile
-		copyfile(vcf_path, new_vcf_name)
+		vcf = update_header(vcf)
+		w = Writer(new_vcf, vcf)
+		w.close()
 		exit()
 
 	## checking if PS flag is still present in the VCF genotype fields
