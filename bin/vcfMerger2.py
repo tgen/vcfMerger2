@@ -1048,7 +1048,7 @@ def main(args, cmdline):
 	## MAIN  ##
 	##@@@@@@@@@
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
-	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds, lbams=lbams
+	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds, lbams=lbams,
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
