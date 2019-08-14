@@ -810,6 +810,24 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
+	# ## we check we really deal with bam files
+	# if lbams is not None:
+	# 	for f in lbams:
+	# 		if f is None or f is "":
+	# 			continue
+	# 		cmd = ''.join( [ "xxd" , f , "|", "head -n 2 | tail -n 1", " |", " cut -d' ' -f2-3 | sed 's/ \+//'" ] )
+	# 		process = subprocess.Popen(cmd, shell=True, universal_newlines=True, stdout=subprocess.PIPE);
+	# 		retval = process.wait();
+	# 		if retval == 0:
+	# 			magic_number_bam = next(iter(process.stdout)).strip()  ## I did not find how to capture bam specific magic number
+	# 		else:
+	# 			raise("ERROR with capturing magic_number_bam for file {}".format(f))
+	# 		if '5d27955d' != magic_number_bam:
+	# 			log.error("ERROR: the file << {} >> is not a BAM file; Please provide a BAM file".format(f))
+	# 			sys.exit()
+	# 		else:
+	# 			log.info("BAM OK -- {}".format(f))
+
 	## As currently Strelka2 tool is the only one needing the Tumor Bam for Phasing, we check that the BAM fiel is provided
 	if "strelka2" in ltoolnames and lbams is None:
 		log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Aborting." )
@@ -819,6 +837,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		if lbams[index_strelka] is None or lbams[index_strelka] == "":
 			log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Notes: 1) index bam must be present in same location as bam;  2) NO cram ; Aborting.")
 			sys.exit()
+
 
 	if ref_genome_fasta_dict is None:
 		log.error("ERROR: fasta dictionary file MUST be provided to sort the contigs in the header correctly")
