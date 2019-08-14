@@ -489,7 +489,7 @@ if __name__ == "__main__":
 
 
 	## if no variants in vcf:
-	log.warning("LEN VCF_OBJ = " + len(vcf))
+	log.warning("LEN VCF_OBJ = " + str(len(vcf)))
 	if len(vcf) == 0:
 		from shutil import copyfile
 		copyfile(vcf_path, new_vcf_name)
