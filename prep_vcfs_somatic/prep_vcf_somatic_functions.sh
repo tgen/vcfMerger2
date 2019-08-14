@@ -564,6 +564,7 @@ function process_octopus_vcf(){
 	else
 	    echo -e "OCTOPUS's VCF has no Variants; Processing only sample name checking and final vcf renaming; " 1>&2
         VCF=$( check_and_update_sample_names ${VCF} )
+        VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	    final_msg ${VCF}
     fi
 }
