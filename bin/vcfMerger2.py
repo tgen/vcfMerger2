@@ -609,6 +609,26 @@ def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
+def return_full_path_for_files(list_files):
+	"""
+	Convert relative path to abspath
+	:param list_files: list of files or dir
+	:return: list with full path of the items
+	"""
+	newlist = []
+	if not isinstance(list_files, list):
+		log.error("Expected a list of files ; Please modify your inputs if needed ; ")
+		raise("ERROR: expected list of items; found "+str(type(list_files)))
+	for f in list_files:
+		if f is None or f == '':
+			newlist.append('')
+			continue
+		if not os.path.isabs(f):
+			newlist.append(os.path.abspath(f))
+		else:
+			newlist.append(f)
+	return newlist
+
 
 def subprocess_cmd(command):
 	ev = os.system(command)
@@ -797,7 +817,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if "strelka2" in ltoolnames:
 		index_strelka = ltoolnames.index('strelka2')
 		if lbams[index_strelka] is None or lbams[index_strelka] == "":
-			log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Aborting.")
+			log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Notes: 1) index bam must be present in same location as bam;  2) NO cram ; Aborting.")
 			sys.exit()
 
 	if ref_genome_fasta_dict is None:
@@ -946,6 +966,7 @@ def main(args, cmdline):
 	lbams = None
 	if args["bams"]:
 		lbams = str(args["bams"]).split(delim)
+		lbams = return_full_path_for_files(lbams)
 		log.info("ordered list of bams given:\t{}".format(str(lbams)))
 
 	lcontigs = None
