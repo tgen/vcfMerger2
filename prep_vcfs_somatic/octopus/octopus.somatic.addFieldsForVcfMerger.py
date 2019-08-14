@@ -488,8 +488,7 @@ if __name__ == "__main__":
 		new_vcf = new_vcf_name
 
 
-	## if no variants in vcf:
-	log.warning("LEN VCF_OBJ = " + str(len(vcf)))
+	## test if no variants in vcf:
 	try:
 		next(iter(vcf)) ## we just try to check if we have no variant in VCF
 	except StopIteration as si:
