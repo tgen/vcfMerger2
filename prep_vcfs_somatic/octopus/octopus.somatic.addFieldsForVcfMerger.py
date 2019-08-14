@@ -490,7 +490,7 @@ if __name__ == "__main__":
 
 	## test if no variants in vcf:
 	try:
-		next(iter(vcf)) ## we just try to check if we have no variant in VCF
+		next(iter(vcf)) ## we just try to check if we have no variant at all in VCF
 	except StopIteration as si:
 		## we bring the header upto specs and write down the output file
 		log.warning("No Variants found in VCF; Creating Final Empty VCF now ..." + str(si))
@@ -502,7 +502,7 @@ if __name__ == "__main__":
 	## checking if PS flag is still present in the VCF genotype fields
 	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS"])
 
-	vcf = VCF(vcf_path) ## as we have already consume twice the generator; we do not want to lose any variant
+	vcf = VCF(vcf_path) ## as we have already consumed twice the generator; we do not want to lose any variant
 	vcf = update_header(vcf)
 
 	# create a new vcf Writer using the input vcf as a template.
