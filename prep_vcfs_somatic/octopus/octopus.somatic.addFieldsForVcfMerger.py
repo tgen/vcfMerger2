@@ -492,7 +492,7 @@ if __name__ == "__main__":
 	try:
 		next(iter(vcf)) ## we just try to check if we have no variant in VCF
 	except StopIteration as si:
-		log.warning("No Variants found in VCF; Creating Final Empty VCF now ..." + si)
+		log.warning("No Variants found in VCF; Creating Final Empty VCF now ..." + str(si))
 		from shutil import copyfile
 		copyfile(vcf_path, new_vcf_name)
 		exit()
