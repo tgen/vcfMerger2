@@ -337,6 +337,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of
 				copyfile(input_vcf_path, new_vcf_name)
 				exit()
 			else:
+
 				log.error(FIELD+" flag NOT found in FORMAT field; Aborting VCF preparation.")
 				exit(FIELD+" flag Absent")
 		else:
@@ -486,6 +487,13 @@ if __name__ == "__main__":
 	else:
 		new_vcf = new_vcf_name
 
+
+	## if no variants in vcf:
+	log.warning("LEN VCF_OBJ = " + len(vcf))
+	if len(vcf) == 0:
+		from shutil import copyfile
+		copyfile(vcf_path, new_vcf_name)
+		exit()
 	## checking if PS flag is still present in the VCF genotype fields
 	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS"])
 
