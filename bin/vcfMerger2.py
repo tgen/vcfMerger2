@@ -657,7 +657,7 @@ def prepare_bed_for_venn(vcf, dirout):
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=None, prefixPngFilenames="vcfMerger2"):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, filter_string_for_snpsift, cmdline=None, prefixPngFilenames="vcfMerger2"):
 	"""
 
 	:param data:
@@ -1202,7 +1202,7 @@ def main(args, cmdline):
 		log.info(str(data))
 
 	if not skip_merge:  ## MERGING step Enabled
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=cmdline, prefixPngFilenames=prefix_png_plots)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, filter_string_for_snpsift, cmdline=cmdline, prefixPngFilenames=prefix_png_plots)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
