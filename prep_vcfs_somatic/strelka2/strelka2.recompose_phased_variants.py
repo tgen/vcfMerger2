@@ -351,10 +351,11 @@ if __name__ == "__main__":
 
 
 #	## checking if PS flag is still present in the VCF genotype fields
-	## WARNING WARNING: Because here we read at least onnce the vcf object which is a generator opbject, we LOSE the first variant;
-	## so DO NOT use the following method.
-#	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
 
+	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
+	## WARNING WARNING: Because here we read at least once the vcf object which is a generator opbject, we LOSE the first variant;
+	## we need to recreate the generator here
+	vcf = VCF(vcf_path)
 	## Adding Fields to INFO field
 	# vcf.add_info_to_header({'ID': 'BLOCSUBSFROM', 'Description': 'List of Original Position in VCF That were used to make current block substitution variant', 'Type': 'String', 'Number': '.'})
 

@@ -8,7 +8,7 @@ import VCF
 import cyvcf2
 
 try:
-	## MUST BE A VCF file
+	## MUST BE A UNCOMPRESSED VCF file
 	finput = argv[1]
 except IndexError as ie:
 	exit("{}\nUSAGE: $0 $vcf_file ".format(ie))
