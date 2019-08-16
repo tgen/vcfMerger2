@@ -295,6 +295,7 @@ if __name__ == "__main__":
 	## checking if PS flag is still present in the VCF genotype fields
 	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
 
+	vcf = VCF(vcf_path)
 	## Adding Fields to INFO field
 	vcf.add_info_to_header({'ID': 'BLOCSUBSFROM', 'Description': 'List of Original Position in OctopusVcf That were used to make current block substitution variant', 'Type': 'String', 'Number': '.'})
 

@@ -386,7 +386,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		ADP_tumor = int(if_dot_assign_negative_value(ADP_tumor))
 		ADP_normal = int(if_dot_assign_negative_value(ADP_normal))
 		ADOs = [AD_normal, AD_tumor] if idxT == 1 else [AD_tumor, AD_normal]
-		log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ")
+		log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ") ## ADO stands for AD Old ones
 		v.set_format('ADO', np.array(ADOs))
 
 		## Calculate AR (allele ratio using AD and ADP)

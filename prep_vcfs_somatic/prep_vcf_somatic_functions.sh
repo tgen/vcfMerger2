@@ -445,6 +445,7 @@ function phasing_consecutive_variants_in_strelka2(){
 function prepare_input_file_for_Venn(){
     local VCF="$1"
     local DIROUT=$2
+    echo -e "EXPECTED VCF for Making BED: ${VCF}" 1>&2
     if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
     local INPUT_FILE_FOR_VENN=$( basename ${VCF} ".vcf" ).intervene.bed
     #echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
@@ -462,7 +463,8 @@ function prepare_input_file_for_Venn(){
 function prepare_input_file_for_Venn_SplitbyVariantType(){
     local VCF="$1"
     local DIROUT=$2
-    if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
+    echo -e "EXPECTED VCF for Making BED: ${VCF}" 1>&2
+    if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" 1>&2 ; fi
     local INPUT_FILE_FOR_VENN_SNVS=$( basename ${VCF} ".vcf" ).intervene.snvs.bed
     local INPUT_FILE_FOR_VENN_INDELS=$( basename ${VCF} ".vcf" ).intervene.indels.bed
 
