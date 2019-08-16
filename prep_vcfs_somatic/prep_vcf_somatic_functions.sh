@@ -506,7 +506,7 @@ function final_msg(){
 
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
-	    echo -e "preparing input file for intervene python3 module to make Venns" 1>&2
+	    echo -e "preparing input file for intervene python3 module to make Venns using VCF called ${VCF_FINAL}" 1>&2
 	    prepare_input_file_for_Venn "${VCF_FINAL}" "${DIR_OUTPUT}"
 	    prepare_input_file_for_Venn_SplitbyVariantType "${VCF_FINAL}" "${DIR_OUTPUT}"
 	fi

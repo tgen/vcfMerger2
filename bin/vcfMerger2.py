@@ -295,7 +295,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		data[tool]['vcf'] = new_vcf_name ## we consider that the input vcf is now the filtered vcf; which is also the prepped vcf ## TRICK here
-
+		print(data[tool]['prepped_vcf_outfilename'])
 	return data
 
 def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False):
@@ -711,9 +711,20 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 
 		for tool in data.keys():
 			if not skip_prep_vcfs:
-				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+				if filter_string_for_snpsift:
+					if not os.path.exists(os.path.splitext(vcf)[0] + ".intervene.bed"):
+						prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
+						list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+						                        list_vcfs.split(delim)])
+				else:
+					list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
 				                        list_vcfs.split(delim)])  ## extension intervene.bed defined in prep_vcf_somatic.sh
 				log.info("list_bed for venn is: " + str(list_beds))
+			elif filter_string_for_snpsift:
+				if not os.path.exists(os.path.splitext(vcf)[0] + ".intervene.bed"):
+					prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
+					list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+					                        list_vcfs.split(delim)])
 			elif lbeds == "":
 				## as we skipped the prparation of vcfs, we already assigned in code before the vcfs to the prepped_vcf_outfilename field; so they should be equivalent
 				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
