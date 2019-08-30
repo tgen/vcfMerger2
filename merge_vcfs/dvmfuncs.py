@@ -803,6 +803,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		                                 "--showzero",
 		                                 "--order", "freq", "--scriptonly" ]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
+		if saveOverlapsBool:
+			type_specific_additional_args = type_specific_additional_args + ["--save-overlaps"]
 
 	else:
 		vtype = "venn"
@@ -860,7 +862,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		## Processing with the Rscript created by Intervene for UpSet plots
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
 		pattern = "nsets"
-		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), nsets"
+		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), matrix.dot.alpha=0.5, point.size = 3, nsets"
 
 		full_string_sed = [ "s/" + pattern + "/" + replacement + "/" ]
 		scriptname = project + "_upset.R"
