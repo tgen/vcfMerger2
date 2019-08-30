@@ -1,0 +1,1357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="1239188512">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.19" value="1" />
+          <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.27" value="1" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="5" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="md" value="2" />
+          <entry key="py" value="26" />
+          <entry key="sh" value="5" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Bash" value="5" />
+          <entry key="Markdown" value="2" />
+          <entry key="Python" value="26" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="md" value="403" />
+          <entry key="py" value="12692" />
+          <entry key="sh" value="1164" />
+          <entry key="txt" value="1151" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Bash" value="1164" />
+          <entry key="Markdown" value="403" />
+          <entry key="PLAIN_TEXT" value="1151" />
+          <entry key="Python" value="12692" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileColors">
+    <fileColor scope="Non-Project Files (Material Default)" color="2E3C43" />
+    <fileColor scope="Non-Project Files (Material Darker)" color="323232" />
+    <fileColor scope="Non-Project Files (Material Lighter)" color="eae8e8" />
+    <fileColor scope="Non-Project Files (Material Palenight)" color="2f2e43" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="816">
+              <caret line="293" column="90" selection-start-line="293" selection-start-column="90" selection-end-line="293" selection-end-column="90" />
+              <folding>
+                <element signature="e#1274#1289#0" expanded="true" />
+                <element signature="e#1877#2395#0" />
+                <element signature="e#12557#14484#0" />
+                <element signature="e#18904#24405#0" />
+                <element signature="e#24436#24941#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="480">
+              <caret line="342" column="43" lean-forward="true" selection-start-line="342" selection-start-column="43" selection-end-line="342" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs/prep_vcf.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="42" column="72" selection-start-line="42" selection-start-column="72" selection-end-line="42" selection-end-column="72" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs/prep_vcf_functions.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="493">
+              <caret line="162" column="40" selection-start-line="162" selection-start-column="40" selection-end-line="162" selection-end-column="40" />
+              <folding>
+                <element signature="n#!!block;n#usage#0" />
+                <element signature="n#!!block;n#fexit#0" />
+                <element signature="n#!!block;n#check_ev#0" />
+                <element signature="n#!!block;n#checkDir#0" />
+                <element signature="n#!!block;n#checkFile#0" />
+                <element signature="n#!!block;n#checkFileName#0" />
+                <element signature="n#!!block;n#checkIntegerOrFloat#0" />
+                <element signature="n#!!block;n#checkIfRangeZeroOne#0" />
+                <element signature="e#2990#3001#0" />
+                <element signature="e#3014#3024#0" />
+                <element signature="n#!!block;n#check_contig_file#0" />
+                <element signature="e#3385#3387#0" />
+                <element signature="n#!!block;n#init_some_vars#0" />
+                <element signature="n#!!block;n#getOptions#0" />
+                <element signature="e#4662#4664#0" />
+                <element signature="e#4681#4689#0" />
+                <element signature="e#4753#4755#0" />
+                <element signature="e#4775#4786#0" />
+                <element signature="e#4904#4906#0" />
+                <element signature="e#4927#4939#0" />
+                <element signature="e#5052#5054#0" />
+                <element signature="e#5076#5089#0" />
+                <element signature="e#5158#5160#0" />
+                <element signature="e#5184#5199#0" />
+                <element signature="e#5264#5266#0" />
+                <element signature="e#5288#5301#0" />
+                <element signature="e#5353#5355#0" />
+                <element signature="e#5372#5380#0" />
+                <element signature="e#5455#5457#0" />
+                <element signature="e#5482#5498#0" />
+                <element signature="e#5594#5596#0" />
+                <element signature="e#5613#5621#0" />
+                <element signature="e#5689#5691#0" />
+                <element signature="e#5709#5718#0" />
+                <element signature="e#5777#5779#0" />
+                <element signature="e#5800#5812#0" />
+                <element signature="e#6136#6138#0" />
+                <element signature="e#6172#6197#0" />
+                <element signature="e#6275#6277#0" />
+                <element signature="e#6303#6320#0" />
+                <element signature="n#!!block;n#recap_input#0" />
+                <element signature="e#6610#6612#0" />
+                <element signature="e#6705#6707#0" />
+                <element signature="n#!!block;n#concatenate_snvs_indels#0" />
+                <element signature="e#6889#6897#0" />
+                <element signature="e#6938#6946#0" />
+                <element signature="e#7213#7221#0" />
+                <element signature="e#7258#7266#0" />
+                <element signature="e#7372#7381#0" />
+                <element signature="e#7455#7463#0" />
+                <element signature="e#7480#7489#0" />
+                <element signature="e#7500#7503#0" />
+                <element signature="n#!!block;n#check_and_update_sample_names#0" />
+                <element signature="e#7932#7935#0" />
+                <element signature="e#8159#8162#0" />
+                <element signature="e#8214#8217#0" />
+                <element signature="e#8242#8253#0" />
+                <element signature="e#8274#8285#0" />
+                <element signature="e#8688#8699#0" />
+                <element signature="e#8976#8979#0" />
+                <element signature="e#9390#9401#0" />
+                <element signature="e#9430#9441#0" />
+                <element signature="e#9475#9486#0" />
+                <element signature="e#9515#9526#0" />
+                <element signature="e#9728#9739#0" />
+                <element signature="e#9897#9900#0" />
+                <element signature="e#9921#9924#0" />
+                <element signature="n#!!block;n#get_contigs_file#0" />
+                <element signature="e#10779#10783#0" />
+                <element signature="e#10825#10827#0" />
+                <element signature="e#10855#10859#0" />
+                <element signature="e#10894#10898#0" />
+                <element signature="e#10923#10931#0" />
+                <element signature="e#10951#10959#0" />
+                <element signature="e#11141#11149#0" />
+                <element signature="e#11191#11195#0" />
+                <element signature="e#11291#11295#0" />
+                <element signature="e#11304#11312#0" />
+                <element signature="e#11402#11410#0" />
+                <element signature="n#!!block;n#add_Contigs#0" />
+                <element signature="e#11521#11524#0" />
+                <element signature="e#11660#11663#0" />
+                <element signature="e#11715#11718#0" />
+                <element signature="e#11738#11741#0" />
+                <element signature="e#11749#11758#0" />
+                <element signature="e#11799#11808#0" />
+                <element signature="e#11819#11822#0" />
+                <element signature="n#!!block;n#look_for_block_substitution_in_octopus#0" />
+                <element signature="e#12090#12093#0" />
+                <element signature="e#12209#12212#0" />
+                <element signature="e#12219#12228#0" />
+                <element signature="e#12239#12244#0" />
+                <element signature="e#12261#12266#0" />
+                <element signature="e#12353#12362#0" />
+                <element signature="e#12372#12375#0" />
+                <element signature="n#!!block;n#decompose#0" />
+                <element signature="e#12551#12554#0" />
+                <element signature="e#12589#12592#0" />
+                <element signature="e#12599#12608#0" />
+                <element signature="e#12651#12660#0" />
+                <element signature="e#12671#12674#0" />
+                <element signature="n#!!block;n#make_vcf_upto_specs_for_VcfMerger#0" />
+                <element signature="e#12969#12972#0" />
+                <element signature="e#13046#13049#0" />
+                <element signature="e#13104#13113#0" />
+                <element signature="e#13163#13168#0" />
+                <element signature="e#13311#13320#0" />
+                <element signature="e#13331#13334#0" />
+                <element signature="n#!!block;n#normalize_vcf#0" />
+                <element signature="e#13443#13446#0" />
+                <element signature="e#13541#13544#0" />
+                <element signature="e#13592#13595#0" />
+                <element signature="e#13652#13661#0" />
+                <element signature="e#13691#13694#0" />
+                <element signature="e#13751#13760#0" />
+                <element signature="e#13792#13795#0" />
+                <element signature="e#13811#13820#0" />
+                <element signature="e#13831#13834#0" />
+                <element signature="n#!!block;n#prepare_input_file_for_Venn#0" />
+                <element signature="e#13943#13946#0" />
+                <element signature="e#14103#14106#0" />
+                <element signature="e#14190#14209#0" />
+                <element signature="n#!!block;n#final_msg#0" />
+                <element signature="e#14493#14496#0" />
+                <element signature="e#14922#14925#0" />
+                <element signature="n#!!block;n#process_strelka2_vcf#0" />
+                <element signature="e#15079#15082#0" />
+                <element signature="e#15130#15133#0" />
+                <element signature="e#15161#15164#0" />
+                <element signature="e#15180#15183#0" />
+                <element signature="n#!!block;n#process_mutect2_vcf#0" />
+                <element signature="e#15274#15277#0" />
+                <element signature="e#15301#15304#0" />
+                <element signature="e#15352#15355#0" />
+                <element signature="e#15383#15386#0" />
+                <element signature="e#15402#15405#0" />
+                <element signature="n#!!block;n#process_lancet_vcf#0" />
+                <element signature="e#15495#15498#0" />
+                <element signature="e#15524#15527#0" />
+                <element signature="e#15575#15578#0" />
+                <element signature="e#15606#15609#0" />
+                <element signature="e#15625#15628#0" />
+                <element signature="n#!!block;n#process_octopus_vcf#0" />
+                <element signature="e#15719#15722#0" />
+                <element signature="e#15805#15808#0" />
+                <element signature="e#15935#15938#0" />
+                <element signature="e#15986#15989#0" />
+                <element signature="e#16017#16020#0" />
+                <element signature="e#16036#16039#0" />
+                <element signature="n#!!block;n#process_vardictjava_vcf#0" />
+                <element signature="e#16134#16137#0" />
+                <element signature="e#16163#16166#0" />
+                <element signature="e#16214#16217#0" />
+                <element signature="e#16245#16248#0" />
+                <element signature="e#16264#16267#0" />
+                <element signature="n#!!block;n#run_tool#0" />
+                <element signature="e#16387#16406#0" />
+                <element signature="e#16416#16425#1" />
+                <element signature="e#16488#16507#0" />
+                <element signature="e#16587#16590#0" />
+                <element signature="e#16656#16675#0" />
+                <element signature="e#16752#16755#0" />
+                <element signature="e#16824#16843#0" />
+                <element signature="e#16916#16924#0" />
+                <element signature="e#16983#16986#0" />
+                <element signature="e#17052#17071#0" />
+                <element signature="e#17170#17189#0" />
+                <element signature="e#17345#17348#0" />
+                <element signature="e#17418#17437#0" />
+                <element signature="e#17520#17528#0" />
+                <element signature="e#17592#17595#0" />
+                <element signature="n#!!block;n#main#0" />
+                <element signature="e#19159#19162#0" />
+                <element signature="e#19195#19198#0" />
+                <element signature="e#19495#19498#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="340" lean-forward="true" selection-start-line="340" selection-end-line="340" />
+              <folding>
+                <element signature="e#1327#1342#0" expanded="true" />
+                <element signature="e#17578#20621#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="527">
+              <caret line="31" column="22" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="778">
+              <caret line="292" column="4" selection-start-line="292" selection-start-column="4" selection-end-line="293" selection-end-column="60" />
+              <folding>
+                <element signature="e#1273#1293#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="763">
+              <caret line="668" column="12" selection-start-line="668" selection-start-column="12" selection-end-line="668" selection-end-column="12" />
+              <folding>
+                <element signature="e#1274#1288#0" expanded="true" />
+                <element signature="e#1385#1771#0" />
+                <element signature="e#1803#2873#0" />
+                <element signature="e#11306#11697#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>DO_VENN</find>
+      <find>make_data_for_json</find>
+      <find>merging_prepped_vcfs</find>
+      <find>additional_args</find>
+      <find>check_contig_file</find>
+      <find>Constant AR threshold is</find>
+      <find>get_contigs_file</find>
+      <find>lprepped_vcf_outfilenames</find>
+      <find>check_inputs</find>
+      <find>delim =</find>
+      <find>compareTuples</find>
+      <find>lvcfs</find>
+      <find>input</find>
+      <find>delim</find>
+      <find>make_ve</find>
+      <find>intervene</find>
+      <find>intervene.bed</find>
+      <find>prepare</find>
+      <find>lbeds</find>
+      <find>Running Sed command</find>
+      <find>scriptonly</find>
+      <find>script_only</find>
+      <find>make_venn</find>
+      <find>Processing optio</find>
+      <find>before</find>
+      <find>vt</find>
+      <find>new_k</find>
+      <find>TOOLNAMES=</find>
+      <find>venn</find>
+      <find>DIR_PATH_TO_SCRIPTS</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>type_specific_additional_args</replace>
+      <replace>MAKE_BED_FOR_VENN</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>F:\workdocs\github_repos\vcfMerger2</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="ROOT_SYNC" value="SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/merge_vcfs/dvmfuncs.py" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs/mutect2/mutect2.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs/lancet/lancet.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/merge_vcfs/vcfMerger.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs/prep_vcf.sh" />
+        <option value="$PROJECT_DIR$/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs/prep_vcf_functions.sh" />
+        <option value="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/bin/vcfMerger2.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1023" />
+    <option name="width" value="1856" />
+    <option name="height" value="1600" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State />
+          <State>
+            <id>General</id>
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+          <State>
+            <id>RELAX NG</id>
+          </State>
+        </expanded-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="merge_vcfs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs" type="462c0819:PsiDirectoryNode" />
+              <item name="lancet" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs" type="462c0819:PsiDirectoryNode" />
+              <item name="mutect2" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs" type="462c0819:PsiDirectoryNode" />
+              <item name="octopus" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs" type="462c0819:PsiDirectoryNode" />
+              <item name="strelka2" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings sdk-home="C:\MyPrograms\Python3.6.1\python.exe">
+        <option name="mySdkHome" value="C:\MyPrograms\Python3.6.1\python.exe" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\workdocs\github_repos\vcfMerger2" />
+    </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs/prep_vcf.sh</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="" />
+      <created>1542320033058</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1542320033058</updated>
+    </task>
+    <task id="LOCAL-00117" summary="i">
+      <created>1552519816881</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1552519816881</updated>
+    </task>
+    <task id="LOCAL-00118" summary="i">
+      <created>1552520431758</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1552520431758</updated>
+    </task>
+    <task id="LOCAL-00119" summary="i">
+      <created>1552520810473</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1552520810473</updated>
+    </task>
+    <task id="LOCAL-00120" summary="i">
+      <created>1552520917569</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1552520917569</updated>
+    </task>
+    <task id="LOCAL-00121" summary="i">
+      <created>1552521165737</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1552521165737</updated>
+    </task>
+    <task id="LOCAL-00122" summary="i">
+      <created>1552521219641</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1552521219641</updated>
+    </task>
+    <task id="LOCAL-00123" summary="i">
+      <created>1552521411075</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1552521411075</updated>
+    </task>
+    <task id="LOCAL-00124" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552522046811</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1552522046811</updated>
+    </task>
+    <task id="LOCAL-00125" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552522260351</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1552522260351</updated>
+    </task>
+    <task id="LOCAL-00126" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552522874913</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1552522874913</updated>
+    </task>
+    <task id="LOCAL-00127" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552523337478</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1552523337478</updated>
+    </task>
+    <task id="LOCAL-00128" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552523598061</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1552523598061</updated>
+    </task>
+    <task id="LOCAL-00129" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552523717424</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1552523717424</updated>
+    </task>
+    <task id="LOCAL-00130" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552523860084</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1552523860084</updated>
+    </task>
+    <task id="LOCAL-00131" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524019003</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524019003</updated>
+    </task>
+    <task id="LOCAL-00132" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524061774</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524061774</updated>
+    </task>
+    <task id="LOCAL-00133" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524221613</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524221613</updated>
+    </task>
+    <task id="LOCAL-00134" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524279691</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524279691</updated>
+    </task>
+    <task id="LOCAL-00135" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524377417</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524377417</updated>
+    </task>
+    <task id="LOCAL-00136" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524413133</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524413133</updated>
+    </task>
+    <task id="LOCAL-00137" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524463844</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524463844</updated>
+    </task>
+    <task id="LOCAL-00138" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524538527</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524538528</updated>
+    </task>
+    <task id="LOCAL-00139" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552524658587</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1552524658587</updated>
+    </task>
+    <task id="LOCAL-00140" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552526685204</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1552526685204</updated>
+    </task>
+    <task id="LOCAL-00141" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552526879506</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1552526879506</updated>
+    </task>
+    <task id="LOCAL-00142" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552527178707</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1552527178707</updated>
+    </task>
+    <task id="LOCAL-00143" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552527244277</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1552527244277</updated>
+    </task>
+    <task id="LOCAL-00144" summary="add functions file to prep_vcf folder - TEST">
+      <created>1552527573783</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1552527573783</updated>
+    </task>
+    <task id="LOCAL-00145" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552604980268</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1552604980268</updated>
+    </task>
+    <task id="LOCAL-00146" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552605157882</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1552605157882</updated>
+    </task>
+    <task id="LOCAL-00147" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552671520996</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1552671520996</updated>
+    </task>
+    <task id="LOCAL-00148" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552674201967</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1552674201967</updated>
+    </task>
+    <task id="LOCAL-00149" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552674230283</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1552674230283</updated>
+    </task>
+    <task id="LOCAL-00150" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552674776775</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1552674776775</updated>
+    </task>
+    <task id="LOCAL-00151" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552674902226</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1552674902226</updated>
+    </task>
+    <task id="LOCAL-00152" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552675058626</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1552675058626</updated>
+    </task>
+    <task id="LOCAL-00153" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552675226592</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1552675226592</updated>
+    </task>
+    <task id="LOCAL-00154" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552675264775</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1552675264775</updated>
+    </task>
+    <task id="LOCAL-00155" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552675717324</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1552675717325</updated>
+    </task>
+    <task id="LOCAL-00156" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552675905132</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1552675905132</updated>
+    </task>
+    <task id="LOCAL-00157" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552675962567</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1552675962567</updated>
+    </task>
+    <task id="LOCAL-00158" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552676039755</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1552676039755</updated>
+    </task>
+    <task id="LOCAL-00159" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552676300009</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1552676300009</updated>
+    </task>
+    <task id="LOCAL-00160" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552689865219</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1552689865219</updated>
+    </task>
+    <task id="LOCAL-00161" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552690309391</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1552690309391</updated>
+    </task>
+    <task id="LOCAL-00162" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
+      <created>1552690568013</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1552690568013</updated>
+    </task>
+    <task id="LOCAL-00163" summary="fix tabulation">
+      <created>1552692311693</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1552692311694</updated>
+    </task>
+    <task id="LOCAL-00164" summary="remove extra greater than sign within move command">
+      <created>1552695034138</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1552695034139</updated>
+    </task>
+    <task id="LOCAL-00165" summary="working on fixing issue with names of vcf_prepped added to vcfMerger">
+      <created>1552695835206</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1552695835206</updated>
+    </task>
+    <option name="localTasksCounter" value="166" />
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="4">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1023" y="0" width="1856" height="1600" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25222716" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.09833795" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32963988" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.13296399" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32969034" />
+      <window_info anchor="bottom" id="Python Console" order="11" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="R Graphics" order="3" />
+      <window_info anchor="right" id="R Packages" order="4" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update after full copy/paste" />
+    <MESSAGE value="added make_bed_for_venn" />
+    <MESSAGE value="added make venn or upset plot optional feature" />
+    <MESSAGE value="fix TypeError: '&gt;=' not supported between instances of 'numpy.str_' and 'int'  in octopus.somatic.checkForBlockSubstitutionVariants.py&quot;, line 162, in processing_variants_as_block_substitution" />
+    <MESSAGE value="fix File &quot;vcfMerger2/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py&quot;, line 159, in is_obj_nan&#10;    if isnan(obj):&#10;TypeError: must be real number, not str" />
+    <MESSAGE value="fix numpy.str_ issue" />
+    <MESSAGE value="fix issue in vcfMerger2.py when no prep-vcf needed&#10;convert &quot;print&quot; in to &quot;log.info&quot; when needed in each tool-specific python script" />
+    <MESSAGE value="log.info(double_quote_str(list_beds)) moved to correct location" />
+    <MESSAGE value="update error messages in Main" />
+    <MESSAGE value="fix unbound local variable error for lvcfs and ltoolnames" />
+    <MESSAGE value="test length iputs" />
+    <MESSAGE value="debugging make venn or upset plot optional feature" />
+    <MESSAGE value="add str to print integer" />
+    <MESSAGE value="fix bug in reading jason file; replaced prepped_vcf_outfilename with vcf" />
+    <MESSAGE value="Fix Error messages" />
+    <MESSAGE value="Fix Identation" />
+    <MESSAGE value="Remove check contigs step between vcfs {TEST}" />
+    <MESSAGE value="work on creating beds automatically for venn" />
+    <MESSAGE value="work on creating beds automatically for venn - testing mode" />
+    <MESSAGE value="i" />
+    <MESSAGE value="add functions file to prep_vcf folder - TEST" />
+    <MESSAGE value="fix bug in octopus_ capture DP in both Tumor and Normal;" />
+    <MESSAGE value="fix tabulation" />
+    <MESSAGE value="remove extra greater than sign within move command" />
+    <MESSAGE value="working on fixing issue with names of vcf_prepped added to vcfMerger" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on fixing issue with names of vcf_prepped added to vcfMerger" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="51">
+            <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="918">
+          <caret line="161" column="15" selection-start-line="161" selection-start-column="15" selection-end-line="161" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/mutect2/mutect2.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="569">
+          <caret line="301" column="4" selection-start-line="301" selection-start-column="4" selection-end-line="301" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/lancet/lancet.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="617">
+          <caret line="277" column="80" selection-start-line="277" selection-start-column="80" selection-end-line="277" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/merge_vcfs/dvmfuncs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="769">
+          <caret line="651" selection-start-line="651" selection-end-line="696" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="340" lean-forward="true" selection-start-line="340" selection-end-line="340" />
+          <folding>
+            <element signature="e#1327#1342#0" expanded="true" />
+            <element signature="e#17578#20621#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="778">
+          <caret line="292" column="4" selection-start-line="292" selection-start-column="4" selection-end-line="293" selection-end-column="60" />
+          <folding>
+            <element signature="e#1273#1293#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="31" column="22" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="763">
+          <caret line="668" column="12" selection-start-line="668" selection-start-column="12" selection-end-line="668" selection-end-column="12" />
+          <folding>
+            <element signature="e#1274#1288#0" expanded="true" />
+            <element signature="e#1385#1771#0" />
+            <element signature="e#1803#2873#0" />
+            <element signature="e#11306#11697#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="293" column="90" selection-start-line="293" selection-start-column="90" selection-end-line="293" selection-end-column="90" />
+          <folding>
+            <element signature="e#1274#1289#0" expanded="true" />
+            <element signature="e#1877#2395#0" />
+            <element signature="e#12557#14484#0" />
+            <element signature="e#18904#24405#0" />
+            <element signature="e#24436#24941#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="507">
+          <caret line="342" column="43" selection-start-line="342" selection-start-column="43" selection-end-line="342" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="342" column="43" lean-forward="true" selection-start-line="342" selection-start-column="43" selection-end-line="342" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/prep_vcf.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="42" column="72" selection-start-line="42" selection-start-column="72" selection-end-line="42" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs/prep_vcf_functions.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="162" column="40" selection-start-line="162" selection-start-column="40" selection-end-line="162" selection-end-column="40" />
+          <folding>
+            <element signature="n#!!block;n#usage#0" />
+            <element signature="n#!!block;n#fexit#0" />
+            <element signature="n#!!block;n#check_ev#0" />
+            <element signature="n#!!block;n#checkDir#0" />
+            <element signature="n#!!block;n#checkFile#0" />
+            <element signature="n#!!block;n#checkFileName#0" />
+            <element signature="n#!!block;n#checkIntegerOrFloat#0" />
+            <element signature="n#!!block;n#checkIfRangeZeroOne#0" />
+            <element signature="e#2990#3001#0" />
+            <element signature="e#3014#3024#0" />
+            <element signature="n#!!block;n#check_contig_file#0" />
+            <element signature="e#3385#3387#0" />
+            <element signature="n#!!block;n#init_some_vars#0" />
+            <element signature="n#!!block;n#getOptions#0" />
+            <element signature="e#4662#4664#0" />
+            <element signature="e#4681#4689#0" />
+            <element signature="e#4753#4755#0" />
+            <element signature="e#4775#4786#0" />
+            <element signature="e#4904#4906#0" />
+            <element signature="e#4927#4939#0" />
+            <element signature="e#5052#5054#0" />
+            <element signature="e#5076#5089#0" />
+            <element signature="e#5158#5160#0" />
+            <element signature="e#5184#5199#0" />
+            <element signature="e#5264#5266#0" />
+            <element signature="e#5288#5301#0" />
+            <element signature="e#5353#5355#0" />
+            <element signature="e#5372#5380#0" />
+            <element signature="e#5455#5457#0" />
+            <element signature="e#5482#5498#0" />
+            <element signature="e#5594#5596#0" />
+            <element signature="e#5613#5621#0" />
+            <element signature="e#5689#5691#0" />
+            <element signature="e#5709#5718#0" />
+            <element signature="e#5777#5779#0" />
+            <element signature="e#5800#5812#0" />
+            <element signature="e#6136#6138#0" />
+            <element signature="e#6172#6197#0" />
+            <element signature="e#6275#6277#0" />
+            <element signature="e#6303#6320#0" />
+            <element signature="n#!!block;n#recap_input#0" />
+            <element signature="e#6610#6612#0" />
+            <element signature="e#6705#6707#0" />
+            <element signature="n#!!block;n#concatenate_snvs_indels#0" />
+            <element signature="e#6889#6897#0" />
+            <element signature="e#6938#6946#0" />
+            <element signature="e#7213#7221#0" />
+            <element signature="e#7258#7266#0" />
+            <element signature="e#7372#7381#0" />
+            <element signature="e#7455#7463#0" />
+            <element signature="e#7480#7489#0" />
+            <element signature="e#7500#7503#0" />
+            <element signature="n#!!block;n#check_and_update_sample_names#0" />
+            <element signature="e#7932#7935#0" />
+            <element signature="e#8159#8162#0" />
+            <element signature="e#8214#8217#0" />
+            <element signature="e#8242#8253#0" />
+            <element signature="e#8274#8285#0" />
+            <element signature="e#8688#8699#0" />
+            <element signature="e#8976#8979#0" />
+            <element signature="e#9390#9401#0" />
+            <element signature="e#9430#9441#0" />
+            <element signature="e#9475#9486#0" />
+            <element signature="e#9515#9526#0" />
+            <element signature="e#9728#9739#0" />
+            <element signature="e#9897#9900#0" />
+            <element signature="e#9921#9924#0" />
+            <element signature="n#!!block;n#get_contigs_file#0" />
+            <element signature="e#10779#10783#0" />
+            <element signature="e#10825#10827#0" />
+            <element signature="e#10855#10859#0" />
+            <element signature="e#10894#10898#0" />
+            <element signature="e#10923#10931#0" />
+            <element signature="e#10951#10959#0" />
+            <element signature="e#11141#11149#0" />
+            <element signature="e#11191#11195#0" />
+            <element signature="e#11291#11295#0" />
+            <element signature="e#11304#11312#0" />
+            <element signature="e#11402#11410#0" />
+            <element signature="n#!!block;n#add_Contigs#0" />
+            <element signature="e#11521#11524#0" />
+            <element signature="e#11660#11663#0" />
+            <element signature="e#11715#11718#0" />
+            <element signature="e#11738#11741#0" />
+            <element signature="e#11749#11758#0" />
+            <element signature="e#11799#11808#0" />
+            <element signature="e#11819#11822#0" />
+            <element signature="n#!!block;n#look_for_block_substitution_in_octopus#0" />
+            <element signature="e#12090#12093#0" />
+            <element signature="e#12209#12212#0" />
+            <element signature="e#12219#12228#0" />
+            <element signature="e#12239#12244#0" />
+            <element signature="e#12261#12266#0" />
+            <element signature="e#12353#12362#0" />
+            <element signature="e#12372#12375#0" />
+            <element signature="n#!!block;n#decompose#0" />
+            <element signature="e#12551#12554#0" />
+            <element signature="e#12589#12592#0" />
+            <element signature="e#12599#12608#0" />
+            <element signature="e#12651#12660#0" />
+            <element signature="e#12671#12674#0" />
+            <element signature="n#!!block;n#make_vcf_upto_specs_for_VcfMerger#0" />
+            <element signature="e#12969#12972#0" />
+            <element signature="e#13046#13049#0" />
+            <element signature="e#13104#13113#0" />
+            <element signature="e#13163#13168#0" />
+            <element signature="e#13311#13320#0" />
+            <element signature="e#13331#13334#0" />
+            <element signature="n#!!block;n#normalize_vcf#0" />
+            <element signature="e#13443#13446#0" />
+            <element signature="e#13541#13544#0" />
+            <element signature="e#13592#13595#0" />
+            <element signature="e#13652#13661#0" />
+            <element signature="e#13691#13694#0" />
+            <element signature="e#13751#13760#0" />
+            <element signature="e#13792#13795#0" />
+            <element signature="e#13811#13820#0" />
+            <element signature="e#13831#13834#0" />
+            <element signature="n#!!block;n#prepare_input_file_for_Venn#0" />
+            <element signature="e#13943#13946#0" />
+            <element signature="e#14103#14106#0" />
+            <element signature="e#14190#14209#0" />
+            <element signature="n#!!block;n#final_msg#0" />
+            <element signature="e#14493#14496#0" />
+            <element signature="e#14922#14925#0" />
+            <element signature="n#!!block;n#process_strelka2_vcf#0" />
+            <element signature="e#15079#15082#0" />
+            <element signature="e#15130#15133#0" />
+            <element signature="e#15161#15164#0" />
+            <element signature="e#15180#15183#0" />
+            <element signature="n#!!block;n#process_mutect2_vcf#0" />
+            <element signature="e#15274#15277#0" />
+            <element signature="e#15301#15304#0" />
+            <element signature="e#15352#15355#0" />
+            <element signature="e#15383#15386#0" />
+            <element signature="e#15402#15405#0" />
+            <element signature="n#!!block;n#process_lancet_vcf#0" />
+            <element signature="e#15495#15498#0" />
+            <element signature="e#15524#15527#0" />
+            <element signature="e#15575#15578#0" />
+            <element signature="e#15606#15609#0" />
+            <element signature="e#15625#15628#0" />
+            <element signature="n#!!block;n#process_octopus_vcf#0" />
+            <element signature="e#15719#15722#0" />
+            <element signature="e#15805#15808#0" />
+            <element signature="e#15935#15938#0" />
+            <element signature="e#15986#15989#0" />
+            <element signature="e#16017#16020#0" />
+            <element signature="e#16036#16039#0" />
+            <element signature="n#!!block;n#process_vardictjava_vcf#0" />
+            <element signature="e#16134#16137#0" />
+            <element signature="e#16163#16166#0" />
+            <element signature="e#16214#16217#0" />
+            <element signature="e#16245#16248#0" />
+            <element signature="e#16264#16267#0" />
+            <element signature="n#!!block;n#run_tool#0" />
+            <element signature="e#16387#16406#0" />
+            <element signature="e#16416#16425#1" />
+            <element signature="e#16488#16507#0" />
+            <element signature="e#16587#16590#0" />
+            <element signature="e#16656#16675#0" />
+            <element signature="e#16752#16755#0" />
+            <element signature="e#16824#16843#0" />
+            <element signature="e#16916#16924#0" />
+            <element signature="e#16983#16986#0" />
+            <element signature="e#17052#17071#0" />
+            <element signature="e#17170#17189#0" />
+            <element signature="e#17345#17348#0" />
+            <element signature="e#17418#17437#0" />
+            <element signature="e#17520#17528#0" />
+            <element signature="e#17592#17595#0" />
+            <element signature="n#!!block;n#main#0" />
+            <element signature="e#19159#19162#0" />
+            <element signature="e#19195#19198#0" />
+            <element signature="e#19495#19498#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
