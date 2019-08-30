@@ -772,7 +772,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	if bedTolist:
 		newFileList = []
 		for bed in lbeds:
-			mycmd = [ "sed 's/\t/_/'", bed, ">", bed+".asList" ]
+			mycmd = [ "sed", "'s/\\t/_/'", bed, ">", bed+".asList" ]
 
 			log.info(str(mycmd))
 			log.info(" ".join([x for x in mycmd]))
