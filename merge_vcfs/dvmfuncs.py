@@ -772,20 +772,26 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	if bedTolist:
 		newFileList = []
 		for bed in lbeds:
-			mycmd = [ "sed", "'s/\\t/_/'", bed, ">", bed+".asList" ]
-
-			log.info(str(mycmd))
-			log.info(" ".join([x for x in mycmd]))
+			# mycmd = [ "sed ", "", " 's/\\t/_/g' ", bed, " > ", bed+".asList " ]
+			pattern = "\\t"
+			replacement = "_"
+			full_string_sed = ["s/" + pattern + "/" + replacement + "/g"]
+			args = ["sed"] + full_string_sed + [bed]
+			log.info(str(args))
+			log.info(" ".join([x for x in args]))
 			# check_output will run the command and store to result
 			log.info("*" * 50)
 			log.info("full command to convert bed to StringList")
-			process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
+			fout = open(bed + ".asList", "w")
+			process = subprocess.Popen(args, shell=False, universal_newlines=False, stdout=fout)
 			process.wait()
 			log.info(str(process.returncode))
 			if process.returncode is not 0:
 				sys.exit("Conversion BED to LIST FAILED; Aborting.")
-			newFileList.append(bed+".asList")
+			newFileList.append(bed + ".asList")
+			fout.close()
 		lbeds = newFileList
+		type = "list";  ## need to update the type here as now we have a list of string in the file for intervene
 		log.info("new list of inputs for intervene:")
 		log.info(",".join(lbeds))
 
