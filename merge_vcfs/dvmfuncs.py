@@ -769,7 +769,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	dpi = 300
 	bordercolors = ["black"] * numberOfTools
 	fontsize = 20
-	project = prefixPngFilenames + "_" + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
+	project = prefixPngFilenames + "." + str(numberOfTools) + "_tools_" + variantType.replace(" ", "_") + "." + str(figtype) ;  ## this is actually the name of the png image file while the output_name is the folder where the intervene results are going into
 
 	# Define the type of venn
 	if numberOfTools >= 5:
@@ -806,7 +806,6 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 	else:
 		vtype = "venn"
-		type_specific_additional_args = []
 		type_specific_additional_args = ["--bordercolors",  ",".join([color for color in bordercolors]),
 		                                  "--colors", ','.join([color for color in colors]),
 		                                 "--fontsize", str(fontsize),
@@ -984,13 +983,14 @@ def add_annotation_to_image(finput_image, ltoolnames, list_of_files_with_variant
 	ltoolnames and list_of_files_with_variants MUST be paired [ (t1, t2, t3) to (lv1, lv2, lv3) ]
 	:param image: image to update (i.e. filename of the image)
 	:param ltoolnames is the list of toolnames
-	:param list_of_files_with_variants:
+	:param list_of_files_with_variants: Expecting Bedfiles without Any header or comment lines; just data of interest.
 	:return: None
 	'''
 	lvarfiles = check_if_files_in_list_exist(list_of_files_with_variants)
 
 	if lvarfiles is None or lvarfiles == []:
 		log.error("None of the expected png files for annotation were found; Skipping Image file annotation;")
+		## we just do not do any annotation;
 		return None
 
 	if len(ltoolnames) != len(lvarfiles):

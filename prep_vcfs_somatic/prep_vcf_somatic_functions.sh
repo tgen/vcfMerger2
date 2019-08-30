@@ -445,25 +445,47 @@ function phasing_consecutive_variants_in_strelka2(){
 function prepare_input_file_for_Venn(){
     local VCF="$1"
     local DIROUT=$2
+    echo -e "EXPECTED VCF for Making BED: ${VCF}" 1>&2
     if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
     local INPUT_FILE_FOR_VENN=$( basename ${VCF} ".vcf" ).intervene.bed
     #echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
-    grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN}
-    check_ev $? "prepare_input_file_for_Venn"
+    if [[ $(grep -vE "^#" ${VCF} | wc -l) -ne 0 ]] ;
+    then
+        grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN}
+        check_ev $? "prepare_input_file_for_Venn"
+    else
+        echo -e "No Variants in VCF << ${VCF} >>"
+        touch ${DIROUT}/${INPUT_FILE_FOR_VENN}
+    fi
 }
 
 
 function prepare_input_file_for_Venn_SplitbyVariantType(){
     local VCF="$1"
     local DIROUT=$2
-    if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" ; fi
+    echo -e "EXPECTED VCF for Making BED: ${VCF}" 1>&2
+    if [[ ! -e ${VCF} ]] ; then echo -e "ERROR: VCF NOT FOUND --> ${VCF}" 1>&2 ; fi
     local INPUT_FILE_FOR_VENN_SNVS=$( basename ${VCF} ".vcf" ).intervene.snvs.bed
     local INPUT_FILE_FOR_VENN_INDELS=$( basename ${VCF} ".vcf" ).intervene.indels.bed
-    #echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
-    grep -vE "^#" ${VCF} | awk -F"\t" ' $4~/[ATCG]/ && $5~/[ATCG]/ && length($4)==1 && length($5)==1 || ( length($4)>1 && length($4)==length($5) ) {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN_SNVS}
-    check_ev $? "prepare_input_file_for_Venn_SNVS"
-    grep -vE "^#" ${VCF} | awk -F"\t" ' length($4)>length($5) || length($5)>length($4) || $4=="." || $5=="."  {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN_INDELS}
-    check_ev $? "prepare_input_file_for_Venn_INDELS"
+
+    ## echo -e "grep -vE "^#" ${VCF} | awk -F"\t" '{OFS="_" ; print $1,$2,$4,$5 }' > ${INPUT_FILE_FOR_VENN} " 1>&2
+    if [[ $(grep -vE "^#" ${VCF} | awk -F"\t" ' $4~/[ATCG]/ && $5~/[ATCG]/ && length($4)==1 && length($5)==1 || ( length($4)>1 && length($4)==length($5) ) {OFS="\t" ; print $1,$2,$2,$4,$5 }' | wc -l) -ne 0 ]] ;
+    then
+        grep -vE "^#" ${VCF} | awk -F"\t" ' $4~/[ATCG]/ && $5~/[ATCG]/ && length($4)==1 && length($5)==1 || ( length($4)>1 && length($4)==length($5) ) {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN_SNVS}
+        check_ev $? "prepare_input_file_for_Venn_SNVS"
+    else
+        echo -e "No Snvs in VCF << ${VCF} >>"
+        touch ${DIROUT}/${INPUT_FILE_FOR_VENN_SNVS}
+    fi
+
+    if [[ $(grep -vE "^#" ${VCF} | awk -F"\t" ' length($4)>length($5) || length($5)>length($4) || $4=="." || $5=="."  {OFS="\t" ; print $1,$2,$2,$4,$5 }' | wc -l) -ne 0 ]] ;
+    then
+        grep -vE "^#" ${VCF} | awk -F"\t" ' length($4)>length($5) || length($5)>length($4) || $4=="." || $5=="."  {OFS="\t" ; print $1,$2,$2,$4,$5 }' | sort -k1,1V -k2,2n -k3,3n > ${DIROUT}/${INPUT_FILE_FOR_VENN_INDELS}
+        check_ev $? "prepare_input_file_for_Venn_INDELS"
+    else
+        echo -e "No Indels in VCF << ${VCF} >>"
+        touch ${DIROUT}/${INPUT_FILE_FOR_VENN_INDELS}
+    fi
 }
 
 function final_msg(){
@@ -477,14 +499,14 @@ function final_msg(){
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
-    echo "command: cp ${VCF} ${VCF_FINAL}"
+    echo "command: cp ${VCF} ${VCF_FINAL}"  1>&2
 	cp ${VCF} ${VCF_FINAL}
 	####check_ev $? "copy file" ## if files are the same cp will return an error so we cannot check the exit value; alternative: use rsync instead of cp
 
 
 	if [[ ${MAKE_BED_FOR_VENN} == "yes" ]]
 	then
-	    echo -e "preparing input file for intervene python3 module to make Venns" 1>&2
+	    echo -e "preparing input file for intervene python3 module to make Venns using VCF called ${VCF_FINAL}" 1>&2
 	    prepare_input_file_for_Venn "${VCF_FINAL}" "${DIR_OUTPUT}"
 	    prepare_input_file_for_Venn_SplitbyVariantType "${VCF_FINAL}" "${DIR_OUTPUT}"
 	fi
@@ -501,10 +523,10 @@ function process_strelka2_vcf(){
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
-	echo "after normalize ((((((   ${VCF}"
+	echo "after normalize ((((((   ${VCF}"  1>&2
 	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
-	echo "after recomposition ()()()()()()()()() ${VCF}"
-	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("
+	echo "after recomposition ()()()()()()()()() ${VCF}"  1>&2
+	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
 	echo ${VCF}
 	final_msg ${VCF}
@@ -532,18 +554,27 @@ function process_lancet_vcf(){
 
 function process_octopus_vcf(){
 	local VCF=$1
-	VCF=$( check_and_update_sample_names ${VCF} )
-	VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put look for blocs before decompose? b/c we only use the first allele for collapsing block
-	VCF=$( decompose ${VCF} )
-	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
-	VCF=$( normalize_vcf ${VCF})
-	final_msg ${VCF}
+	if [[ $(zcat -f ${VCF} | grep -vE "^#" | wc -l ) -ne 0 ]] ;
+	then
+	    echo -e "In Function process_octopus_vcf ... "  1>&2
+        VCF=$( check_and_update_sample_names ${VCF} )
+        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
+        VCF=$( decompose ${VCF} )
+        VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+        VCF=$( normalize_vcf ${VCF})
+        final_msg ${VCF}
+	else
+	    echo -e "OCTOPUS's VCF has no Variants; Processing only sample name checking and final vcf renaming; " 1>&2
+        VCF=$( check_and_update_sample_names ${VCF} )
+        VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+	    final_msg ${VCF}
+    fi
 }
 
 function process_vardictjava_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	#VCF=$( add_Contigs ${VCF} )
+	#VCF=$( add_Contigs ${VCF} ) ## deprecated as we expect vcf having correct contig list after vardictjava update
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}

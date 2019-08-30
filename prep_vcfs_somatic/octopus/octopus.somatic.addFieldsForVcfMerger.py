@@ -337,6 +337,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of
 				copyfile(input_vcf_path, new_vcf_name)
 				exit()
 			else:
+
 				log.error(FIELD+" flag NOT found in FORMAT field; Aborting VCF preparation.")
 				exit(FIELD+" flag Absent")
 		else:
@@ -385,7 +386,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		ADP_tumor = int(if_dot_assign_negative_value(ADP_tumor))
 		ADP_normal = int(if_dot_assign_negative_value(ADP_normal))
 		ADOs = [AD_normal, AD_tumor] if idxT == 1 else [AD_tumor, AD_normal]
-		log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ")
+		log.debug("ADOs --->>>  " + str(ADOs) + " <<<<<<<<-----  ") ## ADO stands for AD Old ones
 		v.set_format('ADO', np.array(ADOs))
 
 		## Calculate AR (allele ratio using AD and ADP)
@@ -486,9 +487,22 @@ if __name__ == "__main__":
 	else:
 		new_vcf = new_vcf_name
 
+
+	## test if no variants in vcf:
+	try:
+		next(iter(vcf)) ## we just try to check if we have no variant at all in VCF
+	except StopIteration as si:
+		## we bring the header upto specs and write down the output file
+		log.warning("No Variants found in VCF; Creating Final Empty VCF now ..." + str(si))
+		vcf = update_header(vcf)
+		w = Writer(new_vcf, vcf)
+		w.close()
+		exit()
+
 	## checking if PS flag is still present in the VCF genotype fields
 	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS"])
 
+	vcf = VCF(vcf_path) ## as we have already consumed twice the generator; we do not want to lose any variant
 	vcf = update_header(vcf)
 
 	# create a new vcf Writer using the input vcf as a template.

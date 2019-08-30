@@ -295,7 +295,7 @@ def filter_prepped_vcf(data, path_jar_snpsift):
 		log.info("Expected new filename for the input vcfs for the next stage is: ".format(str(new_vcf_name)))
 		data[tool]['prepped_vcf_outfilename'] = new_vcf_name
 		data[tool]['vcf'] = new_vcf_name ## we consider that the input vcf is now the filtered vcf; which is also the prepped vcf ## TRICK here
-
+		print(data[tool]['prepped_vcf_outfilename'])
 	return data
 
 def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False):
@@ -609,6 +609,26 @@ def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
 			if process.returncode is not 0:
 				sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
+def return_full_path_for_files(list_files):
+	"""
+	Convert relative path to abspath
+	:param list_files: list of files or dir
+	:return: list with full path of the items
+	"""
+	newlist = []
+	if not isinstance(list_files, list):
+		log.error("Expected a list of files ; Please modify your inputs if needed ; ")
+		raise("ERROR: expected list of items; found "+str(type(list_files)))
+	for f in list_files:
+		if f is None or f == '':
+			newlist.append('')
+			continue
+		if not os.path.isabs(f):
+			newlist.append(os.path.abspath(f))
+		else:
+			newlist.append(f)
+	return newlist
+
 
 def subprocess_cmd(command):
 	ev = os.system(command)
@@ -637,7 +657,7 @@ def prepare_bed_for_venn(vcf, dirout):
 		subprocess_cmd(' '.join([str(x) for x in mycmd]))
 
 
-def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=None, prefixPngFilenames="vcfMerger2"):
+def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, filter_string_for_snpsift, cmdline=None, prefixPngFilenames="vcfMerger2"):
 	"""
 
 	:param data:
@@ -691,9 +711,20 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
 
 		for tool in data.keys():
 			if not skip_prep_vcfs:
-				list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+				if filter_string_for_snpsift:
+					if not os.path.exists(os.path.splitext(vcf)[0] + ".intervene.bed"):
+						prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
+						list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+						                        list_vcfs.split(delim)])
+				else:
+					list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
 				                        list_vcfs.split(delim)])  ## extension intervene.bed defined in prep_vcf_somatic.sh
 				log.info("list_bed for venn is: " + str(list_beds))
+			elif filter_string_for_snpsift:
+				if not os.path.exists(os.path.splitext(vcf)[0] + ".intervene.bed"):
+					prepare_bed_for_venn(data[tool]['prepped_vcf_outfilename'], dirout)
+					list_beds = delim.join([str(os.path.splitext(vcf)[0] + ".intervene.bed") for vcf in
+					                        list_vcfs.split(delim)])
 			elif lbeds == "":
 				## as we skipped the prparation of vcfs, we already assigned in code before the vcfs to the prepped_vcf_outfilename field; so they should be equivalent
 				log.info("for intervene tool, making bed from vcf intended to be merged : " + str(tool))
@@ -752,7 +783,7 @@ def check_path_to_vcfs(lvcfs):
 		else:
 			log.info("VCF found: " + str(vcf))
 
-def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None,
+def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None, lbams=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
                  filter_by_pass=False, filter_string_for_snpsift=None,
                  path_jar_snpsift=None, ref_genome_fasta_dict=None, skip_merge=False, skip_prep_vcfs=False):
@@ -767,38 +798,67 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	:return:
 	"""
 	if lvcfs is None:
-		log.info("ERROR: Found list of input vcfs to be prepped or to be merged empty")
+		log.error("ERROR: Found list of input vcfs to be prepped or to be merged empty")
 		sys.exit("ERROR: list of vcfs empty")
 	if len(lvcfs) == 1 and not skip_merge:
-		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
+		log.error("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
 		sys.exit("ERROR: list of vcfs length of 1 vcf only")
 	if len(lvcfs) == 1 and skip_prep_vcfs:
-		log.info("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
+		log.error("ERROR: Found list of input vcfs with ONE vcfs only; Minimumn number of vcfs must be TWO;")
 		sys.exit("ERROR: list of vcfs length of 1 vcf only")
 	if len(lvcfs) != len(ltoolnames):
-		log.info("ERROR: Found {} vcfs provided and {} tools given ".format(len(lvcfs), len(ltoolnames)))
+		log.error("ERROR: Found {} vcfs provided and {} tools given ".format(len(lvcfs), len(ltoolnames)))
 		sys.exit(
 			"ERROR: list vcfs files MUST be equal to the number of tools given ; check if delimiter is adequate and do not interfere")
 	if ltpo is not None and len(ltoolnames) != len(ltpo):
-		log.info("ERROR: Found {} tools in precedence list and {} toolnames given".format(len(ltpo), len(ltoolnames)))
+		log.error("ERROR: Found {} tools in precedence list and {} toolnames given".format(len(ltpo), len(ltoolnames)))
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of tools given in the list of precedence ; "
 			"check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 	if lacronyms is not None and len(ltoolnames) != len(lacronyms):
-		log.info("ERROR: Found {} in acronyms list and {} toolnames given".format(len(lacronyms), len(ltoolnames)))
+		log.error("ERROR: Found {} in acronyms list and {} toolnames given".format(len(lacronyms), len(ltoolnames)))
 		sys.exit(
 			"ERROR: Number of toolnames MUST be equal to the number of acronyms given ;\n"
 			"ERROR: check if delimiter is adequate and do not interfere with splitting the given lists of tools")
 
+	# ## we check we really deal with bam files
+	# if lbams is not None:
+	# 	for f in lbams:
+	# 		if f is None or f is "":
+	# 			continue
+	# 		cmd = ''.join( [ "xxd" , f , "|", "head -n 2 | tail -n 1", " |", " cut -d' ' -f2-3 | sed 's/ \+//'" ] )
+	# 		process = subprocess.Popen(cmd, shell=True, universal_newlines=True, stdout=subprocess.PIPE);
+	# 		retval = process.wait();
+	# 		if retval == 0:
+	# 			magic_number_bam = next(iter(process.stdout)).strip()  ## I did not find how to capture bam specific magic number
+	# 		else:
+	# 			raise("ERROR with capturing magic_number_bam for file {}".format(f))
+	# 		if '5d27955d' != magic_number_bam:
+	# 			log.error("ERROR: the file << {} >> is not a BAM file; Please provide a BAM file".format(f))
+	# 			sys.exit()
+	# 		else:
+	# 			log.info("BAM OK -- {}".format(f))
+
+	## As currently Strelka2 tool is the only one needing the Tumor Bam for Phasing, we check that the BAM fiel is provided
+	if "strelka2" in ltoolnames and lbams is None:
+		log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Aborting." )
+		sys.exit()
+	if "strelka2" in ltoolnames:
+		index_strelka = ltoolnames.index('strelka2')
+		if lbams[index_strelka] is None or lbams[index_strelka] == "":
+			log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Notes: 1) index bam must be present in same location as bam;  2) NO cram ; Aborting.")
+			sys.exit()
+
+
 	if ref_genome_fasta_dict is None:
-		log.info("ERROR: fasta dictionary file MUST be provided to sort the contigs in the header correctly")
+		log.error("ERROR: fasta dictionary file MUST be provided to sort the contigs in the header correctly")
 		sys.exit("ERROR: fasta dico file missing ; use --dict option and provide full path to the  dict file ")
 	## Checking snpsift path to jar
 	if (filter_by_pass or filter_string_for_snpsift is not None) and path_jar_snpsift is None:
 		log.error("ERROR: You enabled a filter option but did not provide any path to snpSift.jar ; please provide the FULL PATH to SnpSift.jar file; Aborting!")
 		sys.exit(-1)
 	elif (filter_string_for_snpsift is not None or filter_by_pass) and path_jar_snpsift is not None:
-		log.info("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
+		log.error("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
 		if not os.path.exists(path_jar_snpsift):
 			raise Exception("ERROR: snpSift.jar FILE NOT FOUND. Aborting!")
 	elif filter_string_for_snpsift is not None and path_jar_snpsift is None:
@@ -843,7 +903,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
 
 	if lprepped_vcf_outfilenames is not None and len(ltoolnames) != len(lprepped_vcf_outfilenames):
-		log.info(
+		log.error(
 			"ERROR: Found {} in list of given prep-filenames and {} toolnames given".format(
 				len(lprepped_vcf_outfilenames),
 				len(ltoolnames)))
@@ -936,6 +996,7 @@ def main(args, cmdline):
 	lbams = None
 	if args["bams"]:
 		lbams = str(args["bams"]).split(delim)
+		lbams = return_full_path_for_files(lbams)
 		log.info("ordered list of bams given:\t{}".format(str(lbams)))
 
 	lcontigs = None
@@ -1038,7 +1099,7 @@ def main(args, cmdline):
 	## MAIN  ##
 	##@@@@@@@@@
 	check_inputs(lvcfs, ltoolnames, ltpo=list_tool_precedence_order, lacronyms=lacronyms,
-	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds,
+	             lprepped_vcf_outfilenames=lprepped_vcf_outfilenames, lbeds=lbeds, lbams=lbams,
 	             germline=germline, tumor_sname=tumor_sname, normal_sname=normal_sname,
 	             germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
 	             filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
@@ -1141,7 +1202,7 @@ def main(args, cmdline):
 		log.info(str(data))
 
 	if not skip_merge:  ## MERGING step Enabled
-		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, cmdline=cmdline, prefixPngFilenames=prefix_png_plots)
+		merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_venn, lbeds, skip_prep_vcfs, dirout, filter_string_for_snpsift, cmdline=cmdline, prefixPngFilenames=prefix_png_plots)
 	else:
 		log.info("**** SKIPPED merge step SKIPPED ****")
 
