@@ -761,7 +761,40 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	if len(lbeds) != numberOfTools:
 		log.info("WARNING: Number of Tools and number of BED files do NOT match; we skip the creation of Venn")
 		return 0
+
 	type = "genomic"
+
+	## as intervene only uses the bed coordinates to get the sets, if two same positions are listed but one is a SNV and
+	## the second is an INDEL, intervene considers that case as only ONE item; so we lose info here; we need to
+	## have the REF and ALT taken into account as well;
+	## so we convert our 5-columns bed files  into a simple list of strings and reassigned the new files to the lbeds object
+	bedTolist = True;
+	if bedTolist:
+		newFileList = []
+		for bed in lbeds:
+			# mycmd = [ "sed ", "", " 's/\\t/_/g' ", bed, " > ", bed+".asList " ]
+			pattern = "\\t"
+			replacement = "_"
+			full_string_sed = ["s/" + pattern + "/" + replacement + "/g"]
+			args = ["sed"] + full_string_sed + [bed]
+			log.info(str(args))
+			log.info(" ".join([x for x in args]))
+			# check_output will run the command and store to result
+			log.info("*" * 50)
+			log.info("full command to convert bed to StringList")
+			fout = open(bed + ".asList", "w")
+			process = subprocess.Popen(args, shell=False, universal_newlines=False, stdout=fout)
+			process.wait()
+			log.info(str(process.returncode))
+			if process.returncode is not 0:
+				sys.exit("Conversion BED to LIST FAILED; Aborting.")
+			newFileList.append(bed + ".asList")
+			fout.close()
+		lbeds = newFileList
+		type = "list";  ## need to update the type here as now we have a list of string in the file for intervene
+		log.info("new list of inputs for intervene:")
+		log.info(",".join(lbeds))
+
 	colors = list(get_colors_for_venns(numberOfTools))
 
 	title = venn_title + " [ " + variantType + "]\""
@@ -803,6 +836,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		                                 "--showzero",
 		                                 "--order", "freq", "--scriptonly" ]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
+		if saveOverlapsBool:
+			type_specific_additional_args = type_specific_additional_args + ["--save-overlaps"]
 
 	else:
 		vtype = "venn"
@@ -860,7 +895,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		## Processing with the Rscript created by Intervene for UpSet plots
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
 		pattern = "nsets"
-		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), nsets"
+		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), matrix.dot.alpha=0.5, point.size = 3, nsets"
 
 		full_string_sed = [ "s/" + pattern + "/" + replacement + "/" ]
 		scriptname = project + "_upset.R"
