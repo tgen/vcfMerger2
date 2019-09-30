@@ -840,10 +840,10 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	# 			log.info("BAM OK -- {}".format(f))
 
 	## As currently Strelka2 tool is the only one needing the Tumor Bam for Phasing, we check that the BAM file is provided
-	if "strelka2" in ltoolnames and lbams is None and skip_prep_vcfs is True:
+	if "strelka2" in ltoolnames and lbams is None and skip_prep_vcfs is False:
 		log.error("ERROR: You must provide the Tumor BAM files to the option --bams; If you provide only one bam, but have 4 tools for instance, you MUST provide the list as follow: '||BAM_STRELKA|', using empty value for other bam; Otherwise index range exception will be raised ; Aborting." )
 		sys.exit(1)
-	if "strelka2" in ltoolnames:
+	if "strelka2" in ltoolnames and skip_prep_vcfs is False:
 		index_strelka = ltoolnames.index('strelka2')
 		if lbams[index_strelka] is None or lbams[index_strelka] == "":
 			log.error("ERROR: You must provide the Tumor BAM files to the option --bams ; Notes: 1) index bam must be present in same location as bam ;  2) NO cram ; 3) example of list if more than one tool provided: '||BAM_STRELKA|' ); Orders of BAMs  must match order of tools ; Aborting.")
