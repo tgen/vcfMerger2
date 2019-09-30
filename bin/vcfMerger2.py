@@ -1253,7 +1253,7 @@ def make_parser_args():
 	required.add_argument('--bams',
 	                      required=False,
 	                      action=UniqueStore,
-	                      help='List of TUMOR/CASES bams used to call variants; Note1: if Strelka2 tool is give, the TUMOR BAM file is MANDATORY; Note2: If you do not have the bam put empty value in given piped ordered list; Note3: this option will be improved LATER to avoid confusion and misunderstanding of the BAM usage in vcfMerger2 ')
+	                      help='List of TUMOR/CASES bams used to call variants; \nNote1: if Strelka2 tool is given, the TUMOR BAM file is MANDATORY; \nNote2: If you do not have the bam put empty value in given piped ordered list; \nNote3: this option will be improved LATER to avoid confusion and misunderstanding of the BAM usage in vcfMerger2 ')
 
 	optional.add_argument('--germline',
 	                      required=False,
