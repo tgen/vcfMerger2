@@ -839,15 +839,15 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	# 		else:
 	# 			log.info("BAM OK -- {}".format(f))
 
-	## As currently Strelka2 tool is the only one needing the Tumor Bam for Phasing, we check that the BAM fiel is provided
-	if "strelka2" in ltoolnames and lbams is None:
-		log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Aborting." )
-		sys.exit()
+	## As currently Strelka2 tool is the only one needing the Tumor Bam for Phasing, we check that the BAM file is provided
+	if "strelka2" in ltoolnames and lbams is None and skip_prep_vcfs is False:
+		log.error("ERROR: You must provide the Tumor BAM files to the option --bams; If you provide only one bam, but have 4 tools for instance, you MUST provide the list as follow: '||BAM_STRELKA|', using empty value for other bam; Otherwise index range exception will be raised ; Aborting." )
+		sys.exit(1)
 	if "strelka2" in ltoolnames:
 		index_strelka = ltoolnames.index('strelka2')
 		if lbams[index_strelka] is None or lbams[index_strelka] == "":
-			log.error("ERROR: You must provide the Tumor BAM files to the option --lbams ; Notes: 1) index bam must be present in same location as bam;  2) NO cram ; Aborting.")
-			sys.exit()
+			log.error("ERROR: You must provide the Tumor BAM files to the option --bams ; Notes: 1) index bam must be present in same location as bam (e.g of list: '||BAM_STRELKA|' );  2) NO cram ; Aborting.")
+			sys.exit(1)
 
 
 	if ref_genome_fasta_dict is None:
@@ -856,7 +856,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	## Checking snpsift path to jar
 	if (filter_by_pass or filter_string_for_snpsift is not None) and path_jar_snpsift is None:
 		log.error("ERROR: You enabled a filter option but did not provide any path to snpSift.jar ; please provide the FULL PATH to SnpSift.jar file; Aborting!")
-		sys.exit(-1)
+		sys.exit(1)
 	elif (filter_string_for_snpsift is not None or filter_by_pass) and path_jar_snpsift is not None:
 		log.error("Path to provided snpSift.jar file:" + str(path_jar_snpsift))
 		if not os.path.exists(path_jar_snpsift):
@@ -875,7 +875,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if filter_string_for_snpsift is not None and (len(filter_string_for_snpsift.split("###")) != len(ltoolnames) or len(filter_string_for_snpsift.split("###")) == 0 ):
 		log.error("ERROR: Number of triple-pound separated Values in --filter option does NOT match the number of given toolnames or number of given vcfs; "
 		          ". Check your inputs; Check if triple pouns are well used to separate out the values for that option.")
-		sys.exit(-1)
+		sys.exit(1)
 	elif filter_string_for_snpsift is not None and ( len(filter_string_for_snpsift.split("###")) == 0 or filter_string_for_snpsift != ""):
 		log.info(
 			"FYI: Using the same filtering for all the vcfs; This implies all the VCFs contains the correct flags and fields.")
@@ -885,7 +885,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if merged_vcf_outfilename is None:
 		msg = "ERROR: Missing filename; Please provide a name for the merged final VCF; (fullpath, relative path or just basename)"
 		log.error(msg)
-		sys.exit(-1)
+		sys.exit(1)
 	dn = os.path.dirname(merged_vcf_outfilename)
 	if dn == '':
 		log.info("final vcf will be written in current directory: " + os.path.realpath(os.curdir))
@@ -893,12 +893,12 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 		msg = "ERROR: path to the merged vcf outfilename NOT FOUND relative to current path; Check your inputs ; folder << {} >> NOT FOUND. Please create that directory first.".format(
 			dn)
 		log.error(msg);
-		sys.exit(-1)
+		sys.exit(1)
 	elif os.path.exists(dn):
 		log.info("merged_vcf will be written into folder: " + dn)
 	else:
 		log.error("dn object has a weird assignment; Why am I here?? ; dn is <" + dn + ">")
-		sys.exit(-1)
+		sys.exit(1)
 	log.info("filename for the uncompressed merged output vcf will be: " + merged_vcf_outfilename)
 	log.info("filename for the bgzip-compressed merged output vcf will be: " + merged_vcf_outfilename + ".gz")
 
@@ -913,12 +913,12 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if germline and germline_snames is None:
 		log.error(
 			"ERROR: germline was enabled but no germline sample names given; please use option: --germline-snames and provide a DELIM-list of sample according to vcf content ")
-		sys.exit(-1)
+		sys.exit(1)
 	if not germline:
 		if tumor_sname is None or normal_sname is None or (tumor_sname is None and normal_sname is None):
 			log.error(
 				"ERROR: Somatic was enabled but no either/or/both tumor or/and normal sample names were not given; Provide options: --tumor-sname and --normal-sname with expected sample names")
-			sys.exit(-1)
+			sys.exit(1)
 	if germline_snames is not None and germline is False and (tumor_sname is not None or normal_sname is not None):
 		log.error(
 			"ERROR: Ambiguous inputs and options; germline and soamtic analyses are EXCLUSIVE ; use --germline option to stipulate processing germlien calls and provide --germline-snames as well ; if only somatic, provide only tumor-sname and normal-sname")
@@ -1253,7 +1253,10 @@ def make_parser_args():
 	required.add_argument('--bams',
 	                      required=False,
 	                      action=UniqueStore,
-	                      help='List of TUMOR/CASES bams used to call variants; \nNote1: if Strelka2 tool is given, the TUMOR BAM file is MANDATORY; \nNote2: If you do not have the bam put empty value in given piped ordered list; \nNote3: this option will be improved LATER to avoid confusion and misunderstanding of the BAM usage in vcfMerger2 ')
+	                      help='List of TUMOR/CASES bams used to call variants; \
+	                      Note1: if Strelka2 tool is given, the TUMOR BAM file is MANDATORY; \
+	                      Note2: If you do not have the bam put empty value in given piped ordered list; \
+	                      Note3: this option will be improved LATER to avoid confusion and misunderstanding of the BAM usage in vcfMerger2 ')
 
 	optional.add_argument('--germline',
 	                      required=False,
