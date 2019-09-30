@@ -41,7 +41,7 @@ function checkFile(){
 
 function usage(){
 echo -e "USAGE: $0 \$VCF.gz \$TBAM \$SNAME_T \$CPUS \n1) compressed_VCF\n2) BAM file used to call variant\n3) Sample Name found in VCF\n4) Number of Threads used by phASEr tool (as much as you can unless I/O is slow on system ; limitation is the speed of reading BAM file ;   1 cpu will be 1 contig processed; so 10 cpus will process 10 contigs concurrently (aka 10 threads)\n
-## NOTE: the VCF MUST HAVE BEEN PREPARE for VCFMERGER2 or having at least AR, DP and GT flags in the FORMAT columns"
+## NOTE: the VCF MUST HAVE BEEN PREPARED for VCFMERGER2 or having at least AR, DP and GT flags in the FORMAT columns"
 }
 
 ## checkings section
