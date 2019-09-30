@@ -846,7 +846,7 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
 	if "strelka2" in ltoolnames:
 		index_strelka = ltoolnames.index('strelka2')
 		if lbams[index_strelka] is None or lbams[index_strelka] == "":
-			log.error("ERROR: You must provide the Tumor BAM files to the option --bams ; Notes: 1) index bam must be present in same location as bam (e.g of list: '||BAM_STRELKA|' );  2) NO cram ; Aborting.")
+			log.error("ERROR: You must provide the Tumor BAM files to the option --bams ; Notes: 1) index bam must be present in same location as bam ;  2) NO cram ; 3) example of list if more than one tool provided: '||BAM_STRELKA|' ); Orders of BAMs  must match order of tools ; Aborting.")
 			sys.exit(1)
 
 
