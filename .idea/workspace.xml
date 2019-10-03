@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/vcfMerger2.py" beforeDir="false" afterPath="$PROJECT_DIR$/bin/vcfMerger2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,30 +58,34 @@
     <session id="-2047446466">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.2" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.30" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="2" />
+          <entry key="py" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="2" />
+          <entry key="Python" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="421" />
-          <entry key="txt" value="21" />
+          <entry key="py" value="895" />
+          <entry key="sh" value="1" />
+          <entry key="txt" value="92" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="21" />
-          <entry key="Python" value="421" />
+          <entry key="Bash" value="1" />
+          <entry key="PLAIN_TEXT" value="92" />
+          <entry key="Python" value="895" />
         </counts>
       </usages-collector>
     </session>
@@ -97,17 +101,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="499">
-              <caret line="845" column="59" selection-start-line="845" selection-start-column="59" selection-end-line="845" selection-end-column="59" />
+            <state relative-caret-position="9418">
+              <caret line="1379" column="45" selection-start-line="1379" selection-start-column="45" selection-end-line="1379" selection-end-column="45" />
+              <folding>
+                <element signature="e#1295#1310#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1281">
-              <caret line="545" selection-start-line="545" selection-end-line="545" />
+            <state relative-caret-position="1190">
+              <caret line="189" column="21" lean-forward="true" selection-start-line="182" selection-start-column="4" selection-end-line="189" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -116,8 +123,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>DO_VENN</find>
-      <find>make_data_for_json</find>
       <find>merging_prepped_vcfs</find>
       <find>additional_args</find>
       <find>check_contig_file</find>
@@ -146,6 +151,8 @@
       <find>TOOLNAMES=</find>
       <find>venn</find>
       <find>DIR_PATH_TO_SCRIPTS</find>
+      <find>VCF MUST HAVE BEEN PREPARE for</find>
+      <find>--id_separator</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -153,6 +160,7 @@
     </replaceStrings>
     <dirStrings>
       <dir>F:\workdocs\github_repos\vcfMerger2</dir>
+      <dir>F:\workdocs\github_repos\vcfMerger2_checkout_0.7.6</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -176,13 +184,16 @@
         <option value="$PROJECT_DIR$/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
         <option value="$PROJECT_DIR$/bin/vcfMerger2.py" />
+        <option value="$USER_HOME$/AppData/Local/Temp/MMRF/commpass/team/clegendre/pnap_home/qscripts/projects/SVToP/delly2/annotations/GRCh38.13/parse_gtf.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1023" />
-    <option name="width" value="2491" />
-    <option name="height" value="1600" />
+    <option name="x" value="146" />
+    <option name="y" value="2" />
+    <option name="width" value="2677" />
+    <option name="height" value="1546" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -230,6 +241,12 @@
               <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
               <item name="prep_vcfs_somatic" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs_somatic" type="462c0819:PsiDirectoryNode" />
+              <item name="strelka2" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -238,7 +255,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -251,6 +268,184 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\workdocs\github_repos\vcfMerger2" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/__init__.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__init__.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__pycache__/dvmfuncs.cpython-36.pyc</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__pycache__/myGenotype.cpython-36.pyc</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__pycache__/vcfToDict.cpython-36.pyc</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/deepvariant/deepvariant.germline.1s.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/freebayes/freebayes.germline.1s.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_functions_germline.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/samtools/samtools.germline.1s.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/__init__.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/lancet/lancet.somatic.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/VCF.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/get_consecutive_list_of_numbers_from_vcfFileInput.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/utils/convert_contig_list_from_bam_to_vcf_format.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/utils/filter_vcf.sh</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/utils/filters.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../vcfMerger2/merge_vcfs/dvmfuncs.py</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/README_DEMO.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/contigs/contigs.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/contigs/tumor.bam.contigs.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.contigs.prep.norm.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.contigs.prep.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.contigs.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/merged.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.decomp.prep.norm.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.decomp.prep.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.decomp.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.decomp.prep.norm.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.decomp.prep.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.decomp.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.raw.prep.norm.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.raw.prep.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/json_autogenerated/vcfMerger.json</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_lancet.logs</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_mutect2.logs</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_octopus.logs</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_strelka2.logs</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/merged_vcf/merged.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/lancet.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/mutect2.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/octopus.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/strelka2.prepped.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/lancet.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/mutect2.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/octopus.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/strelka2.raw.vcf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/ref_genome/genome.tar.gz</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/run_demo.sh</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -274,20 +469,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00121" summary="i">
-      <created>1552521165737</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1552521165737</updated>
-    </task>
-    <task id="LOCAL-00122" summary="i">
-      <created>1552521219641</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
-      <option name="project" value="LOCAL" />
-      <updated>1552521219641</updated>
     </task>
     <task id="LOCAL-00123" summary="i">
       <created>1552521411075</created>
@@ -618,7 +799,21 @@
       <option name="project" value="LOCAL" />
       <updated>1569870764487</updated>
     </task>
-    <option name="localTasksCounter" value="170" />
+    <task id="LOCAL-00170" summary="update option message">
+      <created>1569870842188</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1569870842189</updated>
+    </task>
+    <task id="LOCAL-00171" summary="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py">
+      <created>1569874632059</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1569874632059</updated>
+    </task>
+    <option name="localTasksCounter" value="172" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -631,14 +826,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1023" y="0" width="2491" height="1600" extended-state="0" />
+    <frame x="146" y="2" width="2677" height="1546" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18839984" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17653802" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.09833795" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.09833795" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -660,7 +855,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added make_bed_for_venn" />
     <MESSAGE value="added make venn or upset plot optional feature" />
     <MESSAGE value="fix TypeError: '&gt;=' not supported between instances of 'numpy.str_' and 'int'  in octopus.somatic.checkForBlockSubstitutionVariants.py&quot;, line 162, in processing_variants_as_block_substitution" />
     <MESSAGE value="fix File &quot;vcfMerger2/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py&quot;, line 159, in is_obj_nan&#10;    if isnan(obj):&#10;TypeError: must be real number, not str" />
@@ -685,7 +879,8 @@
     <MESSAGE value="remove extra greater than sign within move command" />
     <MESSAGE value="working on fixing issue with names of vcf_prepped added to vcfMerger" />
     <MESSAGE value="update option message" />
-    <option name="LAST_COMMIT_MESSAGE" value="update option message" />
+    <MESSAGE value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -735,15 +930,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1281">
+        <state relative-caret-position="9044">
           <caret line="545" selection-start-line="545" selection-end-line="545" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/MMRF/commpass/team/clegendre/pnap_home/qscripts/projects/SVToP/delly2/annotations/GRCh38.13/parse_gtf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1227">
+          <caret line="88" column="60" lean-forward="true" selection-start-line="88" selection-start-column="60" selection-end-line="88" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1190">
+          <caret line="189" column="21" lean-forward="true" selection-start-line="182" selection-start-column="4" selection-end-line="189" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="499">
-          <caret line="845" column="59" selection-start-line="845" selection-start-column="59" selection-end-line="845" selection-end-column="59" />
+        <state relative-caret-position="9418">
+          <caret line="1379" column="45" selection-start-line="1379" selection-start-column="45" selection-end-line="1379" selection-end-column="45" />
+          <folding>
+            <element signature="e#1295#1310#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

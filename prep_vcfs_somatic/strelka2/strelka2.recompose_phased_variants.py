@@ -178,13 +178,17 @@ def processing_variants_as_block_substitution(LOV, w):
 				w.write(str(rec))
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
-	iterVCF = iter(vcf_cyobj)
-	v1 = next(iterVCF)
+	#iterVCF = iter(vcf_cyobj)
+	#v1 = next(iterVCF)
 	log.info("Checking PS flag presence in FORMAT ...")
-	if not 'PS' in v1.FORMAT:
+	try:
+		vcf_cyobj.get_header_type('PS')
+	except KeyError as ke:
+	#if not 'PS' in v1.FORMAT:
 		log.error(
 			"PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.")
-		raise IndexError("PS flag Absent in VCF; Aborting Recomposition of Records")
+		log.error(ke)
+		# raise KeyError("PS flag Absent in VCF; Aborting Recomposition of Records")
 
 def check_for_block_substitution(vcf, column_tumor, w):
 	log.info("looping over records to capture and concatenate Block Substitutions Variants ...")
