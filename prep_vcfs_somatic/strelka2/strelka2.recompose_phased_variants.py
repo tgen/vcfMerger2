@@ -177,18 +177,29 @@ def processing_variants_as_block_substitution(LOV, w):
 			for rec in LOV:
 				w.write(str(rec))
 
+# def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
+# 	#iterVCF = iter(vcf_cyobj)
+# 	#v1 = next(iterVCF)
+# 	print("Checking PS flag presence in FORMAT ...")
+# 	try:
+# 		vcf_cyobj.get_header_type('PS')
+# 	except KeyError as ke:
+# 	#if not 'PS' in v1.FORMAT:
+# 		log.error(
+# 			"PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.")
+# 		log.error(ke)
+# 		# raise KeyError("PS flag Absent in VCF; Aborting Recomposition of Records")
+
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
-	#iterVCF = iter(vcf_cyobj)
-	#v1 = next(iterVCF)
-	log.info("Checking PS flag presence in FORMAT ...")
+	print("Checking PS flag presence in FORMAT ...")
 	try:
 		vcf_cyobj.get_header_type('PS')
+		if not psid['Description'] == "Phase Set":
+			raise KeyError("PS Phase Set flag Absent in VCF; Aborting Recomposition of Records")
 	except KeyError as ke:
-	#if not 'PS' in v1.FORMAT:
-		log.error(
-			"PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.")
 		log.error(ke)
-		# raise KeyError("PS flag Absent in VCF; Aborting Recomposition of Records")
+		log.error("PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path,new_vcf_name))
+	print("PS flag FOUND in Header ...")
 
 def check_for_block_substitution(vcf, column_tumor, w):
 	log.info("looping over records to capture and concatenate Block Substitutions Variants ...")
@@ -357,7 +368,7 @@ if __name__ == "__main__":
 #	## checking if PS flag is still present in the VCF genotype fields
 
 	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name)
-	## WARNING WARNING: Because here we read at least once the vcf object which is a generator opbject, we LOSE the first variant;
+	### WARNING WARNING: Because here we read at least once the vcf object which is a generator opbject, we LOSE the first variant;
 	## we need to recreate the generator here
 	vcf = VCF(vcf_path)
 	## Adding Fields to INFO field
