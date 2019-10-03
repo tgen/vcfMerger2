@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" afterDir="false" />
     </list>
@@ -76,16 +76,16 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="895" />
+          <entry key="py" value="952" />
           <entry key="sh" value="1" />
-          <entry key="txt" value="92" />
+          <entry key="txt" value="160" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="1" />
-          <entry key="PLAIN_TEXT" value="92" />
-          <entry key="Python" value="895" />
+          <entry key="PLAIN_TEXT" value="160" />
+          <entry key="Python" value="952" />
         </counts>
       </usages-collector>
     </session>
@@ -98,11 +98,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9418">
-              <caret line="1379" column="45" selection-start-line="1379" selection-start-column="45" selection-end-line="1379" selection-end-column="45" />
+            <state relative-caret-position="9299">
+              <caret line="1387" column="58" lean-forward="true" selection-start-line="1387" selection-start-column="58" selection-end-line="1387" selection-end-column="58" />
               <folding>
                 <element signature="e#1295#1310#0" expanded="true" />
               </folding>
@@ -110,11 +110,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1190">
-              <caret line="189" column="21" lean-forward="true" selection-start-line="182" selection-start-column="4" selection-end-line="189" selection-end-column="21" />
+            <state relative-caret-position="289">
+              <caret line="280" column="4" selection-start-line="280" selection-start-column="4" selection-end-line="280" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -123,8 +123,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>merging_prepped_vcfs</find>
-      <find>additional_args</find>
       <find>check_contig_file</find>
       <find>Constant AR threshold is</find>
       <find>get_contigs_file</find>
@@ -153,6 +151,8 @@
       <find>DIR_PATH_TO_SCRIPTS</find>
       <find>VCF MUST HAVE BEEN PREPARE for</find>
       <find>--id_separator</find>
+      <find>check_if_PS_in_FORMAT_field</find>
+      <find>log.</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -469,20 +469,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00123" summary="i">
-      <created>1552521411075</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1552521411075</updated>
-    </task>
-    <task id="LOCAL-00124" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552522046811</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1552522046811</updated>
     </task>
     <task id="LOCAL-00125" summary="add functions file to prep_vcf folder - TEST">
       <created>1552522260351</created>
@@ -813,7 +799,21 @@
       <option name="project" value="LOCAL" />
       <updated>1569874632059</updated>
     </task>
-    <option name="localTasksCounter" value="172" />
+    <task id="LOCAL-00172" summary="modified way of checking for PS flag">
+      <created>1570127973721</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1570127973721</updated>
+    </task>
+    <task id="LOCAL-00173" summary="modified way of checking for PS flag in FORMAT field">
+      <created>1570132682488</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1570132682488</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -855,8 +855,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added make venn or upset plot optional feature" />
-    <MESSAGE value="fix TypeError: '&gt;=' not supported between instances of 'numpy.str_' and 'int'  in octopus.somatic.checkForBlockSubstitutionVariants.py&quot;, line 162, in processing_variants_as_block_substitution" />
     <MESSAGE value="fix File &quot;vcfMerger2/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py&quot;, line 159, in is_obj_nan&#10;    if isnan(obj):&#10;TypeError: must be real number, not str" />
     <MESSAGE value="fix numpy.str_ issue" />
     <MESSAGE value="fix issue in vcfMerger2.py when no prep-vcf needed&#10;convert &quot;print&quot; in to &quot;log.info&quot; when needed in each tool-specific python script" />
@@ -880,7 +878,9 @@
     <MESSAGE value="working on fixing issue with names of vcf_prepped added to vcfMerger" />
     <MESSAGE value="update option message" />
     <MESSAGE value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
+    <MESSAGE value="modified way of checking for PS flag" />
+    <MESSAGE value="modified way of checking for PS flag in FORMAT field" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified way of checking for PS flag in FORMAT field" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -942,20 +942,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1190">
-          <caret line="189" column="21" lean-forward="true" selection-start-line="182" selection-start-column="4" selection-end-line="189" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9418">
-          <caret line="1379" column="45" selection-start-line="1379" selection-start-column="45" selection-end-line="1379" selection-end-column="45" />
+        <state relative-caret-position="9299">
+          <caret line="1387" column="58" lean-forward="true" selection-start-line="1387" selection-start-column="58" selection-end-line="1387" selection-end-column="58" />
           <folding>
             <element signature="e#1295#1310#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="280" column="4" selection-start-line="280" selection-start-column="4" selection-end-line="280" selection-end-column="4" />
         </state>
       </provider>
     </entry>

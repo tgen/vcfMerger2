@@ -197,12 +197,12 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 		if not psid['Description'] == "Phase Set":
 			raise KeyError("PS Phase Set flag Absent in VCF; Aborting Recomposition of Records")
 	except KeyError as ke:
-		log.error(ke)
-		log.error("PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path,new_vcf_name))
+		print(str(ke))
+		print("PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path,new_vcf_name))
 	print("PS flag FOUND in Header ...")
 
 def check_for_block_substitution(vcf, column_tumor, w):
-	log.info("looping over records to capture and concatenate Block Substitutions Variants ...")
+	print("looping over records to capture and concatenate Block Substitutions Variants ...")
 
 	idxT = 0 if int(column_tumor) == 10 else 1
 
@@ -351,6 +351,10 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 #@ MAIN  ##
 #@#########
 if __name__ == "__main__":
+
+	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
+	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
+
 
 	vcf_path, column_tumor, column_normal, new_vcf_name = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
 
