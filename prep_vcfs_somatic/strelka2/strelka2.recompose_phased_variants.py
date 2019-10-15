@@ -185,7 +185,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 		if not psid['Description'] == "Phase Set":
 			raise KeyError("PS Phase Set flag Absent in VCF; Aborting Recomposition of Records")
 	except KeyError as ke:
-		log.error("PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path, new_vcf_name))
+		log.error("PS tag is not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path, new_vcf_name))
 		log.error(ke)
 	print("PS flag FOUND in Header ...")
 
