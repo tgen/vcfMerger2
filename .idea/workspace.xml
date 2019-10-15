@@ -58,25 +58,28 @@
     <session id="-2047446466">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.22" value="1" />
           <entry key="project.open.time.30" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="5" />
+          <entry key="py" value="8" />
+          <entry key="sh" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="5" />
+          <entry key="Bash" value="1" />
+          <entry key="Python" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="952" />
+          <entry key="py" value="2636" />
           <entry key="sh" value="1" />
           <entry key="txt" value="160" />
         </counts>
@@ -85,7 +88,7 @@
         <counts>
           <entry key="Bash" value="1" />
           <entry key="PLAIN_TEXT" value="160" />
-          <entry key="Python" value="952" />
+          <entry key="Python" value="2636" />
         </counts>
       </usages-collector>
     </session>
@@ -99,12 +102,65 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9299">
-              <caret line="1387" column="58" lean-forward="true" selection-start-line="1387" selection-start-column="58" selection-end-line="1387" selection-end-column="58" />
+            <state relative-caret-position="54">
+              <caret line="102" column="93" selection-start-line="102" selection-start-column="93" selection-end-line="102" selection-end-column="93" />
               <folding>
-                <element signature="e#1295#1310#0" expanded="true" />
+                <element signature="e#142#235#0" />
+                <element signature="e#183#235#0" />
+                <element signature="e#263#351#0" />
+                <element signature="e#291#351#0" />
+                <element signature="e#389#523#0" />
+                <element signature="e#425#523#0" />
+                <element signature="e#570#703#0" />
+                <element signature="e#577#668#0" />
+                <element signature="e#728#1066#0" />
+                <element signature="e#728#1036#1" />
+                <element signature="e#1093#2133#0" />
+                <element signature="e#1093#1252#1" />
+                <element signature="e#1889#1928#0" />
+                <element signature="e#2205#2792#0" />
+                <element signature="e#2205#2485#1" />
+                <element signature="e#2849#2960#0" />
+                <element signature="e#3022#3139#0" />
+                <element signature="e#3200#3316#0" />
+                <element signature="e#3386#3772#0" />
+                <element signature="e#3386#3654#1" />
+                <element signature="e#4384#4473#0" />
+                <element signature="e#8270#14512#0" />
+                <element signature="e#8270#8371#1" />
+                <element signature="e#8381#9378#0" />
+                <element signature="e#8381#8400#0" />
+                <element signature="e#8477#8755#0" />
+                <element signature="e#8767#9378#0" />
+                <element signature="e#9405#9447#0" />
+                <element signature="e#9635#13617#0" />
+                <element signature="e#9790#9846#0" />
+                <element signature="e#10154#12028#0" />
+                <element signature="e#10314#10986#0" />
+                <element signature="e#10427#10924#0" />
+                <element signature="e#11056#12028#0" />
+                <element signature="e#11097#11323#0" />
+                <element signature="e#11147#11251#0" />
+                <element signature="e#11366#12028#0" />
+                <element signature="e#11471#11964#0" />
+                <element signature="e#12040#12373#0" />
+                <element signature="e#12040#12177#0" />
+                <element signature="e#12377#12440#0" />
+                <element signature="e#12632#12731#0" />
+                <element signature="e#12743#12922#0" />
+                <element signature="e#13177#13448#0" />
+                <element signature="e#13502#13617#0" />
+                <element signature="e#13773#13875#0" />
+                <element signature="e#13966#14070#0" />
+                <element signature="e#14080#14474#0" />
+                <element signature="e#14088#14383#0" />
+                <element signature="e#14412#14474#0" />
+                <element signature="e#13838#15433#0" />
+                <element signature="e#15449#16239#0" />
+                <element signature="e#15916#16006#0" />
+                <element signature="e#16270#16288#0" />
               </folding>
             </state>
           </provider>
@@ -113,8 +169,26 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="280" column="4" selection-start-line="280" selection-start-column="4" selection-end-line="280" selection-end-column="4" />
+            <state relative-caret-position="1363">
+              <caret line="212" column="68" lean-forward="true" selection-start-line="212" selection-start-column="68" selection-end-line="212" selection-end-column="68" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2244">
+              <caret line="132" column="45" selection-start-line="132" selection-start-column="45" selection-end-line="132" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/get_consecutive_list_of_numbers_from_vcfFileInput.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="629">
+              <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
             </state>
           </provider>
         </entry>
@@ -185,15 +259,15 @@
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
         <option value="$PROJECT_DIR$/bin/vcfMerger2.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/MMRF/commpass/team/clegendre/pnap_home/qscripts/projects/SVToP/delly2/annotations/GRCh38.13/parse_gtf.py" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="146" />
-    <option name="y" value="2" />
-    <option name="width" value="2677" />
-    <option name="height" value="1546" />
+    <option name="x" value="615" />
+    <option name="width" value="2657" />
+    <option name="height" value="1600" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -218,23 +292,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
               <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
-              <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
-              <item name="bin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
-              <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
-              <item name="merge_vcfs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
@@ -251,6 +314,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -268,184 +332,6 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\workdocs\github_repos\vcfMerger2" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/__init__.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__init__.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__pycache__/dvmfuncs.cpython-36.pyc</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__pycache__/myGenotype.cpython-36.pyc</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/merge_vcfs/__pycache__/vcfToDict.cpython-36.pyc</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/deepvariant/deepvariant.germline.1s.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/freebayes/freebayes.germline.1s.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_functions_germline.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_germline/samtools/samtools.germline.1s.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/__init__.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/lancet/lancet.somatic.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/VCF.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/get_consecutive_list_of_numbers_from_vcfFileInput.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/utils/convert_contig_list_from_bam_to_vcf_format.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/utils/filter_vcf.sh</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/utils/filters.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/../vcfMerger2/merge_vcfs/dvmfuncs.py</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/README_DEMO.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/contigs/contigs.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/contigs/tumor.bam.contigs.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.contigs.prep.norm.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.contigs.prep.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.contigs.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/lancet.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/merged.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.decomp.prep.norm.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.decomp.prep.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.decomp.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/mutect2.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.decomp.prep.norm.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.decomp.prep.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.decomp.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.blocs.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.contigs.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/octopus.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.raw.prep.norm.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.raw.prep.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/intermediate_vcfs/strelka2.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/json_autogenerated/vcfMerger.json</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_lancet.logs</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_mutect2.logs</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_octopus.logs</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/logs/log_prep_vcf_strelka2.logs</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/merged_vcf/merged.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/lancet.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/mutect2.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/octopus.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/prepped_vcfs/strelka2.prepped.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/lancet.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/mutect2.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/octopus.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/raw_tool_vcfs/strelka2.raw.vcf</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/ref_genome/genome.tar.gz</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/test_data/run_demo.sh</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -469,13 +355,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00125" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552522260351</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1552522260351</updated>
     </task>
     <task id="LOCAL-00126" summary="add functions file to prep_vcf folder - TEST">
       <created>1552522874913</created>
@@ -813,7 +692,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570132682488</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="modified way of checking for PS flag in FORMAT field">
+      <created>1570135938882</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1570135938882</updated>
+    </task>
+    <option name="localTasksCounter" value="175" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -826,10 +712,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="146" y="2" width="2677" height="1546" extended-state="0" />
+    <frame x="615" y="0" width="2657" height="1600" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17653802" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16018483" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -944,18 +830,95 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9299">
-          <caret line="1387" column="58" lean-forward="true" selection-start-line="1387" selection-start-column="58" selection-end-line="1387" selection-end-column="58" />
+        <state relative-caret-position="1309">
+          <caret line="1387" column="58" selection-start-line="1387" selection-start-column="58" selection-end-line="1387" selection-end-column="58" />
           <folding>
             <element signature="e#1295#1310#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="102" column="93" selection-start-line="102" selection-start-column="93" selection-end-line="102" selection-end-column="93" />
+          <folding>
+            <element signature="e#142#235#0" />
+            <element signature="e#183#235#0" />
+            <element signature="e#263#351#0" />
+            <element signature="e#291#351#0" />
+            <element signature="e#389#523#0" />
+            <element signature="e#425#523#0" />
+            <element signature="e#570#703#0" />
+            <element signature="e#577#668#0" />
+            <element signature="e#728#1066#0" />
+            <element signature="e#728#1036#1" />
+            <element signature="e#1093#2133#0" />
+            <element signature="e#1093#1252#1" />
+            <element signature="e#1889#1928#0" />
+            <element signature="e#2205#2792#0" />
+            <element signature="e#2205#2485#1" />
+            <element signature="e#2849#2960#0" />
+            <element signature="e#3022#3139#0" />
+            <element signature="e#3200#3316#0" />
+            <element signature="e#3386#3772#0" />
+            <element signature="e#3386#3654#1" />
+            <element signature="e#4384#4473#0" />
+            <element signature="e#8270#14512#0" />
+            <element signature="e#8270#8371#1" />
+            <element signature="e#8381#9378#0" />
+            <element signature="e#8381#8400#0" />
+            <element signature="e#8477#8755#0" />
+            <element signature="e#8767#9378#0" />
+            <element signature="e#9405#9447#0" />
+            <element signature="e#9635#13617#0" />
+            <element signature="e#9790#9846#0" />
+            <element signature="e#10154#12028#0" />
+            <element signature="e#10314#10986#0" />
+            <element signature="e#10427#10924#0" />
+            <element signature="e#11056#12028#0" />
+            <element signature="e#11097#11323#0" />
+            <element signature="e#11147#11251#0" />
+            <element signature="e#11366#12028#0" />
+            <element signature="e#11471#11964#0" />
+            <element signature="e#12040#12373#0" />
+            <element signature="e#12040#12177#0" />
+            <element signature="e#12377#12440#0" />
+            <element signature="e#12632#12731#0" />
+            <element signature="e#12743#12922#0" />
+            <element signature="e#13177#13448#0" />
+            <element signature="e#13502#13617#0" />
+            <element signature="e#13773#13875#0" />
+            <element signature="e#13966#14070#0" />
+            <element signature="e#14080#14474#0" />
+            <element signature="e#14088#14383#0" />
+            <element signature="e#14412#14474#0" />
+            <element signature="e#13838#15433#0" />
+            <element signature="e#15449#16239#0" />
+            <element signature="e#15916#16006#0" />
+            <element signature="e#16270#16288#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/get_consecutive_list_of_numbers_from_vcfFileInput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2244">
+          <caret line="132" column="45" selection-start-line="132" selection-start-column="45" selection-end-line="132" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="280" column="4" selection-start-line="280" selection-start-column="4" selection-end-line="280" selection-end-column="4" />
+        <state relative-caret-position="1363">
+          <caret line="212" column="68" lean-forward="true" selection-start-line="212" selection-start-column="68" selection-end-line="212" selection-end-column="68" />
         </state>
       </provider>
     </entry>

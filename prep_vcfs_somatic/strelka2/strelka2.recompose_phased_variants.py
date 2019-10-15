@@ -140,20 +140,20 @@ def collapse_variants(LOV):
 
 def processing_variants_as_block_substitution(LOV, w):
 		'''
-		We consider that ALL the variant within the list_Of_Variant_Object in argument belong to the same BLOCK
-		We need to "merge" the records to create only one
+		We consider that ALL the variants within the list_Of_Variant_Object in argument belong to the same BLOCK
+		We need to "merge" the records to create only one.
 		cyvcf2 does NOT allow to modify the ALT (attribute 'ALT' of 'cyvcf2.cyvcf2.Variant' objects is not writable.)
-		The only thing we could think of so far with our basic knowloedge of Python, is to convert the Variant object
+		The only thing we could think of so far with our basic knowledge of Python, is to convert the Variant object
 		into a list of Strings (variant record is tab-separated) and modify the column 5 (index 4 in python) with
 		the value of the ALT alleles from the variant in the list_Of_Variant_Object argument.
 		The LAST test we need to perform before considering the variants as a BLOCK is to look at the AR
-		If their AR is too FAR apart shold we consider it as
+		If their AR is too FAR apart should we consider it as a block or not? ; we Hardcoded values; DP, MAP_VAF and is_indel
 		:param LOV: List Of Variant object (a.k.a variant record in vcf file)
 		:param w: writer object to write processed record into output vcf file
 		'''
 
 		## we will need to check if:
-		## 1) we only deal with SNV in all ALTs or DEL in all ALTs or INS in all ALTs
+		## 1) we only deal with SNV in all ALTs ##TODO: should we tests for DEL in all ALTs or INS in all ALTs?? or a mix of SNV and Indels?
 		## 2) need to check if AR within x% from each other calls otherwise might mean it is two UN-related events
 		## 3) should we check for a minimum DEPTH to consider worth combining records or accurate and specs?
 		## 4) create a new updated record using the first variant in the block
@@ -161,7 +161,7 @@ def processing_variants_as_block_substitution(LOV, w):
 		##      -- update DP field or ADD a field in info field that might help keeping track of data
 
 		tests = []
-		for rec in LOV: ## HARDCODED Here Below for TESTS
+		for rec in LOV: ## HARDCODED Here Below for TESTS  ; QUESTION: Why did we choose MAP_VAF>=0.2 ?? Oups
 			if int(rec.format('DP')[1]) >= 10 \
 					and float(rec.format('MAP_VAF')[1]) >= 0.20 \
 					and not rec.is_indel:
@@ -173,33 +173,22 @@ def processing_variants_as_block_substitution(LOV, w):
 			log.debug('\n'.join([ str(rec).strip() for rec in LOV ] ))
 			w.write(collapse_variants(LOV))
 		else:
-			log.debug("BLOCK FAILED DP_TUMOR>=10 and/or MAP_VAF_TUMOR >= 0.05 ")
+			log.debug("BLOCK FAILED DP_TUMOR>=10 and/or MAP_VAF_TUMOR >= 0.20 or is_not_indel; So we did not collapse the variants in LOV obj: "+'\n'.join([str(rec) for rec in LOV]))
 			for rec in LOV:
 				w.write(str(rec))
 
-# def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
-# 	#iterVCF = iter(vcf_cyobj)
-# 	#v1 = next(iterVCF)
-# 	print("Checking PS flag presence in FORMAT ...")
-# 	try:
-# 		vcf_cyobj.get_header_type('PS')
-# 	except KeyError as ke:
-# 	#if not 'PS' in v1.FORMAT:
-# 		log.error(
-# 			"PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.")
-# 		log.error(ke)
-# 		# raise KeyError("PS flag Absent in VCF; Aborting Recomposition of Records")
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 	print("Checking PS flag presence in FORMAT ...")
 	try:
-		vcf_cyobj.get_header_type('PS')
+		psid = vcf_cyobj.get_header_type('PS')
 		if not psid['Description'] == "Phase Set":
 			raise KeyError("PS Phase Set flag Absent in VCF; Aborting Recomposition of Records")
 	except KeyError as ke:
-		print(str(ke))
-		print("PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path,new_vcf_name))
+		log.error("PS tag s not present in the FORMAT field of the VCF; We assume that the VCF has not been processed for phasing.\nvcf_in = {} \nvcf_out = {}".format(input_vcf_path, new_vcf_name))
+		log.error(ke)
 	print("PS flag FOUND in Header ...")
+
 
 def check_for_block_substitution(vcf, column_tumor, w):
 	print("looping over records to capture and concatenate Block Substitutions Variants ...")
@@ -267,7 +256,7 @@ def check_for_block_substitution(vcf, column_tumor, w):
 				dico_PS[k].append(v)  ## we gather the variant with the same PhaseSet Value
 			else:
 				processing_variants_as_block_substitution(dico_PS[k], w)  ##dicoPS[k] is a list of Variants
-				dico_PS[k] = [ v ]
+				dico_PS[k] = [ v ]  ## we re-init the Value to the current variant as the previous variant is definitely not right next to the current one even though in the same PhaseSet
 
 	## we need to write the data from the last phase set captured
 	if len(dico_PS[k]) == 1:
