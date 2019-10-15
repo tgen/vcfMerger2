@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="updates miscs ; added comments">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -79,16 +78,16 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="2636" />
+          <entry key="py" value="2640" />
           <entry key="sh" value="1" />
-          <entry key="txt" value="160" />
+          <entry key="txt" value="190" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="1" />
-          <entry key="PLAIN_TEXT" value="160" />
-          <entry key="Python" value="2636" />
+          <entry key="PLAIN_TEXT" value="190" />
+          <entry key="Python" value="2640" />
         </counts>
       </usages-collector>
     </session>
@@ -169,8 +168,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1363">
-              <caret line="212" column="68" lean-forward="true" selection-start-line="212" selection-start-column="68" selection-end-line="212" selection-end-column="68" />
+            <state relative-caret-position="326">
+              <caret line="151" column="78" lean-forward="true" selection-start-line="151" selection-start-column="78" selection-end-line="151" selection-end-column="78" />
             </state>
           </provider>
         </entry>
@@ -265,7 +264,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="615" />
+    <option name="x" value="1104" />
     <option name="width" value="2657" />
     <option name="height" value="1600" />
   </component>
@@ -355,13 +354,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00126" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552522874913</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
-      <option name="project" value="LOCAL" />
-      <updated>1552522874913</updated>
     </task>
     <task id="LOCAL-00127" summary="add functions file to prep_vcf folder - TEST">
       <created>1552523337478</created>
@@ -699,7 +691,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570135938882</updated>
     </task>
-    <option name="localTasksCounter" value="175" />
+    <task id="LOCAL-00175" summary="updates miscs ; added comments">
+      <created>1571100574689</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1571100574690</updated>
+    </task>
+    <option name="localTasksCounter" value="176" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -712,10 +711,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="615" y="0" width="2657" height="1600" extended-state="0" />
-    <editor active="true" />
+    <frame x="1104" y="0" width="2657" height="1600" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16018483" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16018483" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -726,7 +724,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32963988" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.13296399" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="8" visible="true" weight="0.13296399" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.32969034" />
       <window_info anchor="bottom" id="Python Console" order="11" />
@@ -741,7 +739,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix File &quot;vcfMerger2/prep_vcfs/octopus/octopus.somatic.addFieldsForVcfMerger.py&quot;, line 159, in is_obj_nan&#10;    if isnan(obj):&#10;TypeError: must be real number, not str" />
     <MESSAGE value="fix numpy.str_ issue" />
     <MESSAGE value="fix issue in vcfMerger2.py when no prep-vcf needed&#10;convert &quot;print&quot; in to &quot;log.info&quot; when needed in each tool-specific python script" />
     <MESSAGE value="log.info(double_quote_str(list_beds)) moved to correct location" />
@@ -766,7 +763,8 @@
     <MESSAGE value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
     <MESSAGE value="modified way of checking for PS flag" />
     <MESSAGE value="modified way of checking for PS flag in FORMAT field" />
-    <option name="LAST_COMMIT_MESSAGE" value="modified way of checking for PS flag in FORMAT field" />
+    <MESSAGE value="updates miscs ; added comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates miscs ; added comments" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -917,8 +915,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1363">
-          <caret line="212" column="68" lean-forward="true" selection-start-line="212" selection-start-column="68" selection-end-line="212" selection-end-column="68" />
+        <state relative-caret-position="326">
+          <caret line="151" column="78" lean-forward="true" selection-start-line="151" selection-start-column="78" selection-end-line="151" selection-end-column="78" />
         </state>
       </provider>
     </entry>
