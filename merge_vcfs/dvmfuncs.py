@@ -894,6 +894,29 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 
 		## Processing with the Rscript created by Intervene for UpSet plots
 		list_tools = ",".join(["\""+tool+"\"" for tool in ltoolnames ])
+
+		## SED REPLACEMENT #1
+		pattern = "res=300)"
+		replacement = "res=300, type=\"cairo\")"
+
+		full_string_sed = ["s/" + pattern + "/" + replacement + "/"]
+		scriptname = project + "_upset.R"
+		file_path = [output_name + "/" + scriptname]
+
+		log.info(replacement)
+		log.info(file_path)
+		args = ["sed", "-i"] + full_string_sed + file_path
+		log.info(str(args))
+		log.info("Running Sed command")
+		process = subprocess.Popen(args, shell=False, universal_newlines=False)
+		process.wait()
+		if process.returncode is not 0:
+			sys.exit("updating script for Upset Creation FAILED")
+
+		import time
+		time.sleep(2)
+
+		## SED REPLACEMENT #1
 		pattern = "nsets"
 		replacement = "queries=list(list(query=intersects, params=list("+list_tools+"),color=\"red\", active=T)), matrix.dot.alpha=0.5, point.size = 3, nsets"
 
@@ -909,7 +932,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		process = subprocess.Popen(args,  shell=False, universal_newlines=False)
 		process.wait()
 		if process.returncode is not 0:
-			sys.exit("Upset Creation FAILED")
+			sys.exit("updating script for Upset Creation FAILED")
 		log.info("Running Rscript Command")
 		import os
 		log.info(os.path.abspath("."))
