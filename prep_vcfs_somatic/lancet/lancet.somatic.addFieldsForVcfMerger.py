@@ -62,8 +62,12 @@ class GenotypeInv(object):
 	def __init__(self, li):
 
 		self.allele1 = li[0]
-		self.phased = bool(0) if li[1] == "/" else bool(1)
-		self.allele2 = li[2]
+		if "/" not in li and "|" not in li:
+			self.phased = bool(0)
+			self.allele2 = "."
+		else:
+			self.phased = bool(0) if li[1] == "/" else bool(1)
+			self.allele2 = li[2]
 		self.GT = []
 
 	def get_gt_numpy_compatible(self):
