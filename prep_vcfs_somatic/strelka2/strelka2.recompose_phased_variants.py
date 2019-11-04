@@ -304,21 +304,34 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 	:return: None
 	"""
 	log.info("looping over records to capture and concatenate Block Substitutions Variants ...")
+
 	idxT = 1 if int(column_tumor) == 11 else 0
 	dico_PS = defaultdict(list)
 	# count = 0
+	previous_pos = 0
+	same_phased_but_not_consecutive = False ## spnc
+
 	for v in vcf:
 		if v.format('PS') is not None:
+			curpos = v.POS
 			k = int(v.format('PS')[idxT]) if not None else 0
 			# print(str(k))
-			if k in dico_PS:
+			if k in dico_PS and (curpos == previous_pos+1):
+				if same_phased_but_not_consecutive:
+					k = str(k) + "spnc"
 				dico_PS[k].append(v)
-			else:
+			elif k not in dico_PS:
+				dico_PS[k] = [v]
+				same_phased_but_not_consecutive = False
+			else: ## this mean we have the same phase but the position are not consecutives ... so we cannot make a block with previous position ## issue MMRF_2490_2_BM_Exome
+				same_phased_but_not_consecutive = True
+				k = str(k) + "spnc"
 				dico_PS[k] = [ v ]
 			# count += 1
 			# if count >100:
 			# 	break
 			# print(dico_PS)
+			previous_pos = curpos
 
 		else:
 			# print(100*"***"+"\nonly unphased variants here ...")
