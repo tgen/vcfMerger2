@@ -221,7 +221,7 @@ def check_for_block_substitution(vcf, column_tumor, w):
 		elif len(dico_PS[k]) == 1: ## this mean we already had one variant with same PS
 			## we compare the variant POSITION(implies that the VCF was sorted by variant records)
 			## if position is shifted by one, this means the vairant calls are right next to each other and we keep both in the dictionnary
-			## if not, we ony keep the current variant in the dico for that PS and continue to next variant in the loop
+			## if not, we only keep the current variant in the dico for that PS and continue to next variant in the loop
 
 			## Let's get 'GT' for the current variant and the variant in position [-1] in dico
 			## the variant of the Tumor should only be considered here

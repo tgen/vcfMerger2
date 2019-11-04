@@ -126,7 +126,7 @@ VCF_OUT_PHASER=phased_${VCF_IN}
 TEMP_DIR=$(dirname ${VCF_IN} )/temp_phASER
 mkdir -p ${TEMP_DIR}
 
-## HARDCODED value for options here ; NOTE: 8 CPUS is a good trade-off between I/O and CPUS; Too amany cpus leads to too many samtools view which increases I/O and waiting time
+## HARDCODED value for options here ; NOTE: 8 CPUS is a good trade-off between I/O and CPUS; Too many cpus leads to too many samtools view which increases I/O and waiting time
 mycmd="${PHASER_EXE} --bam ${TBAM} --sample ${SNAME_T}  --vcf ${VCF_IN}  --o ${VCF_OUT_PHASER}  --mapq 20 --baseq 20 --paired_end 1 --gw_phase_vcf 0  --remove_dups 1 --write_vcf 1  --gw_af_field AR --gw_phase_vcf 2 --temp_dir ${TEMP_DIR} --max_block_size 10 --threads ${CPUS} --id_separator ';' --unique_ids 1 "  
 echo -e "${mycmd}"
 eval ${mycmd} | tee log_for_phASER_$(basename ${VCF_OUT_PHASER} ).log
