@@ -362,13 +362,13 @@ def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 			TIR = v.format('TIR')[sidx][0]  ## we only manage tier1 values
 			try:
 				log.debug("TIR={}, DP={}, locus {}:{}".format(str(TIR), str(DP),  str(v.CHROM), str(v.POS)))
-				AR = float(TIR/(TAR+TIR)) if TIR>0 else 0
+				AR = round(float(TIR/(TAR+TIR)),4) if TIR>0 else 0
 				#AD = (int(max(DP-TIR, 0)), int(TIR))
 				AD = (int(TAR), int(TIR))
 			except ZeroDivisionError:
 				log.debug("TAR= {}, TIR={}, DP={}, AR={} ; locus {}:{}".format(str(TAR), str(TIR),str(DP),str(AR),str(v.CHROM),str(v.POS)))
 				log.debug("You can't divide by zero!")
-				AR = float(0.0)  ## so we make it zero manually
+				AR = float(0.00)  ## so we make it zero manually
 
 			log.debug("AR={} ; AD={} ; locus= {}".format(str(AR),str(AD),str(str(v.CHROM)+":"+str(v.POS))))
 			ARs.append(AR)
@@ -432,7 +432,7 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 			except ZeroDivisionError:
 				log.debug("refcount {}, altCounts {}, refTier1 {}, altTier1 {}, locus {}:{}".format( refCounts, altCounts, str(ref_tier1), str(alt_tier1), str(v.CHROM), str(v.POS) ) )
 				log.debug("You can't divide by zero!")
-				AR = round(float(0.0),4)  ## so we make it zero manually
+				AR = round(float(0.00),4)  ## so we make it zero manually
 
 			ARs.append(AR)
 			AD = (ref_tier1, alt_tier1)
