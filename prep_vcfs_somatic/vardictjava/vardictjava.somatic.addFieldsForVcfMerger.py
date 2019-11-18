@@ -348,9 +348,9 @@ def add_new_flags(v, column_tumor, column_normal, tot_number_samples):
 
 	if idxT == 0: ## as we do not loop over samples automatically, we need to decide the order of ARs value based on
 		#  the sample column numbers given by user.
-		ARs = [float(AR_tumor), float(AR_normal)]
+		ARs = [round(float(AR_tumor),4), round(float(AR_normal),4)]
 	else:
-		ARs = [ float(AR_normal), float(AR_tumor) ]
+		ARs = [ round(float(AR_normal),4), round(float(AR_tumor),4) ]
 
 	log.debug("\t".join([ str(x) for x  in [ idxT, idxN , AR_tumor, AR_normal, DP_tumor, DP_normal ] ] ))
 	v.set_format('AR', np.array(ARs))

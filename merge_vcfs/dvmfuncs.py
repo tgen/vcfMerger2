@@ -903,7 +903,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		scriptname = project + "_upset.R"
 		file_path = [output_name + "/" + scriptname]
 
-		log.info(replacement)
+		log.debug(replacement)
 		log.info(file_path)
 		args = ["sed", "-i"] + full_string_sed + file_path
 		log.info(str(args))

@@ -428,8 +428,8 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		#DP_tumor = v.format('DP')[idxT]
 		#DP_normal = v.format('DP')[idxN]
 		log.debug(str(DP_normal) + " -----  " + str(DP_tumor))
-		if is_obj_nan(float(AR_tumor)): AR_tumor = 0.00
-		if is_obj_nan(float(AR_normal)): AR_normal = 0.00
+		if is_obj_nan(round(float(AR_tumor),4)): AR_tumor = 0.00
+		if is_obj_nan(round(float(AR_normal),4)): AR_normal = 0.00
 		if is_obj_nan(int(DP_tumor)): DP_tumor = 0.00
 		if is_obj_nan(int(DP_normal)): DP_normal = 0.00
 
