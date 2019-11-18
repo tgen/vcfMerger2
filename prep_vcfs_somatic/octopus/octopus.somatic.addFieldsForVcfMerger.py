@@ -153,9 +153,9 @@ def parseArgs(scriptname, argv):
 				log.info("ERROR: threshold values MUST be integer or float")
 				exit(2)
 		elif opt in ("", "--tumor_column"):
-			column_tumor = arg
+			column_tumor = int(arg)
 		elif opt in ("", "--normal_column"):
-			column_normal = arg
+			column_normal = int(arg)
 		elif opt in ("-o","--outfilename"):
 			new_vcf_name = arg.strip()
 		elif opt in ("-i", "--vcf"):

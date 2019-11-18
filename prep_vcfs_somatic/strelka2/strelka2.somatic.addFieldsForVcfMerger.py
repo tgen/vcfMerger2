@@ -70,7 +70,7 @@ class GenotypeInv(object):
 	def get_gt_numpy_compatible(self):
 		self.GT = [] ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_
 		if self.phased:
-			if self.allele1 != "." :
+			if self.allele1 != ".":
 				self.GT.append((2*int(self.allele1)) + 3)
 			else:
 				self.GT.append(1)
@@ -351,8 +351,8 @@ def process_indels_records(tot_number_samples, v, column_tumor, column_normal):
 		msg = "value for column_normal and column_tumor in function process_snvs_records are identical; Aborting."
 		log.error(msg)
 		raise ValueError(msg)
-	idxT = 0 if column_tumor == 10 else 1
-	idxN = 0 if column_normal == 10 else 1
+	idxT = 0 if int(column_tumor) == 10 else 1
+	idxN = 0 if int(column_normal) == 10 else 1
 
 	try:
 		## loop through samples to calculate AR for each one
