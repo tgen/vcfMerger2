@@ -378,11 +378,11 @@ def capture_ARs_and_DPs_for_FORMAT(tot_number_samples, v, col_tumor, col_normal)
 		alt_tier1 = int(AD[1])
 		log.debug(str(ref_tier1)) ; log.debug(str(alt_tier1))
 		try:
-			AR = float(alt_tier1/(alt_tier1 + ref_tier1))
+			AR = round(float(alt_tier1/(alt_tier1 + ref_tier1)),4)
 		except ZeroDivisionError:
 			## because of no coverage, i.e. no reads at that position
 			log.debug("You can't divide by zero!")
-			AR = float(0.0)  ## so we make it zero manually
+			AR = round(float(0.0),4)  ## so we make it zero manually
 		ARs.append(AR)
 		## as we now captured ref_tiers1 and alt_tiers1, we can use that for DP for each sample
 		DPs.append( ref_tier1+alt_tier1 )

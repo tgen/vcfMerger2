@@ -407,8 +407,8 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 		msg = "value for column_normal and column_tumor in function process_snvs_records are identical; Aborting."
 		log.error(msg)
 		raise ValueError(msg)
-	idxT = 0 if column_tumor == 10 else 1
-	idxN = 0 if column_normal == 10 else 1
+	idxT = 0 if int(column_tumor) == 10 else 1
+	idxN = 0 if int(column_normal) == 10 else 1
 
 	try:
 		if len(v.REF) == len(v.ALT) and len(v.REF)>1:
@@ -428,11 +428,11 @@ def process_snvs_records(tot_number_samples, v, column_tumor, column_normal):
 			ref_tier1 = int(refCounts[0])
 			alt_tier1 = int(altCounts[0])
 			try:
-				AR = float(alt_tier1/(alt_tier1 + ref_tier1))
+				AR = round(float(alt_tier1/(alt_tier1 + ref_tier1)),4)
 			except ZeroDivisionError:
 				log.debug("refcount {}, altCounts {}, refTier1 {}, altTier1 {}, locus {}:{}".format( refCounts, altCounts, str(ref_tier1), str(alt_tier1), str(v.CHROM), str(v.POS) ) )
 				log.debug("You can't divide by zero!")
-				AR = float(0.0)  ## so we make it zero manually
+				AR = round(float(0.0),4)  ## so we make it zero manually
 
 			ARs.append(AR)
 			AD = (ref_tier1, alt_tier1)

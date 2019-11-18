@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="fixed bug: was concatenating not consecutives positions that were in same phase. Added check point.">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,28 +70,28 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="16" />
+          <entry key="py" value="21" />
           <entry key="sh" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Bash" value="4" />
-          <entry key="Python" value="16" />
+          <entry key="Python" value="21" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="8722" />
+          <entry key="py" value="8968" />
           <entry key="sh" value="6" />
-          <entry key="txt" value="524" />
+          <entry key="txt" value="653" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="6" />
-          <entry key="PLAIN_TEXT" value="524" />
-          <entry key="Python" value="8722" />
+          <entry key="PLAIN_TEXT" value="653" />
+          <entry key="Python" value="8968" />
         </counts>
       </usages-collector>
     </session>
@@ -102,58 +104,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
-              <folding>
-                <element signature="e#142#235#0" />
-                <element signature="e#183#235#0" />
-                <element signature="e#263#351#0" />
-                <element signature="e#291#351#0" />
-                <element signature="e#389#523#0" />
-                <element signature="e#425#523#0" />
-                <element signature="e#570#703#0" />
-                <element signature="e#577#668#0" />
-                <element signature="e#728#1066#0" />
-                <element signature="e#728#1036#1" />
-                <element signature="e#1093#2133#0" />
-                <element signature="e#1093#1252#1" />
-                <element signature="e#1889#1928#0" />
-                <element signature="e#2205#2792#0" />
-                <element signature="e#2205#2485#1" />
-                <element signature="e#2849#2960#0" />
-                <element signature="e#3022#3139#0" />
-                <element signature="e#3200#3316#0" />
-                <element signature="e#3386#3772#0" />
-                <element signature="e#3386#3654#1" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="582" column="55" selection-start-line="582" selection-start-column="50" selection-end-line="582" selection-end-column="55" />
-              <folding>
-                <element signature="e#1295#1310#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="123" column="40" lean-forward="true" selection-start-line="123" selection-start-column="40" selection-end-line="123" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/xtiming.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -178,11 +128,47 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1105">
-              <caret line="291" column="27" selection-start-line="291" selection-start-column="27" selection-end-line="291" selection-end-column="27" />
+            <state relative-caret-position="85">
+              <caret line="109" lean-forward="true" selection-start-line="109" selection-end-line="109" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2771">
+              <caret line="416" column="33" lean-forward="true" selection-start-line="416" selection-start-column="33" selection-end-line="416" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/lancet/lancet.somatic.addFieldsForVcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="333" column="20" selection-start-line="333" selection-start-column="20" selection-end-line="333" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="836">
+              <caret line="384" column="36" selection-start-line="384" selection-start-column="36" selection-end-line="384" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="830">
+              <caret line="430" column="70" selection-start-line="430" selection-start-column="70" selection-end-line="430" selection-end-column="70" />
             </state>
           </provider>
         </entry>
@@ -209,9 +195,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>intervene.bed</find>
-      <find>prepare</find>
-      <find>lbeds</find>
       <find>Running Sed command</find>
       <find>scriptonly</find>
       <find>script_only</find>
@@ -237,8 +220,11 @@
       <find>PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER</find>
       <find>REVE</find>
       <find>make_vcf_upto_specs_for_VcfMerger</find>
-      <find>process_GTs</find>
       <find>get_GT_value_from_GT_value</find>
+      <find>get_gt_numpy_compatible</find>
+      <find>process_GTs</find>
+      <find>round</find>
+      <find>AD</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -279,7 +265,11 @@
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/xtiming.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_bases_by_columns.py" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py" />
       </list>
     </option>
   </component>
@@ -344,6 +334,18 @@
               <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
               <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
               <item name="prep_vcfs_somatic" type="462c0819:PsiDirectoryNode" />
+              <item name="mutect2" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs_somatic" type="462c0819:PsiDirectoryNode" />
+              <item name="octopus" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="vcfMerger2_checkout_0.7.6" type="b2602c69:ProjectViewProjectNode" />
+              <item name="vcfMerger2_checkout_0.7.6" type="462c0819:PsiDirectoryNode" />
+              <item name="prep_vcfs_somatic" type="462c0819:PsiDirectoryNode" />
               <item name="strelka2" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -396,20 +398,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00134" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552524279691</created>
-      <option name="number" value="00134" />
-      <option name="presentableId" value="LOCAL-00134" />
-      <option name="project" value="LOCAL" />
-      <updated>1552524279691</updated>
-    </task>
-    <task id="LOCAL-00135" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552524377417</created>
-      <option name="number" value="00135" />
-      <option name="presentableId" value="LOCAL-00135" />
-      <option name="project" value="LOCAL" />
-      <updated>1552524377417</updated>
     </task>
     <task id="LOCAL-00136" summary="add functions file to prep_vcf folder - TEST">
       <created>1552524413133</created>
@@ -740,7 +728,21 @@
       <option name="project" value="LOCAL" />
       <updated>1572906929667</updated>
     </task>
-    <option name="localTasksCounter" value="183" />
+    <task id="LOCAL-00183" summary="troubleshooting ... added prints">
+      <created>1574113359422</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1574113359422</updated>
+    </task>
+    <task id="LOCAL-00184" summary="converted str to in the col_normal and col_tumor variable when captured from args">
+      <created>1574115662260</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1574115662260</updated>
+    </task>
+    <option name="localTasksCounter" value="185" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -782,8 +784,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="test length iputs" />
-    <MESSAGE value="debugging make venn or upset plot optional feature" />
     <MESSAGE value="add str to print integer" />
     <MESSAGE value="fix bug in reading jason file; replaced prepped_vcf_outfilename with vcf" />
     <MESSAGE value="Fix Error messages" />
@@ -807,7 +807,9 @@
     <MESSAGE value="fixed bug: was concatenating not consecutives positions that were in same phase. Added check point." />
     <MESSAGE value="Fix: Check Lancet Genotype is a dot and convert it to ./." />
     <MESSAGE value="replace &quot;;&quot; by &quot;%&quot; for PhASER unique_id option; Cause Issue with bcfTools." />
-    <option name="LAST_COMMIT_MESSAGE" value="replace &quot;;&quot; by &quot;%&quot; for PhASER unique_id option; Cause Issue with bcfTools." />
+    <MESSAGE value="troubleshooting ... added prints" />
+    <MESSAGE value="converted str to in the col_normal and col_tumor variable when captured from args" />
+    <option name="LAST_COMMIT_MESSAGE" value="converted str to in the col_normal and col_tumor variable when captured from args" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -963,13 +965,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/lancet/lancet.somatic.addFieldsForVcfMerger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="70" column="20" lean-forward="true" selection-start-line="70" selection-start-column="20" selection-end-line="70" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="763">
@@ -986,8 +981,43 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="291" column="27" selection-start-line="291" selection-start-column="27" selection-end-line="291" selection-end-column="27" />
+        <state relative-caret-position="85">
+          <caret line="109" lean-forward="true" selection-start-line="109" selection-end-line="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="290" column="20" selection-start-line="290" selection-start-column="20" selection-end-line="290" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/lancet/lancet.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="333" column="20" selection-start-line="333" selection-start-column="20" selection-end-line="333" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2771">
+          <caret line="416" column="33" lean-forward="true" selection-start-line="416" selection-start-column="33" selection-end-line="416" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="830">
+          <caret line="430" column="70" selection-start-line="430" selection-start-column="70" selection-end-line="430" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/mutect2/mutect2.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="836">
+          <caret line="384" column="36" selection-start-line="384" selection-start-column="36" selection-end-line="384" selection-end-column="36" />
         </state>
       </provider>
     </entry>

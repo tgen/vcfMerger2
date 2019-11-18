@@ -395,7 +395,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 			log.debug("before calcul AR, ADP = ---->>    " + str(ADP_normal) + " -----  " + str(ADP_tumor))
 
 			if AD_tumor != "." and AD_tumor >=0:
-				AR_tumor = round(float(AD_tumor/ADP_tumor), 2)
+				AR_tumor = round(float(AD_tumor/ADP_tumor), 4)
 				## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
 				AD_tumor = [ADP_tumor - AD_tumor, ADP_tumor]
 			else:
@@ -407,7 +407,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 			AR_tumor = float(0.00)
 		try:
 			if AD_normal != "." and AD_normal >=0:
-				AR_normal = round(float(AD_normal / ADP_normal), 2)
+				AR_normal = round(float(AD_normal / ADP_normal), 4)
 				AD_normal = [ADP_normal - AD_normal, ADP_normal]
 			else:
 				AR_normal = int(-2)
