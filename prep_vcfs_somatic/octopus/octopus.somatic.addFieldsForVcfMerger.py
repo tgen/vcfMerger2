@@ -71,10 +71,22 @@ class GenotypeInv(object):
 
 	def __init__(self, li):
 
-		self.allele1 = li[0]
-		self.phased = bool(0) if li[1] == "/" else bool(1)
-		self.allele2 = li[2]
-		self.GT = []
+		try:
+			## we added the if statements because Octopus may put only one letter in GT when dealing with chrY
+			## so we decided to rebuilt the Genotype to be consistent here
+			if len(li) != 3:
+				if li[0] == "." or li[0] == "0":
+					li = ['0', '|', '0']
+				else:
+					li = [0, "|", li[0]]
+
+			self.allele1 = li[0]
+			self.phased = bool(0) if li[1] == "/" else bool(1)
+			self.allele2 = li[2]
+			self.GT = []
+		except Exception:
+			print("LI==" + li)
+			exit(1)
 
 	def get_gt_numpy_compatible(self):
 		self.GT = [] ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_ ; I am probably missing knowledge in some python features behaviour for classes.
