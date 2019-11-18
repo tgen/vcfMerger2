@@ -281,14 +281,17 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 	## ReAssiging GT with value based on AR thresholds comparison to CONSTANT threshold value
 	GTs = [[0], [0]]  ; # need to init  list as we used index later for the list to replace values
 	GTOs = [ str(Genotype(li)) for li in v.genotypes ]
+	print("GTs == " + str(GTs))
+	print("GTOs == "+str(GTOs))
 	ARs = v.format('AR')
 	idxN = 0 if col_normal == 10 else 1
 	idxT = 1 if col_tumor == 11 else 0
 	## we need to keep the order of the information based on the index; so the list GTs MUST be ordered;
 	GTs[idxN] = get_GT_value_from_GT_value(GTOs[idxN]) ## we do not modify the GT field for the Normal sample
 	GTs[idxT] = get_GT_value_from_AR(ARs[idxT][0], GTOs[idxT]) ## we do modify the GT field for the Tumor Sample based on defined threshold
+	print("newGTs[idxN,IdxT] == " + str(GTs))
 	v.set_format('GT', np.array(GTs))
-	log.debug("v after reassigning GT: " + str(v))
+	log.info("v after reassigning GT: " + str(v))
 	return v
 
 
