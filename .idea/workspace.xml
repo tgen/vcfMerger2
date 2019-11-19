@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="updating GenotypeInv for OCTopus when dealign with GT for ChrY">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -82,14 +81,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="py" value="9862" />
-          <entry key="sh" value="462" />
-          <entry key="txt" value="764" />
+          <entry key="sh" value="467" />
+          <entry key="txt" value="809" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Bash" value="462" />
-          <entry key="PLAIN_TEXT" value="764" />
+          <entry key="Bash" value="467" />
+          <entry key="PLAIN_TEXT" value="809" />
           <entry key="Python" value="9862" />
         </counts>
       </usages-collector>
@@ -133,8 +132,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="976">
-              <caret line="446" column="192" selection-start-line="446" selection-start-column="192" selection-end-line="446" selection-end-column="192" />
+            <state relative-caret-position="1010">
+              <caret line="574" column="68" selection-start-line="574" selection-start-column="68" selection-end-line="574" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -407,20 +406,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00140" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552526685204</created>
-      <option name="number" value="00140" />
-      <option name="presentableId" value="LOCAL-00140" />
-      <option name="project" value="LOCAL" />
-      <updated>1552526685204</updated>
-    </task>
-    <task id="LOCAL-00141" summary="add functions file to prep_vcf folder - TEST">
-      <created>1552526879506</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1552526879506</updated>
     </task>
     <task id="LOCAL-00142" summary="add functions file to prep_vcf folder - TEST">
       <created>1552527178707</created>
@@ -751,7 +736,21 @@
       <option name="project" value="LOCAL" />
       <updated>1574120686348</updated>
     </task>
-    <option name="localTasksCounter" value="189" />
+    <task id="LOCAL-00189" summary="updating GenotypeInv for OCTopus when dealign with GT for ChrY">
+      <created>1574126386014</created>
+      <option name="number" value="00189" />
+      <option name="presentableId" value="LOCAL-00189" />
+      <option name="project" value="LOCAL" />
+      <updated>1574126386014</updated>
+    </task>
+    <task id="LOCAL-00190" summary="Found Why Issue with OCtopus Trying to Fix it">
+      <created>1574126708054</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1574126708054</updated>
+    </task>
+    <option name="localTasksCounter" value="191" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -793,7 +792,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix Identation" />
     <MESSAGE value="Remove check contigs step between vcfs {TEST}" />
     <MESSAGE value="work on creating beds automatically for venn" />
     <MESSAGE value="work on creating beds automatically for venn - testing mode" />
@@ -818,7 +816,8 @@
     <MESSAGE value="rounding update for RS values" />
     <MESSAGE value="rounding update for AR values" />
     <MESSAGE value="updating GenotypeInv for OCTopus when dealign with GT for ChrY" />
-    <option name="LAST_COMMIT_MESSAGE" value="updating GenotypeInv for OCTopus when dealign with GT for ChrY" />
+    <MESSAGE value="Found Why Issue with OCtopus Trying to Fix it" />
+    <option name="LAST_COMMIT_MESSAGE" value="Found Why Issue with OCtopus Trying to Fix it" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -1053,8 +1052,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="976">
-          <caret line="446" column="192" selection-start-line="446" selection-start-column="192" selection-end-line="446" selection-end-column="192" />
+        <state relative-caret-position="1010">
+          <caret line="574" column="68" selection-start-line="574" selection-start-column="68" selection-end-line="574" selection-end-column="68" />
         </state>
       </provider>
     </entry>
