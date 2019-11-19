@@ -144,7 +144,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		strip_item = item.replace('##contig=<ID=', '').replace(">", '')   ## need to strip off the prefix and suffix
 		if not "," in strip_item:
 			strip_item = strip_item+","
-		pritn("strip_item = " + strip_item  )
+		print("strip_item = " + strip_item  )
 		k, v = strip_item.split(',', 1)
 		v = v + ">"
 		print("v == " + str(v))
