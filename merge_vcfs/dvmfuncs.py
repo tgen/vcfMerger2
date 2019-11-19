@@ -175,7 +175,11 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	## rebuilding the contigs header lines after the correct sorting
 	nlc = [] ## new list contig
 	for pair in d3:
-		nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
+		if pair[1][0] is not None:
+			nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
+		else:
+			nlc.append(''.join(['##contig=<ID=', pair[0] ))
+
 
 	## adding the contigs to the list of strings called "lh" ; We DO NOT SORT or touch the list of contigs to keep the order defined in the fasta dictionary above
 	for contig in nlc:
