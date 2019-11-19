@@ -144,10 +144,10 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		strip_item = item.replace('##contig=<ID=', '').replace(">", '')   ## need to strip off the prefix and suffix
 		if not "," in strip_item:
 			strip_item = strip_item+","
-		print("strip_item = " + strip_item  )
+		#print("strip_item = " + strip_item  )
 		k, v = strip_item.split(',', 1)
 		v = v + ">"
-		print("v == " + str(v))
+		#print("v == " + str(v))
 		if k in dtemp:
 			dtemp[k].append(v)
 		else:
@@ -177,9 +177,9 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	## rebuilding the contigs header lines after the correct sorting
 	nlc = [] ## new list contig
 	for pair in d3:
-		print("pair is : " + str(pair))
-		print("print(pair[0])   " + pair[0])
-		print("print(pair[1][0] " + pair[1][0])
+		# print("pair is : " + str(pair))
+		# print("print(pair[0])   " + pair[0])
+		# print("print(pair[1][0] " + pair[1][0])
 		if pair[1][0] is None or pair[1][0] == ">":
 			nlc.append(''.join(['##contig=<ID=', pair[0]]))
 		else:
