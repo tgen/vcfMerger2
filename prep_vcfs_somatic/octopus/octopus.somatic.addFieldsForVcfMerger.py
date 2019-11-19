@@ -207,7 +207,7 @@ def update_header(vcf):
 	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT', 'Type': 'Float', 'Number': '1'})
 	vcf.add_format_to_header({'ID': 'AD',
 	                          'Description': 'Reformatted Allele Depth according to specs (AD=ADP-ADO,ADO)',
-	                          'Type': 'Integer', 'Number': '2'})
+	                          'Type': 'Integer', 'Number': '.'})
 	vcf.add_format_to_header({'ID': 'ADO',
 	                          'Description': 'Original Octopus Allele Depth Value',
 	                          'Type': 'Integer', 'Number': '1'})
@@ -453,7 +453,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 			ADs = [AD_normal, AD_tumor]
 
 	else:
-		# Because Octopus does not provide enough information to calculate AD, we assign default
+		# Because Octopus does not provide enough information to calculate AD, we assign default if AD or ADP or any other information needed to get AD is not present in vcf
 		# values of 0,0 ## can be discussed and modify if users think differently
 		dummy_value = int(-2)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
 		dummy_value = int(0)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.

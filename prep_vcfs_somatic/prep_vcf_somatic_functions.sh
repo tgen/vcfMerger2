@@ -442,6 +442,16 @@ function phasing_consecutive_variants_in_strelka2(){
 
 }
 
+
+function rename_fields_in_vcf_header_octopus_specific(){
+    ## If we do not rename the field, we cannot add the same field later on when add Fields to the octopus VCF; AD is defined as STRING in the original vcf but MUST be a integer for vcfMerger2
+    local VCF="$1"
+    local VCF_OUT=${VCF%.*}.rh.vcf
+    sed '/^##FORMAT/s/ID=AD,/ID=ORIGINAL_AD,/ ; /^##FORMAT/s/ID=ADP,/ID=ORIGINAL_ADP,/' ${VCF} > ${VCF_OUT}
+    echo "${VCF_OUT}"
+
+}
+
 function prepare_input_file_for_Venn(){
     local VCF="$1"
     local DIROUT=$2
@@ -558,6 +568,7 @@ function process_octopus_vcf(){
 	then
 	    echo -e "In Function process_octopus_vcf ... "  1>&2
         VCF=$( check_and_update_sample_names ${VCF} )
+        VCF=$( rename_fields_in_vcf_header_octopus_specific ${VCF} )
         VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( decompose ${VCF} )
         VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
