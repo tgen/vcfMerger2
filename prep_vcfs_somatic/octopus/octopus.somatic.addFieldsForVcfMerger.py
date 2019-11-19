@@ -139,7 +139,7 @@ def parseArgs(scriptname, argv):
 
 	warnings.simplefilter(action='ignore', category=FutureWarning)
 	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
-	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
+	log.basicConfig(format=FORMAT_LOGGING, level=log.DEBUG)
 
 
 	try:
@@ -421,11 +421,11 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		try:
 			if AD_normal != "." and AD_normal >=0:
 				AR_normal = round(float(AD_normal / ADP_normal), 4)
-				AD_normal = [ADP_normal - AD_normal, ADP_normal]
+				AD_normal = [ADP_normal - AD_normal, 0]
 			else:
 				AR_normal = int(-2)
 				log.debug("AD in the else of the try --> " + str(ADP_normal))
-				AD_normal = [0, ADP_normal]
+				AD_normal = [ADP_normal, 0]
 
 		except ZeroDivisionError:
 			log.debug("division by zero!")
