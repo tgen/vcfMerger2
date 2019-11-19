@@ -175,6 +175,9 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	## rebuilding the contigs header lines after the correct sorting
 	nlc = [] ## new list contig
 	for pair in d3:
+		print("pair is : " + str(pair))
+		print("print(pair[0])   " + pair[0])
+		print("print(pair[1][0] " + pair[1][0])
 		if pair[1][0] is not None:
 			nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
 		else:
