@@ -204,6 +204,7 @@ def update_header(vcf):
 		 'Type': 'String', 'Number': '.'})
 
 	## Adding AR and new AD to FORMAT field
+	## NOTE: if the field already exist in the Header, it will not be replaced or update; You must rename the Field apready present in the VCF to add specifically the following fields to the vcf HEADER
 	vcf.add_format_to_header({'ID': 'AR', 'Description': 'Alt Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT', 'Type': 'Float', 'Number': '1'})
 	vcf.add_format_to_header({'ID': 'AD',
 	                          'Description': 'Reformatted Allele Depth according to specs (AD=ADP-ADO,ADO)',

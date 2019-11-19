@@ -447,7 +447,7 @@ function rename_fields_in_vcf_header_octopus_specific(){
     ## If we do not rename the field, we cannot add the same field later on when add Fields to the octopus VCF; AD is defined as STRING in the original vcf but MUST be a integer for vcfMerger2
     local VCF="$1"
     local VCF_OUT=${VCF%.*}.rh.vcf
-    sed '/^##FORMAT=<ID=AD,Number=1/s/Number=1,Type=String,/Number=.,Type=Integer,/ ; /^##FORMAT=<ID=ADP,Number=1/s/Number=1,Type=String,/Number=.,Type=Integer,/' ${VCF} > ${VCF_OUT}
+    sed '/^##FORMAT=<ID=AD,Number=/s/Number=1,Type=String,/Number=\.,Type=Integer,/ ; /^##FORMAT=<ID=ADP,Number=/s/Number=1,Type=String,/Number=\.,Type=Integer,/' ${VCF} > ${VCF_OUT}
     echo "${VCF_OUT}"
 
 }
