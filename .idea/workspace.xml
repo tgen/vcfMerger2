@@ -80,7 +80,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="10120" />
+          <entry key="py" value="10262" />
           <entry key="sh" value="490" />
           <entry key="txt" value="948" />
         </counts>
@@ -89,7 +89,7 @@
         <counts>
           <entry key="Bash" value="490" />
           <entry key="PLAIN_TEXT" value="948" />
-          <entry key="Python" value="10120" />
+          <entry key="Python" value="10262" />
         </counts>
       </usages-collector>
     </session>
@@ -123,8 +123,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
-              <caret line="180" column="59" selection-start-line="180" selection-start-column="59" selection-end-line="180" selection-end-column="59" />
+            <state relative-caret-position="350">
+              <caret line="146" column="32" selection-start-line="146" selection-start-column="32" selection-end-line="146" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -342,20 +342,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00146" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
-      <created>1552605157882</created>
-      <option name="number" value="00146" />
-      <option name="presentableId" value="LOCAL-00146" />
-      <option name="project" value="LOCAL" />
-      <updated>1552605157882</updated>
-    </task>
-    <task id="LOCAL-00147" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
-      <created>1552671520996</created>
-      <option name="number" value="00147" />
-      <option name="presentableId" value="LOCAL-00147" />
-      <option name="project" value="LOCAL" />
-      <updated>1552671520996</updated>
     </task>
     <task id="LOCAL-00148" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
       <created>1552674201967</created>
@@ -686,7 +672,21 @@
       <option name="project" value="LOCAL" />
       <updated>1574129155066</updated>
     </task>
-    <option name="localTasksCounter" value="195" />
+    <task id="LOCAL-00195" summary="Fix contig rebuilding">
+      <created>1574129224720</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1574129224720</updated>
+    </task>
+    <task id="LOCAL-00196" summary="Fix contig rebuilding">
+      <created>1574129432995</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1574129432995</updated>
+    </task>
+    <option name="localTasksCounter" value="197" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -1005,8 +1005,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="180" column="59" selection-start-line="180" selection-start-column="59" selection-end-line="180" selection-end-column="59" />
+        <state relative-caret-position="350">
+          <caret line="146" column="32" selection-start-line="146" selection-start-column="32" selection-end-line="146" selection-end-column="32" />
         </state>
       </provider>
     </entry>

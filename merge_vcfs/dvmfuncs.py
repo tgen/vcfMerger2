@@ -144,8 +144,10 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		strip_item = item.replace('##contig=<ID=', '').replace(">", '')   ## need to strip off the prefix and suffix
 		if not "," in strip_item:
 			strip_item = strip_item+","
+		pritn("strip_item = " + strip_item  )
 		k, v = strip_item.split(',', 1)
 		v = v + ">"
+		print("v == " + str(v))
 		if k in dtemp:
 			dtemp[k].append(v)
 		else:
@@ -178,10 +180,10 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		print("pair is : " + str(pair))
 		print("print(pair[0])   " + pair[0])
 		print("print(pair[1][0] " + pair[1][0])
-		if pair[1][0] is not None:
-			nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
+		if pair[1][0] is None or pair[1][0] == ">":
+			nlc.append(''.join(['##contig=<ID=', pair[0]]))
 		else:
-			nlc.append(''.join(['##contig=<ID=', pair[0] ] ))
+			nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
 
 
 	## adding the contigs to the list of strings called "lh" ; We DO NOT SORT or touch the list of contigs to keep the order defined in the fasta dictionary above
