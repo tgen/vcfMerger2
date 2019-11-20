@@ -525,7 +525,7 @@ def process_known_field(field, totnum_samples, dicField, v):
 	:param: v stands for variant and is the object variant created by cyvcf2 module
 	:return: the updated dictField
 	'''
-	log.info(v.format(field))
+	log.debug(v.format(field))
 	nfor = v.format(field).tolist() ## return a numpy array  ; we need to manage this array for each recaptured field
 	log.debug("In process known for flag << "+ field +" >> :  "+ str(nfor))
 	for i in range(len(nfor)):
