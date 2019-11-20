@@ -43,7 +43,7 @@ from natsort import natsorted
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
-log.basicConfig(format=FORMAT_LOGGING, level=log.DEBUG)
+log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
 
 def get_dictOfLoci(vcfToDict_instance):
 	"""
@@ -525,6 +525,7 @@ def process_known_field(field, totnum_samples, dicField, v):
 	:param: v stands for variant and is the object variant created by cyvcf2 module
 	:return: the updated dictField
 	'''
+	log.info(v.format(field))
 	nfor = v.format(field).tolist() ## return a numpy array  ; we need to manage this array for each recaptured field
 	log.debug("In process known for flag << "+ field +" >> :  "+ str(nfor))
 	for i in range(len(nfor)):
@@ -550,7 +551,7 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 	for idx_col_sample in range(0, totnum_samples): ## loop over the column that represent the SAMPLES
 		list_values_current_field=tv.format(field).tolist()## return a numpy array  ; we need to manage this array
 		# for each recaptured values
-		prefix_name = "_".join([toolname, "S" + str(idx_col_sample), field])
+		prefix_name = "_".join([toolname, "S" + str(idx_col_sample+1), field])
 		value_associated_to_prefix_name = "."
 		for idx_field in range(0,len(list_values_current_field)):
 			if isinstance(list_values_current_field[idx_field], list):
