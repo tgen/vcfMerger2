@@ -397,10 +397,6 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		# DP_normal = v.format('DP')[idxN]
 		log.debug(str(DP_normal) + " -----  " + str(DP_tumor))
 
-		# AD_tumor = -1
-		# ADP_tumor = 600
-		# AD_normal = -1
-		# ADP_normal = 9999
 
 		log.debug(str(v))
 		log.debug("ADP --->  " + str(ADP_normal) + " -----  " + str(ADP_tumor))
@@ -424,12 +420,12 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 				## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
 				AD_tumor = [ADP_tumor - AD_tumor, AD_tumor]
 			else:
-				AR_tumor = int(0)
+				AR_tumor = round(float(0), 4)
 				AD_tumor = [ADP_tumor - AD_tumor, AD_tumor]
 		except ZeroDivisionError:
 			log.debug("division by zero!")
 			AD_tumor = [0, 0]
-			AR_tumor = float(0.00)
+			AR_tumor = round(float(0), 4)
 		## Calculate AR (allele ratio using AD and ADP) for NORMAL SAMPLE
 		try:
 			if AD_normal != "." and AD_normal >= 0:
@@ -444,17 +440,17 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		except ZeroDivisionError:
 			log.debug("division by zero!")
 			AD_normal = [0, 0]
-			AR_normal = float(0.00)
+			AR_normal = round(float(0), 4)
 
 		log.debug("AR --->> " + str(AR_normal) + " -----  " + str(AR_tumor))
 		log.debug("AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
 		log.debug("DP tumor is  : " + str(v.format('DP')[idxT][0]))
 		log.debug("DP normal is  : " + str(v.format('DP')[idxN][0]))
 
-		if is_obj_nan(round(float(AR_tumor), 4)): AR_tumor = 0.00
-		if is_obj_nan(round(float(AR_normal), 4)): AR_normal = 0.00
-		if is_obj_nan(int(DP_tumor)): DP_tumor = 0.00
-		if is_obj_nan(int(DP_normal)): DP_normal = 0.00
+		if is_obj_nan(round(float(AR_tumor), 4)): AR_tumor = round(float(0), 4)
+		if is_obj_nan(round(float(AR_normal), 4)): AR_normal = round(float(0), 4)
+		if is_obj_nan(int(DP_tumor)): DP_tumor = round(float(0), 4)
+		if is_obj_nan(int(DP_normal)): DP_normal = round(float(0), 4)
 
 		if idxT == 0:
 			ARs = [AR_tumor, AR_normal]
@@ -478,7 +474,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 
 		if 'MAP_VAF' in v.FORMAT:
 			AR_tumor = v.format('MAP_VAF')[idxT]
-			AR_normal = v.format('MAP_VAF')[idxN] if not isnan(v.format('MAP_VAF')[idxN]) else [float(0.00)]
+			AR_normal = v.format('MAP_VAF')[idxN] if not isnan(v.format('MAP_VAF')[idxN]) else [round(float(0), 4)]
 		else:
 			AR_tumor = [dummy_value]
 			AR_normal = [dummy_value]

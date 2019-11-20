@@ -68,28 +68,28 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="36" />
+          <entry key="py" value="41" />
           <entry key="sh" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Bash" value="6" />
-          <entry key="Python" value="36" />
+          <entry key="Python" value="41" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="11178" />
+          <entry key="py" value="11413" />
           <entry key="sh" value="490" />
-          <entry key="txt" value="963" />
+          <entry key="txt" value="969" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="490" />
-          <entry key="PLAIN_TEXT" value="963" />
-          <entry key="Python" value="11178" />
+          <entry key="PLAIN_TEXT" value="969" />
+          <entry key="Python" value="11413" />
         </counts>
       </usages-collector>
     </session>
@@ -105,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
+            <state relative-caret-position="391">
+              <caret line="23" column="41" selection-start-line="23" selection-start-column="41" selection-end-line="23" selection-end-column="41" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -117,17 +117,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1332">
-              <caret line="553" lean-forward="true" selection-start-line="553" selection-end-line="553" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1054">
-              <caret line="472" selection-end-line="557" />
+            <state relative-caret-position="1046">
+              <caret line="487" column="35" lean-forward="true" selection-start-line="487" selection-start-column="35" selection-end-line="487" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -136,7 +127,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>check_if_PS_in_FORMAT_field</find>
       <find>log.</find>
       <find>KEEP_TEMP</find>
       <find>step</find>
@@ -166,6 +156,7 @@
       <find>octopus</find>
       <find>update_header</find>
       <find>log</find>
+      <find>process_extra_format_fields_from_winner_tool</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -210,13 +201,13 @@
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/lancet/lancet.somatic.addFieldsForVcfMerger.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/vcfToDict.py" />
-        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/dvmfuncs.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/__init__.py" />
         <option value="$PROJECT_DIR$/merge_vcfs/__init__.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/dvmfuncs.py" />
         <option value="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py" />
-        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
       </list>
     </option>
@@ -346,20 +337,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00152" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
-      <created>1552675058626</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1552675058626</updated>
-    </task>
-    <task id="LOCAL-00153" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
-      <created>1552675226592</created>
-      <option name="number" value="00153" />
-      <option name="presentableId" value="LOCAL-00153" />
-      <option name="project" value="LOCAL" />
-      <updated>1552675226592</updated>
     </task>
     <task id="LOCAL-00154" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
       <created>1552675264775</created>
@@ -690,7 +667,21 @@
       <option name="project" value="LOCAL" />
       <updated>1574200966774</updated>
     </task>
-    <option name="localTasksCounter" value="201" />
+    <task id="LOCAL-00201" summary="TBSHOOT OCTOPUS AR AD">
+      <created>1574203906209</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1574203906209</updated>
+    </task>
+    <task id="LOCAL-00202" summary="TBSHOOT OCTOPUS AR AD">
+      <created>1574209206190</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1574209206190</updated>
+    </task>
+    <option name="localTasksCounter" value="203" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -706,7 +697,7 @@
     <frame x="1527" y="0" width="1868" height="1600" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23451327" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13384956" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -732,7 +723,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="i" />
     <MESSAGE value="add functions file to prep_vcf folder - TEST" />
     <MESSAGE value="fix bug in octopus_ capture DP in both Tumor and Normal;" />
     <MESSAGE value="fix tabulation" />
@@ -757,7 +747,8 @@
     <MESSAGE value="Issue Octopus AD fixed; Original Header AD definition is WRONG (String but shoudl be Integer)" />
     <MESSAGE value="Fix contig rebuilding" />
     <MESSAGE value="TBSHOOT OCTOPUS" />
-    <option name="LAST_COMMIT_MESSAGE" value="TBSHOOT OCTOPUS" />
+    <MESSAGE value="TBSHOOT OCTOPUS AR AD" />
+    <option name="LAST_COMMIT_MESSAGE" value="TBSHOOT OCTOPUS AR AD" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -924,16 +915,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="1323" column="41" lean-forward="true" selection-start-line="1323" selection-start-column="41" selection-end-line="1323" selection-end-column="41" />
-          <folding>
-            <element signature="e#1295#1310#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/vcfToDict.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="932">
@@ -951,13 +932,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/dvmfuncs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="901">
-          <caret line="539" column="114" lean-forward="true" selection-start-line="539" selection-start-column="114" selection-end-line="539" selection-end-column="114" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/merge_vcfs/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -972,24 +946,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="38" column="19" lean-forward="true" selection-start-line="38" selection-start-column="19" selection-end-line="38" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="498">
           <caret line="42" column="43" selection-start-line="42" selection-start-column="36" selection-end-line="42" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="554">
-          <caret line="158" column="20" lean-forward="true" selection-start-line="158" selection-start-column="20" selection-end-line="158" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -1000,16 +960,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1054">
@@ -1017,10 +967,80 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="743">
+          <caret line="277" column="52" selection-start-line="277" selection-start-column="34" selection-end-line="277" selection-end-column="52" />
+          <folding>
+            <element signature="e#1351#1366#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/dvmfuncs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="729">
+          <caret line="629" column="189" selection-start-line="629" selection-start-column="131" selection-end-line="629" selection-end-column="189" />
+          <folding>
+            <element signature="e#4651#11635#0" />
+            <element signature="e#12443#14798#0" />
+            <element signature="e#14914#17262#0" />
+            <element signature="e#20261#21423#0" />
+            <element signature="e#21484#22904#0" />
+            <element signature="e#22970#23649#0" />
+            <element signature="e#23713#24594#0" />
+            <element signature="e#26117#26519#0" />
+            <element signature="e#35725#36657#0" />
+            <element signature="e#36843#45245#0" />
+            <element signature="e#45306#45475#0" />
+            <element signature="e#45499#45978#0" />
+            <element signature="e#46037#47337#0" />
+            <element signature="e#47385#47908#0" />
+            <element signature="e#47995#50186#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="588">
+          <caret line="602" lean-forward="true" selection-start-line="602" selection-end-line="602" />
+          <folding>
+            <element signature="e#4651#11635#0" />
+            <element signature="e#11714#12318#0" />
+            <element signature="e#12443#14798#0" />
+            <element signature="e#14914#17262#0" />
+            <element signature="e#21484#22904#0" />
+            <element signature="e#22970#23649#0" />
+            <element signature="e#23713#24594#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="1323" column="41" lean-forward="true" selection-start-line="1323" selection-start-column="41" selection-end-line="1323" selection-end-column="41" />
+          <folding>
+            <element signature="e#1295#1310#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="41" selection-start-line="23" selection-start-column="41" selection-end-line="23" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1332">
-          <caret line="553" lean-forward="true" selection-start-line="553" selection-end-line="553" />
+        <state relative-caret-position="1046">
+          <caret line="487" column="35" lean-forward="true" selection-start-line="487" selection-start-column="35" selection-end-line="487" selection-end-column="35" />
         </state>
       </provider>
     </entry>
