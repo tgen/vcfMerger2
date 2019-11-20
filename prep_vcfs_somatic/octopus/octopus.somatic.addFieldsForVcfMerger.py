@@ -157,7 +157,7 @@ def parseArgs(scriptname, argv):
 		elif opt in ("", "--threshold_AR"):
 			try:
 				global AR_threshold_for_GT
-				AR_threshold_for_GT = float(arg)
+				AR_threshold_for_GT = round(float(arg), 4)
 			except TypeValueError:
 				log.info("ERROR: threshold values MUST be integer or float")
 				exit(2)
@@ -420,12 +420,12 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 				## Reformmating AD to expected VCF specs for that Reserved AD field, using the original AD and ADP values
 				AD_tumor = [ADP_tumor - AD_tumor, AD_tumor]
 			else:
-				AR_tumor = round(float(0), 4)
+				AR_tumor = round(float(0.0), 4)
 				AD_tumor = [ADP_tumor - AD_tumor, AD_tumor]
 		except ZeroDivisionError:
 			log.debug("division by zero!")
 			AD_tumor = [0, 0]
-			AR_tumor = round(float(0), 4)
+			AR_tumor = round(float(0.0), 4)
 		## Calculate AR (allele ratio using AD and ADP) for NORMAL SAMPLE
 		try:
 			if AD_normal != "." and AD_normal >= 0:
@@ -440,17 +440,17 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		except ZeroDivisionError:
 			log.debug("division by zero!")
 			AD_normal = [0, 0]
-			AR_normal = round(float(0), 4)
+			AR_normal = round(float(0.0), 4)
 
 		log.debug("AR --->> " + str(AR_normal) + " -----  " + str(AR_tumor))
 		log.debug("AD = ---->>    " + str(AD_normal) + " -----  " + str(AD_tumor))
 		log.debug("DP tumor is  : " + str(v.format('DP')[idxT][0]))
 		log.debug("DP normal is  : " + str(v.format('DP')[idxN][0]))
 
-		if is_obj_nan(round(float(AR_tumor), 4)): AR_tumor = round(float(0), 4)
-		if is_obj_nan(round(float(AR_normal), 4)): AR_normal = round(float(0), 4)
-		if is_obj_nan(int(DP_tumor)): DP_tumor = round(float(0), 4)
-		if is_obj_nan(int(DP_normal)): DP_normal = round(float(0), 4)
+		if is_obj_nan(round(float(AR_tumor), 4)): AR_tumor = round(float(0.0), 4)
+		if is_obj_nan(round(float(AR_normal), 4)): AR_normal = round(float(0.0), 4)
+		if is_obj_nan(int(DP_tumor)): DP_tumor = round(float(0.0), 4)
+		if is_obj_nan(int(DP_normal)): DP_normal = round(float(0.0), 4)
 
 		if idxT == 0:
 			ARs = [AR_tumor, AR_normal]
@@ -467,14 +467,16 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	else:  ## the else is entered only if there is no 'AD' flag in the octopus vcf
 		# Because Octopus does not provide enough information to calculate AD, we assign default if AD or ADP or any other information needed to get AD is not present in vcf
 		# values of 0,0 ## can be discussed and modify if users think differently
-		dummy_value = int(-2)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
+
 		dummy_value = int(0)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
 		# AR_tumor = [dummy_value, dummy_value] ; old line, Why did I assign two values to AR where only one was enough???
 		# AR_normal = [dummy_value, dummy_value]
+
 		log.debug("In Else because NO 'AD' flag found in vcf; Flag NOT FOUND")
+
 		if 'MAP_VAF' in v.FORMAT:
 			AR_tumor = v.format('MAP_VAF')[idxT]
-			AR_normal = v.format('MAP_VAF')[idxN] if not isnan(v.format('MAP_VAF')[idxN]) else [round(float(0), 4)]
+			AR_normal = v.format('MAP_VAF')[idxN] if not isnan(v.format('MAP_VAF')[idxN]) else [round(float(0.0), 4)]
 		else:
 			AR_tumor = [dummy_value]
 			AR_normal = [dummy_value]
@@ -487,12 +489,15 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		ADs = [AD_normal, AD_tumor]
 		ARs = [AR_normal, AR_tumor]
 
+	## checking the values after processing and before adding them to the variant object v
 	log.debug("ADs  are   : " + str(ADs))
 	log.debug("ARs  are  : " + str(ARs))
 	log.debug("\t".join([ str(x) for x in [ "idxT", "idxN", "AR_tumor", "AR_normal", "DP_tumor", "DP_normal" ] ]))
 	log.debug("\t".join([str(x) for x in [idxT, idxN, AR_tumor, AR_normal, DP_tumor, DP_normal]]))
 	v.set_format('AR', np.array(ARs))
 	v.set_format('AD', np.array(ADs))
+
+	log.debug("updated v object with new ARs and ADs:  " + str(v))
 
 	return process_GTs(tot_number_samples, v, column_tumor, column_normal)
 
@@ -539,6 +544,9 @@ if __name__ == "__main__":
 	log.info("looping over records ...")
 	for v in vcf:  ## v for variant which represents one "variant record"
 		v = add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples)
+		log.debug("v object right before writing it to the VCF ...")
+		log.debug(str(v))
+		log.debug("---")
 		if v is not None:
 			w.write_record(v)
 
