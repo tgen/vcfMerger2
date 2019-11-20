@@ -471,7 +471,7 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		dummy_value = int(0)  ## set dummy value for the AD when AD is absent or not capturable from octopus' vcf.
 		# AR_tumor = [dummy_value, dummy_value] ; old line, Why did I assign two values to AR where only one was enough???
 		# AR_normal = [dummy_value, dummy_value]
-
+		log.debug("In Else because NO 'AD' flag found in vcf; Flag NOT FOUND")
 		if 'MAP_VAF' in v.FORMAT:
 			AR_tumor = v.format('MAP_VAF')[idxT]
 			AR_normal = v.format('MAP_VAF')[idxN] if not isnan(v.format('MAP_VAF')[idxN]) else [round(float(0), 4)]
@@ -487,9 +487,9 @@ def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 		ADs = [AD_normal, AD_tumor]
 		ARs = [AR_normal, AR_tumor]
 
-	log.debug("ADs  is  : " + str(ADs))
-	log.debug("ARs  is  : " + str(ARs))
-
+	log.debug("ADs  are   : " + str(ADs))
+	log.debug("ARs  are  : " + str(ARs))
+	log.debug("\t".join([ str(x) for x in [ "idxT", "idxN", "AR_tumor", "AR_normal", "DP_tumor", "DP_normal" ] ]))
 	log.debug("\t".join([str(x) for x in [idxT, idxN, AR_tumor, AR_normal, DP_tumor, DP_normal]]))
 	v.set_format('AR', np.array(ARs))
 	v.set_format('AD', np.array(ADs))
