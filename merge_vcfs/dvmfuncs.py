@@ -25,7 +25,7 @@
 ### SOFTWARE.
 ###
 ### Major Contributors: Christophe Legendre
-### Minor Contributors:
+### Minor Contributors: Christophe Legendre
 
 
 import logging as log
@@ -39,6 +39,10 @@ import subprocess
 from myGenotype import Genotype
 from natsort import natsorted
 
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
+FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
+log.basicConfig(format=FORMAT_LOGGING, level=log.DEBUG)
 
 def get_dictOfLoci(vcfToDict_instance):
 	"""
@@ -542,17 +546,19 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 	if toolname_acronym is not None:
 		toolname = toolname_acronym
 
-	for idx_col_sample in range(1, totnum_samples+1): ## loop over the column that represent the SAMPLES
+	for idx_col_sample in range(0, totnum_samples): ## loop over the column that represent the SAMPLES
 		list_values_current_field=tv.format(field).tolist()## return a numpy array  ; we need to manage this array
 		# for each recaptured values
 		prefix_name = "_".join([toolname, "S" + str(idx_col_sample), field])
-		if isinstance(list_values_current_field[idx_col_sample-1], list):
-			value_associated_to_prefix_name = str(list_values_current_field[idx_col_sample-1][0])
-		else:
-			value_associated_to_prefix_name = str(list_values_current_field[idx_col_sample-1])
+		value_associated_to_prefix_name = "."
+		for idx_field in range(0,len(list_values_current_field)):
+			if isinstance(list_values_current_field[idx_field], list):
+				value_associated_to_prefix_name = str(list_values_current_field[idx_field][0])
+			else:
+				value_associated_to_prefix_name = str(list_values_current_field[idx_field])
 
-		if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan":
-			value_associated_to_prefix_name = "."
+			if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan":
+				value_associated_to_prefix_name = "."
 
 		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO,"=".join([str(prefix_name), str(value_associated_to_prefix_name)]) ])
 

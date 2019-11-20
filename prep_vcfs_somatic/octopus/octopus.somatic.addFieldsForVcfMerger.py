@@ -362,8 +362,6 @@ def if_dot_assign_negative_value(obj):
 		return 0
 
 
-# return -2
-
 
 def add_new_flags(v, column_tumor, column_normal, filter, tot_number_samples):
 	'''
