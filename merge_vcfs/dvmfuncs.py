@@ -529,7 +529,7 @@ def process_known_field(field, totnum_samples, dicField, v):
 			dicField[i] = str(','.join(str(e) for e in nfor[i] if e is not "," ))
 		log.debug(str(dicField[i]))
 
-def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, totnum_samples, tv, toolname):
+def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, totnum_samples, tv, toolname, toolname_acronym=None):
 	'''
 		:param: field to Process
 		:param: Total number of sample in the VCFs (number should be identical between the vcfs)
@@ -539,23 +539,25 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 		'''
 
 	delim = ";" # if len(currentNewRebuiltINFO) == 0 else ";" ;
+	if toolname_acronym is not None:
+		toolname = toolname_acronym
+
 	for idx_col_sample in range(1, totnum_samples+1): ## loop over the column that represent the SAMPLES
 		list_values_current_field=tv.format(field).tolist()## return a numpy array  ; we need to manage this array
 		# for each recaptured values
+		prefix_name = "_".join([toolname, "S" + str(idx_col_sample), field])
+		if isinstance(list_values_current_field[idx_col_sample-1], list):
+			value_associated_to_prefix_name = str(list_values_current_field[idx_col_sample-1][0])
+		else:
+			value_associated_to_prefix_name = str(list_values_current_field[idx_col_sample-1])
 
-		for idx_field in range(0, totnum_samples):
-			prefix_name="_".join( [ toolname, "S"+str(idx_col_sample), field] )
-			if isinstance(list_values_current_field[idx_field], list):
-				value_associated_to_prefix_name = str(list_values_current_field[idx_field][0])
-			else:
-				value_associated_to_prefix_name = str(list_values_current_field[idx_field])
+		if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan":
+			value_associated_to_prefix_name = "."
 
-			if value_associated_to_prefix_name == "nan":
-				value_associated_to_prefix_name="."
-			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO,
-			                                    "=".join([str(prefix_name), str(value_associated_to_prefix_name)])
-			                                    ])
+		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO,"=".join([str(prefix_name), str(value_associated_to_prefix_name)]) ])
+
 	return currentNewRebuiltINFO.strip(';')
+
 
 def get_acronym_for_current_tool(tool, dico_map_tool_acronym):
 	"""
@@ -610,9 +612,10 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 
 	## we process the Winner Tool first
 
-	# for field in wtv.FORMAT:
-	# 	if field not in list_Fields_Format:  ## we add the data that are not going to be in the new FORMAT
-	# 		INFOfromOtherTools=process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn)
+	if len(LV) == 1:
+		for field in wtv.FORMAT:
+			if field not in list_Fields_Format:  ## we add the data that are not going to be in the new FORMAT
+				INFOfromOtherTools=process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn, get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 
 	## Here we will capture the INFO field from the other tools because they came second in the list;
 	## we process the calls from the other tools
