@@ -425,7 +425,7 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 		#log.info("VFF --> " + str(list_value_current_field))
 		log.debug(toolname + "  VFF --> " + str(list_value_current_field))
 
-		for idx_field in range(0, len(list_format_fields)-1):
+		for idx_field in range(0, len(list_format_fields)):
 			prefix_name="_".join( [ toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")] )
 			value_associated_to_prefix_name = list_value_current_field[idx_field].strip("\n")
 			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO,
