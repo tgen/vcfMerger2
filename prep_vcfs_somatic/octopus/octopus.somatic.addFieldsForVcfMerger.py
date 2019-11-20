@@ -137,7 +137,7 @@ def parseArgs(scriptname, argv):
 
 	warnings.simplefilter(action='ignore', category=FutureWarning)
 	FORMAT_LOGGING = '%(levelname)s %(asctime)-15s %(module)s %(lineno)d\t %(message)s'
-	log.basicConfig(format=FORMAT_LOGGING, level=log.DEBUG)
+	log.basicConfig(format=FORMAT_LOGGING, level=log.INFO)
 
 	try:
 		opts, args = getopt.getopt(argv, "hi:t:o:", ["vcf=", \
