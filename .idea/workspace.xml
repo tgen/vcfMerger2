@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="TBSHOOT OCTOPUS AR AD">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -82,13 +81,13 @@
         <counts>
           <entry key="py" value="12782" />
           <entry key="sh" value="490" />
-          <entry key="txt" value="969" />
+          <entry key="txt" value="1001" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="490" />
-          <entry key="PLAIN_TEXT" value="969" />
+          <entry key="PLAIN_TEXT" value="1001" />
           <entry key="Python" value="12782" />
         </counts>
       </usages-collector>
@@ -138,8 +137,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="139" column="57" selection-start-line="139" selection-start-column="57" selection-end-line="139" selection-end-column="57" />
+            <state relative-caret-position="-1">
+              <caret line="137" column="58" selection-start-line="137" selection-start-column="58" selection-end-line="137" selection-end-column="58" />
               <folding>
                 <element signature="n#!!doc" />
                 <element signature="e#1621#1641#0" expanded="true" />
@@ -678,13 +677,6 @@
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
     </task>
-    <task id="LOCAL-00162" summary="fix bug in octopus_ capture DP in both Tumor and Normal;">
-      <created>1552690568013</created>
-      <option name="number" value="00162" />
-      <option name="presentableId" value="LOCAL-00162" />
-      <option name="project" value="LOCAL" />
-      <updated>1552690568013</updated>
-    </task>
     <task id="LOCAL-00163" summary="fix tabulation">
       <created>1552692311693</created>
       <option name="number" value="00163" />
@@ -1021,7 +1013,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574219478030</updated>
     </task>
-    <option name="localTasksCounter" value="211" />
+    <task id="LOCAL-00211" summary="rescended logging to INFO">
+      <created>1574238551532</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1574238551532</updated>
+    </task>
+    <option name="localTasksCounter" value="212" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -1063,7 +1062,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add functions file to prep_vcf folder - TEST" />
     <MESSAGE value="fix bug in octopus_ capture DP in both Tumor and Normal;" />
     <MESSAGE value="fix tabulation" />
     <MESSAGE value="remove extra greater than sign within move command" />
@@ -1088,7 +1086,8 @@
     <MESSAGE value="Fix contig rebuilding" />
     <MESSAGE value="TBSHOOT OCTOPUS" />
     <MESSAGE value="TBSHOOT OCTOPUS AR AD" />
-    <option name="LAST_COMMIT_MESSAGE" value="TBSHOOT OCTOPUS AR AD" />
+    <MESSAGE value="rescended logging to INFO" />
+    <option name="LAST_COMMIT_MESSAGE" value="rescended logging to INFO" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -1581,8 +1580,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="139" column="57" selection-start-line="139" selection-start-column="57" selection-end-line="139" selection-end-column="57" />
+        <state relative-caret-position="-1">
+          <caret line="137" column="58" selection-start-line="137" selection-start-column="58" selection-end-line="137" selection-end-column="58" />
           <folding>
             <element signature="n#!!doc" />
             <element signature="e#1621#1641#0" expanded="true" />
