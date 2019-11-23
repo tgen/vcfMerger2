@@ -88,9 +88,24 @@ if [[ 1 == 1 ]] ;then
 
 ## due to the edge case encounter with MMRF_1073, we need to exclude manually ALL the Homozygous variant as phaser
 ## does not phase them and raises an error doing so if only homozygous variant are within the input vcf
+## value for GT according to BCFTOOLS documentation
+# sample genotype: reference (haploid or diploid), alternate (hom or het, haploid or diploid), missing genotype, homozygous, heterozygous, haploid, ref-ref hom, alt-alt hom, ref-alt het, alt-alt het, haploid ref, haploid alt (case-insensitive)
+#GT="ref"
+#GT="alt"
+#GT="mis"
+#GT="hom"
+#GT="het"
+#GT="hap"
+#GT="RR"
+#GT="AA"
+#GT="RA" or GT="AR"
+#GT="Aa" or GT="aA"
+#GT="R"
+#GT="A"
 
-echo -e "removing homozygous from VCF ...  using bcftools ..."
-bcftools filter -O z -e 'GT="hom"' -o ${VCF/vcf.gz/hets.vcf.gz} ${VCF}
+
+echo -e "removing ALT-ALT homozygous from VCF ...  using bcftools ..."
+bcftools filter -O z -e 'GT="AA"' -o ${VCF/vcf.gz/hets.vcf.gz} ${VCF}
 check_ev $? "bcftools filter hom"
 
 VCF=${VCF/vcf.gz/hets.vcf.gz}
