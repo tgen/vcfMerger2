@@ -52,6 +52,8 @@ if [[ ${CPUS} -ge ${MAX_CPUS_IN_CPUINFO} ]] ; then CPUS=$((${MAX_CPUS_IN_CPUINFO
 
 VCF_ORIGINAL_INPUT=${VCF}
 
+
+
 ## WARNING: INPUT VCF MUST BE block-compressed vcf with extension .vcf.gz and associated with an index file
 if [[ "23236669" == $( xxd ${VCF_ORIGINAL_INPUT} | head -n 1 | cut -d" " -f2-3 | sed 's/ \+//' ) ]]
 then
@@ -81,7 +83,20 @@ fi
 
 VCF=${VCF_ORIGINAL_INPUT}
 
+
 if [[ 1 == 1 ]] ;then
+
+## due to the edge case encounter with MMRF_1073, we need to exclude manually ALL the Homozygous variant as phaser
+## does not phase them and raises an error doing so if only homozygous variant are within the input vcf
+
+echo -e "removing homozygous from VCF ...  using bcftools ..."
+bcftools filter -O v -e 'GT="hom"' -o ${VCF/vcf.gz/hets.vcf.gz} ${VCF}
+check_ev $? "bcftools filter hom"
+
+VCF=${VCF/vcf.gz/hets.vcf.gz}
+bcftools index --tbi ${VCF}
+check_ev $? "bcftools index"
+
 
 echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
 python3 ${SCRIPT_GET_CONSPOS} ${VCF}
@@ -99,7 +114,7 @@ then
     exit 0
 fi
 
-echo -e "Subset VCF file with only the captured position form step above ..."
+echo -e "Subset VCF file with only the captured position from step above ..."
 bcftools filter --threads 2 -O z -T ${VCF}.consPos.txt -o ${VCF/vcf.gz/subByConsPos.vcf.gz} ${VCF}
 check_ev $? "bcftools filter #1"
 bcftools index --threads 2 --tbi ${VCF/vcf.gz/subByConsPos.vcf.gz}
