@@ -90,7 +90,7 @@ if [[ 1 == 1 ]] ;then
 ## does not phase them and raises an error doing so if only homozygous variant are within the input vcf
 
 echo -e "removing homozygous from VCF ...  using bcftools ..."
-bcftools filter -O v -e 'GT="hom"' -o ${VCF/vcf.gz/hets.vcf.gz} ${VCF}
+bcftools filter -O z -e 'GT="hom"' -o ${VCF/vcf.gz/hets.vcf.gz} ${VCF}
 check_ev $? "bcftools filter hom"
 
 VCF=${VCF/vcf.gz/hets.vcf.gz}
