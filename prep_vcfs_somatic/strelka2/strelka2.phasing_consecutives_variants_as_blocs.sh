@@ -159,7 +159,7 @@ if [[ 1 == 1 ]] ;then
         mv ${VCF/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
         check_ev $? "move #3"
 
-        bcftools index --threads 2 --tbi ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
+        bcftools index --threads 2 -f --tbi ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
         check_ev $? "bcftools index #3"
     fi
 
