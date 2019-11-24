@@ -451,8 +451,9 @@ def main(args, cmdline):
 				              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
 			log.info("###########  END SECTION MAKING VENN ###############")
 	except Exception as e:
-		log.warning("ERROR in making Venn Diagrams; CHeck Venns or their Status; We exit with zero in order to not penalize any pipeline as the Venns can be recreated from original VCFs")
-		log.info("ERROR is: " + str(e))
+		log.info("INFO: Venns Creation is just a commodity provided by vcfMerger tool.")
+		log.warning("ERROR in making Venn Diagrams; Check Venns or their Status; We capture error here and not exiting in order to not penalize any pipeline as the Venns can be recreated from original VCFs")
+		log.error("ERROR is: " + str(e))
 
 
 def make_parser_args():
