@@ -429,26 +429,30 @@ def main(args, cmdline):
 	##@@@@@@@@@@@@@@@@@
 	## MAKING VENNs  ##
 	##@@@@@@@@@@@@@@@@@
-	if do_venn:
-		log.info("###########  BEGIN SECTION MAKING VENN ###############")
-		if lbeds == "":
-			exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option; use --lbeds to provide the appropriate number of files to create the Venn.")
-		## make venn for snvs_and_indels altogether
-		dvm.make_venn(ltoolnames, lbeds, venn_title=venn_title, variantType="Snvs_and_Indels", saveOverlapsBool=True,
-		              upsetBool=False, dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
-		## make Venn using only the SNVs
-		lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.intervene.snvs.bed', file) for file in lbeds]
-		log.info(str(lbeds_snvs))
-		if all([path.isfile(f) for f in lbeds_snvs]):
+	try:
+		if do_venn:
+			log.info("###########  BEGIN SECTION MAKING VENN ###############")
+			if lbeds == "":
+				exit("ERROR: list of bed files for making Venn/Upset plots MUST be provided while using --do-venn option; use --lbeds to provide the appropriate number of files to create the Venn.")
+			## make venn for snvs_and_indels altogether
+			dvm.make_venn(ltoolnames, lbeds, venn_title=venn_title, variantType="Snvs_and_Indels", saveOverlapsBool=True,
+			              upsetBool=False, dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
+			## make Venn using only the SNVs
+			lbeds_snvs = [re.sub(r'\.intervene\.bed$', '.intervene.snvs.bed', file) for file in lbeds]
+			log.info(str(lbeds_snvs))
+			if all([path.isfile(f) for f in lbeds_snvs]):
 
-			dvm.make_venn(ltoolnames, lbeds_snvs, venn_title=venn_title, variantType="Snvs", saveOverlapsBool=True,
-			              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
-		## make Venn using only the Indels
-		lbeds_indels = [re.sub(r'\.intervene\.bed$', '.intervene.indels.bed', file) for file in lbeds]
-		if all([path.isfile(f) for f in lbeds_indels]):
-			dvm.make_venn(ltoolnames, lbeds_indels, venn_title=venn_title, variantType="Indels", saveOverlapsBool=True,
-			              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
-		log.info("###########  END SECTION MAKING VENN ###############")
+				dvm.make_venn(ltoolnames, lbeds_snvs, venn_title=venn_title, variantType="Snvs", saveOverlapsBool=True,
+				              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
+			## make Venn using only the Indels
+			lbeds_indels = [re.sub(r'\.intervene\.bed$', '.intervene.indels.bed', file) for file in lbeds]
+			if all([path.isfile(f) for f in lbeds_indels]):
+				dvm.make_venn(ltoolnames, lbeds_indels, venn_title=venn_title, variantType="Indels", saveOverlapsBool=True,
+				              upsetBool=False,  dirout=dirout, prefixPngFilenames=prefix_for_png_plots)
+			log.info("###########  END SECTION MAKING VENN ###############")
+	except Exception as e:
+		log.warning("ERROR in making Venn Diagrams; CHeck Venns or their Status; We exit with zero in order to not penalize any pipeline as the Venns can be recreated from original VCFs")
+		log.info("ERROR is: " + str(e))
 
 
 def make_parser_args():
