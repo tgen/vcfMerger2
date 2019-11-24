@@ -84,14 +84,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="py" value="13852" />
-          <entry key="sh" value="948" />
-          <entry key="txt" value="1108" />
+          <entry key="sh" value="1967" />
+          <entry key="txt" value="1250" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Bash" value="948" />
-          <entry key="PLAIN_TEXT" value="1108" />
+          <entry key="Bash" value="1967" />
+          <entry key="PLAIN_TEXT" value="1250" />
           <entry key="Python" value="13852" />
         </counts>
       </usages-collector>
@@ -138,8 +138,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="106" column="26" selection-start-line="106" selection-start-column="26" selection-end-line="106" selection-end-column="26" />
+            <state relative-caret-position="545">
+              <caret line="185" column="6" lean-forward="true" selection-start-line="185" selection-start-column="6" selection-end-line="185" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -371,20 +371,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00166" summary="update option message">
-      <created>1569868071215</created>
-      <option name="number" value="00166" />
-      <option name="presentableId" value="LOCAL-00166" />
-      <option name="project" value="LOCAL" />
-      <updated>1569868071216</updated>
-    </task>
-    <task id="LOCAL-00167" summary="update option message">
-      <created>1569870077409</created>
-      <option name="number" value="00167" />
-      <option name="presentableId" value="LOCAL-00167" />
-      <option name="project" value="LOCAL" />
-      <updated>1569870077409</updated>
     </task>
     <task id="LOCAL-00168" summary="update option message">
       <created>1569870715642</created>
@@ -715,7 +701,21 @@
       <option name="project" value="LOCAL" />
       <updated>1574550754457</updated>
     </task>
-    <option name="localTasksCounter" value="215" />
+    <task id="LOCAL-00215" summary="change 'hom' value to 'AA' value for bcftools filter to dpecifically removing AL-ALT homoz">
+      <created>1574551670127</created>
+      <option name="number" value="00215" />
+      <option name="presentableId" value="LOCAL-00215" />
+      <option name="project" value="LOCAL" />
+      <updated>1574551670127</updated>
+    </task>
+    <task id="LOCAL-00216" summary="update processing homs/hets for phASER">
+      <created>1574555484064</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1574555484064</updated>
+    </task>
+    <option name="localTasksCounter" value="217" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -757,8 +757,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove extra greater than sign within move command" />
-    <MESSAGE value="working on fixing issue with names of vcf_prepped added to vcfMerger" />
     <MESSAGE value="update option message" />
     <MESSAGE value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
     <MESSAGE value="modified way of checking for PS flag" />
@@ -782,7 +780,9 @@
     <MESSAGE value="rescended logging to INFO" />
     <MESSAGE value="fixing phASER input to avoid edge case where only homozygous variant in input  VCF for phASER" />
     <MESSAGE value="fixing phASER input to avoid edge case where only homozygous variant present in input VCF for phASER" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing phASER input to avoid edge case where only homozygous variant present in input VCF for phASER" />
+    <MESSAGE value="change 'hom' value to 'AA' value for bcftools filter to dpecifically removing AL-ALT homoz" />
+    <MESSAGE value="update processing homs/hets for phASER" />
+    <option name="LAST_COMMIT_MESSAGE" value="update processing homs/hets for phASER" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -1027,8 +1027,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="106" column="26" selection-start-line="106" selection-start-column="26" selection-end-line="106" selection-end-column="26" />
+        <state relative-caret-position="545">
+          <caret line="185" column="6" lean-forward="true" selection-start-line="185" selection-start-column="6" selection-end-line="185" selection-end-column="6" />
         </state>
       </provider>
     </entry>

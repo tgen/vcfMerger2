@@ -86,69 +86,69 @@ VCF=${VCF_ORIGINAL_INPUT}
 
 if [[ 1 == 1 ]] ;then
 
-echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
-python3 ${SCRIPT_GET_CONSPOS} ${VCF}
-check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
+    echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
+    python3 ${SCRIPT_GET_CONSPOS} ${VCF}
+    check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
 
-if [[ $(cat ${VCF}.consPos.txt | wc -l ) -lt 2 ]] ;
-then
-    echo -e "\nNo Consecutive Position found in VCF; ending Phasing section now"
-    echo -e "renaming input file to match expected outfile from phasing section\n"
-    mycmd="cp ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
-    echo ${mycmd} ; eval ${mycmd}
-    check_ev $? "cp command"
-    echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}  ; Converting vcf.gz to vcf ..."
-    bcftools view -O v --threads 2 -o ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
-    check_ev $? "bcftools view"
-    exit 0
-fi
+    if [[ $(cat ${VCF}.consPos.txt | wc -l ) -lt 2 ]] ;
+    then
+        echo -e "\nNo Consecutive Position found in VCF; ending Phasing section now"
+        echo -e "renaming input file to match expected outfile from phasing section\n"
+        mycmd="cp ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
+        echo ${mycmd} ; eval ${mycmd}
+        check_ev $? "cp command"
+        echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}  ; Converting vcf.gz to vcf ..."
+        bcftools view -O v --threads 2 -o ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
+        check_ev $? "bcftools view"
+        exit 0
+    fi
 
-echo -e "Subset VCF file with only the captured position from step above ..."
-bcftools filter --threads 2 -O z -T ${VCF}.consPos.txt -o ${VCF/vcf.gz/subByConsPos.vcf.gz} ${VCF}
-check_ev $? "bcftools filter #1"
-bcftools index --threads 2 --tbi ${VCF/vcf.gz/subByConsPos.vcf.gz}
-check_ev $? "bcftools index #1"
+    echo -e "Subset VCF file with only the captured position from step above ..."
+    bcftools filter --threads 2 -O z -T ${VCF}.consPos.txt -o ${VCF/vcf.gz/subByConsPos.vcf.gz} ${VCF}
+    check_ev $? "bcftools filter #1"
+    bcftools index --threads 2 --tbi ${VCF/vcf.gz/subByConsPos.vcf.gz}
+    check_ev $? "bcftools index #1"
 
-bcftools filter --threads 2 -O z -T ^${VCF}.consPos.txt -o ${VCF/vcf.gz/TempNoConsPos.vcf.gz} ${VCF}
-check_ev $? "bcftools filter #2"
-bcftools index --threads 2 --tbi ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
-check_ev $? "bcftools index #2"
+    bcftools filter --threads 2 -O z -T ^${VCF}.consPos.txt -o ${VCF/vcf.gz/TempNoConsPos.vcf.gz} ${VCF}
+    check_ev $? "bcftools filter #2"
+    bcftools index --threads 2 --tbi ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
+    check_ev $? "bcftools index #2"
 
-## As phASER dose not deal with HOMOZYGOUS, we need to filter out the homs from subByConsPos.vcf.gz VCF and recheck of number of ConsPOs lt 2
-## due to the edge case encounter with MMRF_1073, we need to exclude manually ALL the Homozygous variant as phaser
-## does not phase them and raises an error doing so if only homozygous variant are within the input vcf
-## value for GT according to BCFTOOLS documentation
-# sample genotype: reference (haploid or diploid), alternate (hom or het, haploid or diploid), missing genotype, homozygous, heterozygous, haploid, ref-ref hom, alt-alt hom, ref-alt het, alt-alt het, haploid ref, haploid alt (case-insensitive)
-#GT="ref"
-#GT="alt"
-#GT="mis"
-#GT="hom"
-#GT="het"
-#GT="hap"
-#GT="RR"
-#GT="AA"
-#GT="RA" or GT="AR"
-#GT="Aa" or GT="aA"
-#GT="R"
-#GT="A"
+    ## As phASER dose not deal with HOMOZYGOUS, we need to filter out the homs from subByConsPos.vcf.gz VCF and recheck of number of ConsPOs lt 2
+    ## due to the edge case encounter with MMRF_1073, we need to exclude manually ALL the Homozygous variant as phaser
+    ## does not phase them and raises an error doing so if only homozygous variant are within the input vcf
+    ## value for GT according to BCFTOOLS documentation
+    # sample genotype: reference (haploid or diploid), alternate (hom or het, haploid or diploid), missing genotype, homozygous, heterozygous, haploid, ref-ref hom, alt-alt hom, ref-alt het, alt-alt het, haploid ref, haploid alt (case-insensitive)
+    #GT="ref"
+    #GT="alt"
+    #GT="mis"
+    #GT="hom"
+    #GT="het"
+    #GT="hap"
+    #GT="RR"
+    #GT="AA"
+    #GT="RA" or GT="AR"
+    #GT="Aa" or GT="aA"
+    #GT="R"
+    #GT="A"
 
-VCF_SBCP=${VCF/vcf.gz/subByConsPos.vcf.gz}
+    VCF_SBCP=${VCF/vcf.gz/subByConsPos.vcf.gz}
 
-echo -e "removing ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
-bcftools filter -O z -e 'GT="AA"' -o ${VCF_SBCP/vcf.gz/hets.vcf.gz} ${VCF_SBCP}
-check_ev $? "bcftools filter out homz sites"
+    echo -e "removing ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
+    bcftools filter -O z -e 'GT="AA"' -o ${VCF_SBCP/vcf.gz/hets.vcf.gz} ${VCF_SBCP}
+    check_ev $? "bcftools filter out homz sites"
 
-VCF_HETS=${VCF_SBCP/vcf.gz/hets.vcf.gz}
-bcftools index --tbi ${VCF_HETS}
-check_ev $? "bcftools index"
+    VCF_HETS=${VCF_SBCP/vcf.gz/hets.vcf.gz}
+    bcftools index --tbi ${VCF_HETS}
+    check_ev $? "bcftools index"
 
-echo -e "keeping ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
-bcftools filter -O z -i 'GT="AA"' -o ${VCF_SBCP/vcf.gz/homs.vcf.gz} ${VCF_SBCP}
-check_ev $? "bcftools filter out homz sites"
+    echo -e "keeping ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
+    bcftools filter -O z -i 'GT="AA"' -o ${VCF_SBCP/vcf.gz/homs.vcf.gz} ${VCF_SBCP}
+    check_ev $? "bcftools filter out homz sites"
 
-VCF_HOMS=${VCF_SBCP/vcf.gz/homs.vcf.gz}
-bcftools index --tbi ${VCF_HOMS}
-check_ev $? "bcftools index"
+    VCF_HOMS=${VCF_SBCP/vcf.gz/homs.vcf.gz}
+    bcftools index --tbi ${VCF_HOMS}
+    check_ev $? "bcftools index"
 
 
     if [[ $( bcftools view -H ${VCF_HOMS} | wc -l ) -gt 0 ]] ;
@@ -165,9 +165,9 @@ check_ev $? "bcftools index"
 
 
 
-## from now we assume that even if some variants were homozygous within the consecutives extracted varianats, not all of
-## them will be and we run phASER from the file VCF named: VCF_HETS=${VCF_SBCP/vcf.gz/hets.vcf.gz}
-## but we check if there is any variants left in the VCF (taht will take care of edge case found with MMRF_1073)
+    ## from now we assume that even if some variants were homozygous within the consecutives extracted varianats, not all of
+    ## them will be and we run phASER from the file VCF named: VCF_HETS=${VCF_SBCP/vcf.gz/hets.vcf.gz}
+    ## but we check if there is any variants left in the VCF (taht will take care of edge case found with MMRF_1073)
 
     if [[ $(bcftools view -H  ${VCF_HETS} | wc -l ) -eq 0 ]] ;
     then
@@ -180,8 +180,8 @@ check_ev $? "bcftools index"
         bcftools view -O v --threads 2 -o ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
         check_ev $? "bcftools view"
         exit 0
-     else
-        VCF=${VCF_HETS/hets.vcf.gz/vcf.gz}
+    else
+        VCF_FOR_PHASER=${VCF_HETS}
         echo -e "vcf with hets only and subsConsPOS is: ${VCF}"
     fi
 
@@ -197,7 +197,7 @@ echo -e "Phasing the Consecutive positions using phASER ..."
 echo -e "RUNNING phASER ... "
 echo -e "Command:"
 #module load python/2.7.13
-VCF_IN=${VCF/vcf.gz/subByConsPos.vcf.gz}
+VCF_IN=${VCF_FOR_PHASER}
 VCF_OUT_PHASER=phased_${VCF_IN}
 TEMP_DIR=$(dirname ${VCF_IN} )/temp_phASER
 mkdir -p ${TEMP_DIR}
