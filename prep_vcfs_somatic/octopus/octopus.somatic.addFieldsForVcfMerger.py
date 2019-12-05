@@ -332,27 +332,34 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 
 
 def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of_fields_to_check):
-	v1 = next(iter(vcf_cyobj))
-	log.info("Checking PS flag presence in FORMAT ...")
-	# Minimum_Expected_Fields_in_FORMAT_not_MANAGE_by_the_CODE
-	ExpectedFlags = "GT:DP"
-	for FIELD in list_of_fields_to_check:
-		if not FIELD in v1.FORMAT:
-			log.warning(
-				FIELD + " tag is ABSENT from the FORMAT field of OCTOPUS\nPlease Check you have run Octopus with appropriate options (i.e, with random forest option and no other filtering option; random forest filtering add ALL the adequate fields to FORMAT columns )")
-			if ':'.join(v1.FORMAT) == ExpectedFlags:
-				log.info("FORMAT field is equivalent to {}, but we request to have these flags at least: {}; And we try to manage the rest, such as AD and AR; Would be better if you could run random_Forest_Filtering; ".format(v1.FORMAT, ExpectedFlags))
-				log.warning(
-					"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
-				from shutil import copyfile
-				copyfile(input_vcf_path, new_vcf_name)
-				exit()
-			else:
 
-				log.error(FIELD + " flag NOT found in FORMAT field; Aborting VCF preparation.")
-				exit(FIELD + " flag Absent")
-		else:
-			log.info(FIELD + " flag Found")
+	try:
+		# v1 = next(iter(vcf_cyobj))
+		v1 = vcf_cyobj
+
+		# Minimum_Expected_Fields_in_FORMAT_not_MANAGE_by_the_CODE
+		ExpectedFlags = "GT:DP"
+		for FIELD in list_of_fields_to_check:
+			if not FIELD in v1.FORMAT:
+				log.warning(
+					FIELD + " tag is ABSENT from the FORMAT field of OCTOPUS\nPlease Check you have run Octopus with appropriate options (i.e, with random forest option and no other filtering option; random forest filtering add ALL the adequate fields to FORMAT columns )")
+				if ':'.join(v1.FORMAT) == ExpectedFlags:
+					log.info("FORMAT field is equivalent to {}, but we request to have these flags at least: {}; And we try to manage the rest, such as AD and AR; Would be better if you could run random_Forest_Filtering; ".format(v1.FORMAT, ExpectedFlags))
+					log.warning(
+						"We assume the vcf has already been prepared for vcfMerger2 and therefore just copy the vcf by assigning the decomposed expected filename output")
+					from shutil import copyfile
+					copyfile(input_vcf_path, new_vcf_name)
+					exit()
+				else:
+
+					log.error(FIELD + " flag NOT found in FORMAT field; Aborting VCF preparation.")
+					exit(FIELD + " flag Absent")
+			else:
+				log.info(FIELD + " flag Found")
+	except StopIteration as si:
+		log.info(si)
+		log.warning("no records")
+	log.info("Checking PS flag presence in FORMAT ...")
 
 
 def if_dot_assign_negative_value(obj):
@@ -517,7 +524,7 @@ if __name__ == "__main__":
 
 	## test if no variants in vcf:
 	try:
-		next(iter(vcf))  ## we just try to check if we have no variant at all in VCF
+		vtest = next(iter(vcf))  ## we just try to check if we have no variant at all in VCF
 	except StopIteration as si:
 		## we bring the header upto specs and write down the output file
 		log.warning("No Variants found in VCF; Creating Final Empty VCF now ..." + str(si))
@@ -527,7 +534,9 @@ if __name__ == "__main__":
 		exit()
 
 	## checking if PS flag is still present in the VCF genotype fields
-	check_if_PS_in_FORMAT_field(vcf, vcf_path, new_vcf_name, ["PS"])
+	# vcf = VCF(vcf_path)  ## as we have already consumed once the generator; if in case there is only one variant (edge case encountered already), we need to re-init vcf here; need to think about another way of doing these tests without consuming the vcf object
+	# vcf = update_header(vcf)
+	check_if_PS_in_FORMAT_field(vtest, vcf_path, new_vcf_name, ["PS"])
 
 	vcf = VCF(vcf_path)  ## as we have already consumed twice the generator; we do not want to lose any variant
 	vcf = update_header(vcf)
