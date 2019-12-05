@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="update processing homs/hets for phASER">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/vcfMerger2.py" beforeDir="false" afterPath="$PROJECT_DIR$/bin/vcfMerger2.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -84,16 +84,16 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="14653" />
+          <entry key="py" value="14771" />
           <entry key="sh" value="1970" />
-          <entry key="txt" value="1250" />
+          <entry key="txt" value="1328" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="1970" />
-          <entry key="PLAIN_TEXT" value="1250" />
-          <entry key="Python" value="14653" />
+          <entry key="PLAIN_TEXT" value="1328" />
+          <entry key="Python" value="14771" />
         </counts>
       </usages-collector>
     </session>
@@ -127,11 +127,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1114">
-              <caret line="337" column="11" lean-forward="true" selection-start-line="337" selection-start-column="11" selection-end-line="337" selection-end-column="11" />
+            <state relative-caret-position="247">
+              <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -154,11 +154,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22576">
-              <caret line="1337" column="142" selection-start-line="1337" selection-start-column="142" selection-end-line="1337" selection-end-column="142" />
+            <state relative-caret-position="1005">
+              <caret line="202" column="13" lean-forward="true" selection-start-line="202" selection-start-column="13" selection-end-line="202" selection-end-column="13" />
               <folding>
                 <element signature="e#1295#1310#0" expanded="true" />
               </folding>
@@ -271,7 +271,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER</find>
       <find>REVE</find>
       <find>make_vcf_upto_specs_for_VcfMerger</find>
       <find>get_GT_value_from_GT_value</find>
@@ -300,6 +299,7 @@
       <find>make_venn</find>
       <find>mv</find>
       <find>make_</find>
+      <find>No Prep-vcfs assign</find>
       <find>check_if_PS_in_FORMAT_field</find>
     </findStrings>
     <replaceStrings>
@@ -329,7 +329,6 @@
         <option value="$PROJECT_DIR$/prep_vcfs/prep_vcf_functions.sh" />
         <option value="$PROJECT_DIR$/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2/prep_vcfs/strelka2/strelka2.somatic.addFieldsForVcfMerger.py" />
-        <option value="$PROJECT_DIR$/bin/vcfMerger2.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/MMRF/commpass/team/clegendre/pnap_home/qscripts/projects/SVToP/delly2/annotations/GRCh38.13/parse_gtf.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_master_branch_v0.7.6/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" />
@@ -353,6 +352,7 @@
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" />
         <option value="$PROJECT_DIR$/merge_vcfs/vcfMerger.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
+        <option value="$PROJECT_DIR$/bin/vcfMerger2.py" />
       </list>
     </option>
   </component>
@@ -482,20 +482,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00172" summary="modified way of checking for PS flag">
-      <created>1570127973721</created>
-      <option name="number" value="00172" />
-      <option name="presentableId" value="LOCAL-00172" />
-      <option name="project" value="LOCAL" />
-      <updated>1570127973721</updated>
-    </task>
-    <task id="LOCAL-00173" summary="modified way of checking for PS flag in FORMAT field">
-      <created>1570132682488</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1570132682488</updated>
     </task>
     <task id="LOCAL-00174" summary="modified way of checking for PS flag in FORMAT field">
       <created>1570135938882</created>
@@ -826,7 +812,21 @@
       <option name="project" value="LOCAL" />
       <updated>1574558586017</updated>
     </task>
-    <option name="localTasksCounter" value="221" />
+    <task id="LOCAL-00221" summary="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf">
+      <created>1575567212934</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1575567212935</updated>
+    </task>
+    <task id="LOCAL-00222" summary="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf">
+      <created>1575568019584</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1575568019585</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -868,7 +868,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update option message" />
     <MESSAGE value="update option message and fixed issue with strelka's bams lien 844 and 846 in vcfMErger2.py" />
     <MESSAGE value="modified way of checking for PS flag" />
     <MESSAGE value="modified way of checking for PS flag in FORMAT field" />
@@ -893,7 +892,8 @@
     <MESSAGE value="fixing phASER input to avoid edge case where only homozygous variant present in input VCF for phASER" />
     <MESSAGE value="change 'hom' value to 'AA' value for bcftools filter to dpecifically removing AL-ALT homoz" />
     <MESSAGE value="update processing homs/hets for phASER" />
-    <option name="LAST_COMMIT_MESSAGE" value="update processing homs/hets for phASER" />
+    <MESSAGE value="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf" />
+    <option name="LAST_COMMIT_MESSAGE" value="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -1088,16 +1088,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22576">
-          <caret line="1337" column="142" selection-start-line="1337" selection-start-column="142" selection-end-line="1337" selection-end-column="142" />
-          <folding>
-            <element signature="e#1295#1310#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="12495">
@@ -1212,8 +1202,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1114">
-          <caret line="337" column="11" lean-forward="true" selection-start-line="337" selection-start-column="11" selection-end-line="337" selection-end-column="11" />
+        <state relative-caret-position="247">
+          <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1005">
+          <caret line="202" column="13" lean-forward="true" selection-start-line="202" selection-start-column="13" selection-end-line="202" selection-end-column="13" />
+          <folding>
+            <element signature="e#1295#1310#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

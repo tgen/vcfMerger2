@@ -201,11 +201,8 @@ def make_data_for_json(lvcfs, ltoolnames, normal_sname, tumor_sname,
 		elif skip_prep_vcfs:
 			data[ltoolnames[tool_idx]]['prepped_vcf_outfilename'] = lvcfs[tool_idx]
 		else:
-			try:
-				log.error("FILENAMES for PREPPED VCF MSUT be PROVIDED. Aborting!")
-				raise("ERROR: No Prep-vcfs assign")
-			except Exception as e:
-				log.error(e)
+			log.error("FILENAMES for PREPPED VCF MSUT be PROVIDED. Aborting!")
+			raise("ERROR: No Prep-vcfs assign")
 
 		data[ltoolnames[tool_idx]]['vcf_indels'] = ""
 		data[ltoolnames[tool_idx]]['vcf_snvs'] = ""
