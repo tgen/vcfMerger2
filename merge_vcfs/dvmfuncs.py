@@ -717,7 +717,7 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 	## missing something in the concept of returning an empty list instead of the dot itself.
 	## attribute 'ALT' of 'cyvcf2.cyvcf2.Variant' objects is not writable
 
-	TYPE = str("TYPE=" + isOfTYPE(wtv.REF, wtv.ALT, wtv))
+	TYPE = str("VTYPE=" + isOfTYPE(wtv.REF, wtv.ALT, wtv))
 	newINFO = ';'.join([x for x in [TYPE, CC, TPCE, TOOLS_AS_FLAG, newINFO, INFOfromOtherTools] if (x != "")])
 
 
