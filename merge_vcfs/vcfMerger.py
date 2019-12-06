@@ -151,7 +151,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		         'user gave the following order for tool precedence: ', ', '.join([str(t) for t in
 		                                                                           ltoolnames]),
 		         '">']),
-		'##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of Variant">'
+		'##INFO=<ID=VTYPE,Number=1,Type=String,Description="Type of Variant (snv, ins, del)">'
 	]
 
 	vcfMerger_Info_Fields_Specific = TN_FLAGS + Additional_FLAGS
@@ -454,6 +454,7 @@ def main(args, cmdline):
 		log.info("INFO: Venns Creation is just a commodity provided by vcfMerger tool.")
 		log.warning("ERROR in making Venn Diagrams; Check Venns or their Status; We capture error here and not exiting in order to not penalize any pipeline as the Venns can be recreated from original VCFs")
 		log.error("ERROR is: " + str(e))
+		exit(1)
 
 
 def make_parser_args():

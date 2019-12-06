@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/vcfMerger2.py" beforeDir="false" afterPath="$PROJECT_DIR$/bin/vcfMerger2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/merge_vcfs/vcfMerger.py" beforeDir="false" afterPath="$PROJECT_DIR$/merge_vcfs/vcfMerger.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -72,19 +72,20 @@
         <counts>
           <entry key="jst" value="2" />
           <entry key="py" value="55" />
-          <entry key="sh" value="7" />
+          <entry key="sh" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Bash" value="7" />
+          <entry key="Bash" value="9" />
           <entry key="PLAIN_TEXT" value="2" />
           <entry key="Python" value="55" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="14771" />
+          <entry key="Python Console" value="6" />
+          <entry key="py" value="14826" />
           <entry key="sh" value="1970" />
           <entry key="txt" value="1328" />
         </counts>
@@ -93,7 +94,7 @@
         <counts>
           <entry key="Bash" value="1970" />
           <entry key="PLAIN_TEXT" value="1328" />
-          <entry key="Python" value="14771" />
+          <entry key="Python" value="14832" />
         </counts>
       </usages-collector>
     </session>
@@ -118,8 +119,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="38" column="17" lean-forward="true" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
+            <state relative-caret-position="680">
+              <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -137,15 +138,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/tools_specific/mutect2/jetstream/deprecated/mutect2dummy.jst">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="799">
-              <caret line="47" column="33" selection-start-line="47" selection-start-column="33" selection-end-line="47" selection-end-column="33" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2686">
@@ -154,13 +146,26 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1005">
-              <caret line="202" column="13" lean-forward="true" selection-start-line="202" selection-start-column="13" selection-end-line="202" selection-end-column="13" />
+            <state relative-caret-position="-1222">
+              <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
               <folding>
                 <element signature="e#1295#1310#0" expanded="true" />
+                <element signature="e#6071#9573#0" />
+                <element signature="e#9626#10850#0" />
+                <element signature="e#10901#12245#0" />
+                <element signature="e#12330#15731#0" />
+                <element signature="e#15807#19310#0" />
+                <element signature="e#19633#22565#0" />
+                <element signature="e#22638#25930#0" />
+                <element signature="e#25977#26500#0" />
+                <element signature="e#26763#27779#0" />
+                <element signature="e#33341#33650#0" />
+                <element signature="e#34073#42263#0" />
+                <element signature="e#42292#52987#0" />
+                <element signature="e#53015#61889#0" />
               </folding>
             </state>
           </provider>
@@ -169,27 +174,196 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12495">
-              <caret line="772" column="9" selection-start-line="772" selection-start-column="4" selection-end-line="772" selection-end-column="9" />
+            <state relative-caret-position="429">
+              <caret line="772" column="6" selection-start-line="772" selection-start-column="6" selection-end-line="772" selection-end-column="6" />
               <folding>
                 <element signature="n#!!doc" />
+                <element signature="e#1757#2143#0" />
+                <element signature="e#1757#2067#1" />
+                <element signature="e#2175#3267#0" />
+                <element signature="e#2175#2565#1" />
+                <element signature="e#2604#3201#0" />
+                <element signature="e#2632#3201#0" />
+                <element signature="e#3326#3722#0" />
+                <element signature="e#3326#3511#1" />
+                <element signature="e#3572#3705#0" />
+                <element signature="e#3632#3705#0" />
+                <element signature="e#3759#3782#0" />
+                <element signature="e#3862#4235#0" />
+                <element signature="e#3862#4148#1" />
+                <element signature="e#4321#4691#0" />
+                <element signature="e#4321#4607#1" />
+                <element signature="e#4890#11874#0" />
+                <element signature="e#4890#5421#1" />
+                <element signature="e#5424#5498#0" />
+                <element signature="e#6234#6353#0" />
+                <element signature="e#6601#6949#0" />
+                <element signature="e#6951#7015#0" />
+                <element signature="e#7212#7325#0" />
+                <element signature="e#7228#7325#0" />
+                <element signature="e#7248#7304#0" />
+                <element signature="e#7275#7304#0" />
+                <element signature="e#7705#7878#0" />
+                <element signature="e#7994#8290#0" />
+                <element signature="e#7994#8027#0" />
+                <element signature="e#8725#11619#0" />
+                <element signature="e#8826#9298#0" />
+                <element signature="e#8976#9083#0" />
+                <element signature="e#9862#9954#0" />
+                <element signature="e#10056#10503#0" />
+                <element signature="e#10181#10476#0" />
+                <element signature="e#10506#10603#0" />
+                <element signature="e#11144#11619#0" />
+                <element signature="e#11330#11619#0" />
+                <element signature="e#11441#11592#0" />
+                <element signature="e#11953#12557#0" />
+                <element signature="e#11953#12286#1" />
+                <element signature="e#12364#12557#0" />
+                <element signature="e#12385#12448#0" />
+                <element signature="e#12682#15037#0" />
+                <element signature="e#12682#13124#1" />
+                <element signature="e#13321#13412#0" />
+                <element signature="e#13801#13978#0" />
+                <element signature="e#14087#14309#0" />
+                <element signature="e#14724#14907#0" />
+                <element signature="e#15153#17501#0" />
+                <element signature="e#15166#15558#1" />
+                <element signature="e#15560#15569#0" />
+                <element signature="e#16124#17371#0" />
+                <element signature="e#16318#16585#0" />
+                <element signature="e#16414#16485#0" />
+                <element signature="e#16624#16694#0" />
+                <element signature="e#16738#16814#0" />
+                <element signature="e#16859#17261#0" />
+                <element signature="e#17273#17371#0" />
+                <element signature="e#17399#17501#0" />
+                <element signature="e#17547#17938#0" />
+                <element signature="e#17547#17782#1" />
+                <element signature="e#18041#18734#0" />
+                <element signature="e#18041#18343#1" />
+                <element signature="e#18846#20393#0" />
+                <element signature="e#18846#19212#1" />
+                <element signature="e#19214#19315#0" />
+                <element signature="e#19609#20351#0" />
+                <element signature="e#19717#19767#0" />
+                <element signature="e#19951#20351#0" />
+                <element signature="e#20178#20350#0" />
+                <element signature="e#20498#21660#0" />
+                <element signature="e#20498#20816#1" />
+                <element signature="e#20818#20921#0" />
+                <element signature="e#21721#23141#0" />
+                <element signature="e#21721#22146#1" />
+                <element signature="e#22176#22332#0" />
+                <element signature="e#22211#22332#0" />
+                <element signature="e#22342#23141#0" />
+                <element signature="e#22829#23141#0" />
+                <element signature="e#22902#23032#0" />
+                <element signature="e#23046#23141#0" />
+                <element signature="e#23207#23886#0" />
+                <element signature="e#23207#23638#1" />
+                <element signature="e#23668#23886#0" />
+                <element signature="e#23769#23886#0" />
+                <element signature="e#23950#24859#0" />
+                <element signature="e#23950#24375#1" />
+                <element signature="e#24622#24859#0" />
+                <element signature="e#24995#26425#0" />
+                <element signature="e#24995#25344#1" />
+                <element signature="e#25574#26383#0" />
+                <element signature="e#25888#26252#0" />
+                <element signature="e#26492#26894#0" />
+                <element signature="e#26492#26682#1" />
+                <element signature="e#26782#26838#0" />
+                <element signature="e#26848#26894#0" />
+                <element signature="e#26999#36177#0" />
+                <element signature="e#26999#27801#1" />
+                <element signature="e#27803#28332#1" />
+                <element signature="e#28335#28447#0" />
+                <element signature="e#28627#28635#0" />
+                <element signature="e#28917#28983#0" />
+                <element signature="e#29043#29348#0" />
+                <element signature="e#29071#29348#0" />
+                <element signature="e#29351#29448#0" />
+                <element signature="e#29700#30562#0" />
+                <element signature="e#30159#30562#0" />
+                <element signature="e#30565#30628#0" />
+                <element signature="e#31106#31223#0" />
+                <element signature="e#32227#33196#0" />
+                <element signature="e#32227#32332#0" />
+                <element signature="e#32546#32652#0" />
+                <element signature="e#32864#32930#0" />
+                <element signature="e#32965#33036#0" />
+                <element signature="e#33199#33275#0" />
+                <element signature="e#33344#33453#0" />
+                <element signature="e#34009#34120#0" />
+                <element signature="e#34781#34900#0" />
+                <element signature="e#35757#35868#0" />
+                <element signature="e#36010#36148#0" />
+                <element signature="e#36027#36147#0" />
+                <element signature="e#36214#37146#0" />
+                <element signature="e#36227#36888#0" />
+                <element signature="e#36943#37146#0" />
+                <element signature="e#37567#37681#0" />
+                <element signature="e#37703#37819#0" />
+                <element signature="e#38140#39133#0" />
+                <element signature="e#38180#38927#0" />
+                <element signature="e#40371#40548#0" />
+                <element signature="e#40568#41064#0" />
+                <element signature="e#40618#40874#0" />
+                <element signature="e#41075#41502#0" />
+                <element signature="e#41124#41392#0" />
+                <element signature="e#41747#41791#0" />
+                <element signature="e#41824#42233#0" />
+                <element signature="e#41888#41943#0" />
+                <element signature="e#42314#45035#0" />
+                <element signature="e#42314#42478#0" />
+                <element signature="e#42706#43209#0" />
+                <element signature="e#42847#43209#0" />
+                <element signature="e#44945#45035#0" />
+                <element signature="e#45058#45252#0" />
+                <element signature="e#45255#45307#0" />
+                <element signature="e#45795#45964#0" />
+                <element signature="e#45848#45964#0" />
+                <element signature="e#45988#46467#0" />
+                <element signature="e#46027#46101#0" />
+                <element signature="e#46142#46232#0" />
+                <element signature="e#46276#46340#0" />
+                <element signature="e#46526#47826#0" />
+                <element signature="e#46545#47718#0" />
+                <element signature="e#46682#46835#0" />
+                <element signature="e#46874#47015#0" />
+                <element signature="e#47051#47215#0" />
+                <element signature="e#47266#47337#0" />
+                <element signature="e#47349#47718#0" />
+                <element signature="e#47434#47650#0" />
+                <element signature="e#47874#48397#0" />
+                <element signature="e#47874#48073#1" />
+                <element signature="e#48106#48386#0" />
+                <element signature="e#48114#48152#0" />
+                <element signature="e#48189#48268#0" />
+                <element signature="e#48307#48386#0" />
+                <element signature="e#48484#50675#0" />
+                <element signature="e#48484#48906#1" />
+                <element signature="e#49023#49178#0" />
+                <element signature="e#49221#49348#0" />
+                <element signature="e#49369#50554#0" />
+                <element signature="e#49412#49562#0" />
+                <element signature="e#49978#50017#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="761">
-              <caret line="550" selection-start-line="550" selection-end-line="550" />
+            <state relative-caret-position="266">
+              <caret line="148" column="42" lean-forward="true" selection-start-line="148" selection-start-column="42" selection-end-line="148" selection-end-column="42" />
               <folding>
                 <element signature="n#!!doc" />
                 <element signature="e#1621#3761#1" />
                 <element signature="e#3800#4289#0" />
                 <element signature="e#3800#4064#1" />
                 <element signature="e#4131#4289#0" />
-                <element signature="e#4458#16512#0" />
                 <element signature="e#4458#5363#1" />
                 <element signature="e#5538#5591#0" />
                 <element signature="e#5829#6851#0" />
@@ -201,7 +375,6 @@
                 <element signature="e#7483#7683#0" />
                 <element signature="e#7505#7654#0" />
                 <element signature="e#7533#7653#0" />
-                <element signature="e#7704#8264#0" />
                 <element signature="e#7708#7839#0" />
                 <element signature="e#7888#8051#0" />
                 <element signature="e#7887#8187#0" />
@@ -250,7 +423,26 @@
                 <element signature="e#20679#20783#0" />
                 <element signature="e#20856#21010#0" />
                 <element signature="e#21254#21272#0" />
+                <element signature="e#23491#28017#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="206">
+              <caret line="42" column="43" selection-start-line="42" selection-start-column="36" selection-end-line="42" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="206">
+              <caret line="216" column="1" lean-forward="true" selection-start-line="216" selection-start-column="1" selection-end-line="216" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -271,7 +463,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>REVE</find>
       <find>make_vcf_upto_specs_for_VcfMerger</find>
       <find>get_GT_value_from_GT_value</find>
       <find>get_gt_numpy_compatible</find>
@@ -296,11 +487,12 @@
       <find>float</find>
       <find>AD</find>
       <find>normal_bam</find>
-      <find>make_venn</find>
       <find>mv</find>
       <find>make_</find>
       <find>No Prep-vcfs assign</find>
       <find>check_if_PS_in_FORMAT_field</find>
+      <find>TYPE</find>
+      <find>make_venn</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -350,9 +542,9 @@
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_bases_by_columns.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" />
-        <option value="$PROJECT_DIR$/merge_vcfs/vcfMerger.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
         <option value="$PROJECT_DIR$/bin/vcfMerger2.py" />
+        <option value="$PROJECT_DIR$/merge_vcfs/vcfMerger.py" />
       </list>
     </option>
   </component>
@@ -455,6 +647,9 @@
       </console-settings>
     </option>
   </component>
+  <component name="PyFindUsagesOptions">
+    <option name="isSearchForTextOccurrences" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\workdocs\github_repos\vcfMerger2" />
@@ -482,20 +677,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00174" summary="modified way of checking for PS flag in FORMAT field">
-      <created>1570135938882</created>
-      <option name="number" value="00174" />
-      <option name="presentableId" value="LOCAL-00174" />
-      <option name="project" value="LOCAL" />
-      <updated>1570135938882</updated>
-    </task>
-    <task id="LOCAL-00175" summary="updates miscs ; added comments">
-      <created>1571100574689</created>
-      <option name="number" value="00175" />
-      <option name="presentableId" value="LOCAL-00175" />
-      <option name="project" value="LOCAL" />
-      <updated>1571100574690</updated>
     </task>
     <task id="LOCAL-00176" summary="updates miscs ; added comments">
       <created>1571101132236</created>
@@ -826,7 +1007,21 @@
       <option name="project" value="LOCAL" />
       <updated>1575568019585</updated>
     </task>
-    <option name="localTasksCounter" value="223" />
+    <task id="LOCAL-00223" summary="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf">
+      <created>1575568093779</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1575568093779</updated>
+    </task>
+    <task id="LOCAL-00224" summary="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf">
+      <created>1575568241620</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1575568241620</updated>
+    </task>
+    <option name="localTasksCounter" value="225" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -856,7 +1051,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.13296399" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.32969034" />
-      <window_info anchor="bottom" id="Python Console" order="11" />
+      <window_info anchor="bottom" id="Python Console" order="11" visible="true" weight="0.32945207" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -1011,20 +1206,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="498">
-          <caret line="42" column="43" selection-start-line="42" selection-start-column="36" selection-end-line="42" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1146">
-          <caret line="471" lean-forward="true" selection-start-line="471" selection-end-line="471" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1054">
@@ -1088,16 +1269,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12495">
-          <caret line="772" column="9" selection-start-line="772" selection-start-column="4" selection-end-line="772" selection-end-column="9" />
-          <folding>
-            <element signature="n#!!doc" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_bases_by_columns.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1190">
@@ -1108,17 +1279,257 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="829">
+          <caret line="104" column="127" selection-start-line="104" selection-start-column="127" selection-end-line="104" selection-end-column="127" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1222">
+          <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
+          <folding>
+            <element signature="e#1295#1310#0" expanded="true" />
+            <element signature="e#6071#9573#0" />
+            <element signature="e#9626#10850#0" />
+            <element signature="e#10901#12245#0" />
+            <element signature="e#12330#15731#0" />
+            <element signature="e#15807#19310#0" />
+            <element signature="e#19633#22565#0" />
+            <element signature="e#22638#25930#0" />
+            <element signature="e#25977#26500#0" />
+            <element signature="e#26763#27779#0" />
+            <element signature="e#33341#33650#0" />
+            <element signature="e#34073#42263#0" />
+            <element signature="e#42292#52987#0" />
+            <element signature="e#53015#61889#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="42" column="43" selection-start-line="42" selection-start-column="36" selection-end-line="42" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="216" column="1" lean-forward="true" selection-start-line="216" selection-start-column="1" selection-end-line="216" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="772" column="6" selection-start-line="772" selection-start-column="6" selection-end-line="772" selection-end-column="6" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#1757#2143#0" />
+            <element signature="e#1757#2067#1" />
+            <element signature="e#2175#3267#0" />
+            <element signature="e#2175#2565#1" />
+            <element signature="e#2604#3201#0" />
+            <element signature="e#2632#3201#0" />
+            <element signature="e#3326#3722#0" />
+            <element signature="e#3326#3511#1" />
+            <element signature="e#3572#3705#0" />
+            <element signature="e#3632#3705#0" />
+            <element signature="e#3759#3782#0" />
+            <element signature="e#3862#4235#0" />
+            <element signature="e#3862#4148#1" />
+            <element signature="e#4321#4691#0" />
+            <element signature="e#4321#4607#1" />
+            <element signature="e#4890#11874#0" />
+            <element signature="e#4890#5421#1" />
+            <element signature="e#5424#5498#0" />
+            <element signature="e#6234#6353#0" />
+            <element signature="e#6601#6949#0" />
+            <element signature="e#6951#7015#0" />
+            <element signature="e#7212#7325#0" />
+            <element signature="e#7228#7325#0" />
+            <element signature="e#7248#7304#0" />
+            <element signature="e#7275#7304#0" />
+            <element signature="e#7705#7878#0" />
+            <element signature="e#7994#8290#0" />
+            <element signature="e#7994#8027#0" />
+            <element signature="e#8725#11619#0" />
+            <element signature="e#8826#9298#0" />
+            <element signature="e#8976#9083#0" />
+            <element signature="e#9862#9954#0" />
+            <element signature="e#10056#10503#0" />
+            <element signature="e#10181#10476#0" />
+            <element signature="e#10506#10603#0" />
+            <element signature="e#11144#11619#0" />
+            <element signature="e#11330#11619#0" />
+            <element signature="e#11441#11592#0" />
+            <element signature="e#11953#12557#0" />
+            <element signature="e#11953#12286#1" />
+            <element signature="e#12364#12557#0" />
+            <element signature="e#12385#12448#0" />
+            <element signature="e#12682#15037#0" />
+            <element signature="e#12682#13124#1" />
+            <element signature="e#13321#13412#0" />
+            <element signature="e#13801#13978#0" />
+            <element signature="e#14087#14309#0" />
+            <element signature="e#14724#14907#0" />
+            <element signature="e#15153#17501#0" />
+            <element signature="e#15166#15558#1" />
+            <element signature="e#15560#15569#0" />
+            <element signature="e#16124#17371#0" />
+            <element signature="e#16318#16585#0" />
+            <element signature="e#16414#16485#0" />
+            <element signature="e#16624#16694#0" />
+            <element signature="e#16738#16814#0" />
+            <element signature="e#16859#17261#0" />
+            <element signature="e#17273#17371#0" />
+            <element signature="e#17399#17501#0" />
+            <element signature="e#17547#17938#0" />
+            <element signature="e#17547#17782#1" />
+            <element signature="e#18041#18734#0" />
+            <element signature="e#18041#18343#1" />
+            <element signature="e#18846#20393#0" />
+            <element signature="e#18846#19212#1" />
+            <element signature="e#19214#19315#0" />
+            <element signature="e#19609#20351#0" />
+            <element signature="e#19717#19767#0" />
+            <element signature="e#19951#20351#0" />
+            <element signature="e#20178#20350#0" />
+            <element signature="e#20498#21660#0" />
+            <element signature="e#20498#20816#1" />
+            <element signature="e#20818#20921#0" />
+            <element signature="e#21721#23141#0" />
+            <element signature="e#21721#22146#1" />
+            <element signature="e#22176#22332#0" />
+            <element signature="e#22211#22332#0" />
+            <element signature="e#22342#23141#0" />
+            <element signature="e#22829#23141#0" />
+            <element signature="e#22902#23032#0" />
+            <element signature="e#23046#23141#0" />
+            <element signature="e#23207#23886#0" />
+            <element signature="e#23207#23638#1" />
+            <element signature="e#23668#23886#0" />
+            <element signature="e#23769#23886#0" />
+            <element signature="e#23950#24859#0" />
+            <element signature="e#23950#24375#1" />
+            <element signature="e#24622#24859#0" />
+            <element signature="e#24995#26425#0" />
+            <element signature="e#24995#25344#1" />
+            <element signature="e#25574#26383#0" />
+            <element signature="e#25888#26252#0" />
+            <element signature="e#26492#26894#0" />
+            <element signature="e#26492#26682#1" />
+            <element signature="e#26782#26838#0" />
+            <element signature="e#26848#26894#0" />
+            <element signature="e#26999#36177#0" />
+            <element signature="e#26999#27801#1" />
+            <element signature="e#27803#28332#1" />
+            <element signature="e#28335#28447#0" />
+            <element signature="e#28627#28635#0" />
+            <element signature="e#28917#28983#0" />
+            <element signature="e#29043#29348#0" />
+            <element signature="e#29071#29348#0" />
+            <element signature="e#29351#29448#0" />
+            <element signature="e#29700#30562#0" />
+            <element signature="e#30159#30562#0" />
+            <element signature="e#30565#30628#0" />
+            <element signature="e#31106#31223#0" />
+            <element signature="e#32227#33196#0" />
+            <element signature="e#32227#32332#0" />
+            <element signature="e#32546#32652#0" />
+            <element signature="e#32864#32930#0" />
+            <element signature="e#32965#33036#0" />
+            <element signature="e#33199#33275#0" />
+            <element signature="e#33344#33453#0" />
+            <element signature="e#34009#34120#0" />
+            <element signature="e#34781#34900#0" />
+            <element signature="e#35757#35868#0" />
+            <element signature="e#36010#36148#0" />
+            <element signature="e#36027#36147#0" />
+            <element signature="e#36214#37146#0" />
+            <element signature="e#36227#36888#0" />
+            <element signature="e#36943#37146#0" />
+            <element signature="e#37567#37681#0" />
+            <element signature="e#37703#37819#0" />
+            <element signature="e#38140#39133#0" />
+            <element signature="e#38180#38927#0" />
+            <element signature="e#40371#40548#0" />
+            <element signature="e#40568#41064#0" />
+            <element signature="e#40618#40874#0" />
+            <element signature="e#41075#41502#0" />
+            <element signature="e#41124#41392#0" />
+            <element signature="e#41747#41791#0" />
+            <element signature="e#41824#42233#0" />
+            <element signature="e#41888#41943#0" />
+            <element signature="e#42314#45035#0" />
+            <element signature="e#42314#42478#0" />
+            <element signature="e#42706#43209#0" />
+            <element signature="e#42847#43209#0" />
+            <element signature="e#44945#45035#0" />
+            <element signature="e#45058#45252#0" />
+            <element signature="e#45255#45307#0" />
+            <element signature="e#45795#45964#0" />
+            <element signature="e#45848#45964#0" />
+            <element signature="e#45988#46467#0" />
+            <element signature="e#46027#46101#0" />
+            <element signature="e#46142#46232#0" />
+            <element signature="e#46276#46340#0" />
+            <element signature="e#46526#47826#0" />
+            <element signature="e#46545#47718#0" />
+            <element signature="e#46682#46835#0" />
+            <element signature="e#46874#47015#0" />
+            <element signature="e#47051#47215#0" />
+            <element signature="e#47266#47337#0" />
+            <element signature="e#47349#47718#0" />
+            <element signature="e#47434#47650#0" />
+            <element signature="e#47874#48397#0" />
+            <element signature="e#47874#48073#1" />
+            <element signature="e#48106#48386#0" />
+            <element signature="e#48114#48152#0" />
+            <element signature="e#48189#48268#0" />
+            <element signature="e#48307#48386#0" />
+            <element signature="e#48484#50675#0" />
+            <element signature="e#48484#48906#1" />
+            <element signature="e#49023#49178#0" />
+            <element signature="e#49221#49348#0" />
+            <element signature="e#49369#50554#0" />
+            <element signature="e#49412#49562#0" />
+            <element signature="e#49978#50017#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="761">
-          <caret line="550" selection-start-line="550" selection-end-line="550" />
+        <state relative-caret-position="266">
+          <caret line="148" column="42" lean-forward="true" selection-start-line="148" selection-start-column="42" selection-end-line="148" selection-end-column="42" />
           <folding>
             <element signature="n#!!doc" />
             <element signature="e#1621#3761#1" />
             <element signature="e#3800#4289#0" />
             <element signature="e#3800#4064#1" />
             <element signature="e#4131#4289#0" />
-            <element signature="e#4458#16512#0" />
             <element signature="e#4458#5363#1" />
             <element signature="e#5538#5591#0" />
             <element signature="e#5829#6851#0" />
@@ -1130,7 +1541,6 @@
             <element signature="e#7483#7683#0" />
             <element signature="e#7505#7654#0" />
             <element signature="e#7533#7653#0" />
-            <element signature="e#7704#8264#0" />
             <element signature="e#7708#7839#0" />
             <element signature="e#7888#8051#0" />
             <element signature="e#7887#8187#0" />
@@ -1179,40 +1589,7 @@
             <element signature="e#20679#20783#0" />
             <element signature="e#20856#21010#0" />
             <element signature="e#21254#21272#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="829">
-          <caret line="104" column="127" selection-start-line="104" selection-start-column="127" selection-end-line="104" selection-end-column="127" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="38" column="17" lean-forward="true" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1005">
-          <caret line="202" column="13" lean-forward="true" selection-start-line="202" selection-start-column="13" selection-end-line="202" selection-end-column="13" />
-          <folding>
-            <element signature="e#1295#1310#0" expanded="true" />
+            <element signature="e#23491#28017#0" />
           </folding>
         </state>
       </provider>
