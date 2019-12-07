@@ -242,7 +242,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module
+		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the vcfMerger prep module and exit
 		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
 		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
