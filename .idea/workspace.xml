@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -59,20 +58,21 @@
     <session id="-2047446466">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="5" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.22" value="1" />
           <entry key="project.open.time.23" value="1" />
           <entry key="project.open.time.28" value="1" />
           <entry key="project.open.time.30" value="1" />
+          <entry key="project.open.time.32" value="1" />
           <entry key="project.open.time.35" value="1" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="jst" value="2" />
-          <entry key="py" value="55" />
+          <entry key="py" value="57" />
           <entry key="sh" value="10" />
         </counts>
       </usages-collector>
@@ -80,22 +80,22 @@
         <counts>
           <entry key="Bash" value="10" />
           <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="55" />
+          <entry key="Python" value="57" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="6" />
-          <entry key="py" value="14827" />
-          <entry key="sh" value="1979" />
-          <entry key="txt" value="1402" />
+          <entry key="py" value="14924" />
+          <entry key="sh" value="1989" />
+          <entry key="txt" value="1507" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Bash" value="1979" />
-          <entry key="PLAIN_TEXT" value="1402" />
-          <entry key="Python" value="14833" />
+          <entry key="Bash" value="1989" />
+          <entry key="PLAIN_TEXT" value="1507" />
+          <entry key="Python" value="14930" />
         </counts>
       </usages-collector>
     </session>
@@ -109,30 +109,9 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="829">
-              <caret line="104" column="127" selection-start-line="104" selection-start-column="127" selection-end-line="104" selection-end-column="127" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="680">
-              <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
-              <folding>
-                <element signature="e#0#37#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
+            <state relative-caret-position="4726">
               <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
             </state>
           </provider>
@@ -141,7 +120,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
+            <state relative-caret-position="2686">
               <caret line="158" column="10" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="10" />
             </state>
           </provider>
@@ -150,23 +129,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1222">
+            <state relative-caret-position="2482">
               <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
               <folding>
                 <element signature="e#1295#1310#0" expanded="true" />
-                <element signature="e#6071#9573#0" />
-                <element signature="e#9626#10850#0" />
-                <element signature="e#10901#12245#0" />
-                <element signature="e#12330#15731#0" />
-                <element signature="e#15807#19310#0" />
-                <element signature="e#19633#22565#0" />
-                <element signature="e#22638#25930#0" />
-                <element signature="e#25977#26500#0" />
-                <element signature="e#26763#27779#0" />
-                <element signature="e#33341#33650#0" />
-                <element signature="e#34073#42263#0" />
-                <element signature="e#42292#52987#0" />
-                <element signature="e#53015#61889#0" />
               </folding>
             </state>
           </provider>
@@ -175,7 +141,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
+            <state relative-caret-position="1615">
               <caret line="708" column="88" lean-forward="true" selection-start-line="708" selection-start-column="88" selection-end-line="708" selection-end-column="88" />
               <folding>
                 <element signature="n#!!doc" />
@@ -295,59 +261,6 @@
                 <element signature="e#33199#33275#0" />
                 <element signature="e#33344#33453#0" />
                 <element signature="e#34009#34120#0" />
-                <element signature="e#34781#34900#0" />
-                <element signature="e#35757#35868#0" />
-                <element signature="e#36010#36148#0" />
-                <element signature="e#36027#36147#0" />
-                <element signature="e#36214#37146#0" />
-                <element signature="e#36227#36888#0" />
-                <element signature="e#36943#37146#0" />
-                <element signature="e#37567#37681#0" />
-                <element signature="e#37703#37819#0" />
-                <element signature="e#38140#39133#0" />
-                <element signature="e#38180#38927#0" />
-                <element signature="e#40371#40548#0" />
-                <element signature="e#40568#41064#0" />
-                <element signature="e#40618#40874#0" />
-                <element signature="e#41075#41502#0" />
-                <element signature="e#41124#41392#0" />
-                <element signature="e#41747#41791#0" />
-                <element signature="e#41824#42233#0" />
-                <element signature="e#41888#41943#0" />
-                <element signature="e#42314#45035#0" />
-                <element signature="e#42314#42478#0" />
-                <element signature="e#42706#43209#0" />
-                <element signature="e#42847#43209#0" />
-                <element signature="e#44945#45035#0" />
-                <element signature="e#45058#45252#0" />
-                <element signature="e#45255#45307#0" />
-                <element signature="e#45795#45964#0" />
-                <element signature="e#45848#45964#0" />
-                <element signature="e#45988#46467#0" />
-                <element signature="e#46027#46101#0" />
-                <element signature="e#46142#46232#0" />
-                <element signature="e#46276#46340#0" />
-                <element signature="e#46526#47826#0" />
-                <element signature="e#46545#47718#0" />
-                <element signature="e#46682#46835#0" />
-                <element signature="e#46874#47015#0" />
-                <element signature="e#47051#47215#0" />
-                <element signature="e#47266#47337#0" />
-                <element signature="e#47349#47718#0" />
-                <element signature="e#47434#47650#0" />
-                <element signature="e#47874#48397#0" />
-                <element signature="e#47874#48073#1" />
-                <element signature="e#48106#48386#0" />
-                <element signature="e#48114#48152#0" />
-                <element signature="e#48189#48268#0" />
-                <element signature="e#48307#48386#0" />
-                <element signature="e#48484#50675#0" />
-                <element signature="e#48484#48906#1" />
-                <element signature="e#49023#49178#0" />
-                <element signature="e#49221#49348#0" />
-                <element signature="e#49369#50554#0" />
-                <element signature="e#49412#49562#0" />
-                <element signature="e#49978#50017#0" />
               </folding>
             </state>
           </provider>
@@ -356,7 +269,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="657">
+            <state relative-caret-position="1343">
               <caret line="201" column="281" lean-forward="true" selection-start-line="201" selection-start-column="281" selection-end-line="201" selection-end-column="281" />
               <folding>
                 <element signature="n#!!doc" />
@@ -379,51 +292,6 @@
                 <element signature="e#7888#8051#0" />
                 <element signature="e#7887#8187#0" />
                 <element signature="e#8063#8168#0" />
-                <element signature="e#8330#8417#0" />
-                <element signature="e#8613#9003#0" />
-                <element signature="e#9419#9474#0" />
-                <element signature="e#9692#10555#1" />
-                <element signature="e#10642#11252#0" />
-                <element signature="e#10698#11252#0" />
-                <element signature="e#10797#11252#0" />
-                <element signature="e#10983#11252#0" />
-                <element signature="e#11256#11333#0" />
-                <element signature="e#11529#11772#0" />
-                <element signature="e#11857#12234#0" />
-                <element signature="e#11889#12234#0" />
-                <element signature="e#12024#12234#0" />
-                <element signature="e#12107#12233#0" />
-                <element signature="e#12236#12333#0" />
-                <element signature="e#13490#16393#0" />
-                <element signature="e#13579#13726#0" />
-                <element signature="e#14353#14442#0" />
-                <element signature="e#15837#16334#0" />
-                <element signature="e#16420#16492#0" />
-                <element signature="e#16682#16781#0" />
-                <element signature="e#16967#17181#0" />
-                <element signature="e#17014#17143#0" />
-                <element signature="e#17233#17420#0" />
-                <element signature="e#17454#17559#0" />
-                <element signature="e#17603#17773#0" />
-                <element signature="e#17836#18056#0" />
-                <element signature="e#18131#18271#0" />
-                <element signature="e#18329#18375#0" />
-                <element signature="e#18398#18467#0" />
-                <element signature="e#18515#18665#0" />
-                <element signature="e#18694#18816#0" />
-                <element signature="e#18841#18950#0" />
-                <element signature="e#19062#19167#0" />
-                <element signature="e#19209#19255#0" />
-                <element signature="e#19300#19377#0" />
-                <element signature="e#19439#19771#0" />
-                <element signature="e#19474#19672#0" />
-                <element signature="e#19506#19605#0" />
-                <element signature="e#19701#19724#0" />
-                <element signature="e#19774#19789#0" />
-                <element signature="e#20679#20783#0" />
-                <element signature="e#20856#21010#0" />
-                <element signature="e#21254#21272#0" />
-                <element signature="e#23491#28017#0" />
               </folding>
             </state>
           </provider>
@@ -432,17 +300,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
+            <state relative-caret-position="1122">
               <caret line="66" column="1" selection-start-line="66" selection-start-column="1" selection-end-line="66" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="783">
-              <caret line="73" column="4" lean-forward="true" selection-start-line="73" selection-start-column="4" selection-end-line="73" selection-end-column="4" />
+            <state relative-caret-position="663">
+              <caret line="39" column="15" selection-start-line="39" selection-end-line="39" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -450,8 +318,59 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="546">
-              <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
+            <state relative-caret-position="618">
+              <caret line="209" column="114" lean-forward="true" selection-start-line="209" selection-start-column="114" selection-end-line="209" selection-end-column="114" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="697">
+              <caret line="49" column="35" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="49" column="32" selection-start-line="49" selection-start-column="32" selection-end-line="49" selection-end-column="32" />
+              <folding>
+                <element signature="n#!!doc" />
+                <element signature="e#1651#1702#0" />
+                <element signature="e#2027#2520#0" />
+                <element signature="e#2229#2508#0" />
+                <element signature="e#2556#4198#0" />
+                <element signature="e#2838#3171#0" />
+                <element signature="e#2878#3097#0" />
+                <element signature="e#3202#3235#0" />
+                <element signature="e#3261#3783#0" />
+                <element signature="e#3299#3332#0" />
+                <element signature="e#3488#3561#0" />
+                <element signature="e#3664#3737#0" />
+                <element signature="e#3838#4029#0" />
+                <element signature="e#3847#4028#0" />
+                <element signature="e#4229#5348#0" />
+                <element signature="e#4229#4923#1" />
+                <element signature="e#5000#5180#0" />
+                <element signature="e#5407#7291#0" />
+                <element signature="e#5407#6293#1" />
+                <element signature="e#6297#6325#0" />
+                <element signature="e#6886#7055#0" />
+                <element signature="e#7077#7170#0" />
+                <element signature="e#7182#7291#0" />
+                <element signature="e#8829#8915#0" />
+                <element signature="e#9971#10058#0" />
+                <element signature="e#10456#10543#0" />
+                <element signature="e#12255#13031#0" />
+                <element signature="e#12383#12993#0" />
+                <element signature="e#12574#12882#0" />
+                <element signature="e#12894#12993#0" />
+                <element signature="e#13034#13045#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -460,9 +379,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>get_gt_numpy_compatible</find>
-      <find>process_GTs</find>
-      <find>ARs =</find>
       <find>AR =</find>
       <find>round</find>
       <find>AR</find>
@@ -490,6 +406,9 @@
       <find>TYPE</find>
       <find>phaser</find>
       <find>bcftools 1</find>
+      <find>python</find>
+      <find>VALID_TOOLNAMES</find>
+      <find>bcftools</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -532,7 +451,6 @@
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/vcfToDict.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/__init__.py" />
         <option value="$PROJECT_DIR$/merge_vcfs/__init__.py" />
-        <option value="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/merge_vcfs/dvmfuncs.py" />
         <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_bases_by_columns.py" />
@@ -544,6 +462,9 @@
         <option value="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" />
         <option value="$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh" />
         <option value="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh" />
+        <option value="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" />
+        <option value="$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" />
+        <option value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" />
       </list>
     </option>
   </component>
@@ -676,20 +597,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00178" summary="added type_cairo to R script for UpSetR">
-      <created>1572653077012</created>
-      <option name="number" value="00178" />
-      <option name="presentableId" value="LOCAL-00178" />
-      <option name="project" value="LOCAL" />
-      <updated>1572653077012</updated>
-    </task>
-    <task id="LOCAL-00179" summary="added comments ; corrected typos">
-      <created>1572891850114</created>
-      <option name="number" value="00179" />
-      <option name="presentableId" value="LOCAL-00179" />
-      <option name="project" value="LOCAL" />
-      <updated>1572891850114</updated>
     </task>
     <task id="LOCAL-00180" summary="fixed bug: was concatenating not consecutives positions that were in same phase. Added check point.">
       <created>1572892150020</created>
@@ -1020,7 +927,21 @@
       <option name="project" value="LOCAL" />
       <updated>1575676741922</updated>
     </task>
-    <option name="localTasksCounter" value="227" />
+    <task id="LOCAL-00227" summary="remove check version for bcftools; caused error when 2 digits after decimal point">
+      <created>1575752039200</created>
+      <option name="number" value="00227" />
+      <option name="presentableId" value="LOCAL-00227" />
+      <option name="project" value="LOCAL" />
+      <updated>1575752039200</updated>
+    </task>
+    <task id="LOCAL-00228" summary="update comment line">
+      <created>1575758320956</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1575758320956</updated>
+    </task>
+    <option name="localTasksCounter" value="229" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -1033,10 +954,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="-8" width="1634" height="1066" extended-state="6" />
+    <frame x="54" y="-8" width="3794" height="1616" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15501906" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.057311196" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -1062,8 +983,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="modified way of checking for PS flag" />
-    <MESSAGE value="modified way of checking for PS flag in FORMAT field" />
     <MESSAGE value="updates miscs ; added comments" />
     <MESSAGE value="added type_cairo to R script for UpSetR" />
     <MESSAGE value="added comments ; corrected typos" />
@@ -1087,7 +1006,9 @@
     <MESSAGE value="update processing homs/hets for phASER" />
     <MESSAGE value="Octopus fix the vcf_obj consumption when edge case of only one variant in vcf" />
     <MESSAGE value="rename TYPE flag to VTYPE b/c bcftools uses TYPE as a reserved flag" />
-    <option name="LAST_COMMIT_MESSAGE" value="rename TYPE flag to VTYPE b/c bcftools uses TYPE as a reserved flag" />
+    <MESSAGE value="remove check version for bcftools; caused error when 2 digits after decimal point" />
+    <MESSAGE value="update comment line" />
+    <option name="LAST_COMMIT_MESSAGE" value="update comment line" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -1265,136 +1186,53 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1190">
           <caret line="76" selection-start-line="76" selection-end-line="76" />
-          <folding>
-            <element signature="e#1050#1071#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/annotate_vcf_with_BX_counts.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="829">
+        <state relative-caret-position="1632">
           <caret line="104" column="127" selection-start-line="104" selection-start-column="127" selection-end-line="104" selection-end-column="127" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/utils/python/count_consecutive_identical_nucleotides.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="646">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1222">
-          <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
-          <folding>
-            <element signature="e#1295#1310#0" expanded="true" />
-            <element signature="e#6071#9573#0" />
-            <element signature="e#9626#10850#0" />
-            <element signature="e#10901#12245#0" />
-            <element signature="e#12330#15731#0" />
-            <element signature="e#15807#19310#0" />
-            <element signature="e#19633#22565#0" />
-            <element signature="e#22638#25930#0" />
-            <element signature="e#25977#26500#0" />
-            <element signature="e#26763#27779#0" />
-            <element signature="e#33341#33650#0" />
-            <element signature="e#34073#42263#0" />
-            <element signature="e#42292#52987#0" />
-            <element signature="e#53015#61889#0" />
-          </folding>
+        <state relative-caret-position="4726">
+          <caret line="286" column="52" lean-forward="true" selection-start-line="286" selection-start-column="52" selection-end-line="286" selection-end-column="52" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="657">
-          <caret line="201" column="281" lean-forward="true" selection-start-line="201" selection-start-column="281" selection-end-line="201" selection-end-column="281" />
+        <state relative-caret-position="2686">
+          <caret line="158" column="10" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/vcfMerger2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2482">
+          <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
           <folding>
-            <element signature="n#!!doc" />
-            <element signature="e#1621#3761#1" />
-            <element signature="e#3800#4289#0" />
-            <element signature="e#3800#4064#1" />
-            <element signature="e#4131#4289#0" />
-            <element signature="e#4458#5363#1" />
-            <element signature="e#5538#5591#0" />
-            <element signature="e#5829#6851#0" />
-            <element signature="e#5829#5965#1" />
-            <element signature="e#6026#6302#0" />
-            <element signature="e#6031#6143#0" />
-            <element signature="e#6854#6898#0" />
-            <element signature="e#7020#7439#0" />
-            <element signature="e#7483#7683#0" />
-            <element signature="e#7505#7654#0" />
-            <element signature="e#7533#7653#0" />
-            <element signature="e#7708#7839#0" />
-            <element signature="e#7888#8051#0" />
-            <element signature="e#7887#8187#0" />
-            <element signature="e#8063#8168#0" />
-            <element signature="e#8330#8417#0" />
-            <element signature="e#8613#9003#0" />
-            <element signature="e#9419#9474#0" />
-            <element signature="e#9692#10555#1" />
-            <element signature="e#10642#11252#0" />
-            <element signature="e#10698#11252#0" />
-            <element signature="e#10797#11252#0" />
-            <element signature="e#10983#11252#0" />
-            <element signature="e#11256#11333#0" />
-            <element signature="e#11529#11772#0" />
-            <element signature="e#11857#12234#0" />
-            <element signature="e#11889#12234#0" />
-            <element signature="e#12024#12234#0" />
-            <element signature="e#12107#12233#0" />
-            <element signature="e#12236#12333#0" />
-            <element signature="e#13490#16393#0" />
-            <element signature="e#13579#13726#0" />
-            <element signature="e#14353#14442#0" />
-            <element signature="e#15837#16334#0" />
-            <element signature="e#16420#16492#0" />
-            <element signature="e#16682#16781#0" />
-            <element signature="e#16967#17181#0" />
-            <element signature="e#17014#17143#0" />
-            <element signature="e#17233#17420#0" />
-            <element signature="e#17454#17559#0" />
-            <element signature="e#17603#17773#0" />
-            <element signature="e#17836#18056#0" />
-            <element signature="e#18131#18271#0" />
-            <element signature="e#18329#18375#0" />
-            <element signature="e#18398#18467#0" />
-            <element signature="e#18515#18665#0" />
-            <element signature="e#18694#18816#0" />
-            <element signature="e#18841#18950#0" />
-            <element signature="e#19062#19167#0" />
-            <element signature="e#19209#19255#0" />
-            <element signature="e#19300#19377#0" />
-            <element signature="e#19439#19771#0" />
-            <element signature="e#19474#19672#0" />
-            <element signature="e#19506#19605#0" />
-            <element signature="e#19701#19724#0" />
-            <element signature="e#19774#19789#0" />
-            <element signature="e#20679#20783#0" />
-            <element signature="e#20856#21010#0" />
-            <element signature="e#21254#21272#0" />
-            <element signature="e#23491#28017#0" />
+            <element signature="e#1295#1310#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/merge_vcfs/dvmfuncs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
+        <state relative-caret-position="1615">
           <caret line="708" column="88" lean-forward="true" selection-start-line="708" selection-start-column="88" selection-end-line="708" selection-end-column="88" />
           <folding>
             <element signature="n#!!doc" />
@@ -1514,88 +1352,104 @@
             <element signature="e#33199#33275#0" />
             <element signature="e#33344#33453#0" />
             <element signature="e#34009#34120#0" />
-            <element signature="e#34781#34900#0" />
-            <element signature="e#35757#35868#0" />
-            <element signature="e#36010#36148#0" />
-            <element signature="e#36027#36147#0" />
-            <element signature="e#36214#37146#0" />
-            <element signature="e#36227#36888#0" />
-            <element signature="e#36943#37146#0" />
-            <element signature="e#37567#37681#0" />
-            <element signature="e#37703#37819#0" />
-            <element signature="e#38140#39133#0" />
-            <element signature="e#38180#38927#0" />
-            <element signature="e#40371#40548#0" />
-            <element signature="e#40568#41064#0" />
-            <element signature="e#40618#40874#0" />
-            <element signature="e#41075#41502#0" />
-            <element signature="e#41124#41392#0" />
-            <element signature="e#41747#41791#0" />
-            <element signature="e#41824#42233#0" />
-            <element signature="e#41888#41943#0" />
-            <element signature="e#42314#45035#0" />
-            <element signature="e#42314#42478#0" />
-            <element signature="e#42706#43209#0" />
-            <element signature="e#42847#43209#0" />
-            <element signature="e#44945#45035#0" />
-            <element signature="e#45058#45252#0" />
-            <element signature="e#45255#45307#0" />
-            <element signature="e#45795#45964#0" />
-            <element signature="e#45848#45964#0" />
-            <element signature="e#45988#46467#0" />
-            <element signature="e#46027#46101#0" />
-            <element signature="e#46142#46232#0" />
-            <element signature="e#46276#46340#0" />
-            <element signature="e#46526#47826#0" />
-            <element signature="e#46545#47718#0" />
-            <element signature="e#46682#46835#0" />
-            <element signature="e#46874#47015#0" />
-            <element signature="e#47051#47215#0" />
-            <element signature="e#47266#47337#0" />
-            <element signature="e#47349#47718#0" />
-            <element signature="e#47434#47650#0" />
-            <element signature="e#47874#48397#0" />
-            <element signature="e#47874#48073#1" />
-            <element signature="e#48106#48386#0" />
-            <element signature="e#48114#48152#0" />
-            <element signature="e#48189#48268#0" />
-            <element signature="e#48307#48386#0" />
-            <element signature="e#48484#50675#0" />
-            <element signature="e#48484#48906#1" />
-            <element signature="e#49023#49178#0" />
-            <element signature="e#49221#49348#0" />
-            <element signature="e#49369#50554#0" />
-            <element signature="e#49412#49562#0" />
-            <element signature="e#49978#50017#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh">
+    <entry file="file://$PROJECT_DIR$/merge_vcfs/vcfMerger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="158" column="10" selection-start-line="158" selection-start-column="8" selection-end-line="158" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
+        <state relative-caret-position="1343">
+          <caret line="201" column="281" lean-forward="true" selection-start-line="201" selection-start-column="281" selection-end-line="201" selection-end-column="281" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#1621#3761#1" />
+            <element signature="e#3800#4289#0" />
+            <element signature="e#3800#4064#1" />
+            <element signature="e#4131#4289#0" />
+            <element signature="e#4458#5363#1" />
+            <element signature="e#5538#5591#0" />
+            <element signature="e#5829#6851#0" />
+            <element signature="e#5829#5965#1" />
+            <element signature="e#6026#6302#0" />
+            <element signature="e#6031#6143#0" />
+            <element signature="e#6854#6898#0" />
+            <element signature="e#7020#7439#0" />
+            <element signature="e#7483#7683#0" />
+            <element signature="e#7505#7654#0" />
+            <element signature="e#7533#7653#0" />
+            <element signature="e#7708#7839#0" />
+            <element signature="e#7888#8051#0" />
+            <element signature="e#7887#8187#0" />
+            <element signature="e#8063#8168#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
+        <state relative-caret-position="1122">
           <caret line="66" column="1" selection-start-line="66" selection-start-column="1" selection-end-line="66" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_germline/prep_vcf_germline.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="783">
-          <caret line="73" column="4" lean-forward="true" selection-start-line="73" selection-start-column="4" selection-end-line="73" selection-end-column="4" />
+        <state relative-caret-position="663">
+          <caret line="39" column="15" selection-start-line="39" selection-end-line="39" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="618">
+          <caret line="209" column="114" lean-forward="true" selection-start-line="209" selection-start-column="114" selection-end-line="209" selection-end-column="114" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="49" column="32" selection-start-line="49" selection-start-column="32" selection-end-line="49" selection-end-column="32" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#1651#1702#0" />
+            <element signature="e#2027#2520#0" />
+            <element signature="e#2229#2508#0" />
+            <element signature="e#2556#4198#0" />
+            <element signature="e#2838#3171#0" />
+            <element signature="e#2878#3097#0" />
+            <element signature="e#3202#3235#0" />
+            <element signature="e#3261#3783#0" />
+            <element signature="e#3299#3332#0" />
+            <element signature="e#3488#3561#0" />
+            <element signature="e#3664#3737#0" />
+            <element signature="e#3838#4029#0" />
+            <element signature="e#3847#4028#0" />
+            <element signature="e#4229#5348#0" />
+            <element signature="e#4229#4923#1" />
+            <element signature="e#5000#5180#0" />
+            <element signature="e#5407#7291#0" />
+            <element signature="e#5407#6293#1" />
+            <element signature="e#6297#6325#0" />
+            <element signature="e#6886#7055#0" />
+            <element signature="e#7077#7170#0" />
+            <element signature="e#7182#7291#0" />
+            <element signature="e#8829#8915#0" />
+            <element signature="e#9971#10058#0" />
+            <element signature="e#10456#10543#0" />
+            <element signature="e#12255#13031#0" />
+            <element signature="e#12383#12993#0" />
+            <element signature="e#12574#12882#0" />
+            <element signature="e#12894#12993#0" />
+            <element signature="e#13034#13045#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="49" column="35" selection-start-line="49" selection-start-column="35" selection-end-line="49" selection-end-column="35" />
         </state>
       </provider>
     </entry>

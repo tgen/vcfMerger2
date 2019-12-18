@@ -47,7 +47,7 @@ class Genotype(object):
 
     def __str__(self):
         sep = "/|"[int(self.phased)]
-        return sep.join("0123."[a] for a in self.alleles)
+        return sep.join("0123456789."[a] for a in self.alleles)
     __repr__ = __str__
         # genotypes = [Genotype(li) for li in variant.genotypes ]
         # print genotypes

@@ -53,7 +53,7 @@ class Genotype(object):
 
     def __str__(self):
         sep = "/|"[int(self.phased)]
-        return sep.join("0123456."[a] for a in self.alleles)
+        return sep.join("0123456789."[a] for a in self.alleles)
     __repr__ = __str__
 
 class GenotypeInv(object):
