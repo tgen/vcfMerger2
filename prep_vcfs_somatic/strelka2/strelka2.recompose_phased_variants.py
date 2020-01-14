@@ -332,7 +332,7 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 
 	idxT = 1 if int(column_tumor) == 11 else 0
 	dico_PS = defaultdict(list)
-	# count = 0
+	count = 0
 	previous_pos = 0
 	same_phased_but_not_consecutive = False ## spnc
 
