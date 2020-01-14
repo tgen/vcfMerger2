@@ -207,6 +207,7 @@ mycmd="${PHASER_EXE} --bam ${TBAM} --sample ${SNAME_T}  --vcf ${VCF_IN}  --o ${V
 echo -e "${mycmd}"
 eval ${mycmd} | tee log_for_phASER_$(basename ${VCF_OUT_PHASER} ).log
 check_ev $? "phASER using ${PHASER_EXE} with python-2.7.13"
+echo -e "PHASER output file: ${VCF_OUT_PHASER}"
 #module unload python/2.7.13
 
 
@@ -227,6 +228,7 @@ check_ev $? "bcftools index"
 echo -e "Merged as one Block the Consecutive newly-Phased Variants ..."
 VCF_IN=${VCF_OUT} ## can be vcf or block-compressed vcf
 VCF_OUT=${VCF_IN/vcf.gz/blocs.vcf}
+echo "python3  ${SCRIPT_PYTHON_RECOMPOSE_VARIANTS} --tumor-col 11 --normal-col 10 -i ${VCF_IN} -o ${VCF_OUT}"
 python3  ${SCRIPT_PYTHON_RECOMPOSE_VARIANTS} --tumor-col 11 --normal-col 10 -i ${VCF_IN} -o ${VCF_OUT}
 check_ev $? "python3 strelka2.recompose_phased_variants.py"
 
