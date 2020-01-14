@@ -273,12 +273,13 @@ def check_for_block_substitution(vcf, column_tumor, w):
 			lgenotype_previous = [str(Genotype(li)) for li in dico_PS[k][-1].genotypes][1]
 			if int(v.POS) == int(dico_PS[k][-1].POS) + 1 and lgenotype_current == lgenotype_previous:
 				dico_PS[k].append(v)  ## we gather the variant with the same PhaseSet Value
-			print("len(dico_PS[k]) > 1 BEGIN:")
-			print(str(v))
-			print(str(k))
-			print(str(dico_PS[k]))
-			print("len(dico_PS[k]) > 1 END")
+				print("len(dico_PS[k]) > 1 BEGIN:")
+				print(str(v))
+				print(str(k))
+				print(str(dico_PS[k]))
+				print("len(dico_PS[k]) > 1 END")
 			else:
+				print(" XXX processing_variants_as_block_substitution XXX")
 				processing_variants_as_block_substitution(dico_PS[k], w)  ##dicoPS[k] is a list of Variants
 				dico_PS[k] = [ v ]  ## we re-init the Value to the current variant as the previous variant is definitely not right next to the current one even though in the same PhaseSet
 
