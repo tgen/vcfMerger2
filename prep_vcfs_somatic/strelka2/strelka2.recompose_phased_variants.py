@@ -340,7 +340,7 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 		if v.format('PS') is not None:
 			curpos = v.POS
 			k = int(v.format('PS')[idxT]) if not None else 0
-			# print(str(k))
+			print(str(k))
 			if k in dico_PS and (curpos == previous_pos+1):
 				if same_phased_but_not_consecutive:
 					k = str(k) + "spnc"
