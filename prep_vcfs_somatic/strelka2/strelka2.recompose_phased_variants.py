@@ -352,22 +352,22 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 				same_phased_but_not_consecutive = True
 				k = str(k) + "spnc"
 				dico_PS[k] = [ v ]
-			# count += 1
-			# if count >100:
-			# 	break
-			# print(dico_PS)
+			count += 1
+			if count >100:
+				break
+			print(dico_PS)
 			previous_pos = curpos
 
 		else:
-			# print(100*"***"+"\nonly unphased variants here ...")
-			#dico_PS[0].append(v)
+			print(100*"***"+"\nonly unphased variants here ...")
+			dico_PS[0].append(v)
 			w.write(str(v))
-			# print(dico_PS[0])
-	# print(str(dico_PS[1][0]))
-	# print(str(dico_PS[1][1]))
+			print(dico_PS[0])
+	print(str(dico_PS[1][0]))
+	print(str(dico_PS[1][1]))
 	for k in dico_PS:
 		##dico_PS[k] is a list of variants object
-		# print("k= "+str(k)+" <---> value = "+str(dico_PS[k]))
+		print("k= "+str(k)+" <---> value = "+str(dico_PS[k]))
 		w.write(collapse_variants_with_same_PS(dico_PS[k]))
 
 

@@ -86,7 +86,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="6" />
-          <entry key="py" value="15037" />
+          <entry key="py" value="15057" />
           <entry key="sh" value="2028" />
           <entry key="txt" value="1642" />
         </counts>
@@ -95,7 +95,7 @@
         <counts>
           <entry key="Bash" value="2028" />
           <entry key="PLAIN_TEXT" value="1642" />
-          <entry key="Python" value="15043" />
+          <entry key="Python" value="15063" />
         </counts>
       </usages-collector>
     </session>
@@ -111,8 +111,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="846">
-              <caret line="257" column="104" selection-start-line="257" selection-start-column="104" selection-end-line="257" selection-end-column="104" />
+            <state relative-caret-position="721">
+              <caret line="370" column="8" selection-start-line="370" selection-start-column="8" selection-end-line="370" selection-end-column="8" />
+              <folding>
+                <element signature="e#7721#8220#0" />
+                <element signature="e#13072#14350#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -130,7 +134,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>AR</find>
       <find>float(</find>
       <find>10</find>
       <find>ADs</find>
@@ -160,6 +163,7 @@
       <find>Genotype</find>
       <find>SCRIPT_PYTHON_RECOMPOSE_VARIANTS</find>
       <find>check_if_PS_in_FORMAT_field</find>
+      <find>processing_variants_as_block_substitution</find>
     </findStrings>
     <replaceStrings>
       <replace>type_specific_additional_args</replace>
@@ -347,20 +351,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00183" summary="troubleshooting ... added prints">
-      <created>1574113359422</created>
-      <option name="number" value="00183" />
-      <option name="presentableId" value="LOCAL-00183" />
-      <option name="project" value="LOCAL" />
-      <updated>1574113359422</updated>
-    </task>
-    <task id="LOCAL-00184" summary="converted str to in the col_normal and col_tumor variable when captured from args">
-      <created>1574115662260</created>
-      <option name="number" value="00184" />
-      <option name="presentableId" value="LOCAL-00184" />
-      <option name="project" value="LOCAL" />
-      <updated>1574115662260</updated>
     </task>
     <task id="LOCAL-00185" summary="rounding update for RS values">
       <created>1574116932727</created>
@@ -691,7 +681,21 @@
       <option name="project" value="LOCAL" />
       <updated>1579043405892</updated>
     </task>
-    <option name="localTasksCounter" value="232" />
+    <task id="LOCAL-00232" summary="debugging Edge Case blockSub in Prep_Strelka">
+      <created>1579043803780</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1579043803780</updated>
+    </task>
+    <task id="LOCAL-00233" summary="debugging Edge Case blockSub in Prep_Strelka">
+      <created>1579043880603</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1579043880603</updated>
+    </task>
+    <option name="localTasksCounter" value="234" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -1018,8 +1022,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="846">
-          <caret line="257" column="104" selection-start-line="257" selection-start-column="104" selection-end-line="257" selection-end-column="104" />
+        <state relative-caret-position="721">
+          <caret line="370" column="8" selection-start-line="370" selection-start-column="8" selection-end-line="370" selection-end-column="8" />
+          <folding>
+            <element signature="e#7721#8220#0" />
+            <element signature="e#13072#14350#0" />
+          </folding>
         </state>
       </provider>
     </entry>
