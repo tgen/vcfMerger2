@@ -204,6 +204,11 @@ def check_for_block_substitution(vcf, column_tumor, w):
 		new_k = '_'.join([ v.CHROM ,v.format('PS')[idxT] ])
 		if k!=-1 and k != new_k and len(dico_PS[k])==1:
 			## dico has only one item, so we write it to output vcf right away and re-init dico for olk key
+			print("dico has only one item, so we write it to output vcf right away and re-init dico for olk key BEGIN:")
+			print(str(v))
+			print(str(k))
+			print(str(dico_PS[k]))
+			print("dico has only one item, so we write it to output vcf right away and re-init dico for olk key END")
 			for rec in dico_PS[k]:
 				w.write(str(rec))
 			k = new_k
@@ -212,11 +217,19 @@ def check_for_block_substitution(vcf, column_tumor, w):
 			## dico has only one item, so we write it to output vcf right away and re-init dico for olk key
 			## this mean we already processed value for the previous PS value and we reached a new PS value, so the key k is different
 			## we also check if the dico has more than one records if not we print record
+			print("processing_variants_as_block_substitution BEGIN:")
+			print(str(v))
+			print(str(k))
+			print(str(dico_PS[k]))
+			print("processing_variants_as_block_substitution END")
 			processing_variants_as_block_substitution(dico_PS[k], w)
 			k = new_k
 			dico_PS[k] = []  ## we reinit the dico for the current k value
 
+
 		if len(dico_PS[k]) == 0:  ## if dico[k] empty we add the current variant
+			print("dico[k] empty we add the current variant:")
+			print(str(v))
 			dico_PS[k].append(v)
 
 		elif len(dico_PS[k]) == 1: ## this mean we already had one variant with same PS
@@ -235,9 +248,14 @@ def check_for_block_substitution(vcf, column_tumor, w):
 			if int(v.POS) == int(dico_PS[k][-1].POS)+1 and lgenotype_current == lgenotype_previous:
 				dico_PS[k].append(v)  ## we gather the variant with the same PhaseSet Value, Same genotype in Tumor and consecutive POS
 			else:
-				## the variants in the dico either do not have the same genotyp or were not consecutive
+				## the variants in the dico either do not have the same genotype or were not consecutive
 				## so we have to process what we have, and as it is only one variant in the dico,
 				## we write it here, directly to the output file;
+				print("variants in the dico either do not have the same genotype or were not consecutive BEGIN:")
+				print(str(v))
+				print(str(k))
+				print(str(dico_PS[k]))
+				print("variants in the dico either do not have the same genotype or were not consecutive END")
 				for rec in dico_PS[k]:
 					w.write(str(rec))
 				dico_PS[k] = [ v ] ## we re-init the Value to the current variant as the previous variant is definitely not right next to the current one even though in the same PhaseSet
@@ -255,6 +273,11 @@ def check_for_block_substitution(vcf, column_tumor, w):
 			lgenotype_previous = [str(Genotype(li)) for li in dico_PS[k][-1].genotypes][1]
 			if int(v.POS) == int(dico_PS[k][-1].POS) + 1 and lgenotype_current == lgenotype_previous:
 				dico_PS[k].append(v)  ## we gather the variant with the same PhaseSet Value
+			print("len(dico_PS[k]) > 1 BEGIN:")
+			print(str(v))
+			print(str(k))
+			print(str(dico_PS[k]))
+			print("len(dico_PS[k]) > 1 END")
 			else:
 				processing_variants_as_block_substitution(dico_PS[k], w)  ##dicoPS[k] is a list of Variants
 				dico_PS[k] = [ v ]  ## we re-init the Value to the current variant as the previous variant is definitely not right next to the current one even though in the same PhaseSet

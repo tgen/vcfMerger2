@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -87,16 +86,16 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="6" />
-          <entry key="py" value="14955" />
+          <entry key="py" value="15037" />
           <entry key="sh" value="2028" />
-          <entry key="txt" value="1584" />
+          <entry key="txt" value="1642" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="2028" />
-          <entry key="PLAIN_TEXT" value="1584" />
-          <entry key="Python" value="14961" />
+          <entry key="PLAIN_TEXT" value="1642" />
+          <entry key="Python" value="15043" />
         </counts>
       </usages-collector>
     </session>
@@ -112,8 +111,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="523">
-              <caret line="184" column="35" lean-forward="true" selection-start-line="184" selection-start-column="35" selection-end-line="184" selection-end-column="35" />
+            <state relative-caret-position="846">
+              <caret line="257" column="104" selection-start-line="257" selection-start-column="104" selection-end-line="257" selection-end-column="104" />
             </state>
           </provider>
         </entry>
@@ -348,20 +347,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00181" summary="Fix: Check Lancet Genotype is a dot and convert it to ./.">
-      <created>1572903896071</created>
-      <option name="number" value="00181" />
-      <option name="presentableId" value="LOCAL-00181" />
-      <option name="project" value="LOCAL" />
-      <updated>1572903896071</updated>
-    </task>
-    <task id="LOCAL-00182" summary="replace &quot;;&quot; by &quot;%&quot; for PhASER unique_id option; Cause Issue with bcfTools.">
-      <created>1572906929667</created>
-      <option name="number" value="00182" />
-      <option name="presentableId" value="LOCAL-00182" />
-      <option name="project" value="LOCAL" />
-      <updated>1572906929667</updated>
     </task>
     <task id="LOCAL-00183" summary="troubleshooting ... added prints">
       <created>1574113359422</created>
@@ -692,7 +677,21 @@
       <option name="project" value="LOCAL" />
       <updated>1576704017489</updated>
     </task>
-    <option name="localTasksCounter" value="230" />
+    <task id="LOCAL-00230" summary="debugging Edge Case blockSub in Prep_Strelka">
+      <created>1579043166396</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1579043166396</updated>
+    </task>
+    <task id="LOCAL-00231" summary="debugging Edge Case blockSub in Prep_Strelka">
+      <created>1579043405892</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1579043405892</updated>
+    </task>
+    <option name="localTasksCounter" value="232" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -734,7 +733,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added type_cairo to R script for UpSetR" />
     <MESSAGE value="added comments ; corrected typos" />
     <MESSAGE value="fixed bug: was concatenating not consecutives positions that were in same phase. Added check point." />
     <MESSAGE value="Fix: Check Lancet Genotype is a dot and convert it to ./." />
@@ -759,7 +757,8 @@
     <MESSAGE value="remove check version for bcftools; caused error when 2 digits after decimal point" />
     <MESSAGE value="update comment line" />
     <MESSAGE value="updated the Genotype Class to capture up to 9 genotype at one position" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated the Genotype Class to capture up to 9 genotype at one position" />
+    <MESSAGE value="debugging Edge Case blockSub in Prep_Strelka" />
+    <option name="LAST_COMMIT_MESSAGE" value="debugging Edge Case blockSub in Prep_Strelka" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -1019,8 +1018,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="184" column="35" lean-forward="true" selection-start-line="184" selection-start-column="35" selection-end-line="184" selection-end-column="35" />
+        <state relative-caret-position="846">
+          <caret line="257" column="104" selection-start-line="257" selection-start-column="104" selection-end-line="257" selection-end-column="104" />
         </state>
       </provider>
     </entry>
