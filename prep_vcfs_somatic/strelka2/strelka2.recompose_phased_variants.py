@@ -391,7 +391,7 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 			curpos = v.POS
 			k = int(v.format('PS')[idxT]) if not None else 0
 			if k not in dico_PS:
-				print("SS1")
+				# print("SS1")
 				dico_PS[k] = [v]
 			elif k in dico_PS:
 				previous_pos = dico_PS[k][len(dico_PS[k])-1].POS
