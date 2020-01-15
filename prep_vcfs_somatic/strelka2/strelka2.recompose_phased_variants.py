@@ -320,7 +320,7 @@ def collapse_variants_with_same_PS(LOV):
 	#newV[8-1] = ';'.join([ newV[8-1], "BLOCSUBSFROM="+BLOCSUBSFROM ])
 	return str('\t'.join(newV))
 
-def recompose_consecutive_blocks(vcf, column_tumor, w):
+def recompose_consecutive_blocks__OLD(vcf, column_tumor, w):
 	"""
 
 	:param vcf:
@@ -368,6 +368,70 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 	for k in dico_PS:
 		##dico_PS[k] is a list of variants object
 		print("k= "+str(k)+" <---> value = "+str(dico_PS[k]))
+		w.write(collapse_variants_with_same_PS(dico_PS[k]))
+
+def recompose_consecutive_blocks(vcf, column_tumor, w):
+	"""
+
+	:param vcf:
+	:param column_tumor:
+	:param w:
+	:return: None
+	"""
+	log.info("looping over records to capture and concatenate Block Substitutions Variants ...")
+
+	idxT = 1 if int(column_tumor) == 11 else 0
+	dico_PS = defaultdict(list)
+	# count = 0
+	# previous_pos = 0
+	# same_phased_but_not_consecutive = False ## spnc
+
+	for v in vcf:
+		if v.format('PS') is not None:
+			curpos = v.POS
+			k = int(v.format('PS')[idxT]) if not None else 0
+			if k not in dico_PS:
+				print("SS1")
+				dico_PS[k] = [v]
+			elif k in dico_PS:
+				previous_pos = dico_PS[k][len(dico_PS[k])-1].POS
+				if (curpos == previous_pos + 1):
+					dico_PS[k].append(v)
+				else:
+					newk = str(k) + "spnc"
+					if newk not in dico_PS.keys():
+						dico_PS[newk] = dico_PS[k]
+					else:
+						newk = newk + "_" + str(curpos)
+						dico_PS[newk] = dico_PS[k]
+					dico_PS[k] = [v]
+
+			# count += 1
+			# if count >20:
+			# 	break
+			# print(dico_PS)
+
+		else:
+			# print(100*"***"+"\nonly unphased variants here ...")
+			dico_PS[0].append(v)
+	# print(dico_PS)
+	list_key_to_delete = []
+	for k in dico_PS.keys():
+		if len(dico_PS[k]) == 1:
+			## this means the variant in not associated with any other variant and evn though it is phased, we are moving the variant in dico_PS[0] list whcih represent unphased variant
+			dico_PS[0].append(dico_PS[k][0])
+			list_key_to_delete.append(k)
+	for key in list_key_to_delete:
+		del(dico_PS[key])
+	dico_individual_variants = dico_PS.pop(0)
+	# print(dico_individual_variants)
+	for item in dico_individual_variants:
+		# print("VARIANT ALONE  -->  "+str(item).strip())
+		w.write(str(item))
+	# print(dico_PS)
+	for k in dico_PS.keys():
+		##dico_PS[k] is a list of variants object
+		# print("k= "+str(k)+" <---> value = "+str(dico_PS[k]))
 		w.write(collapse_variants_with_same_PS(dico_PS[k]))
 
 
