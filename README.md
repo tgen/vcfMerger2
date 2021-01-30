@@ -14,7 +14,7 @@ This tool allows merging from 2 to N somatic vcfs obtained after running differe
 ![flowchart](https://github.com/tgen/vcfMerger2/blob/master/images/vcfMerger2_Flowchart_Core_Functionality.rawVCF.png) 
 
 #### How vcfMerger2 operates?
-vcfMerger2 takes `RAW` VCFs as inputs and outputs a Merged VCF. [click here for the RAW VCF Definition] 
+vcfMerger2 takes `RAW` VCFs as inputs and outputs a Merged VCF. [click here for the RAW VCF Definition](https://github.com/tgen/vcfMerger2/wiki/Glossary) 
 
 
 #### Somatic or Germline? 
