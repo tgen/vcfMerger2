@@ -24,11 +24,11 @@
 ### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ### SOFTWARE.
 ###
-### Major Contributors: Christophe Legendre'a0
+### Major Contributors: Christophe Legendre
 ### Minor Contributors:
 
 from sys import exit
-from sys import argv	;# Used to bring in the feature argv, variables or arguments
+from sys import argv
 from os import path
 import getopt
 from cyvcf2 import VCF
@@ -139,14 +139,15 @@ def collapse_variants(LOV):
 
 def processing_variants_as_block_substitution(LOV, w):
 		'''
-		We consider that ALL the variant within the list_Of_Variant_Object in argument belong to the same BLOCK
+		We consider that ALL the variants within the List_Of_Variant Object in argument belong to the same BLOCK
 		We need to "merge" the records to create only one
-		cyvcf2 does NOT allow to modify the ALT (attribute 'ALT' of 'cyvcf2.cyvcf2.Variant' objects is not writable.)
-		The only thing we could think of so far with our basic knowloedge of Python, is to convert the Variant object
+		cyvcf2 does NOT allow to modify the ALT (attribute 'ALT' of 'cyvcf2.cyvcf2.Variant' objects is not writable. ## At least at the time of this implementation)
+		The only thing we could think of so far with our basic knowledge of Python, is to convert the Variant object
 		into a list of Strings (variant record is tab-separated) and modify the column 5 (index 4 in python) with
 		the value of the ALT alleles from the variant in the list_Of_Variant_Object argument.
 		The LAST test we need to perform before considering the variants as a BLOCK is to look at the AR
-		If their AR is too FAR apart shold we consider it as
+		If their AR is too FAR apart, should we consider it as a block?
+		
 		:param LOV: List Of Variant object (a.k.a variant record in vcf file)
 		:param w: writer object to write processed record into output vcf file
 		'''
@@ -206,10 +207,10 @@ def check_for_block_substitution(vcf, column_tumor, w):
 
 		elif len(dico_PS[k]) == 1: ## this mean we already had one variant with same PS
 			## we compare the variant POSITION(implies that the VCF was sorted by variant records)
-			## if position is shifted by one, this means the vairant calls are right next to each other and we keep both in the dictionnary
+			## if position is shifted by one, this means the variant calls are right next to each other and we keep both in the dictionary
 			## if not, we ony keep the current variant in the dico for that PS and continue to next variant in the loop
 
-			## Let's get 'GT' for the current variant and the variant in position [-1] in dico
+			## let's get 'GT' for the current variant and the variant in position [-1] in dico
 			## the variant of the Tumor should only be considered here
 			## same genotype means similar to same PHASE
 			lgenotype_current  = [str(Genotype(li)) for li in v.genotypes][1]
@@ -220,18 +221,18 @@ def check_for_block_substitution(vcf, column_tumor, w):
 			if int(v.POS) == int(dico_PS[k][-1].POS)+1 and lgenotype_current == lgenotype_previous:
 				dico_PS[k].append(v)  ## we gather the variant with the same PhaseSet Value, Same genotype in Tumor and consecutive POS
 			else:
-				## the variants in the dico either do not have the same genotyp or were not consecutive
+				## the variants in the dico either do not have the same genotype or were not consecutive
 				## so we have to process what we have, and as it is only one variant in the dico,
 				## we write it here, directly to the output file;
 				for rec in dico_PS[k]:
 					w.write(str(rec))
-				dico_PS[k] = [ v ] ## we re-init the Value to the current variant as the previous variant is definitely not right next to the current one even though in the same PhaseSet
+				dico_PS[k] = [ v ] ## we re-init the value to the current variant as the previous variant is definitely not right next to the current one even though in the same PhaseSet
 
 		elif len(dico_PS[k]) > 1:
 			## this mean we already have at least two variants right next to each other in the dico
 			## Either the 3rd or nth variant is right after the position of the latest variant in the list
-			## or if not this implies to statements:
-			## 1) the current variant does not belong to the same block-substitution as the last variant already in the Dictionary
+			## or if not this implies two statements:
+			## 1) the current variant does not belong to the same block-substitution as the last variant already in the dictionary
 			## 2) we have to process the variants currently in the dictionary has "potential" block-substitution and the current variant will be added to the dico_PS[k] replacing the old variants
 				## 2a) if Genotype of each consecutive position is the same; it should be considered as a block
 				## 2b) if Genotype of each consecutive position is NOT the same; we have to Process the variants that
@@ -280,7 +281,7 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name):
 #@#########
 if __name__ == "__main__":
 
-	vcf_path, column_tumor, column_normal, new_vcf_name = parseArgs(argv[0], argv[1:])  ; ## tth means tuple of thresholds
+	vcf_path, column_tumor, column_normal, new_vcf_name = parseArgs(argv[0], argv[1:])  ;
 
 	vcf = VCF(vcf_path)
 	tot_number_samples = len(vcf.samples)
