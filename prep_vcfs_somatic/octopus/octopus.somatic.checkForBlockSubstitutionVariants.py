@@ -163,7 +163,7 @@ def processing_variants_as_block_substitution(LOV, w):
 		tests = []
 		for rec in LOV: ## HARDCODED Here Below for TESTS
 			if int(rec.format('DP')[1]) >= 10 \
-					and float(rec.format('MAP_VAF')[1]) >= 0.20 \
+					and float(rec.format('MAP_HP')[1]) >= 0.20 \
 					and not rec.is_indel:
 				tests.append(True)
 			else:
@@ -173,7 +173,7 @@ def processing_variants_as_block_substitution(LOV, w):
 			log.debug('\n'.join([ str(rec).strip() for rec in LOV ] ))
 			w.write(collapse_variants(LOV))
 		else:
-			log.debug("BLOCK FAILED DP_TUMOR>=10 and/or MAP_VAF_TUMOR >= 0.05 ")
+			log.debug("BLOCK FAILED DP_TUMOR>=10 and/or MAP_HP_TUMOR >= 0.05 ")
 			for rec in LOV:
 				w.write(str(rec))
 

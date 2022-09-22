@@ -572,7 +572,8 @@ function process_octopus_vcf(){
         VCF=$( decompose ${VCF} )
         VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
         VCF=$( normalize_vcf ${VCF})
-        VCF=$( rename_fields_in_vcf_header_octopus_specific ${VCF} )
+        # VCF=$( rename_fields_in_vcf_header_octopus_specific ${VCF} )  # We do not need to update the header anymore since the version 0.7.4 of octopus already has the AD and
+        # ADP fields described in the header
         final_msg ${VCF}
 	else
 	    echo -e "OCTOPUS's VCF has no Variants; Processing only sample name checking and final vcf renaming; " 1>&2
