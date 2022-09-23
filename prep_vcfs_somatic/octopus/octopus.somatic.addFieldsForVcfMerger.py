@@ -28,7 +28,7 @@
 # ##Minor Contributors:
 
 # WHAT DOES THIS SCRIPT DO?
-# In order to <<harmonized>> the GENOTYPE flags, we add, modified, remove or replace the Genotype Octopus' Flags
+# In order to <<harmonize>> the GENOTYPE flags, we add, modify, remove or replace the Genotype Octopus' Flags
 # We want some common following flags in the FORMAT fields for each of our vcf that need to be merged:
 # GT:DP:AR:AD: they are the flags we want to be common in the FORMAT columns in the merged VCF ;
 # We are not removing any flags here; we might modify some of them or adding some if missing such as AR here
@@ -50,9 +50,9 @@ AR_threshold_for_GT = 0.90  # value HARDCODED but can be dynamically modify with
 
 class Genotype(object):
     """
-	# genotypes = [Genotype(li) for li in variant.genotypes ]
-	# which shows: [./., ./., ./., 1/1, 0/0, 0/0, 0/0]
-	"""
+    # genotypes = [Genotype(li) for li in variant.genotypes ]
+    # which shows: [./., ./., ./., 1/1, 0/0, 0/0, 0/0]
+    """
     __slots__ = ('alleles', 'phased')
     
     def __init__(self, li):
@@ -215,10 +215,10 @@ def parseArgs(scriptname, argv):
 
 def update_header(vcf):
     """
-	We modify the current header in the vcf object with the new fields or modifying old fields
-	:param vcf: cyvcf2 VCF object
-	:return vcf: cyvcf2 VCF object
-	"""
+    We modify the current header in the vcf object with the new fields or modifying old fields
+    :param vcf: cyvcf2 VCF object
+    :return vcf: cyvcf2 VCF object
+    """
     # if Adding Fields to INFO field
     vcf.add_info_to_header(
         {'ID': 'OGT', 'Description': ''.join([
@@ -243,37 +243,37 @@ def is_obj_nan(obj):
 
 def get_GT_value_from_AR_Octopus_version_0_7_4_or_up(AR_value):
     """
-		Because Octopus Version is ALL PHASED we do not need to consider whether it is or not phased for the GT
-		return the GT value according to AR threshold values
-		This is based off TGen's current thresholds of assigning the genotype
-		1/1 if AR>=0.90 and 0/1 if AR<0.90
-
-		Genotype representation for cyvcf2
-		0 --> Unknown ; 1 --> Unknown_phased
-		2 --> 0     ; 3 --> 0_PHASED_if_secondValue
-		4 --> 1     ; 5 --> 1_PHASED_if_secondValue
-		6 --> 2     ; 7 --> 2_PHASED_if_secondValue
-		[0,0] == ./. ; [1,1] == .|.
-		[1,0] == ./. ; [0,1] == .|.
-		[2,2] == 0/0 ; [2,2] == 0/0
-		[2,3] == 0|0 ; [3,2] == 0/0
-		[2,4] == 0/1 ; [4,2] == 1/0
-		[2,5] == 0|1 ; [5,2] == 1/0
-		[2,6] == 0/2 ; [6,2] == 2/0
-		[3,6] == 0/2 ; [6,3] == 2|0
-		[4,6] == 1/2 ; [6,4] == 2/1
-		[5,6] == 1/2 ; [6,5] == 2|1
-		[9,8] == 3/3 ; [8,9] == 3|3
-
-		[2,2] == 0/0 ; [4,4] == 1/1
-		[3,3] == 0|0 ; [5,5] == 1|1
-		[6,6] == 2/2 ; [7,7] == 2|2
-		[8,8] == 3/3 ; [9,9] == 3|3
-
-		return [int(2),int(4)] ; --> 0/1
-		return [int(4),int(4)] ; --> 1/1
-
-		"""
+        Because Octopus Version is ALL PHASED we do not need to consider whether it is or not phased for the GT
+        return the GT value according to AR threshold values
+        This is based off TGen's current thresholds of assigning the genotype
+        1/1 if AR>=0.90 and 0/1 if AR<0.90
+    
+        Genotype representation for cyvcf2
+        0 --> Unknown ; 1 --> Unknown_phased
+        2 --> 0     ; 3 --> 0_PHASED_if_secondValue
+        4 --> 1     ; 5 --> 1_PHASED_if_secondValue
+        6 --> 2     ; 7 --> 2_PHASED_if_secondValue
+        [0,0] == ./. ; [1,1] == .|.
+        [1,0] == ./. ; [0,1] == .|.
+        [2,2] == 0/0 ; [2,2] == 0/0
+        [2,3] == 0|0 ; [3,2] == 0/0
+        [2,4] == 0/1 ; [4,2] == 1/0
+        [2,5] == 0|1 ; [5,2] == 1/0
+        [2,6] == 0/2 ; [6,2] == 2/0
+        [3,6] == 0/2 ; [6,3] == 2|0
+        [4,6] == 1/2 ; [6,4] == 2/1
+        [5,6] == 1/2 ; [6,5] == 2|1
+        [9,8] == 3/3 ; [8,9] == 3|3
+    
+        [2,2] == 0/0 ; [4,4] == 1/1
+        [3,3] == 0|0 ; [5,5] == 1|1
+        [6,6] == 2/2 ; [7,7] == 2|2
+        [8,8] == 3/3 ; [9,9] == 3|3
+    
+        return [int(2),int(4)] ; --> 0/1
+        return [int(4),int(4)] ; --> 1/1
+    
+        """
     log.debug("0.7.4  AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
     
     try:
@@ -327,14 +327,14 @@ def get_GT_value_from_GT_value(GT_value):
 
 def process_GTs(tot_number_samples_p, v, col_tumor, col_normal):
     """
-	Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
-	:param tot_number_samples_p: (p is for parameter)
-	:param v: variant record
-	:param col_tumor:
-	:param col_normal:
-	:return: updated variant record
-	"""
-    
+    Reassign GT value based on ala TGen threshold for AR value using _th_AR_for_GT_ CONSTANT
+    :param tot_number_samples_p: (p is for parameter)
+    :param v: variant record
+    :param col_tumor:
+    :param col_normal:
+    :return: updated variant record
+    """
+
     if tot_number_samples_p != 2:
         msg = "Expected 2 Samples in VCF found {}. We are suppose to process VCF file as a SOMATIC vcf and expect two samples;  Aborting.".format(tot_number_samples_p)
         raise Exception(msg)
@@ -393,16 +393,6 @@ def check_if_PS_in_FORMAT_field(vcf_cyobj, input_vcf_path, new_vcf_name, list_of
     log.info("Checking PS flag presence in FORMAT ...")
 
 
-# def if_dot_assign_value_zero(obj, idx):
-# 	if obj[idx] == "." or is_obj_nan(obj[idx]):
-# 		return 0
-# 	if str(obj[idx]) != "." and str(obj[idx]) != "-2147483648" and str(obj) != "./.":
-# 		return obj
-# 	else:
-# 		# Negative value was causing issue and adding more bytes to a file; So we switch to Zero number
-# 		obj[idx] = int(0)
-# 		return obj
-
 def if_dot_assign_value_zero(obj, idx):
     try:
         if obj == "." or is_obj_nan(float(obj)):
@@ -418,11 +408,11 @@ def if_dot_assign_value_zero(obj, idx):
 
 def add_new_flags_v0_7_4(v, column_tumor, column_normal, tot_number_samples):
     """
-	Calculate the AR for each sample in the variant record v
-	The Total number of Sample in the VCF file is given by the variable tot_number_samples
-	We assume that the number of sample does not vary form one record to another as recommended in VCF specs
-	"""
-    
+    Calculate the AR for each sample in the variant record v
+    The Total number of Sample in the VCF file is given by the variable tot_number_samples
+    We assume that the number of sample does not vary form one record to another as recommended in VCF specs
+    """
+
     idxT = 0 if int(column_tumor) == 10 else 1
     idxN = 1 if int(column_normal) == 11 else 0
     log.debug("___".join(str(x) for x in [idxT, idxN]))
