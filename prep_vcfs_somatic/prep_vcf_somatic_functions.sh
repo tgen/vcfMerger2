@@ -568,8 +568,8 @@ function process_octopus_vcf(){
 	then
 	    echo -e "In Function process_octopus_vcf ... "  1>&2
         VCF=$( check_and_update_sample_names ${VCF} )
-        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( decompose ${VCF} )
+        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
         VCF=$( normalize_vcf ${VCF})
         # VCF=$( rename_fields_in_vcf_header_octopus_specific ${VCF} )  # We do not need to update the header anymore since the version 0.7.4 of octopus already has the AD and
