@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="some code cleaning and added one log.info line">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="swap vt_decompose and blockSub step for Octopus">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -320,13 +321,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00192" summary="Found Why Issue with OCtopus Trying to Fix it">
-      <created>1574127365773</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1574127365773</updated>
     </task>
     <task id="LOCAL-00193" summary="Issue Octopus AD fixed; Original Header AD definition is WRONG (String but shoudl be Integer)">
       <created>1574128694654</created>
@@ -664,7 +658,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663887207626</updated>
     </task>
-    <option name="localTasksCounter" value="241" />
+    <task id="LOCAL-00241" summary="swap vt_decompose and blockSub step for Octopus">
+      <created>1663958888584</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1663958888584</updated>
+    </task>
+    <option name="localTasksCounter" value="242" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -714,7 +715,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="replace &quot;;&quot; by &quot;%&quot; for PhASER unique_id option; Cause Issue with bcfTools." />
     <MESSAGE value="troubleshooting ... added prints" />
     <MESSAGE value="converted str to in the col_normal and col_tumor variable when captured from args" />
     <MESSAGE value="rounding update for RS values" />
@@ -739,7 +739,8 @@
     <MESSAGE value="modify script to make it compatible with version 0.7.4 or up. Remove AD, ADP captures b/c un-necessary. Got AR from AF now; Converted Haploid to Diploid for homogeneity between callers" />
     <MESSAGE value="Modify capture MAP_HF value; Needed to decide on the value to capture from Tumor sample: decide to get the max value from the list" />
     <MESSAGE value="some code cleaning and added one log.info line" />
-    <option name="LAST_COMMIT_MESSAGE" value="some code cleaning and added one log.info line" />
+    <MESSAGE value="swap vt_decompose and blockSub step for Octopus" />
+    <option name="LAST_COMMIT_MESSAGE" value="swap vt_decompose and blockSub step for Octopus" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">

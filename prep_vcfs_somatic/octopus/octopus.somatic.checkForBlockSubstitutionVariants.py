@@ -155,13 +155,17 @@ def processing_variants_as_block_substitution(LOV, wo):
     
     tests = []
     for rec in LOV:  # HARDCODED Here Below for TESTS
-        log.debug("v.format('MAP_HF')[1] == {}".format(rec.format('MAP_HF')[1]))
-        # we hardcoded index 1 in max(rec.format('MAP_HF')[1]), because the 1 is supposed to represent the tumor sample (column 11 in vcf)
-        if int(rec.format('DP')[1]) >= 10 \
-                and float(max(rec.format('MAP_HF')[1])) >= 0.20 \
-                and not rec.is_indel:
-            tests.append(True)
+        if 'MAP_HF' in rec.FORMAT and 'DP' in rec.FORMAT:
+            log.debug("v.format('MAP_HF')[1] == {}".format(rec.format('MAP_HF')[1]))
+            # we hardcoded index 1 in max(rec.format('MAP_HF')[1]), because the 1 is supposed to represent the tumor sample (column 11 in vcf)
+            if int(rec.format('DP')[1]) >= 10 \
+                    and float(max(rec.format('MAP_HF')[1])) >= 0.20 \
+                    and not rec.is_indel:
+                tests.append(True)
+            else:
+                tests.append(False)
         else:
+            log.debug("MAF_HF or DP filed does not exist in current record ...")
             tests.append(False)
     
     if all(tests):
@@ -184,7 +188,10 @@ def check_for_block_substitution(vcf, column_tumor, wo):
     for v in vcf:  # v for variant which represents one "variant record" ; !!! WARNING: We can consume the iterator only once. Once that loop is done, the VCF object will be
         # empty and we cannot loop over vcf object anymore.
         # we gather the variant with the same PhaseSet Value
-        if len(v.format('PS')[idxT]) != 1:
+        log.debug("v.format('PS') : {}".format(v.format('PS')))
+        log.debug("v.format('PS')[idxT] : {}".format(v.format('PS')[idxT]))
+        log.debug("len(v.format('PS')[idxT]) : {}".format(len([v.format('PS')[idxT]])))
+        if len([v.format('PS')[idxT]]) != 1:
             log.error("Found more than 1 PS value for the Tumor; The script does not handle that case; Check your input or/and Submit an issue to the vcfMerger2 github; Aborting.")
             log.error("PS value Found: {}".format(v.format('PS')[idxT]))
             exit(2)
