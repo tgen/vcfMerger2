@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="swap vt_decompose and blockSub step for Octopus">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="reformating indents and code cleaning in dvmfuns.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" beforeDir="false" afterPath="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -321,27 +320,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00193" summary="Issue Octopus AD fixed; Original Header AD definition is WRONG (String but shoudl be Integer)">
-      <created>1574128694654</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1574128694654</updated>
-    </task>
-    <task id="LOCAL-00194" summary="Fix contig rebuilding">
-      <created>1574129155066</created>
-      <option name="number" value="00194" />
-      <option name="presentableId" value="LOCAL-00194" />
-      <option name="project" value="LOCAL" />
-      <updated>1574129155066</updated>
-    </task>
-    <task id="LOCAL-00195" summary="Fix contig rebuilding">
-      <created>1574129224720</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1574129224720</updated>
     </task>
     <task id="LOCAL-00196" summary="Fix contig rebuilding">
       <created>1574129432995</created>
@@ -665,7 +643,28 @@
       <option name="project" value="LOCAL" />
       <updated>1663958888584</updated>
     </task>
-    <option name="localTasksCounter" value="242" />
+    <task id="LOCAL-00242" summary="added hcek if MAF_HF present in FORMAT along with DP;&#10;Fix the len() of PS to make sure we get correct length&#10;added one function in the prep_vcf_somatic_functions.sh to remove stars in record in octopus">
+      <created>1663962383821</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1663962383821</updated>
+    </task>
+    <task id="LOCAL-00243" summary="force AF_tumor and AF_normal to float value">
+      <created>1663969580544</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1663969580544</updated>
+    </task>
+    <task id="LOCAL-00244" summary="reformating indents and code cleaning in dvmfuns.py">
+      <created>1663977015554</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1663977015555</updated>
+    </task>
+    <option name="localTasksCounter" value="245" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -715,9 +714,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="troubleshooting ... added prints" />
-    <MESSAGE value="converted str to in the col_normal and col_tumor variable when captured from args" />
-    <MESSAGE value="rounding update for RS values" />
     <MESSAGE value="rounding update for AR values" />
     <MESSAGE value="updating GenotypeInv for OCTopus when dealign with GT for ChrY" />
     <MESSAGE value="Found Why Issue with OCtopus Trying to Fix it" />
@@ -740,7 +736,10 @@
     <MESSAGE value="Modify capture MAP_HF value; Needed to decide on the value to capture from Tumor sample: decide to get the max value from the list" />
     <MESSAGE value="some code cleaning and added one log.info line" />
     <MESSAGE value="swap vt_decompose and blockSub step for Octopus" />
-    <option name="LAST_COMMIT_MESSAGE" value="swap vt_decompose and blockSub step for Octopus" />
+    <MESSAGE value="added hcek if MAF_HF present in FORMAT along with DP;&#10;Fix the len() of PS to make sure we get correct length&#10;added one function in the prep_vcf_somatic_functions.sh to remove stars in record in octopus" />
+    <MESSAGE value="force AF_tumor and AF_normal to float value" />
+    <MESSAGE value="reformating indents and code cleaning in dvmfuns.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="reformating indents and code cleaning in dvmfuns.py" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">

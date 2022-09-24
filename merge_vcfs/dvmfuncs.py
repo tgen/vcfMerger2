@@ -136,10 +136,10 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	lh = []  # ## list headers
 	l_contigs = []
 	# ## capture infos and assign values
-	fileformat = "# ##fileformat=VCFv4.2"  # ## harcoded
+	fileformat = "##fileformat=VCFv4.2"  # ## harcoded
 	from time import gmtime, strftime
-	filedate = "# ##fileDate="+str(strftime("%Y%m%d", gmtime()))
-	command_line = '# ##cmdLine="'+command_line+'"\n'
+	filedate = "##fileDate="+str(strftime("%Y%m%d", gmtime()))
+	command_line = '##cmdLine="'+command_line+'"\n'
 
 	lh.append(fileformat)
 	lh.append(filedate)
@@ -153,7 +153,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 	# ## Manipulate l_contigs to have a sortable object by key and values
 	dtemp = {}  # ## dico with key as contig names and values thetail of the string
 	for item in l_contigs:
-		strip_item = item.replace('# ##contig=<ID=', '').replace(">", '')   # ## need to strip off the prefix and suffix
+		strip_item = item.replace('##contig=<ID=', '').replace(">", '')   # ## need to strip off the prefix and suffix
 		if "," not in strip_item:
 			strip_item = strip_item+","
 		# print("strip_item = " + strip_item  )
@@ -192,9 +192,9 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		# print("print(pair[0])   " + pair[0])
 		# print("print(pair[1][0] " + pair[1][0])
 		if pair[1][0] is None or pair[1][0] == ">":
-			nlc.append(''.join(['# ##contig=<ID=', pair[0]]))
+			nlc.append(''.join(['##contig=<ID=', pair[0]]))
 		else:
-			nlc.append(''.join(['# ##contig=<ID=', pair[0], ",", str(pair[1][0])]))
+			nlc.append(''.join(['##contig=<ID=', pair[0], ",", str(pair[1][0])]))
 
 	# ## adding the contigs to the list of strings called "lh" ; We DO NOT SORT or touch the list of contigs to keep the order defined in the fasta dictionary above
 	for contig in nlc:
@@ -207,7 +207,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 
 		# ## capturing the # ##reference informatino from the tool which has precedence
 		if reference == "":
-			indices = [i for i, s in enumerate(vtdo.header_other_info) if '# ##reference=' in s]
+			indices = [i for i, s in enumerate(vtdo.header_other_info) if '##reference=' in s]
 			if indices is None or len(indices) == 0:
 				reference = ""
 				# log.error("ERROR: Line # ##reference is missing in your input vcf file for tool {}".format(vtdo.toolname) )
@@ -229,7 +229,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		# ## this creates NEW fields prefixed with the toolname
 		for COLUMN in ["FILTER", "QUAL", "ID"]:
 			# ## # ##INFO=<ID=SEURAT_AR1,Number=1,Type=Float,Description="Allele frequency of ALT allele in normal">
-			stringline = ''.join(["# ##INFO=<ID=", toolname_or_acronym, "_", COLUMN,
+			stringline = ''.join(["##INFO=<ID=", toolname_or_acronym, "_", COLUMN,
 			                      ',Number=.,Type=String,Description=',
 			                      '"Represents lossless data from tool ', vtdo.toolname, ' or (if given acronym: aka ', toolname_or_acronym,
 			                      'for column ', COLUMN, '">'])
@@ -251,7 +251,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			for i in range(1, numberOfSamples+1):
 				newField = '_'.join([toolname_or_acronym, "S"+str(i), FIELD])
 				# print(newField)
-				stringline = ''.join(["# ##INFO=<ID=", newField, ',Number=.,Type=String,Description=', '"lossless data from defined tool">'])
+				stringline = ''.join(["##INFO=<ID=", newField, ',Number=.,Type=String,Description=', '"lossless data from defined tool">'])
 				lh.append(stringline)
 
 	for item in vcfMerger_Format_Fields_Specific:
