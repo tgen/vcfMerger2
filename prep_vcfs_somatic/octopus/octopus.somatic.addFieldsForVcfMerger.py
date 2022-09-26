@@ -496,7 +496,7 @@ if __name__ == "__main__":
     
     log.info("looping over records ...")
     for v in vcf:  # v for variant which represents one "variant record"
-        log.info(str(v))
+        log.debug(str(v))
         counter_rec = counter_rec + 1
         if counter_rec % 1000 == 0:
             log.info("processed rec: {}".format(str(counter_rec)))
