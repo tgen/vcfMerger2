@@ -1,141 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="">
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="reformating indents and code cleaning in dvmfuns.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" beforeDir="false" afterPath="$PROJECT_DIR$/merge_vcfs/dvmfuncs.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="1239188512">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="5" />
-          <entry key="project.open.time.19" value="1" />
-          <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.27" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="5" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="md" value="2" />
-          <entry key="py" value="26" />
-          <entry key="sh" value="5" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Bash" value="5" />
-          <entry key="Markdown" value="2" />
-          <entry key="Python" value="26" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="md" value="403" />
-          <entry key="py" value="12692" />
-          <entry key="sh" value="1164" />
-          <entry key="txt" value="1151" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Bash" value="1164" />
-          <entry key="Markdown" value="403" />
-          <entry key="PLAIN_TEXT" value="1151" />
-          <entry key="Python" value="12692" />
-        </counts>
-      </usages-collector>
-    </session>
-    <session id="-2047446466">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="6" />
-          <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.22" value="1" />
-          <entry key="project.open.time.23" value="2" />
-          <entry key="project.open.time.28" value="1" />
-          <entry key="project.open.time.30" value="1" />
-          <entry key="project.open.time.32" value="1" />
-          <entry key="project.open.time.35" value="1" />
-          <entry key="project.opened" value="8" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="jst" value="2" />
-          <entry key="py" value="61" />
-          <entry key="sh" value="11" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Bash" value="11" />
-          <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="61" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="Python Console" value="6" />
-          <entry key="py" value="16412" />
-          <entry key="sh" value="2028" />
-          <entry key="txt" value="1642" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Bash" value="2028" />
-          <entry key="PLAIN_TEXT" value="1642" />
-          <entry key="Python" value="16418" />
-        </counts>
-      </usages-collector>
-    </session>
   </component>
   <component name="FileColors">
     <fileColor scope="Non-Project Files (Material Default)" color="2E3C43" />
     <fileColor scope="Non-Project Files (Material Darker)" color="323232" />
     <fileColor scope="Non-Project Files (Material Lighter)" color="eae8e8" />
     <fileColor scope="Non-Project Files (Material Palenight)" color="2f2e43" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/home/clegendre/qscripts/gits/vcfMerger2_troubleshooting_0.7.8/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="322" lean-forward="true" selection-start-line="322" selection-end-line="420" selection-end-column="59" />
-              <folding>
-                <element signature="e#2905#3232#0" />
-                <element signature="e#5484#7643#0" />
-                <element signature="e#7721#8252#0" />
-                <element signature="e#8312#14061#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.recompose_phased_variants.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="394" lean-forward="true" selection-start-line="394" selection-end-line="394" />
-              <folding>
-                <element signature="e#15442#16823#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -180,8 +59,21 @@
     </dirStrings>
   </component>
   <component name="Git.Settings">
-    <option name="ROOT_SYNC" value="SYNC" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -229,12 +121,16 @@
       </list>
     </option>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="1291" />
     <option name="y" value="4" />
     <option name="width" value="2026" />
     <option name="height" value="1601" />
   </component>
+  <component name="ProjectId" id="2F2xhd4rgIwE5o1FikyKxib6WPK" />
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>
@@ -317,9 +213,16 @@
       </pane>
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -336,18 +239,77 @@
       <recent name="F:\workdocs\github_repos\vcfMerger2" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+  <component name="RunManager" selected="Python.blockSub_test">
+    <configuration name="blockSub_test" type="PythonConfigurationType" factoryName="Python">
+      <module name="vcfMerger2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/prep_vcfs_somatic/octopus" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.checkForBlockSubstitutionVariants.py" />
+      <option name="PARAMETERS" value="-i ../../data/octopus_new_UpToSpecs.vcf.swapSamplesCorrectOrder.sname.vcf --normal_column 11 --tumor_column 10 --outfilename ../../octopus_new_UpToSpecs.vcf.swapSamplesCorrectOrder.sname.blocks.vcf" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_octopus_prep" type="PythonConfigurationType" factoryName="Python">
+      <module name="vcfMerger2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/prep_vcfs_somatic/octopus" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
+      <option name="PARAMETERS" value="-i ../../data/snp_only.vcf.decom.vcf --normal_column 11 --tumor_column 10 --outfilename ../../data/upToSpecsForVcfMerger2.vcf" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_chrY" type="PythonConfigurationType" factoryName="Python">
+      <module name="vcfMerger2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/prep_vcfs_somatic/octopus" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/prep_vcfs_somatic/octopus/octopus.somatic.addFieldsForVcfMerger.py" />
+      <option name="PARAMETERS" value="-i ../../data/y_snp_only.vcf.decom.vcf --normal_column 11 --tumor_column 10 --outfilename ../../XXXX.vcf" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.run_octopus_prep" />
+      <item itemvalue="Python.test_chrY" />
+      <item itemvalue="Python.blockSub_test" />
+    </list>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -358,55 +320,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
-    </task>
-    <task id="LOCAL-00189" summary="updating GenotypeInv for OCTopus when dealign with GT for ChrY">
-      <created>1574126386014</created>
-      <option name="number" value="00189" />
-      <option name="presentableId" value="LOCAL-00189" />
-      <option name="project" value="LOCAL" />
-      <updated>1574126386014</updated>
-    </task>
-    <task id="LOCAL-00190" summary="Found Why Issue with OCtopus Trying to Fix it">
-      <created>1574126708054</created>
-      <option name="number" value="00190" />
-      <option name="presentableId" value="LOCAL-00190" />
-      <option name="project" value="LOCAL" />
-      <updated>1574126708054</updated>
-    </task>
-    <task id="LOCAL-00191" summary="Found Why Issue with OCtopus Trying to Fix it">
-      <created>1574126856580</created>
-      <option name="number" value="00191" />
-      <option name="presentableId" value="LOCAL-00191" />
-      <option name="project" value="LOCAL" />
-      <updated>1574126856580</updated>
-    </task>
-    <task id="LOCAL-00192" summary="Found Why Issue with OCtopus Trying to Fix it">
-      <created>1574127365773</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1574127365773</updated>
-    </task>
-    <task id="LOCAL-00193" summary="Issue Octopus AD fixed; Original Header AD definition is WRONG (String but shoudl be Integer)">
-      <created>1574128694654</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1574128694654</updated>
-    </task>
-    <task id="LOCAL-00194" summary="Fix contig rebuilding">
-      <created>1574129155066</created>
-      <option name="number" value="00194" />
-      <option name="presentableId" value="LOCAL-00194" />
-      <option name="project" value="LOCAL" />
-      <updated>1574129155066</updated>
-    </task>
-    <task id="LOCAL-00195" summary="Fix contig rebuilding">
-      <created>1574129224720</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1574129224720</updated>
     </task>
     <task id="LOCAL-00196" summary="Fix contig rebuilding">
       <created>1574129432995</created>
@@ -702,7 +615,56 @@
       <option name="project" value="LOCAL" />
       <updated>1579052190575</updated>
     </task>
-    <option name="localTasksCounter" value="238" />
+    <task id="LOCAL-00238" summary="modify script to make it compatible with version 0.7.4 or up. Remove AD, ADP captures b/c un-necessary. Got AR from AF now; Converted Haploid to Diploid for homogeneity between callers">
+      <created>1663812907922</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1663812907923</updated>
+    </task>
+    <task id="LOCAL-00239" summary="Modify capture MAP_HF value; Needed to decide on the value to capture from Tumor sample: decide to get the max value from the list">
+      <created>1663882910270</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1663882910270</updated>
+    </task>
+    <task id="LOCAL-00240" summary="some code cleaning and added one log.info line">
+      <created>1663887207626</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1663887207626</updated>
+    </task>
+    <task id="LOCAL-00241" summary="swap vt_decompose and blockSub step for Octopus">
+      <created>1663958888584</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1663958888584</updated>
+    </task>
+    <task id="LOCAL-00242" summary="added hcek if MAF_HF present in FORMAT along with DP;&#10;Fix the len() of PS to make sure we get correct length&#10;added one function in the prep_vcf_somatic_functions.sh to remove stars in record in octopus">
+      <created>1663962383821</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1663962383821</updated>
+    </task>
+    <task id="LOCAL-00243" summary="force AF_tumor and AF_normal to float value">
+      <created>1663969580544</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1663969580544</updated>
+    </task>
+    <task id="LOCAL-00244" summary="reformating indents and code cleaning in dvmfuns.py">
+      <created>1663977015554</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1663977015555</updated>
+    </task>
+    <option name="localTasksCounter" value="245" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -740,17 +702,18 @@
       <window_info anchor="right" id="R Packages" order="4" />
     </layout>
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added comments ; corrected typos" />
-    <MESSAGE value="fixed bug: was concatenating not consecutives positions that were in same phase. Added check point." />
-    <MESSAGE value="Fix: Check Lancet Genotype is a dot and convert it to ./." />
-    <MESSAGE value="replace &quot;;&quot; by &quot;%&quot; for PhASER unique_id option; Cause Issue with bcfTools." />
-    <MESSAGE value="troubleshooting ... added prints" />
-    <MESSAGE value="converted str to in the col_normal and col_tumor variable when captured from args" />
-    <MESSAGE value="rounding update for RS values" />
     <MESSAGE value="rounding update for AR values" />
     <MESSAGE value="updating GenotypeInv for OCTopus when dealign with GT for ChrY" />
     <MESSAGE value="Found Why Issue with OCtopus Trying to Fix it" />
@@ -769,7 +732,14 @@
     <MESSAGE value="update comment line" />
     <MESSAGE value="updated the Genotype Class to capture up to 9 genotype at one position" />
     <MESSAGE value="debugging Edge Case blockSub in Prep_Strelka" />
-    <option name="LAST_COMMIT_MESSAGE" value="debugging Edge Case blockSub in Prep_Strelka" />
+    <MESSAGE value="modify script to make it compatible with version 0.7.4 or up. Remove AD, ADP captures b/c un-necessary. Got AR from AF now; Converted Haploid to Diploid for homogeneity between callers" />
+    <MESSAGE value="Modify capture MAP_HF value; Needed to decide on the value to capture from Tumor sample: decide to get the max value from the list" />
+    <MESSAGE value="some code cleaning and added one log.info line" />
+    <MESSAGE value="swap vt_decompose and blockSub step for Octopus" />
+    <MESSAGE value="added hcek if MAF_HF present in FORMAT along with DP;&#10;Fix the len() of PS to make sure we get correct length&#10;added one function in the prep_vcf_somatic_functions.sh to remove stars in record in octopus" />
+    <MESSAGE value="force AF_tumor and AF_normal to float value" />
+    <MESSAGE value="reformating indents and code cleaning in dvmfuns.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="reformating indents and code cleaning in dvmfuns.py" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
