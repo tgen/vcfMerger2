@@ -413,7 +413,7 @@ def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False)
         log.info("return code value prep step for tool {} is: {}".format(tool, str(process.returncode)))
         log.info("prep step for tool {}: {} seconds".format(tool, str(int(round((time.time() - start_time))))))
         subp_logfile.close()
-        if process.returncode is not 0:
+        if process.returncode != 0:
             sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
 
 
@@ -496,7 +496,7 @@ def parse_json_data_and_run_prep_vcf_parallel(tool, data, dryrun=False):
         log.info("return code value prep step for tool {} is {}".format(tool, str(process.returncode)))
         log.info("prep step for tool {}: {} seconds".format(tool, str(int(round((time.time() - start_time))))))
         subp_logfile.close()
-        if process.returncode is not 0:
+        if process.returncode != 0:
             sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
 
@@ -573,7 +573,7 @@ def parse_json_data_and_run_prep_vcf_germline__DEPRECATED(data, dryrun=False):
             process.wait()
             log.info(str(process.returncode))
             subp_logfile.close()
-            if process.returncode is not 0:
+            if process.returncode != 0:
                 sys.exit("{} FAILED for tool {} ".format(prep_germline_vcf_script_path, tool))
 
 
@@ -653,7 +653,7 @@ def parse_json_data_and_run_prep_vcf__DEPRECATED(data, dryrun=False):
             process.wait()
             log.info(str(process.returncode))
             subp_logfile.close()
-            if process.returncode is not 0:
+            if process.returncode != 0:
                 sys.exit("{} FAILED for tool {} ".format(prep_vcf_script_path, tool))
 
 
@@ -835,7 +835,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
         process = subprocess.Popen(my_command, shell=True)
         process.wait()
         log.info("vcfMerger2.0 exit value: " + str(process.returncode))
-        if process.returncode is not 0:
+        if process.returncode != 0:
             sys.exit("{} FAILED with VCF files: {} ".format(vcfmerger_tool_path, list_vcfs))
         else:
             cpus = len(data.keys()) if len(data.keys()) > 2 else 2
