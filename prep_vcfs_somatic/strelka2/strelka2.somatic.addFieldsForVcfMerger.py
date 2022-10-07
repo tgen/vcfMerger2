@@ -108,7 +108,7 @@ def usage(scriptname):
 
 def parseArgs(scriptname, argv):
 
-	## init some variables
+	# #init some variables
 	column_tumor, column_normal = None, None
 	new_vcf_name = None
 	generate_vcf_pass_calls_only = False
@@ -154,16 +154,14 @@ def parseArgs(scriptname, argv):
 		elif opt in ("", "--normal_column"):
 			column_normal = int(arg)
 		elif opt in ("","--debug"):
-			log.info("in DEBUG options test")
-			newloglevel = "DEBUG"
-			newLevel = getattr(log, newloglevel.upper(), None)
-			log.basicConfig(level=newLevel, format=FORMAT_LOGGING)
-		elif opt in ("-o","--outfilename"):
+			log.info("DEBUG MODE Enabled")
+			log.getLogger().setLevel(log.DEBUG)
+		elif opt in ("-o", "--outfilename"):
 			new_vcf_name = arg.strip()
 		elif opt in ("-i", "--vcfs"):
 			fvcf = arg
 			if not path.exists(fvcf):
-				exit("ERROR: FNF --> " +fvcf)
+				exit("ERROR: FNF --> " + fvcf)
 
 
 
