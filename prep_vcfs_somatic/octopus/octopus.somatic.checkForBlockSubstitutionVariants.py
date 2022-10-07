@@ -84,8 +84,8 @@ def parseArgs(scriptname, argv):
         elif opt in ("", "--normal_column"):
             column_normal = arg
         elif opt in ("", "--debug"):
-            print("DEBUG")
-            log.basicConfig(format=FORMAT_LOGGING, level=log.DEBUG)
+            log.info("DEBUG MODE Enabled")
+            log.getLogger().setLevel(log.DEBUG)
         elif opt in ("-o", "--outfilename"):
             new_vcf_name = arg.strip()
         elif opt in ("-i", "--vcf"):

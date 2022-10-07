@@ -189,6 +189,9 @@ def parseArgs(scriptname, argv):
             except TypeError:
                 log.info("ERROR: threshold values MUST be integer or float")
                 exit(2)
+        elif opt in ("", "--debug"):
+            log.info("DEBUG MODE Enabled")
+            log.getLogger().setLevel(log.DEBUG)
         elif opt in ("", "--tumor_column"):
             column_tumor = int(arg)
         elif opt in ("", "--normal_column"):

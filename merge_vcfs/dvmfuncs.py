@@ -371,11 +371,11 @@ def isOfTYPE(ref, alt, v):  # we need to elaborate here ALL the possibilities to
 			return "ins"
 		if len(ref) == 1 and len(alt[0]) == 1:
 			log.debug("len(ref_==1 and len(alt)==1")
-			if len(alt[0]) == 1 and alt[0] is not "." \
+			if len(alt[0]) == 1 and alt[0] != "." \
 					and (ref.capitalize() in ['A', 'T', 'C', 'G']) \
 					and (alt[0].capitalize() in ['A', 'T', 'C', 'G']):
 				return "snv"
-			if alt[0] is "." and ref.capitalize() in ['A', 'T', 'C', 'G']:
+			if alt[0] == "." and ref.capitalize() in ['A', 'T', 'C', 'G']:
 				return "del"
 			if len(alt[0]) > 1 and ref.capitalize() in ['A', 'T', 'C', 'G']:
 				return "ins"
@@ -540,9 +540,9 @@ def process_known_field(field, totnum_samples, dicField, v):
 	log.debug("In process known for flag << " + field + " >> : " + str(nfor))
 	for i in range(len(nfor)):
 		if not len(dicField[i]) == 0:
-			dicField[i] = ":".join([dicField[i], str(','.join(str(e) for e in nfor[i] if e is not ","))])
+			dicField[i] = ":".join([dicField[i], str(','.join(str(e) for e in nfor[i] if e != ","))])
 		else:
-			dicField[i] = str(','.join(str(e) for e in nfor[i] if e is not ","))
+			dicField[i] = str(','.join(str(e) for e in nfor[i] if e != ","))
 		log.debug(str(dicField[i]))
 
 
@@ -586,7 +586,7 @@ def get_acronym_for_current_tool(tool, dico_map_tool_acronym):
 	:return: string_of_interest [ acronym or toolname ]
 	"""
 	d = dico_map_tool_acronym
-	if tool in d.keys() and (d[tool] is not None or d[tool] is not ""):
+	if tool in d.keys() and (d[tool] is not None or d[tool] != ""):
 		log.debug("RETURN ACRONYM: " + d[tool])
 		return d[tool]
 	else:
@@ -653,7 +653,7 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 
 	ListFieldsToProcessForOurFORMATColumn = list_Fields_Format
 
-	if ListFieldsToProcessForOurFORMATColumn[0] is not "GT":
+	if ListFieldsToProcessForOurFORMATColumn[0] != "GT":
 		raise "ERROR: GT field MUST be the first field in the FORMAT column according to VCF Specs; Aborting Merging"
 
 	# ### same comment as earlier, the list of FIELDS or FLAGS in that FORMAT column may be set up by USER in tool wrappers
@@ -795,7 +795,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 			process = subprocess.Popen(args, shell=False, universal_newlines=False, stdout=fout)
 			process.wait()
 			log.info(str(process.returncode))
-			if process.returncode is not 0:
+			if process.returncode != 0:
 				sys.exit("Conversion BED to LIST FAILED; Aborting.")
 			newFileList.append(bed + ".asList")
 			fout.close()
@@ -874,7 +874,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		process = subprocess.Popen(mycmd, shell=False, universal_newlines=False)
 		process.wait()
 		log.info(str(process.returncode))
-		if process.returncode is not 0:
+		if process.returncode != 0:
 			sys.exit("Venn or Upset Creation FAILED")
 
 	# ## update Rscript to colorize the intersection of all tools
@@ -910,7 +910,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		log.info("Running Sed command")
 		process = subprocess.Popen(args, shell=False, universal_newlines=False)
 		process.wait()
-		if process.returncode is not 0:
+		if process.returncode != 0:
 			sys.exit("updating script for Upset Creation FAILED")
 
 		import time
@@ -931,7 +931,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		log.info("Running Sed command")
 		process = subprocess.Popen(args,  shell=False, universal_newlines=False)
 		process.wait()
-		if process.returncode is not 0:
+		if process.returncode != 0:
 			sys.exit("updating script for Upset Creation FAILED")
 		log.info("Running Rscript Command")
 		import os
@@ -939,7 +939,7 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 		process = subprocess.Popen(str("Rscript " + file_path[0]),  shell=True, universal_newlines=False)
 		process.wait()
 		log.info("process return code: " + str(process.returncode))
-		if process.returncode is not 0:
+		if process.returncode != 0:
 			log.info("return code not zero in << if upsetBool>>")
 			sys.exit("Upset Creation FAILED")
 
