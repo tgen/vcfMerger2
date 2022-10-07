@@ -56,10 +56,9 @@ class Genotype(object):
 def usage(scriptname, opts):
 	print("\nUSAGE: \npython3 " + scriptname + '  --help')
 	print("python3 " + scriptname + " -i octopus.somatic.snvs.pass.vcf  --normal_column 10 --tumor_column 11 -o updated_vcf.vcf\n")
-	print("#" * 40 + "\nWARNING WARNING: This script is to be used only with somatic snvs vcf having NORMAL sample in "
-					 "column 10 and TUMOR sample in column 11; if not like this, update your vcf file to these "
-					 "specs; and the vcf has to contain Phasing Information from Phaser with the PI and PW and PS fields in FORMAT.\n" + "#" * 40
-		  )
+	print("#" * 40 + "\nWARNING WARNING: This script is to be used only with somatic snvs vcf having NORMAL sample in column 10 and TUMOR sample in column 11; "
+					 "if not like this, update your vcf file to these specs; and the vcf has to contain Phasing Information from Phaser with the PI and PW and"
+					 " PS fields in FORMAT.\n" + "#" * 40)
 
 
 def parseArgs(scriptname, argv):
@@ -309,12 +308,12 @@ def collapse_variants_with_same_PS(LOV):
 		newREF = newREF + rec.REF
 		newALT=newALT+rec.ALT[0]
 		# locus = str(rec.CHROM)+"_"+str(rec.POS)
-	#	BLOCSUBSFROM = delim.join([ BLOCSUBSFROM, locus ]) if BLOCSUBSFROM != "" else locus
+	# BLOCSUBSFROM = delim.join([ BLOCSUBSFROM, locus ]) if BLOCSUBSFROM != "" else locus
 		# newARs = process_newAR() # ## TODO: WE WILL NEED TO process AR for each sample
 	newV = str(LOV[0]).split("\t")
 	newV[4-1] = newREF
 	newV[5-1] = newALT
-	#newV[8-1] = ';'.join([ newV[8-1], "BLOCSUBSFROM="+BLOCSUBSFROM ])
+	# newV[8-1] = ';'.join([ newV[8-1], "BLOCSUBSFROM="+BLOCSUBSFROM ])
 	return str('\t'.join(newV))
 
 
@@ -333,17 +332,19 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 	# count = 0
 	# previous_pos = 0
 	# same_phased_but_not_consecutive = False # #spnc acronym that stands for <<< same_phased_but_not_consecutive >>>
-
+	
+	log.info(log.getLogger().getEffectiveLevel())
+	count = 0
 	for v in vcf:
 		if v.format('PS') is not None:
 			curpos = v.POS
 			k = int(v.format('PS')[idxT]) if not None else 0
-			log.info("key k == {}".format(str(k)))
+			log.debug("key k == {}".format(str(k)))
 			if k not in dico_PS:
-				log.info("if k not in dico_PS for k: {}".format(str(k)))
+				log.debug("if k not in dico_PS for k: {}".format(str(k)))
 				dico_PS[k] = [v]
 			elif k in dico_PS:
-				log.info("elif k in dico_PS for k: {}".format(str(k)))
+				log.debug("elif k in dico_PS for k: {}".format(str(k)))
 				previous_pos = dico_PS[k][len(dico_PS[k])-1].POS
 				if curpos == (previous_pos + 1):
 					dico_PS[k].append(v)
@@ -355,16 +356,16 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 						newk = newk + "_" + str(curpos)
 						dico_PS[newk] = dico_PS[k]
 					dico_PS[k] = [v]
-
-			# count += 1
-			# if count >20:
-			# 	break
-			# log.debug(dico_PS)
+			if log.getLogger().getEffectiveLevel() == 10:  # 20 is the DEBUG level
+				count += 1
+				if count > 10:
+					break
+				log.debug(dico_PS)
 
 		else:
-			log.info("in else with dico_PS: {}".format(str(dico_PS)))
-			log.info("v is : {}".format(str(v)))
-			log.debug(50*"***"+"\nonly un-phased variants here ..."+"\n"+"***"*50)
+			log.debug("in else with dico_PS: {}".format(str(dico_PS)))
+			log.debug("v is : {}".format(str(v)))
+			log.debug(40*"***"+"\nonly un-phased variants here ..."+"\n "+"***"*40)
 			dico_PS[0].append(v)
 	# log.debug(dico_PS)
 	log.debug("dico_PS == " + str(dico_PS))
@@ -387,6 +388,7 @@ def recompose_consecutive_blocks(vcf, column_tumor, w):
 	# if dico_PS is empty we cannot pop item !!!
 	# if there is no key with value zero we skip this step, meaning there was no regular variant captured
 	if 0 in dico_PS.keys():
+		log.debug("removing the following unphased variants (pop[0]): {}".format(dico_PS[0]))
 		dico_individual_variants = dico_PS.pop(0)
 	else:
 		dico_individual_variants = {}
