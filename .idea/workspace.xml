@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="added debug lines for pop0">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="attempt checking if Hets available in phASER input vcf;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -390,13 +390,6 @@
       <option name="presentableId" value="Default" />
       <updated>1542320033058</updated>
     </task>
-    <task id="LOCAL-00201" summary="TBSHOOT OCTOPUS AR AD">
-      <created>1574203906209</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1574203906209</updated>
-    </task>
     <task id="LOCAL-00202" summary="TBSHOOT OCTOPUS AR AD">
       <created>1574209206190</created>
       <option name="number" value="00202" />
@@ -733,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665163655979</updated>
     </task>
-    <option name="localTasksCounter" value="250" />
+    <task id="LOCAL-00250" summary="attempt checking if Hets available in phASER input vcf;">
+      <created>1665793236256</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1665793236256</updated>
+    </task>
+    <option name="localTasksCounter" value="251" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -783,7 +783,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="TBSHOOT OCTOPUS" />
     <MESSAGE value="TBSHOOT OCTOPUS AR AD" />
     <MESSAGE value="rescended logging to INFO" />
     <MESSAGE value="fixing phASER input to avoid edge case where only homozygous variant in input  VCF for phASER" />
@@ -808,7 +807,8 @@
     <MESSAGE value="fix pop(0) when only 2 consecutive variants were found" />
     <MESSAGE value="updated the DEBUG lines and the way to call `--debug` in some scripts" />
     <MESSAGE value="added debug lines for pop0" />
-    <option name="LAST_COMMIT_MESSAGE" value="added debug lines for pop0" />
+    <MESSAGE value="attempt checking if Hets available in phASER input vcf;" />
+    <option name="LAST_COMMIT_MESSAGE" value="attempt checking if Hets available in phASER input vcf;" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">

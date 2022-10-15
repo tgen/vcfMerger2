@@ -142,7 +142,7 @@ if [[ 1 == 1 ]] ;then
     bcftools index --tbi ${VCF_HETS}
     check_ev $? "bcftools index"
 
-    echo -e "keeping ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
+    echo -e "keeping ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."  1>&2
     bcftools filter -O z -i 'GT="AA"' -o ${VCF_SBCP/vcf.gz/homs.vcf.gz} ${VCF_SBCP}
     check_ev $? "bcftools filter out homz sites"
 
@@ -153,7 +153,7 @@ if [[ 1 == 1 ]] ;then
 
     if [[ $( bcftools view -H ${VCF_HOMS} | wc -l ) -gt 0 ]] ;
     then
-        echo -e "concat variants from homs.vcf.gz VCF with tempNoConsPos.vcf.gz VCF ... "
+        echo -e "concat variants from homs.vcf.gz VCF with tempNoConsPos.vcf.gz VCF ... "  1>&2
         bcftools concat -a --threads 2 -O z -o ${VCF/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF/vcf.gz/TempNoConsPos.vcf.gz}  ${VCF_HOMS}
         check_ev $? "bcftools concat #3"
         mv ${VCF/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
@@ -174,11 +174,13 @@ if [[ 1 == 1 ]] ;then
         echo -e "\nNo Variant Left after removing Homozygous ; ending Phasing section now"
         echo -e "renaming input file to match expected outfile from phasing section\n"
         mycmd="cp ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
-        echo ${mycmd} ; eval ${mycmd}
+        echo ${mycmd} 1>&2 ;
+        eval ${mycmd}
         check_ev $? "cp command"
-        echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}  ; Converting vcf.gz to vcf ..."
+        echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}  ; Converting vcf.gz to vcf ..."  1>&2
         bcftools view -O v --threads 2 -o ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}
-        check_ev $? "bcftools view"
+        check_ev $? "bcftools view convert vcf.gz too vcf" 1>&2
+        echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
         exit 0
     else
         VCF_FOR_PHASER=${VCF_HETS}
@@ -187,7 +189,18 @@ if [[ 1 == 1 ]] ;then
 
 fi
 
-
+# # Despite the check above for the absence of HETS, looks like it only check if there is no variant at all instead of just
+# # checking if there is no HETS at all. So if we still have indels only it would keep going and phASER will FAIL since there
+# # is no HETS to use to perform phasing; if this is the case, phASER returns an exit value of 1
+C=$(bcftools filter -i 'TYPE=="snp"' ${VCF_FOR_PHASER} | bcftools view -H | wc -l)
+if [[ ${C} -eq 0 ]]
+then
+  echo -e "No Hets in VCF, so No Phasing to perform; Skipping phASER" 1>&2
+  echo " cp \"${VCF_ORIGINAL_INPUT}\"  \"${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}\" " 1>&2
+  cp "${VCF_ORIGINAL_INPUT}"  "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
+  echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}" 2>&1
+  exit 0
+fi
 ## https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
 ## https://github.com/secastel/phaser/tree/master/phaser
 ##@@@@@@@@@@@@@
@@ -264,6 +277,6 @@ check_ev $? "bcftools concat ${VCF_OUT}"
 
 touch Completed_Recomposition_Strelka2_for_VCF_$(basename ${VCF_ORIGINAL_INPUT}).flag
 
-echo ${VCF_OUT} 2>&1
+echo "${VCF_OUT}" 2>&1
 
 exit 0
