@@ -534,11 +534,17 @@ function process_strelka2_vcf(){
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	echo "after normalize ((((((   ${VCF}"  1>&2
-	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
-	echo "after recomposition ()()()()()()()()() ${VCF}"  1>&2
-	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
+	C=$(bcftools filter -i 'TYPE=="snp"' ${VCF} | bcftools view -H | wc -l)
+	if [[ ${C} -gt 0 ]]
+	then
+	  phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
+	  echo "after recomposition ()()()()()()()()() ${VCF}"  1>&2
+	  echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
+	else
+	  cp ${VCF} ${VCF/.norm.vcf/.norm.blocs.vcf}
+  fi
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
-	echo ${VCF}
+	echo -e "out vcf for current step: ${VCF}"
 	final_msg ${VCF}
 }
 
