@@ -197,8 +197,8 @@ if [[ ${C} -eq 0 ]]
 then
   echo -e "No Hets in VCF, so No Phasing to perform; Skipping phASER" 1>&2
   echo " cp \"${VCF_ORIGINAL_INPUT}\"  \"${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}\" " 1>&2
-  cp "${VCF_ORIGINAL_INPUT}"  "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
-  echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}" 2>&1
+  cp "${VCF_ORIGINAL_INPUT}"  "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}"
+  echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}" 2>&1
   exit 0
 fi
 ## https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
