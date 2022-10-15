@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="attempt checking if Hets available in phASER input vcf;">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/prep_vcfs_somatic/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh" afterDir="false" />
-    </list>
+    <list default="true" id="0c2148f8-0018-487d-bc2c-3e7972762824" name="Default Changelist" comment="cleaning code and adding comments" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +58,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="15c7e7ca651da25089835acf545976774e2cdc9f" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -370,12 +366,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.run_octopus_prep" />
-      <item itemvalue="Python.test_chrY" />
-      <item itemvalue="Python.blockSub_test" />
       <item itemvalue="Python.SLK_recompose_block_tests" />
       <item itemvalue="Python.SLK_recompose_block_tests__MMRF2952" />
       <item itemvalue="Python.SLK_recompose_block_tests__MMRF2952_EMPTY" />
+      <item itemvalue="Python.blockSub_test" />
+      <item itemvalue="Python.run_octopus_prep" />
+      <item itemvalue="Python.test_chrY" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
