@@ -184,7 +184,7 @@ if [[ 1 == 1 ]] ;then
         exit 0
     else
         VCF_FOR_PHASER=${VCF_HETS}
-        echo -e "vcf with hets only and subsConsPOS is: ${VCF}"
+        echo -e "vcf with hets only and subsConsPOS is: ${VCF_FOR_PHASER}"
     fi
 
 fi
@@ -192,13 +192,16 @@ fi
 # # Despite the check above for the absence of HETS, looks like it only check if there is no variant at all instead of just
 # # checking if there is no HETS at all. So if we still have indels only it would keep going and phASER will FAIL since there
 # # is no HETS to use to perform phasing; if this is the case, phASER returns an exit value of 1
-C=$(bcftools filter -i 'TYPE=="snp"' ${VCF_FOR_PHASER} | bcftools view -H | wc -l)
+echo "checking if we have any HETS in the VCF using bcftools ... " 1>&2
+C=$(bcftools filter -i 'TYPE=="snp"' "${VCF_FOR_PHASER}" | bcftools view -H | wc -l)
 if [[ ${C} -eq 0 ]]
 then
   echo -e "No Hets in VCF, so No Phasing to perform; Skipping phASER" 1>&2
-  echo " cp \"${VCF_ORIGINAL_INPUT}\"  \"${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}\" " 1>&2
-  zcat "${VCF_ORIGINAL_INPUT}"  "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}"
+  echo "Making the expected VCF filename as if phASER had run:"
+  echo "zcat \"${VCF_ORIGINAL_INPUT}\"  \"${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}\" " 1>&2
+  zcat "${VCF_ORIGINAL_INPUT}" > "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}"
   echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}" 2>&1
+  echo "Exiting $0 script without having phASER ran. ev = 0" 1>&2
   exit 0
 fi
 ## https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/

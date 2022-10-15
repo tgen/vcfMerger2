@@ -535,7 +535,7 @@ function process_strelka2_vcf(){
 	VCF=$( normalize_vcf ${VCF})
 	echo "after normalize ((((((   ${VCF}"  1>&2
 	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
-	echo "after recomposition ()()()()()()()()() ${VCF}"  1>&2
+	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
 	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
 	echo ${VCF}
