@@ -197,7 +197,7 @@ if [[ ${C} -eq 0 ]]
 then
   echo -e "No Hets in VCF, so No Phasing to perform; Skipping phASER" 1>&2
   echo " cp \"${VCF_ORIGINAL_INPUT}\"  \"${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}\" " 1>&2
-  cp "${VCF_ORIGINAL_INPUT}"  "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}"
+  zcat "${VCF_ORIGINAL_INPUT}"  "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}"
   echo "${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}" 2>&1
   exit 0
 fi
