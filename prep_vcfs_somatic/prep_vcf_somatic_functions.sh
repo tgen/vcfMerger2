@@ -498,6 +498,15 @@ function prepare_input_file_for_Venn_SplitbyVariantType(){
     fi
 }
 
+
+function remove_star_from_octopus_decomposed_vcf(){
+    local VCF="$1"
+    local VCF_OUT=${VCF%.*}.rmstars.vcf
+    (  grep -E "^#" "${VCF}" ; grep -vE "^#" "${VCF}" | awk '{FS=OFS="\t" ; if ($5~/\\*/){ gsub("*", "", $5)} ; print }'  ) > "${VCF_OUT}"
+    echo "${VCF_OUT}"
+}
+
+
 function final_msg(){
 	local VCF=$1
 
@@ -556,8 +565,6 @@ function process_lancet_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( modify_contig_info_in_lancet ${VCF} )
-	#get_contigs_file "${TOOLNAME}" "${BAM_FILE}" "${CONTIGS_FILE}"
-	#VCF=$( modify_contig_info_in_lancet ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
@@ -569,11 +576,12 @@ function process_octopus_vcf(){
 	then
 	    echo -e "In Function process_octopus_vcf ... "  1>&2
         VCF=$( check_and_update_sample_names ${VCF} )
-        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( decompose ${VCF} )
+        VCF=$( remove_star_from_octopus_decomposed_vcf ${VCF} )  ## octopus handles start in the ALT field the way it is described in VCF specs, but none other tools does ; That
+        # start causes issue so far because the vt decompose did not make a new line for it, instead concatenated the star and the variant
+        VCF=$( look_for_block_substitution_in_octopus ${VCF}) ## why do we put 'look for blocs' before decompose? b/c we only use the first allele for collapsing block
         VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
         VCF=$( normalize_vcf ${VCF})
-        VCF=$( rename_fields_in_vcf_header_octopus_specific ${VCF} )
         final_msg ${VCF}
 	else
 	    echo -e "OCTOPUS's VCF has no Variants; Processing only sample name checking and final vcf renaming; " 1>&2
@@ -586,7 +594,6 @@ function process_octopus_vcf(){
 function process_vardictjava_vcf(){
 	local VCF=$1
 	VCF=$( check_and_update_sample_names ${VCF} )
-	#VCF=$( add_Contigs ${VCF} ) ## deprecated as we expect vcf having correct contig list after vardictjava update
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
