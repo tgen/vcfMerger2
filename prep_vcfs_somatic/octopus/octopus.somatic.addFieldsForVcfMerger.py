@@ -437,8 +437,33 @@ def add_new_flags_v0_7_4(v, column_tumor, column_normal, tot_number_samples):
         AF_tumor = if_dot_assign_value_zero(v.format('AF')[idxT], 0)  # idxT to capture the list belonging to the tumor and 1 to capture the value for the ALT in case it is a
         # dot ## need to make it generic for both allele, i.e. testing both in case the ref is also a dot
         AF_normal = if_dot_assign_value_zero(v.format('AF')[idxN], 0)
-        AR_tumor = float(AF_tumor)
-        AR_normal = float(AF_normal)
+
+        AF_tumor = v.format('AF')[idxT]
+        AF_normal = v.format('AF')[idxN]
+        AF_tumor = [0 if np.isnan(x) else x for x in AF_tumor]
+        AF_normal = [0 if np.isnan(x) else x for x in AF_normal]
+
+        log.debug("value for AF_tumor: {}".format(str(AF_tumor)))
+        log.debug("value for AF_normal: {}".format(str(AF_normal)))
+        if 1 < len(AF_tumor) < 3:
+            AR_tumor = float(AF_tumor[1])
+        elif len(AF_tumor) == 1:
+            AR_tumor = float(max(AF_tumor[0]))
+        elif len(AF_tumor) >= 3:
+            AR_tumor = float(max(AF_tumor[1:]))
+        else:
+            log.error("AF_tumor value issue with value '{}'".format(str(AF_tumor)))
+            raise Exception("ISSUE with AF_tumor value; Missing Data or Unexpected values. Check your input; ")
+
+        if 1 < len(AF_normal) < 3:
+            AR_normal = float(AF_normal[1])
+        elif len(AF_tumor) == 1:
+            AR_normal = float(max(AF_normal[0]))
+        elif len(AF_tumor) >= 3:
+            AR_normal = float(max(AF_normal[1:]))
+        else:
+            log.error("AF_normal value issue with value '{}'".format(str(AF_normal)))
+            raise Exception("ISSUE with AR_normal value; Missing Data or Unexpected values. Check your input; ")
         
         if idxT == 0:
             ARs = [AR_tumor, AR_normal]
