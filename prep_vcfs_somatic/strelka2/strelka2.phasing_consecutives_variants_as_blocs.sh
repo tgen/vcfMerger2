@@ -45,7 +45,7 @@ echo -e "USAGE: $0 \$VCF.gz \$TBAM \$SNAME_T \$CPUS \n1) compressed_VCF\n2) BAM 
 }
 
 ## checkings section
-if [[ $# -ne 4 ]] ; then usage ; exit -1 ; fi 
+if [[ $# -ne 4 ]] ; then usage ; exit -1 ; fi
 for F in ${SCRIPT_GET_CONSPOS} ${VCF} ${TBAM} ; do checkFile ${F} ; done
 for EXE in samtools bcftools phaser.py ; do check_exe_in_path ${EXE} ; done
 if [[ ${CPUS} -ge ${MAX_CPUS_IN_CPUINFO} ]] ; then CPUS=$((${MAX_CPUS_IN_CPUINFO}-1)) ; fi
@@ -85,6 +85,22 @@ VCF=${VCF_ORIGINAL_INPUT}
 
 
 if [[ 1 == 1 ]] ;then
+
+		echo -e "Keeping out the Indels as phASER exclude them from phasing anyway"   1>&2
+		## We had to do this due to encountering an edge case mentioned in issue #27 in github
+    bcftools filter -O z -i 'TYPE="indel"' -o ${VCF/vcf.gz/indels.vcf.gz} ${VCF}
+    check_ev $? "bcftools filter out indels"
+    bcftools index --tbi  ${VCF/vcf.gz/indels.vcf.gz}
+    check_ev $? "bcftools index indels calls"
+    VCF_INDELS_ONLY=${VCF/vcf.gz/indels.vcf.gz}
+
+    ## now Subsetting the VCF_SBCP to continue without the indels
+    bcftools filter -O z -e 'TYPE="indel"' -o ${VCF/vcf.gz/noindels.vcf.gz} ${VCF}
+    check_ev $? "bcftools filter out indels"
+    bcftools index --tbi  ${VCF/vcf.gz/noindels.vcf.gz}
+    check_ev $? "bcftools index indels calls"
+    cp ${VCF} ${VCF}.original_input.vcf
+    cp ${VCF/vcf.gz/noindels.vcf.gz} ${VCF}
 
     echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
     python3 ${SCRIPT_GET_CONSPOS} ${VCF}
@@ -269,7 +285,7 @@ VCF_IN_UNPHASED=${VCF_ORIGINAL_INPUT/vcf.gz/TempNoConsPos.vcf.gz}
 VCF_IN_PHASED=${VCF_OUT}
 ## WE OUTPUT An UNcompressed VCF;
 VCF_OUT=${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}
-mycmd="bcftools concat -a -O v ${VCF_IN_UNPHASED} ${VCF_IN_PHASED} | bcftools sort -O v -T ${PWD} --max-mem 2G  - > ${VCF_OUT}"
+mycmd="bcftools concat -a -O v ${VCF_INDELS_ONLY} ${VCF_IN_UNPHASED} ${VCF_IN_PHASED} | bcftools sort -O v -T ${PWD} --max-mem 2G  - > ${VCF_OUT}"
 echo ${mycmd}
 eval ${mycmd}
 check_ev $? "bcftools concat ${VCF_OUT}"
