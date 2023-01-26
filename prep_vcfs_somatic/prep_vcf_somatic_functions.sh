@@ -431,7 +431,7 @@ function phasing_consecutive_variants_in_strelka2(){
 	local CPUS=$4
 
 	echo "in ${FUNCNAME}:  ${VCF} and BAM file is ${BAM}" 1>&2
-	echo "## Phasing 0bp-apart consecutives variants ..."  1>&2
+	echo "## Phasing 0bp-apart consecutive variants ..."  1>&2
 
     mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS}"
 	echo ${mycmd} 1>&2 ;
