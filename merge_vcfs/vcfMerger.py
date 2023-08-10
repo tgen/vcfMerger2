@@ -273,7 +273,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		step = int(round(tot_variants_count / 10, -(len(str(round(tot_variants_count / 10))) - 1)))
 		for K in [k for k in sorted_keys]:  # sub is list__list__o.ovcf_variant ;
 			counter += 1;
-			if counter % step == 0:
+			if step > 1 and counter % step == 0:
 				log.info("processed {} variants ...".format(counter))
 			rebuilt_variant = dvm.rebuiltVariantLine(dd[K],
 			                                         dico_map_tool_acronym,
