@@ -37,9 +37,9 @@ DIR_PATH_TO_SCRIPTS="$( dirname $0 )"
 
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="deepvariant, haplotypecaller,  freebayes,  octopus,  strelka2, samtools, or their corresponding abbreviations, DPV, HC, FB|FBY, OCT, SLK, ST, respectively [case Insensitive]"  ## if tools are later added, we will update this variable along
-# with the
-# function run_tool(), where the case statement will need to be updated.
+VALID_TOOLNAMES="deepvariant, dragen_snv, dragen_sv, haplotypecaller,  freebayes,  octopus,  strelka2, samtools, or their corresponding abbreviations, DPV, HC, FB|FBY, OCT, SLK,
+ST, respectively [case Insensitive]"
+# if tools are later added, we will update this variable along with the function run_tool(), where the case statement will need to be updated.
 
 ###@@@@@@@@@@@@@@
 ### START HERE
@@ -70,5 +70,5 @@ getOptions $@
 recap_input
 ## now we have all our inputs set up, let's process data ...
 main
-check_ev $? "main function "
+check_ev $? "main function of file $0"
 exit
