@@ -55,8 +55,7 @@ VCF_PREPPED_OUTFILENAME=${VCF_SV%.*}.prep.vcf
 grep -vE "#CHROM" ; echo -e '##FORMAT=<ID=GT,Number=.,Type=String,Description="Genotype">' ; \
 bcftools view --threads 2 "${VCF_SV}" -h | \
 grep -P "#CHROM\tPOS"  ; \
-bcftools filter --threads 2 -i 'TYPE!="snp" || TYPE=="indel" || TYPE=="other" ' "${VCF_SV}" | \
-bcftools view -H | \
+bcftools view -H "${VCF_SV}" | \
 awk '{FS=OFS="\t" ; $9="GT:"$9 ; $10="./.:"$10 ; print }' ) | \
 bcftools +fill-tags - -- -t 'FORMAT/DP=int(smpl_sum(PR+SR)),FORMAT/AR=float((PR + SR)/smpl_sum(PR+SR)),FORMAT/AD=int(PR+SR)' | \
 bcftools +setGT -O v -o "${VCF_PREPPED_OUTFILENAME}"  - -- -t a -n m
