@@ -91,6 +91,22 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 }
 
 
+function final_msg(){
+	local VCF=$1
+
+	if [[ ${DIR_OUTPUT} == "" ]] ; then DIR_OUTPUT="." ; fi  ## just to make sure that if dirout is not set we set it here to avoid raising an error
+
+	if [[ ${VCF_FINAL_USER_GIVEN_NAME} != "" ]] ;
+	then
+		VCF_FINAL=${VCF_FINAL_USER_GIVEN_NAME}
+	else
+		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
+	fi
+    echo "command: cp ${VCF} ${VCF_FINAL}"  1>&2
+	rsync ${VCF} ${VCF_FINAL}
+	check_ev $? "copy file"  ## if files are the same cp will return an error so we cannot check the exit value; alternative: using rsync instead of cp
+}
+
 function check_and_update_sample_names(){
 	##@@@@@@@@@@@@@@@@@@@@@@@
 	## CHECK SAMPLES NAMES
@@ -100,7 +116,7 @@ function check_and_update_sample_names(){
 	## will need discussion to do so, and will need to capture all the use cases possible ;
 
 	local VCF=$1
-	local LSNAMES=( $( echo -e "$2" | sed 's/|/ /g')  ) ### list of samples in order the user want them to be
+	local LSNAMES=( $( echo -e "$2" | sed 's/|/ /g')  ) ### list of samples in order the user wants them to be
 	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
 	SNAMES_IN_VCF=( $( zcat -f ${VCF} | grep -m 1 "#CHROM"  | cut -f10- | sed 's/\t/ /' )  )
 	HEADERLINE_VCF="$( zcat -f ${VCF} | grep -m 1 "#CHROM"  | cut -f1-9 | sed 's/\t/ /'  )"
@@ -186,11 +202,24 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 	echo "${VCF}"
 }
 
+function make_vcf_upto_specs_for_dragen_snv(){
+    local VCF="$1"
+    VCF=$( bash "${BASH_SCRIPT_PREP_VCF_FOR_VCFMERGER}" "${VCF}" )
+    echo "${VCF}"
+}
+
+function make_vcf_upto_specs_for_dragen_sv(){
+    local VCF="$1"
+    VCF=$( bash "${BASH_SCRIPT_PREP_VCF_FOR_VCFMERGER}" "${VCF}" )
+    echo "${VCF}"
+}
+
 
 function process_deepvariant_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
+    final_msg ${VCF}
 }
 
 function process_freebayes_vcf(){
@@ -212,6 +241,7 @@ function process_octopus_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
+    final_msg ${VCF}
 }
 
 function process_samtools_mpileup_vcf(){
@@ -226,7 +256,23 @@ function process_strelka2_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_VcfMerger_Germline ${VCF}  )
+    final_msg ${VCF}
 }
+
+function process_dragen_snv_vcf(){
+    local VCF=${1}
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
+    VCF=$( make_vcf_upto_specs_for_dragen_snv ${VCF} )
+    final_msg ${VCF}
+}
+
+function process_dragen_snv_vcf(){
+    local VCF=${1}
+    VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
+    VCF=$( make_vcf_upto_specs_for_dragen_sv ${VCF} )
+    final_msg ${VCF}
+}
+
 
 function run_tool(){
     local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]' | tr ' ' '_' )
@@ -257,6 +303,14 @@ function run_tool(){
         strelka2|slk)
             PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/octopus/strelka2.germline.1s.addFieldsForVcfMerger.py"
             process_strelka2_vcf ${VCF}
+        ;;
+      	dragen_snv|drgsnv)
+            BASH_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/dragen_snv/dragen_snv_prep.sh"
+            process_dragen_snv_vcf ${VCF}
+        ;;
+      	dragen_sv|drgsv)
+            BASH_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/dragen_sv/dragen_sv_prep.sh"
+            process_dragen_sv_vcf ${VCF}
         ;;
 
 		(*) echo -e "\nERROR: unrecognized toolname:  $1\nERROR: valid toolnames are << ${VALID_TOOLNAMES} >>" 1>&2 ; fexit  ;;
