@@ -35,17 +35,14 @@ function usage(){
 }
 
 ## python script that MUST be in the PATH or we should the path location
-PYTHON_SCRIPT_DEDUP_DRAGEN_SV_CALLS="/home/clegendre/qscripts/gits/tcl_check_duppos_in_vcf/main_dedup_sv.py"
+PYTHON_SCRIPT_DEDUP_DRAGEN_SV_CALLS="main_dedup_sv.py"
 
-BED_REGIONS_FILE=$1
-VCF_SV=$2
-SNAME=$3
-OUTFILENAME_VCF=$4
+VCF_SV=$1
 
-ENOA=4
+ENOA=1
 if [[ $# -ne ${ENOA} ]] ; then echo -e "Expected ${ENOA} args found $# ; Aborting;" ; usage ; exit 1 ; fi
 
-VCF_PREPPED_OUTFILENAME=${OUTFILENAME_VCF}
+VCF_PREPPED_OUTFILENAME=${VCF_SV%.*}.prep.vcf
 
 ## Command for preprocessing SV calls VCF:
 ## Preprocessing SV VCF
@@ -58,15 +55,14 @@ VCF_PREPPED_OUTFILENAME=${OUTFILENAME_VCF}
 grep -vE "#CHROM" ; echo -e '##FORMAT=<ID=GT,Number=.,Type=String,Description="Genotype">' ; \
 bcftools view --threads 2 "${VCF_SV}" -h | \
 grep -P "#CHROM\tPOS"  ; \
-bcftools filter --threads 2 -i 'TYPE!="snp" || TYPE=="indel" || TYPE=="other" ' --regions-file "${BED_REGIONS_FILE}" "${VCF_SV}" | \
 bcftools view -H | \
 awk '{FS=OFS="\t" ; $9="GT:"$9 ; $10="./.:"$10 ; print }' ) | \
 bcftools +fill-tags - -- -t 'FORMAT/DP=int(smpl_sum(PR+SR)),FORMAT/AR=float((PR + SR)/smpl_sum(PR+SR)),FORMAT/AD=int(PR+SR)' | \
-bcftools +setGT -O z -o "${VCF_SV_TEMPFILE}"  - -- -t a -n m
+bcftools +setGT -O v -o "${VCF_PREPPED_OUTFILENAME}"  - -- -t a -n m
 check_ev $? "bcftools SV prep"
 
 ## indexing newly created vcf.gz file
-bcftools index --force "${VCF_SV_TEMPFILE}"
+bcftools index --force "${VCF_PREPPED_OUTFILENAME}"
 check_ev $? "bcftools SV prep index"
 
 
@@ -75,30 +71,25 @@ check_ev $? "bcftools SV prep index"
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ## check now if the sv vcf file has lines of variants with the same position
 ## for instance, we can have the same position 28034157 position called twice by the vairant caller, but one is defined has a DRAGEN::INS and the other has DRAGEN::DUP; both of them refer has an insertion; The goal is to make sure that these teo lines do not represent the exact same call;
-COUNT_DUP_POS=$( bcftools query -f '%CHROM:%POS\n' ${VCF_SV_TEMPFILE} | sort --parallel=2 | uniq -d | wc -l )
-VCF_SV_TEMPFILE_DEDUP=${VCF_SV_TEMPFILE/.vcf.gz/.dedup.vcf}
+COUNT_DUP_POS=$( bcftools query -f '%CHROM:%POS\n' ${VCF_PREPPED_OUTFILENAME} | sort --parallel=2 | uniq -d | wc -l )
+
+VCF_PREPPED_OUTFILENAME_DEDUP=${VCF_PREPPED_OUTFILENAME/.vcf/.dedup.vcf}
+
 if [[ ${COUNT_DUP_POS} -ne 0 ]]
 then
-    echo -e "more than one variant at same position have been found ... let's process the VCF to determine if the same variant has been called twice or if the variants found at the same positionare in fact two different variants ..."
-    echo -e "running python script tcl_check_duppos_in_VCF"
+    echo -e "more than one variant at same position have been found ... let's process the VCF to determine if the same variant has been called twice or if the variants found at
+    the same positionare in fact two different variants ..."  1>&2
+    echo -e "running python script tcl_check_duppos_in_VCF" 1>&2
 
-    python3 ${PYTHON_SCRIPT_DEDUP_DRAGEN_SV_CALLS} -i "${VCF_SV_TEMPFILE}" -o "${VCF_SV_TEMPFILE_DEDUP}"
+    python3 ${PYTHON_SCRIPT_DEDUP_DRAGEN_SV_CALLS} -i "${VCF_PREPPED_OUTFILENAME}" -o "${VCF_PREPPED_OUTFILENAME_DEDUP}"
     check_ev $? "python dedup SV VCF"
-
-    echo -e "converting vcf to vcf.gz ......"
-    mycmd="bcftools view --threads 2 -O z -o ${VCF_SV_TEMPFILE_DEDUP}.gz ${VCF_SV_TEMPFILE_DEDUP}"
-    echo "${mycmd}"
-    eval ${mycmd}
-    check_ev $? "conversion vcf to vcf.gz"
-    bcftools index --force --threads 2 --csi "${VCF_SV_TEMPFILE_DEDUP}.gz"
-    check_ev $? "bcftools SV dedup index"
 else
-    echo -e "No duplicated positions found in VCF. We did not parse or update the VCF"
-    echo -e "for consistency, we are creating the expected out file with dedup information here by copying as is the file << ${VCF_SV_TEMPFILE} >> to << ${VCF_SV_TEMPFILE_DEDUP} >> "
+    echo -e "No duplicated positions has been found in VCF. We did not parse or update the VCF"  1>&2
+    echo -e "for consistency, we are creating the expected out file here by copying as is the file << ${VCF_PREPPED_OUTFILENAME} >> to << ${VCF_PREPPED_OUTFILENAME_DEDUP} >> "  1>&2
 
-    cp "${VCF_SV_TEMPFILE}" "${VCF_SV_TEMPFILE_DEDUP}.gz"
+    cp "${VCF_PREPPED_OUTFILENAME}" "${VCF_PREPPED_OUTFILENAME_DEDUP}"
     check_ev $? "copy VCF"
 
-    bcftools index --force --threads 2 --csi "${VCF_SV_TEMPFILE_DEDUP}.gz"
-    check_ev $? "bcftools SV dedup index"
 fi
+
+echo ${VCF_PREPPED_OUTFILENAME_DEDUP}
