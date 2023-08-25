@@ -292,7 +292,7 @@ function process_dragen_snv_vcf(){
     final_msg ${VCF}
 }
 
-function process_dragen_snv_vcf(){
+function process_dragen_sv_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_dragen_sv ${VCF} )
