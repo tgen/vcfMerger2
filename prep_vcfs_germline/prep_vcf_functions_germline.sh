@@ -33,6 +33,21 @@ source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_somatic_functions.sh  ## allows
 DIR_PATH_TO_SCRIPTS="$( dirname $(readlink -f ${BASH_SOURCE[0]}) )"
 
 
+function check_ev(){
+	if [[ $1 -ne 0 ]] ; then echo -e "ERROR: ${2} FAILED ;\nexit_value:${1} ; Aborting! " ; fexit ; fi
+}
+
+function checkDir(){
+	local D=$1
+	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >> ; curdir = ${PWD}; Aborting!" ; fexit; fi ;
+}
+
+function checkFile(){
+	local F=$1
+	if [[ ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >> ; curdir = ${PWD}; Aborting!" ; fexit ; fi ;
+}
+
+
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
 	TOOLNAME=""
@@ -88,6 +103,12 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 	echo -e "VCF == ${VCF_ALL_CALLS}" 1>&2
 	echo -e "GERMLINE_SNAMES  == ${GERMLINE_SNAMES}" 1>&2
 	echo -e "VCF_FINAL_USER_GIVEN_NAME  == ${VCF_FINAL_USER_GIVEN_NAME}" 1>&2
+}
+
+function recap_input(){
+	#input recap
+	LI="${LI}\nCURR_DIR==\"${PWD}\""
+	echo -e "\n\n+------------------------------------------------+\n${LI[@]}\n+------------------------------------------------+\n\n"
 }
 
 
