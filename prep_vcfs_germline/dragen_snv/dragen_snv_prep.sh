@@ -30,26 +30,24 @@ function check_file(){
 }
 
 function usage(){
-    echo -e "\nUSAGE: $0  1__REGIONS_BED_FILE[FILE]  2__VCF_SNV_FILE[FILE] 3__SNAME_in_10th_column_VCF[STRING] 4__outFileName.vcf.gz[FILE_PATHNAME/FULL/REL/BASENAME]"
+    echo -e "\nUSAGE: $0  1__VCF_SNV_FILE[FILE] 2__SNAME_in_10th_column_VCF[STRING] 3__outFileName.vcf.gz[FILE_PATHNAME/FULL/REL/BASENAME] "
     echo ""
 }
 
 
-BED_REGIONS_FILE=$1
-VCF_SNV=$2
-SNAME=$3
-OUTFILENAME_VCF=$4
+VCF_SNV=$1
 
-ENOA=4
+check_file "${VCF_SNV}"
+
+ENOA=1
 if [[ $# -ne ${ENOA} ]] ; then echo -e "Expected ${ENOA} args found $# ; Aborting;" ; usage ; exit 1 ; fi
 
-VCF_PREPPED_OUTFILENAME=${OUTFILENAME_VCF}
+VCF_PREPPED_OUTFILENAME=${VCF_SNV%.*}.prep.vcf
 
 ## Command for preprocessing SNV calls VCF:
-bcftools filter --regions-file "${BED_REGIONS_FILE}"  -i 'TYPE!="snp"' --threads 2 "${VCF_SNV}"  | \
+bcftools view --threads 2 -O v "${VCF_SNV}"  | \
 bcftools +fill-tags - -- -t 'FORMAT/AR=AF' | \
-bcftools view -O z -o "${VCF_PREPPED_OUTFILENAME}"
+bcftools view -O v -o "${VCF_PREPPED_OUTFILENAME}"
 check_ev $? "bcftools snv prep"
 
-bcftools index --force "${VCF_PREPPED_OUTFILENAME}"
-check_ev $? "bcftools snv prep index"
+echo ${VCF_PREPPED_OUTFILENAME}
