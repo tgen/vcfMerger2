@@ -10,7 +10,7 @@ function check_ev(){
     ENDCOLOR="\e[0m"
     if [ ${EV} -ne 0 ] ;
     then
-        echo -e "${RED}ERROR with: ${MSG}${ENDCOLOR}" ; echo "ERROR__ABORTING ! "  1>&2 ; exit 1 ;
+        echo -e "${RED}ERROR with: ${MSG}${ENDCOLOR}" ; echo "ERROR__ABORTING ! " 1>&2 ; exit 1 ;
     else
         echo -e "${MSG}: ${GREEN}OK! ${ENDCOLOR}"  1>&2;
     fi

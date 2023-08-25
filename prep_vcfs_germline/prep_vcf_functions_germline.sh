@@ -33,6 +33,11 @@ source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_somatic_functions.sh  ## allows
 DIR_PATH_TO_SCRIPTS="$( dirname $(readlink -f ${BASH_SOURCE[0]}) )"
 
 
+function fexit(){
+	kill -s TERM ${TOP_PID}
+	exit 1
+}
+
 function check_ev(){
 	if [[ $1 -ne 0 ]] ; then echo -e "ERROR: ${2} FAILED ;\nexit_value:${1} ; Aborting! " ; fexit ; fi
 }
