@@ -62,8 +62,8 @@ bcftools +setGT -O v -o "${VCF_PREPPED_OUTFILENAME}"  - -- -t a -n m
 check_ev $? "bcftools SV prep"  1>&2
 
 ## indexing newly created vcf.gz file
-bcftools index --force "${VCF_PREPPED_OUTFILENAME}"
-check_ev $? "bcftools SV prep index"  1>&2
+#bcftools index --force "${VCF_PREPPED_OUTFILENAME}"
+#check_ev $? "bcftools SV prep index"  1>&2
 
 
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
