@@ -78,10 +78,10 @@ VCF_PREPPED_OUTFILENAME_DEDUP=${VCF_PREPPED_OUTFILENAME/.vcf/.dedup.vcf}
 if [[ ${COUNT_DUP_POS} -ne 0 ]]
 then
     echo -e "more than one variant at same position have been found ... let's process the VCF to determine if the same variant has been called twice or if the variants found at
-    the same positionare in fact two different variants ..."  1>&2
+    the same position are in fact two different variants ..."  1>&2
     echo -e "running python script tcl_check_duppos_in_VCF" 1>&2
 
-    python3 ${PYTHON_SCRIPT_DEDUP_DRAGEN_SV_CALLS} -i "${VCF_PREPPED_OUTFILENAME}" -o "${VCF_PREPPED_OUTFILENAME_DEDUP}"
+    ${PYTHON_SCRIPT_DEDUP_DRAGEN_SV_CALLS} -i "${VCF_PREPPED_OUTFILENAME}" -o "${VCF_PREPPED_OUTFILENAME_DEDUP}"
     check_ev $? "python dedup SV VCF"
 else
     echo -e "No duplicated positions has been found in VCF. We did not parse or update the VCF"  1>&2
