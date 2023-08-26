@@ -1200,6 +1200,9 @@ def main(args, cmdline):
                  path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
                  skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
     
+    if "dragen_sv" in ltoolnames:
+        check_if_executable_in_path(["main_dedup_sv.py"])
+    
     lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
     log.info(str(lvcfs))
     #  make prefix png plots here as we need to know if we are dealing with somatic or germline
