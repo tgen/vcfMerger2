@@ -100,13 +100,14 @@ if [[ 1 == 1 ]] ;then
     bcftools index --tbi  ${VCF/vcf.gz/noindels.vcf.gz}
     check_ev $? "bcftools index indels calls"
     cp ${VCF} ${VCF}.original_input.vcf
-    cp ${VCF/vcf.gz/noindels.vcf.gz} ${VCF}
+    VCF_NO_INDELS_FOR_PHASER=${VCF/vcf.gz/noindels.vcf.gz}
+    #cp ${VCF/vcf.gz/noindels.vcf.gz} ${VCF}
 
     echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
-    python3 ${SCRIPT_GET_CONSPOS} ${VCF}
+    python3 ${SCRIPT_GET_CONSPOS} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
 
-    if [[ $(cat ${VCF}.consPos.txt | wc -l ) -lt 2 ]] ;
+    if [[ $(cat ${VCF_NO_INDELS_FOR_PHASER}.consPos.txt | wc -l ) -lt 2 ]] ;
     then
         echo -e "\nNo Consecutive Position found in VCF; ending Phasing section now"
         echo -e "renaming input file to match expected outfile from phasing section\n"
@@ -120,17 +121,17 @@ if [[ 1 == 1 ]] ;then
     fi
 
     echo -e "Subset VCF file with only the captured position from step above ..."
-    bcftools filter --threads 2 -O z -T ${VCF}.consPos.txt -o ${VCF/vcf.gz/subByConsPos.vcf.gz} ${VCF}
+    bcftools filter --threads 2 -O z -T ${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "bcftools filter #1"
-    bcftools index --threads 2 --tbi ${VCF/vcf.gz/subByConsPos.vcf.gz}
+    bcftools index --threads 2 --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz}
     check_ev $? "bcftools index #1"
 
-    bcftools filter --threads 2 -O z -T ^${VCF}.consPos.txt -o ${VCF/vcf.gz/TempNoConsPos.vcf.gz} ${VCF}
+    bcftools filter --threads 2 -O z -T ^${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "bcftools filter #2"
-    bcftools index --threads 2 --tbi ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
+    bcftools index --threads 2 --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
     check_ev $? "bcftools index #2"
 
-    ## As phASER dose not deal with HOMOZYGOUS, we need to filter out the homs from subByConsPos.vcf.gz VCF and recheck of number of ConsPOs lt 2
+    ## As phASER dose not deal with HOMOZYGOUS, we need to filter out the homs from subByConsPos.vcf.gz VCF_NO_INDELS_FOR_PHASER and recheck of number of ConsPOs lt 2
     ## due to the edge case encounter with MMRF_1073, we need to exclude manually ALL the Homozygous variant as phaser
     ## does not phase them and raises an error doing so if only homozygous variant are within the input vcf
     ## value for GT according to BCFTOOLS documentation
@@ -148,7 +149,7 @@ if [[ 1 == 1 ]] ;then
     #GT="R"
     #GT="A"
 
-    VCF_SBCP=${VCF/vcf.gz/subByConsPos.vcf.gz}
+    VCF_SBCP=${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz}
 
     echo -e "removing ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
     bcftools filter -O z -e 'GT="AA"' -o ${VCF_SBCP/vcf.gz/hets.vcf.gz} ${VCF_SBCP}
@@ -170,12 +171,12 @@ if [[ 1 == 1 ]] ;then
     if [[ $( bcftools view -H ${VCF_HOMS} | wc -l ) -gt 0 ]] ;
     then
         echo -e "concat variants from homs.vcf.gz VCF with tempNoConsPos.vcf.gz VCF ... "  1>&2
-        bcftools concat -a --threads 2 -O z -o ${VCF/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF/vcf.gz/TempNoConsPos.vcf.gz}  ${VCF_HOMS}
+        bcftools concat -a --threads 2 -O z -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}  ${VCF_HOMS}
         check_ev $? "bcftools concat #3"
-        mv ${VCF/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
+        mv ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
         check_ev $? "move #3"
 
-        bcftools index --threads 2 -f --tbi ${VCF/vcf.gz/TempNoConsPos.vcf.gz}
+        bcftools index --threads 2 -f --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
         check_ev $? "bcftools index #3"
     fi
 
