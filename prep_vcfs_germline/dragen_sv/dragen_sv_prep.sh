@@ -50,20 +50,32 @@ VCF_PREPPED_OUTFILENAME=${VCF_SV%.*}.prep.vcf
 ## Determining the GT value from the threshold defined at the beginning by the user or based on the default value (see --threshold_GT option in vcfMerger2.py)
 ## Adding with DP, AR, AD to FORMAT using the given PR and SR values
 
-
+## NOTE: HARDCODED VALUE for THRESHOLD GT: 0.9
+## Why all these lines? Because the smpl_sum() function did not have the expected behavior when trying to calculate the DP and later on the AR tags particularly if the SR tag is
+## absent from the record
+## so we tricked the system and set manually the DP1 and DP2 from PR first, then SR respectively.
+## then we set the DP value DP1+DP2
+## and finally we are able to calculate the AR;
+## Then to set the GT with using the setGT command, we need VAF and collect it from AR we calculted earlier
+## This can probably be shorten to less lines with future bcftools version (got tested with bcftools v1.16, v1.17 & v1.18)
 ( bcftools view --threads 2 "${VCF_SV}" -h | \
 grep -vE "#CHROM" ; echo -e '##FORMAT=<ID=GT,Number=.,Type=String,Description="Genotype">' ; \
 bcftools view --threads 2 "${VCF_SV}" -h | \
 grep -P "#CHROM\tPOS"  ; \
 bcftools view -H "${VCF_SV}" | \
-awk '{FS=OFS="\t" ; $9="GT:"$9 ; $10="./.:"$10 ; print }' ) | \
-bcftools +fill-tags - -- -t 'FORMAT/DP=int(smpl_sum(PR+SR)),FORMAT/AR=float((PR + SR)/smpl_sum(PR+SR)),FORMAT/AD=int(PR+SR)' | \
-bcftools +setGT -O v -o "${VCF_PREPPED_OUTFILENAME}"  - -- -t a -n m
-check_ev $? "bcftools SV prep"  1>&2
+awk '{FS=OFS="\t" ; $9="GT:"$9 ; $10="./.:"$10 ; print }' | \
+awk '{FS=OFS="\t" ; if($9 !~ /SR/ ){ $9=$9":SR" ; $10=$10":0,0"} ; print }' ) | \
+bcftools +fill-tags - -- -t  'FORMAT/DP1=int(smpl_sum(FORMAT/PR) )' | \
+bcftools +fill-tags - -- -t  'FORMAT/DP2=int(smpl_sum(FORMAT/SR) )' | \
+bcftools +fill-tags - -- -t  'FORMAT/DP=DP1+DP2' | \
+bcftools +fill-tags - -- -t  'FORMAT/AR=float((PR[0:1]+SR[0:1])/DP)' | \
+bcftools +fill-tags - -- -t  'FORMAT/AD=PR+SR' | \
+bcftools +fill-tags - -- -t  'FORMAT/VAF=AR' | \
+bcftools +setGT - -- -t ./. -n c:'1/1' | \
+bcftools +setGT - -- -t q  -n c:'0/1' -i "FMT/VAF<0.90"  | \
+bcftools annotate -x FORMAT/DP1,FORMAT/DP2 -O v -o "${VCF_PREPPED_OUTFILENAME}"  ;
 
-## indexing newly created vcf.gz file
-#bcftools index --force "${VCF_PREPPED_OUTFILENAME}"
-#check_ev $? "bcftools SV prep index"  1>&2
+check_ev $? "bcftools SV prep"  1>&2
 
 
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
