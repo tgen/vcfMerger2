@@ -86,7 +86,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 	do
 		# for options with required arguments, an additional shift is required
 		case "$1" in
-		-d|--dir-work) export DIR_WORK=$2 ; LI="${LI}\nDIR_WORK==\"${DIR_WORK}\"" ;  shift ;;
+		-d|--dir-work) export DIR_OUTPUT=$2 ; LI="${LI}\DIR_OUTPUT==\"${DIR_OUTPUT}\"" ;  shift ;;
 		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
 		--germline-snames) export GERMLINE_SNAMES="$2" ; LI="${LI}\nGERMLINE_SNAMES==\"${GERMLINE_SNAMES}\"";  shift ;;
 		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
