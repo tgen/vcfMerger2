@@ -392,34 +392,6 @@ function main(){
 		fexit
 	fi
 
-	#	## check files and folders if exist
-	#	checkDir ${DIR_WORK}
-	#	#	checkFile ${REF_GENOME_FASTA}
-	#
-	#	cd ${DIR_WORK}
-	#
-	#	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
-	#	if [[ ${VCF_ALL_CALLS} != "" ]] ;
-	#	then
-	#		checkFile ${VCF_ALL_CALLS}
-	#		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
-	#		then
-	#		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}" 1>&2
-	#		    ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
-	#		fi
-	#		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
-	#		echo "processing vcf:  ${VCF}" 1>&2
-	#		run_tool ${TOOLNAME} ${VCF}
-	#	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]
-	#	then
-	#		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}
-	#		VCF=$( concatenate_snvs_indels ${TOOLNAME} ${VCF_SNVS_FILE} ${VCF_INDELS_FILE} )
-	#		run_tool ${TOOLNAME} ${VCF}
-	#	else
-	#		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
-	#		fexit
-	#	fi
-
 }
 
 
