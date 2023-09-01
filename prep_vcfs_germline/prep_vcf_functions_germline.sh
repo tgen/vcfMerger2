@@ -29,9 +29,10 @@
 ## CONSTANT VARIABLE (modified accordingly)
 DIR_PATH_TO_SCRIPTS=$(dirname $( dirname $(readlink -f ${BASH_SOURCE[0]}) )  )
 echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" 1>&2
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_somatic_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs_somatic/prep_vcf_somatic_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
 DIR_PATH_TO_SCRIPTS="$( dirname $(readlink -f ${BASH_SOURCE[0]}) )"
 
+echo -e "DIR_PATH_TO_SCRIPTS = ${DIR_PATH_TO_SCRIPTS}"
 
 function fexit(){
 	kill -s TERM ${TOP_PID}
