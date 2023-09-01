@@ -44,10 +44,10 @@ if [[ $# -ne ${ENOA} ]] ; then echo -e "Expected ${ENOA} args found $# ; Abortin
 
 VCF_PREPPED_OUTFILENAME=${VCF_SNV%.*}.prep.vcf
 
+set -euo pipefail
+
 ## Command for preprocessing SNV calls VCF:
-bcftools view --threads 2 -O v "${VCF_SNV}"  | \
-bcftools +fill-tags - -- -t 'FORMAT/AR=AF' | \
-bcftools view -O v -o "${VCF_PREPPED_OUTFILENAME}"
+bcftools +fill-tags "${VCF_SNV}" -O v -o "${VCF_PREPPED_OUTFILENAME}" -- -t 'FORMAT/AR=AF'
 check_ev $? "bcftools snv prep"  1>&2
 
 echo ${VCF_PREPPED_OUTFILENAME}
