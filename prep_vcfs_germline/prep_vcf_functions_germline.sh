@@ -88,7 +88,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 		case "$1" in
 		-d|--dir-work) export DIR_WORK=$2 ; LI="${LI}\nDIR_WORK==\"${DIR_WORK}\"" ;  shift ;;
 		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
-		--germline-snames) export GERMLINE_SNAMES="$2" ; LI="${LI}\nGERMLINE_SNAMES==\"${VCF_ALL_CALLS}\"";  shift ;;
+		--germline-snames) export GERMLINE_SNAMES="$2" ; LI="${LI}\nGERMLINE_SNAMES==\"${GERMLINE_SNAMES}\"";  shift ;;
 		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
 		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
 		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
@@ -129,8 +129,8 @@ function final_msg(){
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
-    echo "command: cp ${VCF} ${VCF_FINAL}"  1>&2
-	rsync ${VCF} ${VCF_FINAL}
+    echo "command: rsync -v ${VCF} ${VCF_FINAL}"  1>&2
+	rsync -v ${VCF} ${VCF_FINAL}
 	check_ev $? "copy file"  ## if files are the same cp will return an error so we cannot check the exit value; alternative: using rsync instead of cp
 }
 
@@ -359,34 +359,66 @@ function main(){
 	 ; Missing Values Found ; Check your inputs;  Aborting."  1>&2 ; fexit ; fi
 
 
-	## check files and folders if exist
-	checkDir ${DIR_WORK}
-#	checkFile ${REF_GENOME_FASTA}
-
-	cd ${DIR_WORK}
-
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
+		VCF_ALL_CALLS=$(readlink -f ${VCF_ALL_CALLS})
+		echo "FULL PATH to current VCF is: ${VCF_ALL_CALLS}"
+		cd ${DIR_OUTPUT}
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
-		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}" 1>&2
+		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
 		    ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
 		fi
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
-		run_tool ${TOOLNAME} ${VCF}
+		## if vcf is compressed vcf with gz extension, we uncompressed it to process it; then we will delete the file once processed as it may be big
+		if [[ "${VCF##*.}" == "gz" ]] ;
+		then
+			zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
+			VCF=$( basename -s ".gz" ${VCF})
+		fi
+		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
+		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]
 	then
 		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}
 		VCF=$( concatenate_snvs_indels ${TOOLNAME} ${VCF_SNVS_FILE} ${VCF_INDELS_FILE} )
-		run_tool ${TOOLNAME} ${VCF}
+		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
+		delete_temporary_files ${DELETE_TEMPS}
 	else
 		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
 		fexit
 	fi
 
+	#	## check files and folders if exist
+	#	checkDir ${DIR_WORK}
+	#	#	checkFile ${REF_GENOME_FASTA}
+	#
+	#	cd ${DIR_WORK}
+	#
+	#	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
+	#	if [[ ${VCF_ALL_CALLS} != "" ]] ;
+	#	then
+	#		checkFile ${VCF_ALL_CALLS}
+	#		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
+	#		then
+	#		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}" 1>&2
+	#		    ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
+	#		fi
+	#		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
+	#		echo "processing vcf:  ${VCF}" 1>&2
+	#		run_tool ${TOOLNAME} ${VCF}
+	#	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]
+	#	then
+	#		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}
+	#		VCF=$( concatenate_snvs_indels ${TOOLNAME} ${VCF_SNVS_FILE} ${VCF_INDELS_FILE} )
+	#		run_tool ${TOOLNAME} ${VCF}
+	#	else
+	#		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
+	#		fexit
+	#	fi
 
 }
 
