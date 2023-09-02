@@ -62,7 +62,7 @@ function check_inputs(){
 	echo -e "## Checking inputs ..."
 
 	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
-	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
+	#if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
 	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE Sample Name(s) MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
 	if [[ ${VCF_FINAL_USER_GIVEN_NAME} == ""  ]] ; then echo -e "ERROR: VCF OUT FILENAME MUST be provided ; Missing Values Found ; Check your inputs; use -o|--prepped-vcf-outfilename option to fix it;  Aborting." ; fexit ; fi
 	if [[ $( echo ${TOOLNAME} | tr '[A-Z]' '[a-z]' | sed 's/ \+//g')  =~ "strelka" ]] ;
@@ -70,32 +70,36 @@ function check_inputs(){
 	    if [[ ${BAM_FILE} == "" ]] ; then echo -e "ERROR: BAM file MUST be given to PREP the Strelka VCF in order to perform phasing; Aborting." ; fexit ; fi
 	fi
 
-    DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
-    if [[ ${DIR_OUTPUT} == "." ]] ;
-    then
-        LI="${LI}\nDIR_TEMP==\"${DIR_OUTPUT}\"" ;
-    fi
+	DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
+	echo "DNVCF == ${DNVCF}"
+	if [[ ${DIR_OUTPUT} == "." ]] ;
+	then
+			LI="${LI}\nDIR_TEMP==\"${DIR_OUTPUT}\"" ;
+	fi
 
-    if [[ ${DNVCF} != "." ]]
-    then
+	if [[ ${DNVCF} != "." ]]
+	then
+			mkdir -p ${DNVCF}
+			if [[ ! ${DNVCF} =~ "^/" ]] ; ## this mean full path was not given
+			then
+					export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f ${DNVCF})/$(basename ${VCF_FINAL_USER_GIVEN_NAME})
+			fi
+	else
+			export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f "${VCF_FINAL_USER_GIVEN_NAME}" )
+	fi
+	echo -e "VCF_FINAL_USER_GIVEN_NAME new path (if updated): ${VCF_FINAL_USER_GIVEN_NAME}"
+	if [[ ! -e ${DIR_OUTPUT} ]]
+	then
+			echo -e "Creating DIR_OUTPUT where temporary files will be written: ${DIR_OUTPUT}"
+			mkdir -p ${DIR_OUTPUT} ;
+	fi
 
-        mkdir -p ${DNVCF}
-        if [[ ! ${DNVCF} =~ "^/" ]] ; ## this mean full path was not given
-        then
-            export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f ${DNVCF})/$(basename ${VCF_FINAL_USER_GIVEN_NAME})
-        fi
-    fi
-
-    if [[ ! -e ${DIR_OUTPUT} ]]
-    then
-        echo -e "Creating DIR_OUTPUT where temporary files will be written: ${DIR_OUTPUT}"
-        mkdir -p ${DIR_OUTPUT} ;
-    fi
-
-    if [[  ${MAKE_BED_FOR_VENN} == "yes" ]] ; then DELETE_TEMPS=0 ; fi ## as we put all temps files in temp folder including the bed, if we need the files later for merging, and make venn we need to keep the temp files; LAternative would be to exclude the beds from the deletion in the function delete_temps
+	if [[  ${MAKE_BED_FOR_VENN} == "yes" ]] ; then DELETE_TEMPS=0 ; fi ## as we put all temps files in temp folder including the bed, if we need the files later for merging, and make venn we need to keep the temp files; LAternative would be to exclude the beds from the deletion in the function delete_temps
 	## check files and folders if exist
 	checkDir ${DIR_OUTPUT}
-	checkFile ${REF_GENOME_FASTA}
+	# checkFile ${REF_GENOME_FASTA}
+	checkFile ${VCF_FINAL_USER_GIVEN_NAME}
+
 	echo -e "End Checking inputs .."
 
 }
@@ -164,7 +168,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 
 function recap_input(){
 	#input recap
-	LI="${LI}\nCURR_DIR==\"${PWD}\""
+	LI="${LI}\nCURR_DIR from Recap_Input function ==\"${PWD}\""
 	echo -e "\n\n+------------------------------------------------+\n${LI[@]}\n+------------------------------------------------+\n\n"
 }
 
