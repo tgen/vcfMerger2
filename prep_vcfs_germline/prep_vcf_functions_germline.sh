@@ -53,6 +53,53 @@ function checkFile(){
 	if [[ ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >> ; curdir = ${PWD}; Aborting!" ; fexit ; fi ;
 }
 
+function check_inputs(){
+
+
+  ##@@@@@@@@@@@@@@@@@##
+	##  check inputs   ##
+	##@@@@@@@@@@@@@@@@@##
+	echo -e "## Checking inputs ..."
+
+	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
+	if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
+	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE Sample Name(s) MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
+	if [[ ${VCF_FINAL_USER_GIVEN_NAME} == ""  ]] ; then echo -e "ERROR: VCF OUT FILENAME MUST be provided ; Missing Values Found ; Check your inputs; use -o|--prepped-vcf-outfilename option to fix it;  Aborting." ; fexit ; fi
+	if [[ $( echo ${TOOLNAME} | tr '[A-Z]' '[a-z]' | sed 's/ \+//g')  =~ "strelka" ]] ;
+	then
+	    if [[ ${BAM_FILE} == "" ]] ; then echo -e "ERROR: BAM file MUST be given to PREP the Strelka VCF in order to perform phasing; Aborting." ; fexit ; fi
+	fi
+
+    DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
+    if [[ ${DIR_OUTPUT} == "." ]] ;
+    then
+        LI="${LI}\nDIR_TEMP==\"${DIR_OUTPUT}\"" ;
+    fi
+
+    if [[ ${DNVCF} != "." ]]
+    then
+
+        mkdir -p ${DNVCF}
+        if [[ ! ${DNVCF} =~ "^/" ]] ; ## this mean full path was not given
+        then
+            export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f ${DNVCF})/$(basename ${VCF_FINAL_USER_GIVEN_NAME})
+        fi
+    fi
+
+    if [[ ! -e ${DIR_OUTPUT} ]]
+    then
+        echo -e "Creating DIR_OUTPUT where temporary files will be written: ${DIR_OUTPUT}"
+        mkdir -p ${DIR_OUTPUT} ;
+    fi
+
+    if [[  ${MAKE_BED_FOR_VENN} == "yes" ]] ; then DELETE_TEMPS=0 ; fi ## as we put all temps files in temp folder including the bed, if we need the files later for merging, and make venn we need to keep the temp files; LAternative would be to exclude the beds from the deletion in the function delete_temps
+	## check files and folders if exist
+	checkDir ${DIR_OUTPUT}
+	checkFile ${REF_GENOME_FASTA}
+	echo -e "End Checking inputs .."
+
+}
+
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
@@ -74,7 +121,6 @@ function init_some_vars(){
 	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
 	export DIR_OUTPUT="."
 }
-
 
 function getOptions(){
 # options may be followed by one colon to indicate they have a required argument
