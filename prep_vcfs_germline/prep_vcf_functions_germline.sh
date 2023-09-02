@@ -98,7 +98,7 @@ function check_inputs(){
 	## check files and folders if exist
 	checkDir ${DIR_OUTPUT}
 	# checkFile ${REF_GENOME_FASTA}
-	checkFile ${VCF_FINAL_USER_GIVEN_NAME}
+	# checkFile ${VCF_FINAL_USER_GIVEN_NAME}
 
 	echo -e "End Checking inputs .."
 
