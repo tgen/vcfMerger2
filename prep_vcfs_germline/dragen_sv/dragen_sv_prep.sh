@@ -67,9 +67,9 @@ awk '{FS=OFS="\t" ; $9="GT:"$9 ; $10="./.:"$10 ; print }' | \
 awk '{FS=OFS="\t" ; if($9 !~ /SR/ ){ $9=$9":SR" ; $10=$10":0,0"} ; print }' ) | \
 bcftools +fill-tags - -- -t  'FORMAT/DP1=int(smpl_sum(FORMAT/PR) )' | \
 bcftools +fill-tags - -- -t  'FORMAT/DP2=int(smpl_sum(FORMAT/SR) )' | \
-bcftools +fill-tags - -- -t  'FORMAT/DP=DP1+DP2' | \
+bcftools +fill-tags - -- -t  'FORMAT/DP=int(DP1+DP2)' | \
 bcftools +fill-tags - -- -t  'FORMAT/AR=float((PR[0:1]+SR[0:1])/DP)' | \
-bcftools +fill-tags - -- -t  'FORMAT/AD=PR+SR' | \
+bcftools +fill-tags - -- -t  'FORMAT/AD=int(PR+SR)' | \
 bcftools +fill-tags - -- -t  'FORMAT/VAF=AR' | \
 bcftools +setGT - -- -t ./. -n c:'1/1' | \
 bcftools +setGT - -- -t q  -n c:'0/1' -i "FMT/VAF<0.90"  | \
