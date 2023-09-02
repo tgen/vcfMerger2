@@ -113,6 +113,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 	echo -e "VCF == ${VCF_ALL_CALLS}" 1>&2
 	echo -e "GERMLINE_SNAMES  == ${GERMLINE_SNAMES}" 1>&2
 	echo -e "VCF_FINAL_USER_GIVEN_NAME  == ${VCF_FINAL_USER_GIVEN_NAME}" 1>&2
+	check_inputs
 }
 
 function recap_input(){
