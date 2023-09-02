@@ -56,6 +56,7 @@ function checkFile(){
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
+	REF_GENOME_FASTA=""
 	TOOLNAME=""
 	VCF_ALL_CALLS=""
 	NORMAL_SNAME=""
@@ -70,7 +71,10 @@ function init_some_vars(){
 	VCF_FINAL_USER_GIVEN_NAME=""
 	TH_AR=""
 	MAKE_BED_FOR_VENN="no"
+	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
+	export DIR_OUTPUT="."
 }
+
 
 function getOptions(){
 # options may be followed by one colon to indicate they have a required argument
@@ -86,7 +90,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 	do
 		# for options with required arguments, an additional shift is required
 		case "$1" in
-		-d|--dir-work) export DIR_OUTPUT=$2 ; LI="${LI}\DIR_OUTPUT==\"${DIR_OUTPUT}\"" ;  shift ;;
+		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\DIR_OUTPUT==\"${DIR_OUTPUT}\"" ;  shift ;;
 		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
 		--germline-snames) export GERMLINE_SNAMES="$2" ; LI="${LI}\nGERMLINE_SNAMES==\"${GERMLINE_SNAMES}\"";  shift ;;
 		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
@@ -94,7 +98,7 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the
+		--print-valid-toolnames) echo "${VALID_TOOLNAMES}" ; exit ;; ## print possible toolnames to be used with the
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
 		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
 		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
@@ -129,10 +133,11 @@ function final_msg(){
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
-    echo "command: rsync -v ${VCF} ${VCF_FINAL}"  1>&2
+    echo "final_msg command: rsync -v ${VCF} ${VCF_FINAL}"  1>&2
 	rsync -v ${VCF} ${VCF_FINAL}
 	check_ev $? "copy file"  ## if files are the same cp will return an error so we cannot check the exit value; alternative: using rsync instead of cp
 }
+
 
 function check_and_update_sample_names(){
 	##@@@@@@@@@@@@@@@@@@@@@@@

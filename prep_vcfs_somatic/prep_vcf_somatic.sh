@@ -55,7 +55,8 @@ type python3 >/dev/null 2>&1 || { echo >&2 "Require \"python3\" executable but i
 for NEEDED_MODULE in cyvcf2 intervene collections argparse getopt gzip json logging PIL natsort shutil subprocess warnings
 do
     python3 -c "import ${NEEDED_MODULE}"
-    if [[ $? -ne 0 ]] ; then echo -e "ERROR: module << ${NEEDED_MODULE} NOT FOUND >> with this python version `python3 -V`; \nPlease Install module ${NEEDED_MODULE} or change the python version accrodingly; ABORTING\n" ; fi
+    if [[ $? -ne 0 ]] ; then echo -e "ERROR: module << ${NEEDED_MODULE} NOT FOUND >> with this python version `python3 -V`; \nPlease Install module ${NEEDED_MODULE} or change
+    the python version accordingly; ABORTING\n" ; fi
 done
 
 #python_main_version_number=`python3 -V 2>&1 | sed 's/Python //g' | cut -d"." -f1 `
