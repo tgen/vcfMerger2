@@ -83,6 +83,7 @@ bcftools annotate -x FORMAT/DP1,FORMAT/DP2 -O v -o "${VCF_PREPPED_OUTFILENAME}" 
 check_ev $? "bcftools SV prep"  1>&2
 ## NOTE: if sed lines slow down the process, we can later have only one sed line using `-e` and replace all in one command ;
 ## But this means we will have to be more specific in the search and replace of the strings
+## NOTE: we might need to modify the Number values for AD as well if needed; currently a dot (as of 2023/09/05)
 
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ## DEDUP STEP for SV calls
