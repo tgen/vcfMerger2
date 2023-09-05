@@ -68,16 +68,14 @@ awk '{FS=OFS="\t" ; if($9 !~ /SR/ ){ $9=$9":SR" ; $10=$10":0,0"} ; print }' ) | 
 bcftools +fill-tags - -- -t  'FORMAT/DP1=int(smpl_sum(FORMAT/PR) )' | \
 bcftools +fill-tags - -- -t  'FORMAT/DP2=int(smpl_sum(FORMAT/SR) )' | \
 bcftools +fill-tags - -- -t  'FORMAT/DP=int(DP1+DP2)' | \
-sed -e 's/Description="Added by +fill-tags expression FORMAT\/DP=int(DP1+DP2)"/Description="Variant depth calculated using PR, SR or PR+SR when tags available"/  ;
+sed -e 's/Description="Added by +fill-tags expression FORMAT\/DP=int(DP1+DP2)"/Description="Variant depth calculated using PR, SR or PR+SR when tags available"/ ;
 s/##FORMAT=<ID=DP,Number=\.,/##FORMAT=<ID=DP,Number=1,/' | \
 bcftools +fill-tags - -- -t  'FORMAT/AR=float((PR[0:1]+SR[0:1])/DP)' | \
-sed -e 's/Description="Added by +fill-tags expression FORMAT\/AR=float((PR[0:1]/Description="Variant Allelic Ratio FORMAT\/AR=float((PR[0:1]/ ; s/##FORMAT=<ID=AR,Number=\.,
-/##FORMAT=<ID=AR,Number=1,/' | \
+sed -e 's/Description="Added by +fill-tags expression FORMAT\/AR=float((PR[0:1]/Description="Variant Allelic Ratio FORMAT\/AR=float((PR[0:1]/ ; s/##FORMAT=<ID=AR,Number=\.,/##FORMAT=<ID=AR,Number=1,/' | \
 bcftools +fill-tags - -- -t  'FORMAT/AD=int(PR+SR)' | \
 sed -e 's/Description="Added by +fill-tags expression FORMAT\/AD=int(PR/Description="Variant Allelic Depth FORMAT\/AD=int(PR/' | \
 bcftools +fill-tags - -- -t  'FORMAT/VAF=AR' | \
-sed -e 's/Description="Added by +fill-tags expression FORMAT\/VAF=AR/Description="Variant Allele Frequency FORMAT\/VAF=AR/ ; s/##FORMAT=<ID=VAF,Number=\.,
-/##FORMAT=<ID=VAF,Number=1,/' | \
+sed -e 's/Description="Added by +fill-tags expression FORMAT\/VAF=AR/Description="Variant Allele Frequency FORMAT\/VAF=AR/ ; s/##FORMAT=<ID=VAF,Number=\.,/##FORMAT=<ID=VAF,Number=1,/' | \
 bcftools +setGT - -- -t ./. -n c:'1/1' | \
 bcftools +setGT - -- -t q  -n c:'0/1' -i "FMT/VAF<0.90"  | \
 bcftools annotate -x FORMAT/DP1,FORMAT/DP2 -O v -o "${VCF_PREPPED_OUTFILENAME}"  ;
