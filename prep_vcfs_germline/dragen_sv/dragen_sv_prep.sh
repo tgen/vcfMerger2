@@ -68,15 +68,20 @@ awk '{FS=OFS="\t" ; if($9 !~ /SR/ ){ $9=$9":SR" ; $10=$10":0,0"} ; print }' ) | 
 bcftools +fill-tags - -- -t  'FORMAT/DP1=int(smpl_sum(FORMAT/PR) )' | \
 bcftools +fill-tags - -- -t  'FORMAT/DP2=int(smpl_sum(FORMAT/SR) )' | \
 bcftools +fill-tags - -- -t  'FORMAT/DP=int(DP1+DP2)' | \
+sed 's/Description="Added by +fill-tags expression FORMAT\/DP=int(DP1+DP2)"/Description="Variant depth calculated using PR, SR or PR+SR when tags available"/' | \
 bcftools +fill-tags - -- -t  'FORMAT/AR=float((PR[0:1]+SR[0:1])/DP)' | \
+sed 's/Description="Added by +fill-tags expression FORMAT\/AR=float((PR[0:1]/Description="Variant Allelic Ratio FORMAT\/AR=float((PR[0:1]/' | \
 bcftools +fill-tags - -- -t  'FORMAT/AD=int(PR+SR)' | \
+sed 's/Description="Added by +fill-tags expression FORMAT\/AD=int(PR/Description="Variant Allelic Depth FORMAT\/AD=int(PR/' | \
 bcftools +fill-tags - -- -t  'FORMAT/VAF=AR' | \
+sed 's/Description="Added by +fill-tags expression FORMAT\/VAF=AR/Description="Variant Allele Frequency FORMAT\/VAF=AR/' | \
 bcftools +setGT - -- -t ./. -n c:'1/1' | \
 bcftools +setGT - -- -t q  -n c:'0/1' -i "FMT/VAF<0.90"  | \
 bcftools annotate -x FORMAT/DP1,FORMAT/DP2 -O v -o "${VCF_PREPPED_OUTFILENAME}"  ;
 
 check_ev $? "bcftools SV prep"  1>&2
-
+## TODO: if sed lines slow down the process, we can later have only one sed line using `-e` and replace all in one command ;
+## But this means we will have to be more specific in the search and replace of the strings
 
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ## DEDUP STEP for SV calls
