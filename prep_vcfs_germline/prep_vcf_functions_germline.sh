@@ -29,12 +29,85 @@
 ## CONSTANT VARIABLE (modified accordingly)
 DIR_PATH_TO_SCRIPTS=$(dirname $( dirname $(readlink -f ${BASH_SOURCE[0]}) )  )
 echo -e "${DIR_PATH_TO_SCRIPTS}/prep_vcfs_somatic/prep_vcf_somatic_functions.sh" 1>&2
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs/prep_vcf_somatic_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
+source ${DIR_PATH_TO_SCRIPTS}/prep_vcfs_somatic/prep_vcf_somatic_functions.sh  ## allows to load functions and reused them; below we write function we want to OVERWRITE from the sourced file
 DIR_PATH_TO_SCRIPTS="$( dirname $(readlink -f ${BASH_SOURCE[0]}) )"
+
+echo -e "DIR_PATH_TO_SCRIPTS = ${DIR_PATH_TO_SCRIPTS}"
+
+function fexit(){
+	kill -s TERM ${TOP_PID}
+	exit 1
+}
+
+function check_ev(){
+	if [[ $1 -ne 0 ]] ; then echo -e "ERROR: ${2} FAILED ;\nexit_value:${1} ; Aborting! " ; fexit ; fi
+}
+
+function checkDir(){
+	local D=$1
+	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >> ; curdir = ${PWD}; Aborting!" ; fexit; fi ;
+}
+
+function checkFile(){
+	local F=$1
+	if [[ ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >> ; curdir = ${PWD}; Aborting!" ; fexit ; fi ;
+}
+
+function check_inputs(){
+
+
+  ##@@@@@@@@@@@@@@@@@##
+	##  check inputs   ##
+	##@@@@@@@@@@@@@@@@@##
+	echo -e "## Checking inputs ..."
+
+	if [[ ${TOOLNAME} == ""  ]] ; then echo -e "ERROR: --toolname has to be provided ; Aborting." ; fexit ; fi
+	#if [[ ${REF_GENOME_FASTA} == ""  ]] ; then echo -e "ERROR: reference genome option is required ; here we have a missing value; provide --ref-genome ; Aborting." ; fexit ; fi
+	if [[ ${GERMLINE_SNAMES} == ""  ]] ; then echo -e "ERROR: GERMLINE Sample Name(s) MUST be provided ; Missing Values Found ; Check your inputs;  Aborting." ; fexit ; fi
+	if [[ ${VCF_FINAL_USER_GIVEN_NAME} == ""  ]] ; then echo -e "ERROR: VCF OUT FILENAME MUST be provided ; Missing Values Found ; Check your inputs; use -o|--prepped-vcf-outfilename option to fix it;  Aborting." ; fexit ; fi
+	if [[ $( echo ${TOOLNAME} | tr '[A-Z]' '[a-z]' | sed 's/ \+//g')  =~ "strelka" ]] ;
+	then
+	    if [[ ${BAM_FILE} == "" ]] ; then echo -e "ERROR: BAM file MUST be given to PREP the Strelka VCF in order to perform phasing; Aborting." ; fexit ; fi
+	fi
+
+	DNVCF=$(dirname ${VCF_FINAL_USER_GIVEN_NAME})
+	echo "DNVCF == ${DNVCF}"
+	if [[ ${DIR_OUTPUT} == "." ]] ;
+	then
+			LI="${LI}\nDIR_TEMP==\"${DIR_OUTPUT}\"" ;
+	fi
+
+	if [[ ${DNVCF} != "." ]]
+	then
+			mkdir -p ${DNVCF}
+			if [[ ! ${DNVCF} =~ "^/" ]] ; ## this mean full path was not given
+			then
+					export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f ${DNVCF})/$(basename ${VCF_FINAL_USER_GIVEN_NAME})
+			fi
+	else
+			export VCF_FINAL_USER_GIVEN_NAME=$(readlink -f "${VCF_FINAL_USER_GIVEN_NAME}" )
+	fi
+	echo -e "VCF_FINAL_USER_GIVEN_NAME new path (if updated): ${VCF_FINAL_USER_GIVEN_NAME}"
+	if [[ ! -e ${DIR_OUTPUT} ]]
+	then
+			echo -e "Creating DIR_OUTPUT where temporary files will be written: ${DIR_OUTPUT}"
+			mkdir -p ${DIR_OUTPUT} ;
+	fi
+
+	if [[  ${MAKE_BED_FOR_VENN} == "yes" ]] ; then DELETE_TEMPS=0 ; fi ## as we put all temps files in temp folder including the bed, if we need the files later for merging, and make venn we need to keep the temp files; LAternative would be to exclude the beds from the deletion in the function delete_temps
+	## check files and folders if exist
+	checkDir ${DIR_OUTPUT}
+	# checkFile ${REF_GENOME_FASTA}
+	# checkFile ${VCF_FINAL_USER_GIVEN_NAME}
+
+	echo -e "End Checking inputs .."
+
+}
 
 
 function init_some_vars(){
 	LI="RECAP_INPUTS_USED:"
+	REF_GENOME_FASTA=""
 	TOOLNAME=""
 	VCF_ALL_CALLS=""
 	NORMAL_SNAME=""
@@ -49,6 +122,8 @@ function init_some_vars(){
 	VCF_FINAL_USER_GIVEN_NAME=""
 	TH_AR=""
 	MAKE_BED_FOR_VENN="no"
+	DELETE_TEMPS=0 ; ## 0 means keep-temps; 1 means delete temp files
+	export DIR_OUTPUT="."
 }
 
 function getOptions(){
@@ -65,15 +140,15 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 	do
 		# for options with required arguments, an additional shift is required
 		case "$1" in
-		-d|--dir-work) export DIR_WORK=$2 ; LI="${LI}\nDIR_WORK==\"${DIR_WORK}\"" ;  shift ;;
+		-d|--dir-work) export DIR_OUTPUT=$( readlink -f $2) ; LI="${LI}\DIR_OUTPUT==\"${DIR_OUTPUT}\"" ;  shift ;;
 		--vcf) export VCF_ALL_CALLS="$2" ; LI="${LI}\nVCF_ALL_CALLS==\"${VCF_ALL_CALLS}\"";  shift ;;
-		--germline-snames) export GERMLINE_SNAMES="$2" ; LI="${LI}\nGERMLINE_SNAMES==\"${VCF_ALL_CALLS}\"";  shift ;;
+		--germline-snames) export GERMLINE_SNAMES="$2" ; LI="${LI}\nGERMLINE_SNAMES==\"${GERMLINE_SNAMES}\"";  shift ;;
 		--bam) export BAM_FILE=$2 ; LI="${LI}\nBAM_FILE==\"${BAM_FILE}\"";  shift ;;
 		-g|--ref-genome) export REF_GENOME_FASTA="${2}" ;  LI="${LI}\nREF_GENOME_FASTA==\"${REF_GENOME_FASTA}\"";  shift ;; ## FASTA FILE ; .fai file is needed
 		-t|--toolname) export TOOLNAME=$2 ; LI="${LI}\nTOOLNAME==\"${TOOLNAME}\"";  shift ;;
 		--do-not-normalize) export NORMALIZE="no" ; LI="${LI}\nNORMALIZE==\"${NORMALIZE}\"" ;;
 		--contigs-file) export CONTIGS_FILE="$2" ; LI="${LI}\nCONTIGS_FILE==\"${CONTIGS_FILE}\"";  shift ;; ## File containing the contigs in the same format as expected within a VCF file
-		--print-valid-toolnames) echo ${VALID_TOOLNAMES} ; exit ;; ## print possible toolnames to be used with the
+		--print-valid-toolnames) echo "${VALID_TOOLNAMES}" ; exit ;; ## print possible toolnames to be used with the
 		-o|--prepped-vcf-outfilename) export VCF_FINAL_USER_GIVEN_NAME="$2" ; LI="${LI}\nVCF_FINAL_USER_GIVEN_NAME==\"${VCF_FINAL_USER_GIVEN_NAME}\"";  shift ;;
 		--delete-temps) export DELETE_TEMPS=1 ; LI="${LI}\nDELETE_TEMPS==\"${DELETE_TEMPS}\"" ;;
 		--make-bed-for-venn) export MAKE_BED_FOR_VENN="yes" ; LI="${LI}\nMAKE_BED_FOR_VENN==\"${MAKE_BED_FOR_VENN}\"" ;;
@@ -88,6 +163,13 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,germline-sname
 	echo -e "VCF == ${VCF_ALL_CALLS}" 1>&2
 	echo -e "GERMLINE_SNAMES  == ${GERMLINE_SNAMES}" 1>&2
 	echo -e "VCF_FINAL_USER_GIVEN_NAME  == ${VCF_FINAL_USER_GIVEN_NAME}" 1>&2
+	check_inputs
+}
+
+function recap_input(){
+	#input recap
+	LI="${LI}\nCURR_DIR from Recap_Input function ==\"${PWD}\""
+	echo -e "\n\n+------------------------------------------------+\n${LI[@]}\n+------------------------------------------------+\n\n"
 }
 
 
@@ -102,10 +184,11 @@ function final_msg(){
 	else
 		VCF_FINAL=${DIR_OUTPUT}/${TOOLNAME}.somatic.uts.vcf ; ## uts stands for up-to-specs for vcfMerger2
 	fi
-    echo "command: cp ${VCF} ${VCF_FINAL}"  1>&2
-	rsync ${VCF} ${VCF_FINAL}
+    echo "final_msg command: rsync -v ${VCF} ${VCF_FINAL}"  1>&2
+	rsync -v ${VCF} ${VCF_FINAL}
 	check_ev $? "copy file"  ## if files are the same cp will return an error so we cannot check the exit value; alternative: using rsync instead of cp
 }
+
 
 function check_and_update_sample_names(){
 	##@@@@@@@@@@@@@@@@@@@@@@@
@@ -266,7 +349,7 @@ function process_dragen_snv_vcf(){
     final_msg ${VCF}
 }
 
-function process_dragen_snv_vcf(){
+function process_dragen_sv_vcf(){
     local VCF=${1}
     VCF=$( check_and_update_sample_names ${VCF} ${GERMLINE_SNAMES} )
     VCF=$( make_vcf_upto_specs_for_dragen_sv ${VCF} )
@@ -332,34 +415,38 @@ function main(){
 	 ; Missing Values Found ; Check your inputs;  Aborting."  1>&2 ; fexit ; fi
 
 
-	## check files and folders if exist
-	checkDir ${DIR_WORK}
-#	checkFile ${REF_GENOME_FASTA}
-
-	cd ${DIR_WORK}
-
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
+		VCF_ALL_CALLS=$(readlink -f ${VCF_ALL_CALLS})
+		echo "FULL PATH to current VCF is: ${VCF_ALL_CALLS}"
+		cd ${DIR_OUTPUT}
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
-		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}" 1>&2
+		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
 		    ln -sf ${VCF_ALL_CALLS} $(basename ${VCF_ALL_CALLS}) &>/dev/null ## we create a symlimk in current working directory (in case original vcf folder is not writable)
 		fi
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
-		run_tool ${TOOLNAME} ${VCF}
+		## if vcf is compressed vcf with gz extension, we uncompressed it to process it; then we will delete the file once processed as it may be big
+		if [[ "${VCF##*.}" == "gz" ]] ;
+		then
+			zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
+			VCF=$( basename -s ".gz" ${VCF})
+		fi
+		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
+		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]
 	then
 		checkFile ${VCF_SNVS_FILE} ; checkFile ${VCF_INDELS_FILE}
 		VCF=$( concatenate_snvs_indels ${TOOLNAME} ${VCF_SNVS_FILE} ${VCF_INDELS_FILE} )
-		run_tool ${TOOLNAME} ${VCF}
+		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
+		delete_temporary_files ${DELETE_TEMPS}
 	else
 		echo -e "ERROR: Check your inputs ; VCF files information is missing or erroneous; Aborting!" ; 1>&2
 		fexit
 	fi
-
 
 }
 

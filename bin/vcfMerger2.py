@@ -385,7 +385,7 @@ def parse_json_data_and_run_prep_vcf_germline_parallel(tool, data, dryrun=False)
     if data[tool]['do_venn']:
         cmdLine = ' '.join([cmdLine, "--make-bed-for-venn"])
     
-    if data[0]['delete_temps']:
+    if data[tool]['delete_temps']:
         cmdLine = ' '.join([cmdLine, "--delete-temps"])
     
     # capture threshold AR found in json
@@ -1199,6 +1199,9 @@ def main(args, cmdline):
                  filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
                  path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
                  skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
+    
+    if "dragen_sv" in ltoolnames:
+        check_if_executable_in_path(["main_dedup_sv.py"])
     
     lvcfs = check_if_vcf_is_compressed(lvcfs, dirout)
     log.info(str(lvcfs))

@@ -53,7 +53,7 @@ WARNING: This script does NOT work on MacOS; Sorry. This is due to getOpt incomp
 
 function fexit(){
 	kill -s TERM ${TOP_PID}
-	exit -1
+	exit 1
 }
 
 function check_ev(){
