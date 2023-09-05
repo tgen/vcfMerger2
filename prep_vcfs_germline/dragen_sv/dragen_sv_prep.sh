@@ -81,7 +81,7 @@ bcftools +setGT - -- -t q  -n c:'0/1' -i "FMT/VAF<0.90"  | \
 bcftools annotate -x FORMAT/DP1,FORMAT/DP2 -O v -o "${VCF_PREPPED_OUTFILENAME}"  ;
 
 check_ev $? "bcftools SV prep"  1>&2
-## TODO: if sed lines slow down the process, we can later have only one sed line using `-e` and replace all in one command ;
+## NOTE: if sed lines slow down the process, we can later have only one sed line using `-e` and replace all in one command ;
 ## But this means we will have to be more specific in the search and replace of the strings
 
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -89,7 +89,7 @@ check_ev $? "bcftools SV prep"  1>&2
 ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ## check now if the sv vcf file has lines of variants with the same position
 ## for instance, we can have the same position 28034157 position called twice by the vairant caller, but one is defined has a DRAGEN::INS and the other has DRAGEN::DUP; both of them refer has an insertion; The goal is to make sure that these teo lines do not represent the exact same call;
-COUNT_DUP_POS=$( bcftools query -f '%CHROM:%POS\n' ${VCF_PREPPED_OUTFILENAME} | sort --parallel=2 | uniq -d | wc -l )
+COUNT_DUP_POS=$( bcftools query -f '%CHROM:%POS\n' "${VCF_PREPPED_OUTFILENAME}" | sort --parallel=2 | uniq -d | wc -l )
 
 VCF_PREPPED_OUTFILENAME_DEDUP=${VCF_PREPPED_OUTFILENAME/.vcf/.dedup.vcf}
 
