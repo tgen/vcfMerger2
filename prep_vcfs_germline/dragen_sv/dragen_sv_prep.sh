@@ -71,7 +71,7 @@ bcftools +fill-tags - -- -t  'FORMAT/DP=int(DP1+DP2)' | \
 sed -e 's/Description="Added by +fill-tags expression FORMAT\/DP=int(DP1+DP2)"/Description="Variant depth calculated using PR, SR or PR+SR when tags available"/ ;
 s/##FORMAT=<ID=DP,Number=\.,/##FORMAT=<ID=DP,Number=1,/' | \
 bcftools +fill-tags - -- -t  'FORMAT/AR=float((PR[0:1]+SR[0:1])/DP)' | \
-sed -e 's/Description="Added by +fill-tags expression FORMAT\/AR=float((PR[0:1]/Description="Variant Allelic Ratio FORMAT\/AR=float((PR[0:1]/ ; s/##FORMAT=<ID=AR,Number=\.,/##FORMAT=<ID=AR,Number=1,/' | \
+sed -e 's/Description="Added by +fill-tags expression FORMAT\/AR=float/Description="Variant Allelic Ratio FORMAT\/AR=float/ ; s/##FORMAT=<ID=AR,Number=\.,/##FORMAT=<ID=AR,Number=1,/' | \
 bcftools +fill-tags - -- -t  'FORMAT/AD=int(PR+SR)' | \
 sed -e 's/Description="Added by +fill-tags expression FORMAT\/AD=int(PR/Description="Variant Allelic Depth FORMAT\/AD=int(PR/' | \
 bcftools +fill-tags - -- -t  'FORMAT/VAF=AR' | \
