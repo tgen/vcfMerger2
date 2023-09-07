@@ -20,23 +20,23 @@ SCRIPT_PYTHON_RECOMPOSE_VARIANTS=${DIR_PATH_TO_SCRIPTS}/strelka2.recompose_phase
 ## FUNCTIONS
 function check_exe_in_path(){
 	EXE=$1
-	type $EXE >/dev/null 2>&1 || { echo >&2 "Require \"$EXE\" executable but it's not in the PATH.  Aborting."; exit -1; } || $EXE --help
+	type $EXE >/dev/null 2>&1 || { echo >&2 "Require \"$EXE\" executable but it's not in the PATH.  Aborting."; exit 1; } || $EXE --help
 }
 
 function check_ev(){
 	local ev=$1
 	local msg=$(echo "$2" | sed 's/[ \+]/_/g')
-	if [[ ${ev} -ne 0 ]] ; then touch FAILED_Recomposition_Strelka2_${msg}.flag ; echo -e "ERROR: ${msg} FAILED ;\nexit_value:${ev} ; Aborting! " ; exit -1 ; fi
+	if [[ ${ev} -ne 0 ]] ; then touch FAILED_Recomposition_Strelka2_${msg}.flag ; echo -e "ERROR: ${msg} FAILED ;\nexit_value:${ev} ; Aborting! " ; exit 1 ; fi
 }
 
 function checkDir(){
 	local D=$1
-	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >>; Aborting!" ; usage ; exit -1 ; fi ;
+	if [[ ! -e ${D} ]] ; then echo -e "DIR NOT FOUND << ${D} >>; Aborting!" ; usage ; exit 1 ; fi ;
 }
 
 function checkFile(){
 	local F=$1
-	if [[ "" == "${VCF}" || ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >>; Aborting!" ; usage ; exit -1 ; fi ;
+	if [[ "" == "${VCF}" || ! -e ${F} ]] ; then echo -e "FILE NOT FOUND << ${F} >>; Aborting!" ; usage ; exit 1 ; fi ;
 }
 
 function usage(){
@@ -44,8 +44,8 @@ echo -e "USAGE: $0 \$VCF.gz \$TBAM \$SNAME_T \$CPUS \n1) compressed_VCF\n2) BAM 
 ## NOTE: the VCF MUST HAVE BEEN PREPARED for VCFMERGER2 or having at least AR, DP and GT flags in the FORMAT columns"
 }
 
-## checkings section
-if [[ $# -ne 4 ]] ; then usage ; exit -1 ; fi
+## checking section
+if [[ $# -ne 4 ]] ; then usage ; exit 1 ; fi
 for F in ${SCRIPT_GET_CONSPOS} ${VCF} ${TBAM} ; do checkFile ${F} ; done
 for EXE in samtools bcftools phaser.py ; do check_exe_in_path ${EXE} ; done
 if [[ ${CPUS} -ge ${MAX_CPUS_IN_CPUINFO} ]] ; then CPUS=$((${MAX_CPUS_IN_CPUINFO}-1)) ; fi
@@ -78,7 +78,7 @@ then
     fi
 else
     echo -e "ERROR: INPUT FILE is NOT a VALID VCF ; Aborting; "
-    exit -1
+    exit 1
 fi
 
 VCF=${VCF_ORIGINAL_INPUT}
@@ -94,7 +94,7 @@ if [[ 1 == 1 ]] ;then
     check_ev $? "bcftools index indels calls"
     VCF_INDELS_ONLY=${VCF/vcf.gz/indels.vcf.gz}
 
-    ## now Subsetting the VCF_SBCP to continue without the indels
+    ## now sub-setting the ORIGINAL VCF to continue without the indels
     bcftools filter -O z -e 'TYPE="indel"' -o ${VCF/vcf.gz/noindels.vcf.gz} ${VCF}
     check_ev $? "bcftools filter out indels"
     bcftools index --tbi  ${VCF/vcf.gz/noindels.vcf.gz}
@@ -126,6 +126,7 @@ if [[ 1 == 1 ]] ;then
     bcftools index --threads 2 --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz}
     check_ev $? "bcftools index #1"
 
+		echo -e "Subset VCF_NO_INDELS_FOR_PHASER file with only the position that are not consecutive ..."
     bcftools filter --threads 2 -O z -T ^${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "bcftools filter #2"
     bcftools index --threads 2 --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
@@ -173,6 +174,7 @@ if [[ 1 == 1 ]] ;then
         echo -e "concat variants from homs.vcf.gz VCF with tempNoConsPos.vcf.gz VCF ... "  1>&2
         bcftools concat -a --threads 2 -O z -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}  ${VCF_HOMS}
         check_ev $? "bcftools concat #3"
+        # We reallocate the name of TempNoConsPos.vcf.gz as if we appended the HOMs to the end of the file having only the no Consecutive variants
         mv ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
         check_ev $? "move #3"
 
@@ -246,7 +248,7 @@ echo -e "PHASER output file: ${VCF_OUT_PHASER}"
 
 
 echo -e "Annotation of the subByConPos VCF with the vcf outputted by Phaser in order to keep a vcf with both NORMAL and TUMOR sample" ; ## INDEED, phASER only phases ONE sample at a time and we provided only the TUMOR sample
-VCF_IN=${VCF_IN}
+VCF_IN=${VCF_IN}  ## which was the VC_FOR_PHASER
 VCF_FOR_ANNO=${VCF_OUT_PHASER}.vcf.gz
 VCF_OUT=${VCF_IN/.vcf.gz/.phased.vcf.gz}
 mycmd="bcftools annotate --threads 2 -a ${VCF_FOR_ANNO} -c FORMAT/PG,FORMAT/PB,FORMAT/PW,FORMAT/PC,FORMAT/PM,FORMAT/PS,FORMAT/PI -m \"phASER\" -O z -o ${VCF_OUT} ${VCF_IN}"
@@ -282,9 +284,9 @@ check_ev $? "bcftools index ${VCF_OUT}"
 
 
 echo -e "Concatenating unphased and phased vcfs ... "
-VCF_IN_UNPHASED=${VCF_ORIGINAL_INPUT/vcf.gz/TempNoConsPos.vcf.gz}
+VCF_IN_UNPHASED=${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
 VCF_IN_PHASED=${VCF_OUT}
-## WE OUTPUT An UNcompressed VCF;
+## WE OUTPUT An UN-compressed VCF;
 VCF_OUT=${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf}
 mycmd="bcftools concat -a -O v ${VCF_INDELS_ONLY} ${VCF_IN_UNPHASED} ${VCF_IN_PHASED} | bcftools sort -O v -T ${PWD} --max-mem 2G  - > ${VCF_OUT}"
 echo ${mycmd}
