@@ -287,7 +287,7 @@ function make_vcf_upto_specs_for_VcfMerger_Germline(){
 
 function make_vcf_upto_specs_for_dragen_snv(){
     local VCF="$1"
-    VCF=$( bash "${BASH_SCRIPT_PREP_VCF_FOR_VCFMERGER}" "${VCF}" )
+    VCF=$( bash "${BASH_SCRIPT_PREP_VCF_FOR_VCFMERGER}" "yes" "yes" "${VCF}" )
     echo "${VCF}"
 }
 
