@@ -836,8 +836,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	if upsetBool:
 		vtype = "upset"
 		type_specific_additional_args = ["--ninter", "50",
-		                                 "--sbcolor", "#d8b365",
-		                                 "--mbcolor", "#5ab4ac",
+		                                 "--sbcolor", "'#d8b365'",
+		                                 "--mbcolor", "'#5ab4ac'",
 		                                 "--showzero",
 		                                 "--order", "freq", "--scriptonly"]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]

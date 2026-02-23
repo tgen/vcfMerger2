@@ -257,6 +257,91 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 	check_inputs
 }
 
+function check_and_update_sample_names_for_deepsomatic(){
+	##@@@@@@@@@@@@@@@@@@@@@@@
+	## CHECK SAMPLES NAMES
+	##@@@@@@@@@@@@@@@@@@@@@@@
+	## so far the sample name should be NORMAL, TUMOR or the SM tag from BAM file ;
+	## if not ##TODO revise the way we handle the sample names to make it much more generic;
+	## will need discussion to do so, and will need to capture all the use cases possible ;
+
+	local VCF=$1
+	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
+	echo -e "Here is the values of some Global Variable shared across script:"
+	echo " in ${FUNCNAME} :  ${VCF} ${TOOLNAME} ${NORMAL_SNAME} ${TUMOR_SNAME} " 1>&2
+
+  COL11_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f11`
+
+  local F1="${VCF%.*}"
+  local F2="${F1%.*}"
+  local VCF_NORMAL_TEMP="${F2%.*}.normal.vcf.gz"
+  echo -e "VCF_NORMAL_TEMP == ${VCF_NORMAL_TEMP}"
+  ## NOTE: REQUIREMENT: FORMAT must be as with following tags in deepsomatic output vcf: GT:GQ:DP:AD:VAF:PL
+  VALUES_FOR_FORMAT_IN_NORMAL="./.:0:0:0,0:0:0,0,0"
+
+  if [[ "${COL11_VALUE}" == "" ]]
+  then
+    echo -e "Only one Sample in deepsomatic" 1>&2
+    echo -e "We need to add the NORMAL sample to the current VCF using bcftools ..."
+
+    ( bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/"; \
+    bcftools view --thread  2  "${VCF}" | \
+    bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t%INFO\t%FORMAT' | \
+    cut -f1-9 | \
+    awk -v VALUES_FOR_FORMAT=${VALUES_FOR_FORMAT_IN_NORMAL} '{FS=OFS="\t" ; print $0,VALUES_FOR_FORMAT}' ) | \
+    bcftools view --write-index -O z -o "${VCF_NORMAL_TEMP}"
+
+    ## Merging TUMOR and NORMAL vcfs
+    bcftools merge --threads 2 --write-index -O z -o "${VCF}_temp.vcf.gz" "${VCF_NORMAL_TEMP}" "${VCF}"
+    local VCF="${VCF}_temp.vcf.gz"
+
+  fi
+
+
+	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
+	COL10_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f10`
+	COL11_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f11`
+
+  if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ;
+  then
+    echo -e "\tsample name in column 10 is  NORMAL and column 11 is named TUMOR" 1>&2
+    echo -e "\twe are updating the sample names appropriately here with the ones given by the user" 1>&2
+    cat  ${VCF}| sed "/^#CHROM/ s/NORMAL/${NORMAL_SNAME}/ ; /^#CHROM/ s/TUMOR/${TUMOR_SNAME}/" > temp_sname_${VCF}
+    mv temp_sname_${VCF} ${VCF_OUT}
+
+  elif [[ "${COL11_VALUE}" == "NORMAL" && "${COL10_VALUE}" == "TUMOR"  ]] ;
+  then
+    echo -e "\tsample name in column 10 is  TUMOR and column 11 is named NORMAL" 1>&2
+    echo -e "\tas we decided that column 10 should be NORMAL sample and column 11 the TUMOR one" 1>&2
+    echo -e "\twe RENAME and SWAPPED the sample names." 1>&2
+    cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; next} else if ($1~/^#CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print } else { print } }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
+    check_ev $? "swap column 10 and 11"  1>&2
+    mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VCF_OUT}
+
+  elif [[ ( "${COL11_VALUE}" == "${TUMOR_SNAME}" && "${COL10_VALUE}" == "${NORMAL_SNAME}" ) || ( "${COL10_VALUE}" == "${TUMOR_SNAME}" && "${COL11_VALUE}" == "${NORMAL_SNAME}" )   ]] ;
+  then
+    echo -e "At least the sample name in column 10 is either Tumor or Normal; As we want normal sample in Column 10, we check if it is the case ..." 1>&2
+    if [[ "${COL10_VALUE}" == "${TUMOR_SNAME}" ]]
+    then
+      echo "## we swap column 10 and 11 as we found that sample name in column 10 is the Tumor sample" 1>&2
+      (grep -E "^##" ${VCF} ; grep -vE "^##" ${VCF} | awk -F"\t" '{OFS="\t" ; TEMP=$10 ; $10=$11 ; $11=TEMP ; print }' ) > temp_swap_samples_column.${TOOLNAME}.vcf
+      if [[ $? -ne 0 ]] ; then echo -e "ERROR in swapping column; please check logs and your inputs to understand why it failed; Aborting LANCET post-processing; " ; fexit ; fi
+      mv temp_swap_samples_column.${TOOLNAME}.vcf ${VCF_OUT}
+    else
+      echo -e "## We found that sample in column 10 is the NORMAL sample; we do not swap the columns" 1>&2
+      cp ${VCF} ${VCF_OUT}
+    fi
+  else
+    echo -e "ERROR: ${TOOLNAME}'s Sample name in VCF do NOT match 'NORMAL' or 'TUMOR' names OR any expected names already present in the VCF, sample name that was normally captured from SM tag in the BAM file;
+    \nplease check your inputs; Aborting!" 1>&2
+    fexit
+  fi
+
+	## return value which is the vcf filename
+	echo "${VCF_OUT}"
+}
+
+
 
 function check_and_update_sample_names(){
 	##@@@@@@@@@@@@@@@@@@@@@@@
@@ -598,6 +683,15 @@ function process_vardictjava_vcf(){
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
 }
+
+function process_deepsomatic_vcf(){
+	local VCF=$1
+	VCF=$( check_and_update_sample_names_for_deepsomatic ${VCF} )
+	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+	VCF=$( normalize_vcf ${VCF})
+	final_msg ${VCF}
+}
+
 
 function run_tool(){
 	local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]')
