@@ -265,42 +265,70 @@ function check_and_update_sample_names_for_deepsomatic(){
 	## if not ##TODO revise the way we handle the sample names to make it much more generic;
 	## will need discussion to do so, and will need to capture all the use cases possible ;
 
+  echo "VCF=====  ${1}" 1>&2
 	local VCF=$1
 	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
-	echo -e "Here is the values of some Global Variable shared across script:"
-	echo " in ${FUNCNAME} :  ${VCF} ${TOOLNAME} ${NORMAL_SNAME} ${TUMOR_SNAME} " 1>&2
+	echo -e "Here is the values of some Global Variable shared across script:" 1>&2
+	echo " in ${FUNCNAME} :  ${VCF} ::: ${TOOLNAME} ::: ${NORMAL_SNAME} ::: ${TUMOR_SNAME} " 1>&2
 
-  COL11_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f11`
-
+  COL11_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f11`
+  set -x
   local F1="${VCF%.*}"
-  local F2="${F1%.*}"
-  local VCF_NORMAL_TEMP="${F2%.*}.normal.vcf.gz"
-  echo -e "VCF_NORMAL_TEMP == ${VCF_NORMAL_TEMP}"
+#  local F2="${F1%.*}"
+  local VCF_NORMAL_TEMP="${F1%.*}.normal.vcf.gz"
+  echo -e "VCF_NORMAL_TEMP == ${VCF_NORMAL_TEMP}" 1>&2
   ## NOTE: REQUIREMENT: FORMAT must be as with following tags in deepsomatic output vcf: GT:GQ:DP:AD:VAF:PL
-  VALUES_FOR_FORMAT_IN_NORMAL="./.:0:0:0,0:0:0,0,0"
+  VALUES_FOR_FORMAT_IN_NORMAL="./.:.:.:.,.:.:.,.,."
 
   if [[ "${COL11_VALUE}" == "" ]]
   then
     echo -e "Only one Sample in deepsomatic" 1>&2
-    echo -e "We need to add the NORMAL sample to the current VCF using bcftools ..."
+    echo -e "Adding NORMAL sample to the current VCF ..." 1>&2
+    
+#    echo -e "
+#    ( bcftools head \"${VCF}\" | sed \"/#CHROM/s/FORMAT.*$/FORMAT\\\t${NORMAL_SNAME}/\"; \
+#    bcftools view --thread  2  \"${VCF}\" | \
+#    bcftools query -f \"%CHROM\\\t%POS\\\t%ID\\\t%REF\\\t%ALT\\\t%QUAL\\\t%FILTER\\\t%INFO\\\t%FORMAT\\n\" | \
+#    cut -f1-9 | \
+#    awk -v VALUES_FOR_FORMAT=\"${VALUES_FOR_FORMAT_IN_NORMAL}\" '{FS=OFS=\"\\\t\" ; print \$0,VALUES_FOR_FORMAT}' ) | \
+#    bcftools view -O z -o \"${VCF_NORMAL_TEMP}\"
+#    " 1>&2
 
-    ( bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/"; \
-    bcftools view --thread  2  "${VCF}" | \
-    bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t%INFO\t%FORMAT' | \
-    cut -f1-9 | \
-    awk -v VALUES_FOR_FORMAT=${VALUES_FOR_FORMAT_IN_NORMAL} '{FS=OFS="\t" ; print $0,VALUES_FOR_FORMAT}' ) | \
-    bcftools view --write-index -O z -o "${VCF_NORMAL_TEMP}"
+#    ( bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" ; \
+#    bcftools view --thread  2  "${VCF}" | \
+#    bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t%INFO\t%FORMAT\n' | \
+#    cut -f1-9 | \
+#    awk -v VALUES_FOR_FORMAT=${VALUES_FOR_FORMAT_IN_NORMAL} '{FS=OFS="\t" ; print $0,VALUES_FOR_FORMAT}' ) | \
+#    bcftools view -O z -o "${VCF_NORMAL_TEMP}" 1>&2
+
+    bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" | bcftools view -O z -o "${VCF_NORMAL_TEMP}"
+    check_ev $? "pipe to make normal VCF before merging with Tumor VCF"
+
+    bcftools index --threads 2 "${VCF_NORMAL_TEMP}"
+    check_ev $? "FAILED indexing VCF ${VCF_NORMAL_TEMP}"
 
     ## Merging TUMOR and NORMAL vcfs
-    bcftools merge --threads 2 --write-index -O z -o "${VCF}_temp.vcf.gz" "${VCF_NORMAL_TEMP}" "${VCF}"
+    echo -e "MERGING STEP\n
+    bcftools merge --threads 2 -O z -o \"${VCF}_temp.vcf.gz\" \"${VCF_NORMAL_TEMP}\" \"${VCF}\"
+    " 1>&2
+    bcftools merge --threads 2 -O z -o "${VCF}_temp.vcf.gz" "${VCF_NORMAL_TEMP}" "${VCF}"
+    check_ev $? "bcftools merge normal_and_tumor vcfs"
     local VCF="${VCF}_temp.vcf.gz"
-
+    bcftools index --threads 2 ${VCF}
+    ls -lh ${VCF} 1>&2
   fi
 
+  echo -e "VCF now is equal to : ${VCF}\n" 1>&2 
 
 	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
-	COL10_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f10`
-	COL11_VALUE=`grep -m1 -E "^#CHROM" ${VCF} | cut -f11`
+	COL10_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f10`
+	COL11_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f11`
+
+	echo -e "
+	\${COL10_VALUE} == ${COL10_VALUE}
+	\${COL11_VALUE} == ${COL11_VALUE}
+	" 1>&2
+
 
   if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ;
   then
@@ -480,10 +508,11 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	## updating ${TOOLNAME} VCF to specs for vcfMerger2
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	local VCF=$1
+	local VCF=${1}
 	echo -e "## prep vcf for vcfMerger2 ..." 1>&2
 	fout_name=${VCF%.*}.prep.vcf
 	mycmd="python3 -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
+	echo -e "${mycmd}" 1>&2
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
@@ -686,7 +715,11 @@ function process_vardictjava_vcf(){
 
 function process_deepsomatic_vcf(){
 	local VCF=$1
+	echo -e "current directory: ${PWD}" 1>&2
+	echo -e "PATH to VCF: ${VCF}" 1>&2 
 	VCF=$( check_and_update_sample_names_for_deepsomatic ${VCF} )
+	echo -e "PATH to VCF after check_and_update_sample_names_for_deepsomatic : ${VCF}" 1>&2
+#	exit(55)
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	final_msg ${VCF}
@@ -749,14 +782,15 @@ function run_tool(){
 
 function main(){
 
-
+  echo -e "VCF_ALL_CALLS == ${VCF_ALL_CALLS}" 1>&2
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
 		VCF_ALL_CALLS=$(readlink -f ${VCF_ALL_CALLS})
 		echo "FULL PATH to current VCF is: ${VCF_ALL_CALLS}"
-		cd ${DIR_OUTPUT}
+		cd "${DIR_OUTPUT}"
+
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
 		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
@@ -765,11 +799,27 @@ function main(){
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
 		## if vcf is compressed vcf with gz extension, we uncompressed it to process it; then we will delete the file once processed as it may be big
-		if [[ "${VCF##*.}" == "gz" ]] ;
+		if [[ ${TOOLNAME} != "deepsomatic" && ${TOOLNAME} != "dps" ]]
 		then
-			zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
-			VCF=$( basename -s ".gz" ${VCF})
-		fi
+      if [[ "${VCF##*.}" == "gz" ]] ;
+      then
+        echo -e "Decompressing the VCF << ${VCF} >>" 1>&2
+        zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
+        VCF=$( readlink -f  $( basename -s ".gz" ${VCF}) )
+      fi
+    else
+      VCF=${VCF_ALL_CALLS} ## make basename vcf the new VCF name
+      if [[ "${VCF##*.}" != "gz" ]]
+      then
+        echo -e "bgzipppppping ${VCF}" 1>&2
+        bcftools view -Oz -o ${VCF}.gz ${VCF}
+        bcftools index --threads 2 ${VCF}.gz
+        VCF=${VCF}.gz
+      fi
+
+      echo -e "KEEPING the vcf.gz files to be used with bcftools merge" 1>&2 
+		  echo -e "processing vcf:  ${VCF}" 1>&2
+    fi
 		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
 		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]

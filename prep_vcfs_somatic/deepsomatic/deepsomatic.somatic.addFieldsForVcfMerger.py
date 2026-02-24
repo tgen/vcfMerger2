@@ -29,7 +29,7 @@
 
 import sys, os
 import getopt
-from sys import argv;  # Used to bring in the feature argv, variables or arguments
+from sys import argv  # Used to bring in the feature argv, variables or arguments
 from cyvcf2 import VCF, Writer
 import numpy as np
 import logging as log
@@ -37,7 +37,7 @@ import warnings
 from math import isnan
 
 global AR_threshold_for_GT
-AR_threshold_for_GT = 0.90  ## value HARDCODED but dynamically modify it with --threshold_AR option
+AR_threshold_for_GT: float = 0.90  ## value HARDCODED but dynamically modify it with --threshold_AR option
 
 
 class Genotype(object):
@@ -110,15 +110,16 @@ def usage(scriptname):
 	print("if not like this, update manually your vcf file to these specs; and the vcf has to be decomposed as "
 	      "well ... ")
 	print("or you may use the script 'prep_vcf_somatic.sh' to do it for you\n")
-	
-	# print("List of INDEL Field already in Original Mutect2's VCF FORMAT columns: "
-	#       "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
-	# print("List of SNV Field already in Original Mutect2's VCF FORMAT columns: "
-	#       "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
-	# print("we will add DP to that column and << recalculate >> GT ala TGen; the original GTs are going to be "
-	#       "transfered to INFO field;\n We also add AR to Genotype fields")
-	# print("NOTE: the threshold_AR value is designed to assign the genotype to GT; if AR<=0.9, GT=0/1; above, "
-	#       "GT=1/1 ; you have to be aware that 0/0 does not exist in that instance.")
+
+
+# print("List of INDEL Field already in Original Mutect2's VCF FORMAT columns: "
+#       "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
+# print("List of SNV Field already in Original Mutect2's VCF FORMAT columns: "
+#       "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
+# print("we will add DP to that column and << recalculate >> GT ala TGen; the original GTs are going to be "
+#       "transfered to INFO field;\n We also add AR to Genotype fields")
+# print("NOTE: the threshold_AR value is designed to assign the genotype to GT; if AR<=0.9, GT=0/1; above, "
+#       "GT=1/1 ; you have to be aware that 0/0 does not exist in that instance.")
 
 
 def parseArgs(scriptname, argv):
@@ -175,7 +176,7 @@ def parseArgs(scriptname, argv):
 	
 	values_to_return = (fvcf, new_vcf_name, column_tumor, column_normal)
 	
-	return (values_to_return)
+	return values_to_return
 
 
 def update_header(vcf):
@@ -304,90 +305,38 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 		raise Exception(msg)
 	## capturing original GTs and adding them to INFO field
 	v.INFO["OGT"] = ','.join([str(Genotype(li)) for li in v.genotypes])
-	v.INFO["OGQ"] = ','.join(v.format('GQ'))
-	v.INFO["OPL"] = ','.join(v.format('PL'))
-	v.INFO["OVAF"] = ','.join(v.format('VAF'))
+	# log.info(f'v.format("GQ") == {v.format("GQ")}')
+	# log.info(f'type of v.format("GQ") == {type(v.format("GQ"))}')
+	#
+	# log.info(f'v.format("PL") == {v.format("PL")}')
+	# log.info(f'type of v.format("PL") == {type(v.format("PL"))}')
+	#
+	# log.info(f'v.format("VAF") == {v.format("VAF")}')
+	# log.info(f'type of v.format("VAF") == {type(v.format("VAF"))}')
 	
-	## ReAssiging GT with value based on AR thresholds comparison to CONSTANT threshold value
-	
-	# GTs = [[0], [0]]  # need to init  list as we used index later for the list to replace values
-	# GTOs = [str(Genotype(li)) for li in v.genotypes]
-	# ARs = v.format('AR')
-	# idxN = 0 if col_normal == 10 else 1
-	# idxT = 1 if col_tumor == 11 else 0
-	# ## we need to keep the order of the information based on the index; so the list GTs MUST be ordered;
-	# GTs[idxN] = get_GT_value_from_GT_value(GTOs[idxN])  ## we do not modify the GT field for the Normal sample
-	# GTs[idxT] = get_GT_value_from_AR(ARs[idxT][0], GTOs[idxT])  ## we do modify the GT field for the Tumor Sample based on defined threshold
-	# v.set_format('GT', np.array(GTs))
-	# log.debug("v after reassigning GT: " + str(v))
+	# v.INFO["OGQ"] = ','.join(v.format('GQ'))  ## NOT WORKING --> RAISE ERROR numpy.ndarray
+	# v.INFO["OPL"] = ','.join(v.format('PL'))
+	# v.INFO["OVAF"] = ','.join(v.format('VAF'))
 	return v
 
 
-def process_records(tot_number_samples, v, col_tumor, col_normal):
-	'''
-    
-    :param tot_number_samples: number of samples in the VCF ; can be extracted from len(v.samples)
-    :param v: variant_record object from cyvcf2.VCF
-    :param filter: Boolean ; if true filter variant AlaTGen using DPs & ARs fields and hardocoded thresholds
-    :param filterByPairOrientation: bool True or False to filter by F1R2 R1F2; This is not StrandBias filtering.
-    :param col_tumor: integer value representing the column nnumberof the Tumor sample
-    :param col_normal: integer value representing the column nnumberof the Tumor sample
-    :return: variant record
-    '''
-	
-	v = add_new_flags_AR_to_FORMAT(tot_number_samples, v, col_tumor, col_normal)
-	if v is None: return v
-	return process_GTs(tot_number_samples, v, col_tumor, col_normal)
-
-
-def capture_ARs_and_DPs_for_FORMAT(tot_number_samples, v, col_tumor, col_normal):
-	'''
-
-	:param tot_number_samples:
-	:param v: variant_record object from cyvcf2.VCF
-	:param filter: Boolean ; if true filter variant AlaTGen using DPs & ARs fields and hardocoded thresholds
-	:param filterByPairOrientation: bool True or False to filter by F1R2 R1F2; This is not StrandBias filtering.
-	:param col_tumor: integer value representing the column nnumberof the Tumor sample
-	:param col_normal: integer value representing the column nnumberof the Tumor sample
+def process_records(tot_number_samples, var_rec, col_tumor, col_normal):
+	"""
+	:param tot_number_samples: number of samples in the VCF ; can be extracted from len(v.samples)
+	:type tot_number_samples: int
+	:param var_rec: variant_record object from cyvcf2.VCF
+	:type var_rec: cyvcf2.VCF
+	:param col_tumor: integer value representing the column number of the Tumor sample
+	:type col_tumor: int
+	:param col_normal: integer value representing the column number of the Tumor sample
+	:type col_normal: int
 	:return: variant record
-	'''
+	"""
 	
-	'''
-	Calculate the AR from AD values for each sample in the variant record v
-	The Total number of Sample in the VCF file is given by the variable tot_number_samples
-	We assume that the number of sample does not vary form one record to another as recommended in VCF specs
-	'''
-	
-	ARs, DPs = [], []
-	
-	# get REF and ALT bases ; note: ALT is a list not a character as multiple ALT can exist
-	## here we only deal with the first ALT ## TODO implement AR for each ALT unless vcf has been decomposed with vt or bcftools
-	## AD tag is present for each Sample in Mutect2 vcf; we will use this to add AR to the FORMAT columns for each sample
-	## looping through samples to calculate AR for each one
-	for sidx in range(tot_number_samples):
-		log.debug("DEBUG: " + str(v))
-		log.debug(str(v.format))
-		AD = v.format('AD')[sidx]
-		ref_tier1 = int(AD[0])
-		alt_tier1 = int(AD[1])
-		log.debug(str(ref_tier1))
-		log.debug(str(alt_tier1))
-		try:
-			AR = round(float(alt_tier1 / (alt_tier1 + ref_tier1)), 4)
-		except ZeroDivisionError:
-			## because of no coverage, i.e. no reads at that position
-			log.debug("You can't divide by zero!")
-			AR = round(float(0.0), 4)  ## so we make it zero manually
-		ARs.append(AR)
-		## as we now captured ref_tiers1 and alt_tiers1, we can use that for DP for each sample
-		DPs.append(ref_tier1 + alt_tier1)
-	
-	log.debug("DEBUG" + str(ARs))
-	
-	v.set_format('DP', np.array(DPs))
-	v.set_format('AR', np.array(ARs))
-	
-	return v
+	v = add_new_flags_AR_to_FORMAT(tot_number_samples, var_rec, col_tumor, col_normal)
+	if v is None:
+		return v
+	return process_GTs(tot_number_samples, v, col_tumor, col_normal)
 
 
 def is_obj_nan(obj):
@@ -416,7 +365,7 @@ def if_dot_assign_value_zero(obj, idx):
 		return 0
 
 
-def add_new_flags_AR_to_FORMAT(v, column_tumor, column_normal, tot_number_samples):
+def add_new_flags_AR_to_FORMAT(tot_number_samples, v, column_tumor, column_normal, ):
 	"""
     Calculate the AR for each sample in the variant record v
     The Total number of Sample in the VCF file is given by the variable tot_number_samples
@@ -434,8 +383,8 @@ def add_new_flags_AR_to_FORMAT(v, column_tumor, column_normal, tot_number_sample
 	# ##FORMAT=<ID=AF,Number=R,Type=Float,Description="Empirical allele frequency (AD / ADP)">
 	# ##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Empirical allele depth">
 	# So we do not need to check if AD, AF or ADP are present, we assume they are there in our use case from the TGen pipeline
-	
-	if 'VAF' in v.format:
+
+	if 'VAF' in v.FORMAT:
 		AR_tumor = v.format('VAF')[idxT]
 		AR_normal = v.format('VAF')[idxN]
 		if idxT == 0:
@@ -445,51 +394,6 @@ def add_new_flags_AR_to_FORMAT(v, column_tumor, column_normal, tot_number_sample
 	else:  # the else is entered only if there is no 'AD' flag in the octopus vcf
 		log.error("VAF not Found in the VCF; Are you sure you are using a vcf generated by a version of DeepSomatic v1.9.0-gpu or up?; Aborting.")
 		exit(2)
-	
-	# if 'AD' in v.FORMAT:
-	#     log.debug(str(v))
-	#     log.debug("v.format('AF') : {}".format(v.format('AF')))
-	#     log.debug("v.format('AF')[idxT] : {}".format(v.format('AF')[idxN]))
-	#     log.debug("v.format('AF')[idxN] : {}".format(v.format('AF')[idxT]))
-	#
-	#     AF_tumor = if_dot_assign_value_zero(v.format('AF')[idxT], 0)  # idxT to capture the list belonging to the tumor and 1 to capture the value for the ALT in case it is a
-	#     # dot ## need to make it generic for both allele, i.e. testing both in case the ref is also a dot
-	#     AF_normal = if_dot_assign_value_zero(v.format('AF')[idxN], 0)
-	#
-	#     AF_tumor = v.format('AF')[idxT]
-	#     AF_normal = v.format('AF')[idxN]
-	#     AF_tumor = [0 if np.isnan(x) else x for x in AF_tumor]
-	#     AF_normal = [0 if np.isnan(x) else x for x in AF_normal]
-	#
-	#     log.debug("value for AF_tumor: {}".format(str(AF_tumor)))
-	#     log.debug("value for AF_normal: {}".format(str(AF_normal)))
-	#     if 1 < len(AF_tumor) < 3:
-	#         AR_tumor = float(AF_tumor[1])
-	#     elif len(AF_tumor) == 1:
-	#         AR_tumor = float(max(AF_tumor[0]))
-	#     elif len(AF_tumor) >= 3:
-	#         AR_tumor = float(max(AF_tumor[1:]))
-	#     else:
-	#         log.error("AF_tumor value issue with value '{}'".format(str(AF_tumor)))
-	#         raise Exception("ISSUE with AF_tumor value; Missing Data or Unexpected values. Check your input; ")
-	#
-	#     if 1 < len(AF_normal) < 3:
-	#         AR_normal = float(AF_normal[1])
-	#     elif len(AF_tumor) == 1:
-	#         AR_normal = float(max(AF_normal[0]))
-	#     elif len(AF_tumor) >= 3:
-	#         AR_normal = float(max(AF_normal[1:]))
-	#     else:
-	#         log.error("AF_normal value issue with value '{}'".format(str(AF_normal)))
-	#         raise Exception("ISSUE with AR_normal value; Missing Data or Unexpected values. Check your input; ")
-	#
-	#     if idxT == 0:
-	#         ARs = [AR_tumor, AR_normal]
-	#     else:
-	#         ARs = [AR_normal, AR_tumor]
-	# else:  # the else is entered only if there is no 'AD' flag in the octopus vcf
-	#     log.error("AD not Found in the VCF; Are you sure you are using a vcf generated by a version of Octopus 0.7.4 or up?; Aborting.")
-	#     exit(2)
 	
 	# checking the values after processing and before adding them to the variant object v
 	log.debug("ARs  are  : " + str(ARs))
@@ -505,7 +409,8 @@ def add_new_flags_AR_to_FORMAT(v, column_tumor, column_normal, tot_number_sample
 if __name__ == "__main__":
 	
 	vcf_path, new_vcf_name, column_tumor, column_normal = parseArgs(argv[0], argv[1:])
-	
+	log.info(f'recap input data after parsing arguments:')
+	log.info(f'column_number normal and tumor: {column_normal} & {column_tumor}')
 	log.info(' '.join(["Constant AR threshold is: ", str(AR_threshold_for_GT)]))
 	
 	if new_vcf_name is None:
@@ -525,9 +430,10 @@ if __name__ == "__main__":
 	
 	log.info("looping on records ...")
 	for v in vcf:  ## v for variant which represents one "variant record"
-		v = process_records(tot_number_samples, v, column_tumor, column_normal)
-		if v is not None:
-			w.write_record(v)
+		log.debug(f'v: {v}')
+		rec = process_records(tot_number_samples, v, column_tumor, column_normal)
+		if rec is not None:
+			w.write_record(rec)
 	
 	w.close()
 	vcf.close()
