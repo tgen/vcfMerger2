@@ -720,6 +720,10 @@ function run_tool(){
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py"
 			process_vardictjava_vcf ${VCF}
 			;;
+	  deepsomatic|dps)
+			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/deepsomatic/deepsomatic.somatic.addFieldsForVcfMerger.py"
+			process_deepsomatic_vcf ${VCF}
+			;;
 		haplotypecaller|hc)
 		    PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py"
 		    process_haplotypecaller_vcf ${VCF}
