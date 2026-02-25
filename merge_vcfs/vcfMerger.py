@@ -272,14 +272,14 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		# step is ~10% of tot_variants and round to the nearest nth value
 		step = int(round(tot_variants_count / 10, -(len(str(round(tot_variants_count / 10))) - 1)))
 		for K in [k for k in sorted_keys]:  # sub is list__list__o.ovcf_variant ;
-			counter += 1;
+			counter += 1
 			if step > 1 and counter % step == 0:
 				log.info("processed {} variants ...".format(counter))
 			rebuilt_variant = dvm.rebuiltVariantLine(dd[K],
 			                                         dico_map_tool_acronym,
 			                                         lossless,
 			                                         ListFieldsToProcessForOurFORMATColumn,
-			                                         totnum_samples);  ## dd[K} represent a List of Variants (LV)
+			                                         totnum_samples)   ## dd[K} represent a List of Variants (LV)
 			of.write(rebuilt_variant + linesep)
 		log.info("total processed variants: {}".format(counter))
 
@@ -309,7 +309,7 @@ def main(args, cmdline):
 	if args["dict"]:
 		ref_genome_fasta_dict = args["dict"]
 		if not path.exists(ref_genome_fasta_dict):
-			sys.exit("dictionnary file of reference genome {} NOT FOUND; Aborting.".format(ref_genome_fasta_dict))
+			exit("dictionnary file of reference genome {} NOT FOUND; Aborting.".format(ref_genome_fasta_dict))
 
 	lvcfs = []
 	if args["vcfs"]:
