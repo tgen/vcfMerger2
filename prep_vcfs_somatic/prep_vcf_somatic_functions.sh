@@ -300,13 +300,13 @@ function check_and_update_sample_names_for_deepsomatic(){
     bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" | bcftools view -O z -o "${VCF_NORMAL_TEMP}"
     check_ev $? "pipe to make normal VCF before merging with Tumor VCF"
 
-    echo -e "bcftools index --threads 2 \"${VCF_NORMAL_TEMP}\""
+    echo -e "bcftools index --threads 2 \"${VCF_NORMAL_TEMP}\"" 1>&2
     bcftools index --threads 2 "${VCF_NORMAL_TEMP}"
     check_ev $? "FAILED indexing VCF ${VCF_NORMAL_TEMP}"
 
     ## Merging TUMOR and NORMAL vcfs
-    echo -e "MERGING STEP\n
-    bcftools merge --threads 2 -O z -o \"${VCF}_temp.vcf.gz\" \"${VCF_NORMAL_TEMP}\" \"${VCF}\" " 1>&2
+    echo -e "MERGING STEP\nbcftools merge --threads 2 -O z -o \"${VCF}_temp.vcf.gz\" \"${VCF_NORMAL_TEMP}\" \"${VCF}\" " 1>&2
+
     bcftools merge --threads 2 -O z -o "${VCF}_temp.vcf.gz" "${VCF_NORMAL_TEMP}" "${VCF}"
     check_ev $? "bcftools merge normal_and_tumor vcfs"
 
