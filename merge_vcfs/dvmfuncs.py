@@ -558,20 +558,21 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 	delim = ";"  # if len(currentNewRebuiltINFO) == 0 else ";" ;
 	if toolname_acronym is not None:
 		toolname = toolname_acronym
-
+	# log.info(f'toolname == {toolname} && field == {field}  &&   Var_rec == {tv}')
+	list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
+	
+	
 	for idx_col_sample in range(0, totnum_samples):  # ## loop over the column that represent the SAMPLES
-		list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
-		# for each recaptured values
 		prefix_name = "_".join([toolname, "S" + str(idx_col_sample+1), field])
-		value_associated_to_prefix_name = "."
-		for idx_field in range(0, len(list_values_current_field)):
-			if isinstance(list_values_current_field[idx_field], list):
-				value_associated_to_prefix_name = str(list_values_current_field[idx_field][0])
-			else:
-				value_associated_to_prefix_name = str(list_values_current_field[idx_field])
+		value_associated_to_prefix_name = list_values_current_field[idx_col_sample]
 
-			if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan":
-				value_associated_to_prefix_name = "."
+		if isinstance(value_associated_to_prefix_name, list):
+			value_associated_to_prefix_name = ','.join(map(str, value_associated_to_prefix_name))
+
+		if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan" or value_associated_to_prefix_name == "":
+			value_associated_to_prefix_name = "."
+			if field == "GT":
+				value_associated_to_prefix_name = "./."
 
 		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
 
@@ -625,19 +626,28 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 	newINFO = renameINFO_IDS(wtv, get_acronym_for_current_tool(wtn, dico_map_tool_acronym))  # ## LV[0][0] is the toolname which has precedence for that current call
 
 	INFOfromOtherTools = ""
-	# print("\n" + "#" * 50 + "\nnew ------> ALT is :" + str(wtv.ALT))
 	# ## we process the Winner Tool first
 
 	if len(LV) == 1:
 		for field in wtv.FORMAT:
 			if field not in list_Fields_Format:  # ## we add the data that are not going to be in the new FORMAT
-				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn, get_acronym_for_current_tool(wtn,
-																																								   dico_map_tool_acronym))
+				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+				                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 
 	# ## Here we will capture the INFO field from the other tools because they came second in the list;
 	# ## we process the calls from the other tools
 	# ## we add their data from ALL the fields and column if lossless ; or just from their INFO field otherwise
+	addition_performed = False
 	for i in range(1, len(LV)):  # i represent the index of the variant in the list LV for current
+		
+		if not addition_performed:
+			for field in wtv.FORMAT:  ## we need this for loop to add the TAGs from FORMAT field into INFO for the winner tool (first tool in precedence) when more than one tool call the current variant wtv
+				if field not in list_Fields_Format:
+					INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+			                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
+			addition_performed = True
+				
+		
 		# position ; If we have only one tool which called that variant, we never enter this for loop;
 		tn = get_acronym_for_current_tool(LV[i][0], dico_map_tool_acronym)  # In the list of 2 elements, the first is the toolname to remember the file of origin
 		tv = LV[i][1]  # the second element is the variant object (tv stands for tool variant)
