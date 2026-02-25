@@ -262,22 +262,18 @@ function check_and_update_sample_names_for_deepsomatic(){
 	## CHECK SAMPLES NAMES
 	##@@@@@@@@@@@@@@@@@@@@@@@
 	## so far the sample name should be NORMAL, TUMOR or the SM tag from BAM file ;
-	## if not ##TODO revise the way we handle the sample names to make it much more generic;
-	## will need discussion to do so, and will need to capture all the use cases possible ;
 
-  echo "VCF=====  ${1}" 1>&2
+  echo "DeepSomatic VCF =  ${1}" 1>&2
 	local VCF=$1
 	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
 	echo -e "Here is the values of some Global Variable shared across script:" 1>&2
 	echo " in ${FUNCNAME} :  ${VCF} ::: ${TOOLNAME} ::: ${NORMAL_SNAME} ::: ${TUMOR_SNAME} " 1>&2
 
   COL11_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f11`
-  set -x
   local F1="${VCF%.*}"
-#  local F2="${F1%.*}"
   local VCF_NORMAL_TEMP="${F1%.*}.normal.vcf.gz"
   echo -e "VCF_NORMAL_TEMP == ${VCF_NORMAL_TEMP}" 1>&2
-  ## NOTE: REQUIREMENT: FORMAT must be as with following tags in deepsomatic output vcf: GT:GQ:DP:AD:VAF:PL
+  ## NOTE: REQUIREMENT: FORMAT FIELD must be with following tags in deepsomatic output vcf: GT:GQ:DP:AD:VAF:PL
   VALUES_FOR_FORMAT_IN_NORMAL="./.:.:.:.,.:.:.,.,."
 
   if [[ "${COL11_VALUE}" == "" ]]
@@ -304,31 +300,27 @@ function check_and_update_sample_names_for_deepsomatic(){
     bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" | bcftools view -O z -o "${VCF_NORMAL_TEMP}"
     check_ev $? "pipe to make normal VCF before merging with Tumor VCF"
 
+    echo -e "bcftools index --threads 2 \"${VCF_NORMAL_TEMP}\""
     bcftools index --threads 2 "${VCF_NORMAL_TEMP}"
     check_ev $? "FAILED indexing VCF ${VCF_NORMAL_TEMP}"
 
     ## Merging TUMOR and NORMAL vcfs
     echo -e "MERGING STEP\n
-    bcftools merge --threads 2 -O z -o \"${VCF}_temp.vcf.gz\" \"${VCF_NORMAL_TEMP}\" \"${VCF}\"
-    " 1>&2
+    bcftools merge --threads 2 -O z -o \"${VCF}_temp.vcf.gz\" \"${VCF_NORMAL_TEMP}\" \"${VCF}\" " 1>&2
     bcftools merge --threads 2 -O z -o "${VCF}_temp.vcf.gz" "${VCF_NORMAL_TEMP}" "${VCF}"
     check_ev $? "bcftools merge normal_and_tumor vcfs"
-    local VCF="${VCF}_temp.vcf.gz"
-    bcftools index --threads 2 ${VCF}
-    ls -lh ${VCF} 1>&2
-  fi
 
+    local VCF="${VCF}_temp.vcf.gz"
+
+    bcftools index --threads 2 ${VCF}
+  fi
   echo -e "VCF now is equal to : ${VCF}\n" 1>&2 
 
 	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
 	COL10_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f10`
 	COL11_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f11`
 
-	echo -e "
-	\${COL10_VALUE} == ${COL10_VALUE}
-	\${COL11_VALUE} == ${COL11_VALUE}
-	" 1>&2
-
+	echo -e "\${COL10_VALUE} == ${COL10_VALUE}\n\${COL11_VALUE} == ${COL11_VALUE}" 1>&2
 
   if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ;
   then
@@ -368,7 +360,6 @@ function check_and_update_sample_names_for_deepsomatic(){
 	## return value which is the vcf filename
 	echo "${VCF_OUT}"
 }
-
 
 
 function check_and_update_sample_names(){
