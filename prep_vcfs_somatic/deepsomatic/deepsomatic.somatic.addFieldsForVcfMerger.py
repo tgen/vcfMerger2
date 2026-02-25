@@ -325,7 +325,7 @@ def if_dot_assign_value_zero(obj, idx):
 	try:
 		if obj == "." or is_obj_nan(float(obj)):
 			return 0
-		elif str(obj) != "." and str(obj) != "-2147483648" and str(obj) != "./.":
+		elif str(obj) != "." and str(obj) != "-2147483648" and str(obj) != "./."  and '2147483648' not in str(obj) :
 			return obj
 		else:
 			# Negative value was causing issue and adding more bytes to a file; So we switch to Zero number
