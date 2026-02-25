@@ -1347,7 +1347,7 @@ def make_parser_args():
     required.add_argument('-o', '--merged-vcf-outfilename',
                           required=isRequired,
                           action=UniqueStore,
-                          help='outfilename for the merge vcf (can be relative or full path)')
+                          help='outfilename for the merged vcf (can be relative or full path) with extension vcf. Do not add the ".gz" in the filename ')
     
     required.add_argument('--bams',
                           required=False,
