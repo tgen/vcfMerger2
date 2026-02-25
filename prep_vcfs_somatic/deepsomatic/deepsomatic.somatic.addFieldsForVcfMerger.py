@@ -59,36 +59,36 @@ class Genotype(object):
 	__repr__ = __str__
 
 
-class GenotypeInv(object):
-	
-	def __init__(self, li):
-		
-		self.allele1 = li[0]
-		self.phased = bool(0) if li[1] == "/" else bool(1)
-		self.allele2 = li[2]
-		self.GT = []
-	
-	def get_gt_numpy_compatible(self):
-		self.GT = []  ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_
-		if self.phased:
-			if self.allele1 != ".":
-				self.GT.append((2 * int(self.allele1)) + 3)
-			else:
-				self.GT.append(1)
-			if self.allele2 != ".":
-				self.GT.append((2 * int(self.allele2)) + 3)
-			else:
-				self.GT.append(1)
-		else:
-			if self.allele1 != ".":
-				self.GT.append((2 * int(self.allele1)) + 2)
-			else:
-				self.GT.append(0)
-			if self.allele2 != ".":
-				self.GT.append((2 * int(self.allele2)) + 2)
-			else:
-				self.GT.append(0)
-		return self.GT
+# class GenotypeInv(object):
+#
+# 	def __init__(self, li):
+#
+# 		self.allele1 = li[0]
+# 		self.phased = bool(0) if li[1] == "/" else bool(1)
+# 		self.allele2 = li[2]
+# 		self.GT = []
+#
+# 	def get_gt_numpy_compatible(self):
+# 		self.GT = []  ## we need to reinit the GT list here otherwise shared by all instances. Weird because we reinitiated it already in the _init_
+# 		if self.phased:
+# 			if self.allele1 != ".":
+# 				self.GT.append((2 * int(self.allele1)) + 3)
+# 			else:
+# 				self.GT.append(1)
+# 			if self.allele2 != ".":
+# 				self.GT.append((2 * int(self.allele2)) + 3)
+# 			else:
+# 				self.GT.append(1)
+# 		else:
+# 			if self.allele1 != ".":
+# 				self.GT.append((2 * int(self.allele1)) + 2)
+# 			else:
+# 				self.GT.append(0)
+# 			if self.allele2 != ".":
+# 				self.GT.append((2 * int(self.allele2)) + 2)
+# 			else:
+# 				self.GT.append(0)
+# 		return self.GT
 
 
 def usage(scriptname):
@@ -110,16 +110,6 @@ def usage(scriptname):
 	print("if not like this, update manually your vcf file to these specs; and the vcf has to be decomposed as "
 	      "well ... ")
 	print("or you may use the script 'prep_vcf_somatic.sh' to do it for you\n")
-
-
-# print("List of INDEL Field already in Original Mutect2's VCF FORMAT columns: "
-#       "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
-# print("List of SNV Field already in Original Mutect2's VCF FORMAT columns: "
-#       "GT:AD:AF:F1R2:F2R1:MBQ:MFRL:MMQ:MPOS:SA_MAP_AF:SA_POST_PROB ")
-# print("we will add DP to that column and << recalculate >> GT ala TGen; the original GTs are going to be "
-#       "transfered to INFO field;\n We also add AR to Genotype fields")
-# print("NOTE: the threshold_AR value is designed to assign the genotype to GT; if AR<=0.9, GT=0/1; above, "
-#       "GT=1/1 ; you have to be aware that 0/0 does not exist in that instance.")
 
 
 def parseArgs(scriptname, argv):
@@ -189,16 +179,7 @@ def update_header(vcf):
 	vcf.add_info_to_header(
 		{'ID': 'OGT', 'Description': ''.join(['Original DeepSomatic GT fields for each sample before reassigning the GT value based on AR threshold (GT_0/1 < AR_', str(AR_threshold_for_GT),
 		                                      ' and GT_1/1 >= AR_', str(AR_threshold_for_GT), ' )']), 'Type': 'String', 'Number': '.'})
-	
-	vcf.add_info_to_header(
-		{'ID': 'OGQ', 'Description': ''.join(['Original DeepSomatic GQ fields for each sample. Conditional genotype quality']), 'Type': 'Integer', 'Number': '1'})
-	
-	vcf.add_info_to_header(
-		{'ID': 'OPL', 'Description': ''.join(['Original DeepSomatic PL fields for each sample. Phred-scaled genotype likelihoods rounded to the closest integer']), 'Type': 'Integer', 'Number': 'G'})
-	
-	vcf.add_info_to_header(
-		{'ID': 'OVAF', 'Description': ''.join(['Original DeepSomatic VAF fields for each sample. Variant allele fractions.']), 'Type': 'Float', 'Number': 'A'})
-	
+#
 	## if Adding Fields to FORMAT field
 	vcf.add_format_to_header({'ID': 'AR',
 	                          'Description': 'Alt tier1 Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT',
@@ -206,87 +187,87 @@ def update_header(vcf):
 	
 	return vcf
 
-
-def get_GT_value_from_AR(AR_value, GT_value):
-	'''
-		return the GT value according to AR threshold values
-		This is based off TGen's current thresholds of assigning the genotype
-		1/1 if AR>=0.90 and 0/1 if AR<0.90
-
-		Genotype representation for cyvcf2
-		0 --> Unknown ; 1 --> Unknown_phased
-		2 --> 0     ; 3 --> 0_PHASED_if_secondValue
-		4 --> 1     ; 5 --> 1_PHASED_if_secondValue
-		6 --> 2     ; 7 --> 2_PHASED_if_secondValue
-		[0,0] == ./. ; [1,1] == .|.
-		[1,0] == ./. ; [0,1] == .|.
-		[2,2] == 0/0 ; [2,2] == 0/0
-		[2,3] == 0|0 ; [3,2] == 0/0
-		[2,4] == 0/1 ; [4,2] == 1/0
-		[2,5] == 0|1 ; [5,2] == 1/0
-		[2,6] == 0/2 ; [6,2] == 2/0
-		[3,6] == 0/2 ; [6,3] == 2|0
-		[4,6] == 1/2 ; [6,4] == 2/1
-		[5,6] == 1/2 ; [6,5] == 2|1
-		[9,8] == 3/3 ; [8,9] == 3|3
-
-		[2,2] == 0/0 ; [4,4] == 1/1
-		[3,3] == 0|0 ; [5,5] == 1|1
-		[6,6] == 2/2 ; [7,7] == 2|2
-		[8,8] == 3/3 ; [9,9] == 3|3
-
-		return [int(2),int(4)] ; --> 0/1
-		return [int(4),int(4)] ; --> 1/1
-
-		'''
-	log.debug("AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
-	
-	try:
-		if AR_value < AR_threshold_for_GT:
-			if "|" in GT_value:
-				return [2, 5]
-			return [2, 4]
-		if AR_value >= AR_threshold_for_GT:
-			if "|" in GT_value:
-				return [5, 5]
-			return [4, 4]
-	except ValueError:
-		print("ERROR: AR value not a number")
-	except TypeError:
-		print("ERROR: AR value not of type Float")
-
-
-def get_GT_value_from_GT_value(GT_value):
-	'''
-		return the numpy array compatible GT value according to string GT value
-		See also Genotype representation for cyvcf2 in Class Genotype
-	'''
-	
-	dico_mapping_GT = {
-		"./.": [0, 0],
-		"0/0": [2, 2],
-		"0/1": [2, 4], "1/0": [4, 2], "1/1": [4, 4],
-		"0/2": [2, 6], "2/0": [6, 2], "2/2": [6, 6],
-		"0/3": [2, 8], "3/0": [8, 2], "3/3": [8, 8],
-		".|.": [1, 1],
-		"0|0": [3, 3],
-		"0|1": [2, 5], "1|0": [4, 3],
-		"0|2": [2, 7], "2|0": [6, 3],
-		"0|3": [2, 9], "3|0": [8, 3], "3|3": [8, 9],
-		"1|1": [4, 5], "1|2": [4, 7], "1|3": [4, 9], "1|4": [4, 11],
-		"2|2": [6, 7], "2|3": [6, 9], "2|4": [6, 11], "2|5": [6, 13],
-		
-	}  ## unused value ; kept only for the mapping informatino
-	
-	x = GenotypeInv(list(GT_value))
-	try:
-		return x.get_gt_numpy_compatible()
-	except ValueError:
-		print("ERROR: GT value ")
-	except TypeError:
-		print("ERROR: GT value not of right type ")
-	except Exception as e:
-		print("ERROR: Unknown Error ; Check with the Author :-( ; " + str(e))
+#
+# def get_GT_value_from_AR(AR_value, GT_value):
+# 	'''
+# 		return the GT value according to AR threshold values
+# 		This is based off TGen's current thresholds of assigning the genotype
+# 		1/1 if AR>=0.90 and 0/1 if AR<0.90
+#
+# 		Genotype representation for cyvcf2
+# 		0 --> Unknown ; 1 --> Unknown_phased
+# 		2 --> 0     ; 3 --> 0_PHASED_if_secondValue
+# 		4 --> 1     ; 5 --> 1_PHASED_if_secondValue
+# 		6 --> 2     ; 7 --> 2_PHASED_if_secondValue
+# 		[0,0] == ./. ; [1,1] == .|.
+# 		[1,0] == ./. ; [0,1] == .|.
+# 		[2,2] == 0/0 ; [2,2] == 0/0
+# 		[2,3] == 0|0 ; [3,2] == 0/0
+# 		[2,4] == 0/1 ; [4,2] == 1/0
+# 		[2,5] == 0|1 ; [5,2] == 1/0
+# 		[2,6] == 0/2 ; [6,2] == 2/0
+# 		[3,6] == 0/2 ; [6,3] == 2|0
+# 		[4,6] == 1/2 ; [6,4] == 2/1
+# 		[5,6] == 1/2 ; [6,5] == 2|1
+# 		[9,8] == 3/3 ; [8,9] == 3|3
+#
+# 		[2,2] == 0/0 ; [4,4] == 1/1
+# 		[3,3] == 0|0 ; [5,5] == 1|1
+# 		[6,6] == 2/2 ; [7,7] == 2|2
+# 		[8,8] == 3/3 ; [9,9] == 3|3
+#
+# 		return [int(2),int(4)] ; --> 0/1
+# 		return [int(4),int(4)] ; --> 1/1
+#
+# 		'''
+# 	log.debug("AR =" + str(AR_value) + " ---  AR_threshold = " + str(AR_threshold_for_GT))
+#
+# 	try:
+# 		if AR_value < AR_threshold_for_GT:
+# 			if "|" in GT_value:
+# 				return [2, 5]
+# 			return [2, 4]
+# 		if AR_value >= AR_threshold_for_GT:
+# 			if "|" in GT_value:
+# 				return [5, 5]
+# 			return [4, 4]
+# 	except ValueError:
+# 		print("ERROR: AR value not a number")
+# 	except TypeError:
+# 		print("ERROR: AR value not of type Float")
+#
+#
+# def get_GT_value_from_GT_value(GT_value):
+# 	'''
+# 		return the numpy array compatible GT value according to string GT value
+# 		See also Genotype representation for cyvcf2 in Class Genotype
+# 	'''
+#
+# 	dico_mapping_GT = {
+# 		"./.": [0, 0],
+# 		"0/0": [2, 2],
+# 		"0/1": [2, 4], "1/0": [4, 2], "1/1": [4, 4],
+# 		"0/2": [2, 6], "2/0": [6, 2], "2/2": [6, 6],
+# 		"0/3": [2, 8], "3/0": [8, 2], "3/3": [8, 8],
+# 		".|.": [1, 1],
+# 		"0|0": [3, 3],
+# 		"0|1": [2, 5], "1|0": [4, 3],
+# 		"0|2": [2, 7], "2|0": [6, 3],
+# 		"0|3": [2, 9], "3|0": [8, 3], "3|3": [8, 9],
+# 		"1|1": [4, 5], "1|2": [4, 7], "1|3": [4, 9], "1|4": [4, 11],
+# 		"2|2": [6, 7], "2|3": [6, 9], "2|4": [6, 11], "2|5": [6, 13],
+#
+# 	}  ## unused value ; kept only for the mapping informatino
+#
+# 	x = GenotypeInv(list(GT_value))
+# 	try:
+# 		return x.get_gt_numpy_compatible()
+# 	except ValueError:
+# 		print("ERROR: GT value ")
+# 	except TypeError:
+# 		print("ERROR: GT value not of right type ")
+# 	except Exception as e:
+# 		print("ERROR: Unknown Error ; Check with the Author :-( ; " + str(e))
 
 
 def process_GTs(tot_number_samples, v, col_tumor, col_normal):
@@ -305,18 +286,6 @@ def process_GTs(tot_number_samples, v, col_tumor, col_normal):
 		raise Exception(msg)
 	## capturing original GTs and adding them to INFO field
 	v.INFO["OGT"] = ','.join([str(Genotype(li)) for li in v.genotypes])
-	# log.info(f'v.format("GQ") == {v.format("GQ")}')
-	# log.info(f'type of v.format("GQ") == {type(v.format("GQ"))}')
-	#
-	# log.info(f'v.format("PL") == {v.format("PL")}')
-	# log.info(f'type of v.format("PL") == {type(v.format("PL"))}')
-	#
-	# log.info(f'v.format("VAF") == {v.format("VAF")}')
-	# log.info(f'type of v.format("VAF") == {type(v.format("VAF"))}')
-	
-	# v.INFO["OGQ"] = ','.join(v.format('GQ'))  ## NOT WORKING --> RAISE ERROR numpy.ndarray
-	# v.INFO["OPL"] = ','.join(v.format('PL'))
-	# v.INFO["OVAF"] = ','.join(v.format('VAF'))
 	return v
 
 
