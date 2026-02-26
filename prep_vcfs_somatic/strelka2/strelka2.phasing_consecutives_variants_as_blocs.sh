@@ -5,6 +5,7 @@ VCF=$1
 TBAM=$2
 SNAME_T=$3
 CPUS=$4
+DIR_PATH_TO_PHASER_EXE="$5"
 
 set -euo pipefail
 #module add python/3.6.0 samtools/1.9 R/3.4.1 BEDTools/2.26.0
@@ -14,7 +15,6 @@ echo -e "expected phASER executable: ${PHASER_EXE}"
 DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 SCRIPT_GET_CONSPOS=${DIR_PATH_TO_SCRIPTS}/get_consecutive_list_of_numbers_from_vcfFileInput.py
 SCRIPT_PYTHON_RECOMPOSE_VARIANTS=${DIR_PATH_TO_SCRIPTS}/strelka2.recompose_phased_variants.py
-
 
 
 ## FUNCTIONS
@@ -45,7 +45,25 @@ echo -e "USAGE: $0 \$VCF.gz \$TBAM \$SNAME_T \$CPUS \n1) compressed_VCF\n2) BAM 
 }
 
 ## checking section
-if [[ $# -ne 4 ]] ; then usage ; exit 1 ; fi
+if [[ $# -ne 5 ]] ; then usage ; exit 1 ; fi
+
+if [[ "${DIR_PATH_TO_PHASER_EXE}" != "" ]]
+then
+  if [[ -e "${DIR_PATH_TO_PHASER_EXE}" ]]
+  then
+    PHASER_EXE="${DIR_PATH_TO_PHASER_EXE}/phaser.py"
+    if [[ ! -e "${PHASER_EXE}" ]]
+    then
+      echo -e "ERROR: PATH NOT FOUND for: ${PHASER_EXE} "
+      exit 1
+    fi
+    export PATH=${PHASER_EXE}:${PATH}
+  else
+    echo -e "ERROR: PATH NOT FOUND for: ${DIR_PATH_TO_PHASER_EXE} "
+    exit 1
+  fi
+fi
+
 for F in ${SCRIPT_GET_CONSPOS} ${VCF} ${TBAM} ; do checkFile ${F} ; done
 for EXE in samtools bcftools phaser.py ; do check_exe_in_path ${EXE} ; done
 if [[ ${CPUS} -ge ${MAX_CPUS_IN_CPUINFO} ]] ; then CPUS=$((${MAX_CPUS_IN_CPUINFO}-1)) ; fi
@@ -83,8 +101,7 @@ fi
 
 VCF=${VCF_ORIGINAL_INPUT}
 
-
-if [[ 1 == 1 ]] ;then
+if [[ 1 -eq 1 ]] ;then
 
 		echo -e "Keeping out the Indels as phASER exclude them from phasing anyway"   1>&2
 		## We had to do this due to encountering an edge case mentioned in issue #27 in github
