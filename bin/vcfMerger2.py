@@ -1022,9 +1022,10 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
             "--germline-snames as well ; if only somatic, provide only tumor-sname and normal-sname")
         sys.exit(-1)
     
-    if dir_path_to_phaser is not None and not os.path.exists(dir_path_to_phaser):
-        log.error(f'Path where phaser.py should be was NOT FOUND; check the give path and modify << {dir_path_to_phaser} >>')
-        sys.exit(-1)
+    if dir_path_to_phaser is not None and dir_path_to_phaser != "":
+        if not os.path.exists(dir_path_to_phaser):
+            log.error(f'Path where phaser.py should be was NOT FOUND; check the give path and modify << {dir_path_to_phaser} >>')
+            sys.exit(-1)
 
 
 def main(args, cmdline):
@@ -1179,7 +1180,7 @@ def main(args, cmdline):
     dir_path_to_phaser = ""
     if args["dir_path_to_phaser"]:
         dir_path_to_phaser = args['dir_path_to_phaser']
-        log.info("directory to phaser has been provide by user: " + dir_path_to_phaser)
+        log.info("directory to phaser has been provided by user: " + dir_path_to_phaser)
         os.environ['DIR_PATH_TO_PHASER_EXE'] = dir_path_to_phaser
     
     dirout = os.curdir
