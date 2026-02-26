@@ -651,7 +651,7 @@ function process_strelka2_vcf(){
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	echo "after normalize ((((((   ${VCF}"  1>&2
-	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8 ""
+	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8 "${DIR_PATH_TO_PHASER_EXE}"
 	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
 	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
@@ -776,7 +776,9 @@ function run_tool(){
 
 function main(){
 
-  echo -e "DIR_PATH_TO_PHASER_EXE == $( env | grep "DIR_PATH_TO_PHASER_EXE")"
+  echo -e "IS VAR DIR_PATH_TO_PHASER_EXE SET? ==>>>  $( env | grep "DIR_PATH_TO_PHASER_EXE")" 1>&2
+  if [[ "$( env | grep "DIR_PATH_TO_PHASER_EXE")" != "" ]] ; then export PATH=${DIR_PATH_TO_PHASER_EXE}:${PATH} ; fi
+
   echo -e "VCF_ALL_CALLS == ${VCF_ALL_CALLS}" 1>&2
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
