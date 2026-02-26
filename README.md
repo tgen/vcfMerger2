@@ -18,7 +18,7 @@ vcfMerger2 takes `RAW` VCFs as inputs and outputs a Merged VCF. [click here for 
 
 
 #### Somatic or Germline? 
-VcfMerger2 has been developped to merge SOMATIC vcfs into one vcf. The current release can merge from 2 to N vcfs.  
+VcfMerger2 has been developed to merge SOMATIC vcfs into one vcf. The current release can merge from 2 to N vcfs.  
 To see the list  variant callers compatible with vcfMerger2 go to "Variant_Callers_compatible" wiki page
 
 Merging GERMLINE vcfs will be available in the next version; some features are already there but are still under development and should be consider as in Alpha version. 
