@@ -734,7 +734,7 @@ function run_tool(){
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/mutect2/mutect2.somatic.addFieldsForVcfMerger.py"
 			process_mutect2_vcf ${VCF}
 			;;
-		lancet|lct|lan)
+		lancet|lct|lan|lancet2)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/lancet/lancet.somatic.addFieldsForVcfMerger.py"
 			process_lancet_vcf ${VCF}
 			;;

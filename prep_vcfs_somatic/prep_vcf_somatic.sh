@@ -40,7 +40,7 @@ export DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 echo -e "DIR_PATH_TO_SCRIPTS=${DIR_PATH_TO_SCRIPTS}"
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="lancet,  mutect2,  octopus, strelka2, vardict, vardictjava, VarDictJava, deepsomatic, or their corresponding abbreviations, LAN|LCT, MUT,
+VALID_TOOLNAMES="lancet,  lancet2, mutect2,  octopus, strelka2, vardict, vardictjava, VarDictJava, deepsomatic, or their corresponding abbreviations, LAN|LCT, MUT,
 OCT, SLK, VDJ|VDT, DPS, respectively [case Insensitive]"  ## if tools are later added, we will update this variable along
 # with the
 # function run_tool(), where the case statement will need to be updated.
