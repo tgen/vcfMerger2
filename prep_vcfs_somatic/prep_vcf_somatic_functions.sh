@@ -777,7 +777,11 @@ function run_tool(){
 function main(){
 
   echo -e "IS VAR DIR_PATH_TO_PHASER_EXE SET? ==>>>  $( env | grep "DIR_PATH_TO_PHASER_EXE")" 1>&2
-  if [[ "$( env | grep "DIR_PATH_TO_PHASER_EXE")" != "" ]] ; then export PATH=${DIR_PATH_TO_PHASER_EXE}:${PATH} ; fi
+  if [[ "$( env | grep "DIR_PATH_TO_PHASER_EXE")" != "" ]] ; then
+    export PATH=${DIR_PATH_TO_PHASER_EXE}:${PATH}
+  else
+    export DIR_PATH_TO_PHASER_EXE=''
+  fi
 
   echo -e "VCF_ALL_CALLS == ${VCF_ALL_CALLS}" 1>&2
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
