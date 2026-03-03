@@ -135,7 +135,7 @@ def process_merging(lvcfs, ltoolnames, list_tool_precedence_order, dico_map_tool
 		'##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">',
 		'##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth at locus in Sample">',
 		'##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed from chosen prevalent tool">',
-		'##FORMAT=<ID=AR,Number=1,Type=Float,Description="Allele frequency of ALT allele from chosen prevalent tool">'
+		'##FORMAT=<ID=AR,Number=A,Type=Float,Description="Allele frequency of ALT allele from chosen prevalent tool">'
 	]
 
 	TN_FLAGS = []
