@@ -841,8 +841,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
             cpus = len(data.keys()) if len(data.keys()) > 2 else 2
             zvcf = str(merged_vcf_outfilename + ".gz")
             log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
-            mycmd = ["bcftools view --threads", cpus, "-O z -o ", zvcf, merged_vcf_outfilename, ";",
-                     "bcftools index --threads", cpus, "--tbi ", zvcf]
+            mycmd = ["bcftools view --threads", cpus, "-O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --threads", cpus, "--tbi ", zvcf]
             subprocess_cmd(" ".join(str(x) for x in mycmd))
 
 
