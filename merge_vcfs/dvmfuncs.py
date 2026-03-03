@@ -432,11 +432,12 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 		list_value_current_field = str(tv).split("\t")[((9 + idx_col_sample) - 1)].split(":")  # ## column 10 is the
 		# first sample, column 11, the second sample, etc.
 		# log.info("VFF --> " + str(list_value_current_field))
-		log.debug(toolname + "  VFF --> " + str(list_value_current_field))
+		log.info(toolname + "  VFF --> " + str(list_value_current_field))
 
 		for idx_field in range(0, len(list_format_fields)):
 			prefix_name = "_".join([toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")])
 			value_associated_to_prefix_name = list_value_current_field[idx_field].strip("\n")
+			# currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field], str(value_associated_to_prefix_name))])])
 			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
 
 	return currentNewRebuiltINFO.strip(';')
@@ -517,10 +518,10 @@ def process_Unknown_field(field, totnum_samples, dicField, v):
 		:return: the updated dictField
 	"""
 	if field not in v.FORMAT:
-		log.debug("%" * 10 + " UNKOWN not FOUND in FORMAT " + "%" * 10)
+		log.debug("%" * 10 + " UNKNOWN not FOUND in FORMAT " + "%" * 10)
 		for i in range(totnum_samples):
 			if not len(dicField[i]) == 0:
-				dicField[i] = ":".join([dicField[i], str(".")])
+				dicField[i] = ":".join([force_dot_when_nan(field, dicField[i]), str(".")])
 			else:
 				dicField[i] = str(".")
 
@@ -535,16 +536,35 @@ def process_known_field(field, totnum_samples, dicField, v):
 	:param v: v stands for variant and is the object variant created by cyvcf2 module
 	:return: the updated dictField
 	"""
-	log.debug(v.format(field))
+	log.debug(f'field == {field} ---> v.format(field) == {v.format(field)}')
+	log.debug(f'field == {field} ---> len(v.format(field)) == {len(v.format(field))}')
 	nfor = v.format(field).tolist()  # ## return a numpy array  ; we need to manage this array for each recaptured field
 	log.debug("In process known for flag << " + field + " >> : " + str(nfor))
 	for i in range(len(nfor)):
 		if not len(dicField[i]) == 0:
-			dicField[i] = ":".join([dicField[i], str(','.join(str(e) for e in nfor[i] if e != ","))])
+			dicField[i] = ":".join([dicField[i], str(','.join(force_dot_when_nan(field, str(e)) for e in nfor[i] if e != ","))])
 		else:
-			dicField[i] = str(','.join(str(e) for e in nfor[i] if e != ","))
+			dicField[i] = str(','.join(force_dot_when_nan(field, str(e))  for e in nfor[i] if e != ","))
 		log.debug(str(dicField[i]))
 
+def force_dot_when_nan(field, s):
+	"""
+	param s: this is a string we need to check if equivalent to nan or the integer/float overflow
+	type s: string
+	"""
+	log.debug(f'in force_dot_when_nan function for field == {field} and with its = {s}')
+	if s == "nan":
+		return "."
+	if s == "-2147483648":
+		return "."
+	if "," in s:
+		new_s = ""
+		for item in s.split(','):
+			if item == "-2147483648" or item == "nan":
+				item = "."
+			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
+		s = new_s
+	return s
 
 def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, totnum_samples, tv, toolname, toolname_acronym=None):
 	"""
@@ -573,7 +593,8 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 			value_associated_to_prefix_name = "."
 			if field == "GT":
 				value_associated_to_prefix_name = "./."
-
+		
+		value_associated_to_prefix_name = force_dot_when_nan(field, str(value_associated_to_prefix_name))
 		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
 
 	return currentNewRebuiltINFO.strip(';')
