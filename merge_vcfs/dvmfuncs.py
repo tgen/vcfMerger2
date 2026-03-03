@@ -432,7 +432,7 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 		list_value_current_field = str(tv).split("\t")[((9 + idx_col_sample) - 1)].split(":")  # ## column 10 is the
 		# first sample, column 11, the second sample, etc.
 		# log.info("VFF --> " + str(list_value_current_field))
-		log.info(toolname + "  VFF --> " + str(list_value_current_field))
+		log.debug(toolname + "  VFF --> " + str(list_value_current_field))
 
 		for idx_field in range(0, len(list_format_fields)):
 			prefix_name = "_".join([toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")])
