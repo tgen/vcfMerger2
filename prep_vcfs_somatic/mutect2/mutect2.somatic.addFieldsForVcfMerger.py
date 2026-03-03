@@ -191,7 +191,7 @@ def update_header(vcf):
 	## if Adding Fields to FORMAT field
 	vcf.add_format_to_header({'ID': 'AR',
 	                          'Description': 'Alt tier1 Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT',
-	                          'Type': 'Float', 'Number': 'A'})
+	                          'Type': 'Float', 'Number': '1'})
 	vcf.add_format_to_header({'ID': 'DP',
 	                          'Description': 'Total Depth ref+alt for each sample)',
 	                          'Type': 'Integer', 'Number': '1'})

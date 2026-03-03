@@ -152,7 +152,7 @@ def update_header(vcf):
 	## if Adding Fields to FORMAT field
 	vcf.add_format_to_header({'ID': 'AR',
 	                          'Description': 'Alt tier1 Allelic Ratios for each sample in same order as list of samples found in VCF beyond column FORMAT',
-	                          'Type': 'Float', 'Number': 'A'})
+	                          'Type': 'Float', 'Number': '1'})
 	
 	return vcf
 
@@ -254,7 +254,7 @@ def add_new_flags_AR_to_FORMAT(tot_number_samples, v, column_tumor, column_norma
 	# checking the values after processing and before adding them to the variant object v
 	log.debug("ARs  are  : " + str(ARs))
 	v.set_format('AR', np.array(ARs))
-	log.info(f"{'X'*200 } updated v object with new ARs: " + str(v))
+	log.debug(f"{'X'*200 } updated v object with new ARs: " + str(v))
 	
 	return process_GTs(tot_number_samples, v, column_tumor, column_normal)
 
