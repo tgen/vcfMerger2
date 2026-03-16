@@ -7,13 +7,15 @@ from sys import exit,argv
 import VCF
 import cyvcf2
 
+finput =""
+
 try:
 	## MUST BE A UNCOMPRESSED VCF file
 	finput = argv[1]
 except IndexError as ie:
 	exit("{}\nUSAGE: $0 $vcf_file ".format(ie))
 
-if not path.exists(finput):
+if not path.exists(finput) and not finput == "":
 	msg = "ERROR: FNF {}".format(finput)
 	raise IOError(msg)
 
@@ -31,7 +33,7 @@ with open("{}.consPos.txt".format(finput), 'wt') as of:
 		try:
 			data = [int(i) for i in val]
 		except ValueError as ve:
-			exit("ERROR: {}".format(e))
+			exit("ERROR: {}".format(ve))
 		# https://stackoverflow.com/questions/2361945/detecting-consecutive-integers-in-a-list
 		for k, g in groupby(enumerate(data), lambda ix: ix[0] - ix[1]):
 			cn = list(map(itemgetter(1), g))
