@@ -532,6 +532,27 @@ function phasing_consecutive_variants_in_strelka2(){
 
 }
 
+function phasing_consecutive_variants_in_deepsomatic(){
+	## normalize the VCF using bcftools
+	local VCF=$1
+	local BAM=$2
+	local TUMOR_SNAME=$3
+	local CPUS=$4
+	local DIR_PATH_TO_PHASER_EXE="$5"
+
+	echo "in ${FUNCNAME}:  ${VCF} and BAM file is ${BAM}" 1>&2
+	echo "## Phasing 0bp-apart consecutive variants ..."  1>&2
+
+    mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/deepsomatic/deepsomatic.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS} '${DIR_PATH_TO_PHASER_EXE}' "
+	echo ${mycmd} 1>&2 ;
+	eval ${mycmd} 1>&2 ;
+	check_ev $? "bash_look_blocs_substitution_in_${TOOLNAME} " 2>&1
+	VCF_OUT=${VCF%.*}.blocs.vcf.gz
+	echo "${VCF_OUT}"
+
+}
+
+
 
 function rename_fields_in_vcf_header_octopus_specific(){
     ## If we do not rename the field, we cannot add the same field later on when add Fields to the octopus VCF; AD is defined as STRING in the original vcf but MUST be a integer for vcfMerger2
@@ -629,11 +650,12 @@ function final_msg(){
 
 function process_strelka2_vcf(){
 	local VCF=$1
+	local CPUS_PHASER=8
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
 	echo "after normalize ((((((   ${VCF}"  1>&2
-	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8 "${DIR_PATH_TO_PHASER_EXE}"
+	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} ${CPUS_PHASER} "${DIR_PATH_TO_PHASER_EXE}"
 	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
 	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
@@ -691,6 +713,7 @@ function process_vardictjava_vcf(){
 
 function process_deepsomatic_vcf(){
 	local VCF=$1
+	local CPUS_PHASER=8
 	echo -e "current directory: ${PWD}" 1>&2
 	echo -e "PATH to VCF: ${VCF}" 1>&2 
 	VCF=$( check_and_update_sample_names_for_deepsomatic ${VCF} )
@@ -698,6 +721,12 @@ function process_deepsomatic_vcf(){
 	echo -e "PATH to VCF after check_and_update_sample_names_for_deepsomatic : ${VCF}" 1>&2
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
+	echo "after normalize ((((((   ${VCF}"  1>&2
+	phasing_consecutive_variants_in_deepsomatic ${VCF} ${BAM_FILE} ${TUMOR_SNAME} ${CPUS_PHASER} "${DIR_PATH_TO_PHASER_EXE}"
+	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
+	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
+	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
+	echo ${VCF}
 	final_msg ${VCF}
 }
 
