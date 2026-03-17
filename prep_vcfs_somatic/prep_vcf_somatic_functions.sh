@@ -711,6 +711,14 @@ function process_vardictjava_vcf(){
 	final_msg ${VCF}
 }
 
+function bcftools_setGT(){
+  local VCF=$1
+  loca VCF_OUTPUT="${VCF/.vcf.gz/.setgt.vcf.gz}"
+  bcftools +setGT ${VCF} -- -t q -i 'FMT/VAF<0.90' -n "c:0/1" | bcftools view -O z -o "${VCF_OUTPUT}"
+  bcftools index --tbi "${VCF_OUTPUT}"
+  echo ${VCF}
+}
+
 function process_deepsomatic_vcf(){
 	local VCF=$1
 	local CPUS_PHASER=8
@@ -718,6 +726,7 @@ function process_deepsomatic_vcf(){
 	echo -e "PATH to VCF: ${VCF}" 1>&2 
 	VCF=$( check_and_update_sample_names_for_deepsomatic ${VCF} )
 	VCF=$( decompose ${VCF} )
+	VCF=$( bcftools_setGT ${VCF} )
 	echo -e "PATH to VCF after check_and_update_sample_names_for_deepsomatic : ${VCF}" 1>&2
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
