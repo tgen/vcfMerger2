@@ -552,15 +552,17 @@ def force_dot_when_nan(field, s):
 	param s: this is a string we need to check if equivalent to nan or the integer/float overflow
 	type s: string
 	"""
+	import numpy as np
+	CONSTANT_MIN_INT = np.iinfo(np.int32).min   ## expected value is: "-2147483648"
 	log.debug(f'in force_dot_when_nan function for field == {field} and with its = {s}')
 	if s == "nan":
 		return "."
-	if s == "-2147483648":
+	if s == CONSTANT_MIN_INT:
 		return "."
 	if "," in s:
 		new_s = ""
 		for item in s.split(','):
-			if item == "-2147483648" or item == "nan":
+			if item == CONSTANT_MIN_INT or item == "nan":
 				item = "."
 			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
 		s = new_s
