@@ -290,15 +290,17 @@ function check_and_update_sample_names_for_deepsomatic(){
 
     ## Merging TUMOR and NORMAL vcfs
     ## FORMAT FIELDS in the Original DeepSomatic VCF file: ----------------> GT:GQ:DP:AD:VAF:PL
-    echo -e "MERGING STEP\nbcftools merge  --threads 2 -O v \"${VCF_NORMAL_TEMP}\" \"${VCF}\" |  bcftools view --threads 2 -Oz -o \"${VCF}_temp.vcf.gz\" " 1>&2
-    bcftools merge  --threads 2 -O v "${VCF_NORMAL_TEMP}" "${VCF}" |  bcftools view --threads 2 -Oz -o "${VCF}_temp.vcf.gz" 
+
+    local VCF_OUT="${VCF/.vcf.gz/.merge.vcf.gz}"
+    echo -e "MERGING STEP\nbcftools merge  --threads 2 -O v \"${VCF_NORMAL_TEMP}\" \"${VCF}\" |  bcftools view --threads 2 -Oz -o \"${VCF_OUT}\" " 1>&2
+    bcftools merge  --threads 2 -O v "${VCF_NORMAL_TEMP}" "${VCF}" |  bcftools view --threads 2 -Oz -o "${VCF_OUT}"
     check_ev $? "bcftools merge normal_and_tumor vcfs"
 
-    local VCF="${VCF}_temp.vcf.gz"
+    local VCF="${VCF_OUT}"
 
-    bcftools index --threads 2 ${VCF}
+    bcftools index --threads 2 ${VCF_OUT}
   fi
-  echo -e "VCF now is equal to : ${VCF}\n" 1>&2 
+  echo -e "VCF now is equal to : ${VCF}\n" 1>&2
 
 	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
 	COL10_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f10`
@@ -342,6 +344,7 @@ function check_and_update_sample_names_for_deepsomatic(){
   fi
 
 	## return value which is the vcf filename
+	echo -e "returned value for function: ${FUNCNAME}: << ${VCF_OUT} >> "  1>&2
 	echo "${VCF_OUT}"
 }
 
@@ -541,12 +544,12 @@ function phasing_consecutive_variants_in_deepsomatic(){
 	local DIR_PATH_TO_PHASER_EXE="$5"
 
 	echo "in ${FUNCNAME}:  ${VCF} and BAM file is ${BAM}" 1>&2
+	echo -e "NAME OF THE INPUT VCF USED FOR PHASING DATA used with phASER: <<<<<     ${VCF}     >>>>>"
 	echo "## Phasing 0bp-apart consecutive variants ..."  1>&2
-
-    mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/deepsomatic/deepsomatic.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS} '${DIR_PATH_TO_PHASER_EXE}' "
+  mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/deepsomatic/deepsomatic.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS} '${DIR_PATH_TO_PHASER_EXE}' "
 	echo ${mycmd} 1>&2 ;
 	eval ${mycmd} 1>&2 ;
-	check_ev $? "bash_look_blocs_substitution_in_${TOOLNAME} " 2>&1
+	check_ev $? "phasing_consecutive_variants_in_${TOOLNAME} " 2>&1
 	VCF_OUT=${VCF%.*}.blocs.vcf.gz
 	echo "${VCF_OUT}"
 
@@ -654,6 +657,7 @@ function process_strelka2_vcf(){
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
+	## extension of the normalized VCF: pass.sname.prep.norm.vcf
 	echo "after normalize ((((((   ${VCF}"  1>&2
 	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} ${CPUS_PHASER} "${DIR_PATH_TO_PHASER_EXE}"
 	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
@@ -713,29 +717,51 @@ function process_vardictjava_vcf(){
 
 function bcftools_setGT(){
   local VCF=$1
-  loca VCF_OUTPUT="${VCF/.vcf.gz/.setgt.vcf.gz}"
-  bcftools +setGT ${VCF} -- -t q -i 'FMT/VAF<0.90' -n "c:0/1" | bcftools view -O z -o "${VCF_OUTPUT}"
+  echo -e "\nINPUT VCF for function bcftools_setGT: ${VCF}"  1>&2
+  if [[ "${VCF##*.}" == "vcf" ]]
+  then
+    local VCF_OUTPUT="${VCF/%.vcf/.setgt.vcf.gz}"
+  elif [[ "${VCF##*.}" == "gz" ]]
+  then
+    local VCF_OUTPUT="${VCF/%.vcf.gz/.setgt.vcf.gz}"
+  else
+    local VCF_OUTPUT="${VCF}.setGT.vcf.gz"
+  fi
+  echo -e "\nsetGT using bcftools for making HETs" 1>&2
+  echo -e "CMD: bcftools +setGT ${VCF} -- -t q -i 'FMT/VAF<0.90' -n \"c:0/1\" 2>/dev/null | bcftools view -O z -o \"${VCF_OUTPUT}\"" 1>&2
+  bcftools +setGT ${VCF} -- -t q -i 'FMT/VAF<0.90' -n "c:0/1" 2>/dev/null | bcftools view -O z -o "${VCF_OUTPUT}"
+  check_ev $? "bcftools +setGT"
+  echo -e "VCF output after running +setGT: ${VCF_OUTPUT}" 1>&2
   bcftools index --tbi "${VCF_OUTPUT}"
-  echo ${VCF}
+  check_ev $? "bcftools index of the setGT VCF"
+  echo ${VCF_OUTPUT}
 }
 
 function process_deepsomatic_vcf(){
 	local VCF=$1
 	local CPUS_PHASER=8
 	echo -e "current directory: ${PWD}" 1>&2
-	echo -e "PATH to VCF: ${VCF}" 1>&2 
+	echo -e "PATH to VCF ... ORIGINAL INPUT for Prep Steps : ${VCF}" 1>&2
+	cp ${VCF} ${VCF}.original_vcf_before_adding_normal_information
 	VCF=$( check_and_update_sample_names_for_deepsomatic ${VCF} )
-	VCF=$( decompose ${VCF} )
-	VCF=$( bcftools_setGT ${VCF} )
-	echo -e "PATH to VCF after check_and_update_sample_names_for_deepsomatic : ${VCF}" 1>&2
+	echo -e "PATH to VCF  ... after check_and_update_sample_names_for_deepsomatic : ${VCF}\n" 1>&2
+	VCF=$( decompose "${VCF}" )
+	echo -e "PATH to VCF  ... after decompose : ${VCF}\n" 1>&2
+	VCF=$( bcftools_setGT "${VCF}" )
+	echo -e "PATH to VCF  ... after bcftools_setGT : ${VCF}\n" 1>&2
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+	echo -e "PATH to VCF  ... after make_vcf_upto_specs_for_VcfMerger : ${VCF}\n" 1>&2
 	VCF=$( normalize_vcf ${VCF})
+	## extension of the normalized VCF: pass.vcf.gz.sname.decomp.prep.norm.vcf
+	echo -e "PATH to VCF  ... after normalize_vcf : ${VCF}\n" 1>&2
 	echo "after normalize ((((((   ${VCF}"  1>&2
+
 	phasing_consecutive_variants_in_deepsomatic ${VCF} ${BAM_FILE} ${TUMOR_SNAME} ${CPUS_PHASER} "${DIR_PATH_TO_PHASER_EXE}"
+	echo -e "Expected VCF after phasing_consecutive_variants_in_deepsomatic function: <<<   ${VCF}   >>>" 1>&2
 	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
 	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
+
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
-	echo ${VCF}
 	final_msg ${VCF}
 }
 
