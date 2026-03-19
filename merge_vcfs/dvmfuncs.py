@@ -230,7 +230,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		for COLUMN in ["FILTER", "QUAL", "ID"]:
 			# ## # ##INFO=<ID=SEURAT_AR1,Number=1,Type=Float,Description="Allele frequency of ALT allele in normal">
 			stringline = ''.join(["##INFO=<ID=", toolname_or_acronym, "_", COLUMN,
-			                      ',Number=.,Type=String,Description=',
+			                      ',Number=1,Type=String,Description=',
 			                      '"Represents lossless data from tool ', vtdo.toolname, ' or (if given acronym: aka ', toolname_or_acronym,
 			                      'for column ', COLUMN, '">'])
 			lh.append(stringline)
@@ -251,7 +251,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			for i in range(1, numberOfSamples+1):
 				newField = '_'.join([toolname_or_acronym, "S"+str(i), FIELD])
 				# print(newField)
-				stringline = ''.join(["##INFO=<ID=", newField, ',Number=.,Type=String,Description=', '"lossless data from defined tool">'])
+				stringline = ''.join(["##INFO=<ID=", newField, ',Number=1,Type=String,Description=', '"lossless data from defined tool">'])
 				lh.append(stringline)
 
 	for item in vcfMerger_Format_Fields_Specific:
