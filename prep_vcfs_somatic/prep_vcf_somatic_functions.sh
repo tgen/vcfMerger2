@@ -257,6 +257,29 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 	check_inputs
 }
 
+
+function deepsomatic_make_normal_vcf_file_from_normal_tags_in_tumor_vcf() {
+  local VCF=$1
+  local TUMOR_SAMPLE_NAME=$2
+  local NORMAL_SAMPLE_NAME=$3
+  if [[ ${NORMAL_SAMPLE_NAME} != "" ]]
+	then
+	  local NORMAL_VCF_OUT=${NORMAL_SAMPLE_NAME}_rebuilt_deepsomatic_pass.vcf.gz
+	else
+	  echo -e "ERROR: NORMAL SAMPLE NAME MUST BE PROVIDED to the function ${FUNCNAME}; Aborting creation of the normal deepsomatic VCF" 1>&2
+	  exit 1
+	fi
+	echo "DeepSomatic make normal VCF from tumor vcf ...\nusing VCF input :: ${VCF}" 1>&2
+	echo -e "Expected New normal deepsomatic VCF: ${NORMAL_VCF_OUT}" 1>&2
+	( \
+	bcftools head ${VCF} | sed "/^#CHROM/s/${TUMOR_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}/" ; \
+	bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t\.\tGT:DP:AD:VAF\t[%GT:%NDP:%NAD:%NAF]\n' ${VCF} ) | \
+	bcftools view -O z -o ${NORMAL_VCF_OUT} &>/dev/null
+
+  bcftools index --force --tbi ${NORMAL_VCF_OUT} &>/dev/null
+  echo "${NORMAL_VCF_OUT}"
+}
+
 function check_and_update_sample_names_for_deepsomatic(){
 	##@@@@@@@@@@@@@@@@@@@@@@@
 	## CHECK SAMPLES NAMES
@@ -278,29 +301,39 @@ function check_and_update_sample_names_for_deepsomatic(){
 
   if [[ "${COL11_VALUE}" == "" ]]
   then
-    echo -e "Only one Sample in deepsomatic" 1>&2
-    echo -e "Adding NORMAL sample to the current VCF ..." 1>&2
-    
-    bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" | bcftools view -O z -o "${VCF_NORMAL_TEMP}"
-    check_ev $? "pipe to make normal VCF before merging with Tumor VCF"
+    COUNT_NAD_TAG=$( bcftools view -h ${VCF} | grep -c -E "##FORMAT=<ID=NAD" )
+    COUNT_NDP_TAG=$( bcftools view -h ${VCF} | grep -c -E "##FORMAT=<ID=NDP" )
+    COUNT_NAF_TAG=$( bcftools view -h ${VCF} | grep -c -E "##FORMAT=<ID=NAF" )
+    PRESENCE_TAG_NDP_IN_FORMAT=$( bcftools view -H ${VCF} | head -n 1 | cut -f9 | grep -c "NDP" )
 
-    echo -e "bcftools index --threads 2 \"${VCF_NORMAL_TEMP}\"" 1>&2
-    bcftools index --threads 2 "${VCF_NORMAL_TEMP}"
-    check_ev $? "FAILED indexing VCF ${VCF_NORMAL_TEMP}"
+    if [[ ${COUNT_NDP_TAG} -eq 1 &&  ${COUNT_NAD_TAG} -eq 1 && ${COUNT_NAF_TAG} -eq 1 && ${PRESENCE_TAG_NDP_IN_FORMAT} -eq 1 ]]
+    then
+      echo -e "\nFound that DeepSomatic has information about the Normal sample in the FORMAT field. Found NDP, NAD, NAF in Header and in NDP TAG FORMAT record of the first record" 1>&2
+      VCF_NORMAL_TEMP=$( deepsomatic_make_normal_vcf_file_from_normal_tags_in_tumor_vcf ${VCF} ${TUMOR_SNAME} ${NORMAL_SNAME} )
 
+    else
+      echo -e "\nTAGs for Normal sample not found in VCF. Probably deepsomatic version less than v1.10" 1>&2
+      echo -e "Only one Sample in deepsomatic" 1>&2
+      echo -e "Adding NORMAL sample to the current Tumor VCF Manually with empty values ..." 1>&2
+      bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" | bcftools view -O z -o "${VCF_NORMAL_TEMP}"
+      check_ev $? "pipe to make normal VCF before merging with Tumor VCF"
+
+      echo -e "bcftools index --threads 2 \"${VCF_NORMAL_TEMP}\"" 1>&2
+      bcftools index --threads 2 "${VCF_NORMAL_TEMP}"
+      check_ev $? "FAILED indexing VCF ${VCF_NORMAL_TEMP}"
+    fi
     ## Merging TUMOR and NORMAL vcfs
     ## FORMAT FIELDS in the Original DeepSomatic VCF file: ----------------> GT:GQ:DP:AD:VAF:PL
 
     local VCF_OUT="${VCF/.vcf.gz/.merge.vcf.gz}"
-    echo -e "MERGING STEP\nbcftools merge  --threads 2 -O v \"${VCF_NORMAL_TEMP}\" \"${VCF}\" |  bcftools view --threads 2 -Oz -o \"${VCF_OUT}\" " 1>&2
+    echo -e "###############\nMERGING STEP\n###############\nbcftools merge  --threads 2 -O v \"${VCF_NORMAL_TEMP}\" \"${VCF}\" |  bcftools view --threads 2 -Oz -o \"${VCF_OUT}\" " 1>&2
     bcftools merge  --threads 2 -O v "${VCF_NORMAL_TEMP}" "${VCF}" |  bcftools view --threads 2 -Oz -o "${VCF_OUT}"
     check_ev $? "bcftools merge normal_and_tumor vcfs"
 
     local VCF="${VCF_OUT}"
-
-    bcftools index --threads 2 ${VCF_OUT}
+    bcftools index --threads 2 ${VCF}
   fi
-  echo -e "VCF now is equal to : ${VCF}\n" 1>&2
+  echo -e "\nAfter Merging step, the VCF now has two samples in it for deepsomatic. VCF filename is: ${VCF}\n" 1>&2
 
 	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
 	COL10_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f10`
