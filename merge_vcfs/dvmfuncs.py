@@ -438,7 +438,7 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 			prefix_name = "_".join([toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")])
 			value_associated_to_prefix_name = list_value_current_field[idx_field].strip("\n")
 			# currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field], str(value_associated_to_prefix_name))])])
-			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
+			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field].strip("\n"), str(value_associated_to_prefix_name))])])
 
 	return currentNewRebuiltINFO.strip(';')
 
@@ -557,12 +557,12 @@ def force_dot_when_nan(field, s):
 	log.debug(f'in force_dot_when_nan function for field == {field} and with its = {s}')
 	if s == "nan":
 		return "."
-	if s == CONSTANT_MIN_INT:
+	if s == str(CONSTANT_MIN_INT) or s == str(CONSTANT_MIN_INT+1):
 		return "."
 	if "," in s:
 		new_s = ""
 		for item in s.split(','):
-			if item == CONSTANT_MIN_INT or item == "nan":
+			if item == str(CONSTANT_MIN_INT) or item == "nan" or str(CONSTANT_MIN_INT+1):
 				item = "."
 			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
 		s = new_s
