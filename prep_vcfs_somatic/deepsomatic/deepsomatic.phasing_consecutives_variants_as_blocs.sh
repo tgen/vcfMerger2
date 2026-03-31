@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## NOTE: the VCF MUST HAVE BEEN PREPARED for VCFMERGER2 or having at least AR, DP and GT flags in the FORMAT columns
+## NOTE: the VCF MUST HAVE BEEN PREPARED for VCFMERGER2 or having at least AD, AR, DP and GT flags in the FORMAT columns
 VCF=$1
 TBAM=$2
 SNAME_T=$3
@@ -14,7 +14,7 @@ PHASER_EXE=phaser.py  ; ## phASER requires python2.xx  (not 3)
 echo -e "expected phASER executable: ${PHASER_EXE}"
 DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 SCRIPT_GET_CONSPOS=${DIR_PATH_TO_SCRIPTS}/get_consecutive_list_of_numbers_from_vcfFileInput.py
-SCRIPT_PYTHON_RECOMPOSE_VARIANTS=${DIR_PATH_TO_SCRIPTS}/strelka2.recompose_phased_variants.py
+SCRIPT_PYTHON_RECOMPOSE_VARIANTS=${DIR_PATH_TO_SCRIPTS}/deepsomatic.recompose_phased_variants.py
 
 
 ## FUNCTIONS
@@ -26,7 +26,7 @@ function check_exe_in_path(){
 function check_ev(){
 	local ev=$1
 	local msg=$(echo "$2" | sed 's/[ \+]/_/g')
-	if [[ ${ev} -ne 0 ]] ; then touch FAILED_Recomposition_Strelka2_${msg}.flag ; echo -e "ERROR: ${msg} FAILED ;\nexit_value:${ev} ; Aborting! " ; exit 1 ; fi
+	if [[ ${ev} -ne 0 ]] ; then touch FAILED_Recomposition_DeepSomatic_${msg}.flag ; echo -e "ERROR: ${msg} FAILED ;\nexit_value:${ev} ; Aborting! " ; exit 1 ; fi
 }
 
 function checkDir(){
@@ -75,13 +75,17 @@ VCF_ORIGINAL_INPUT=${VCF}
 ## WARNING: INPUT VCF MUST BE block-compressed vcf with extension .vcf.gz and associated with an index file
 if [[ "23236669" == $( xxd ${VCF_ORIGINAL_INPUT} | head -n 1 | cut -d" " -f2-3 | sed 's/ \+//' ) ]]
 then
-    echo -e "we are dealing with a VCF file ..."
+    echo -e "we are dealing with a VCF file ... "
     if [[ ${VCF_ORIGINAL_INPUT##*.} == "vcf" ]]
     then
+        echo -e "we are dealing with a VCF file ... with extension .vcf"
         bcftools view --threads 2 -O z -o ${VCF_ORIGINAL_INPUT}.gz ${VCF_ORIGINAL_INPUT}
-        bcftools index --tbi ${VCF_ORIGINAL_INPUT}.gz
+        bcftools index --force --tbi ${VCF_ORIGINAL_INPUT}.gz
         VCF_ORIGINAL_INPUT=${VCF_ORIGINAL_INPUT}.gz
-    else
+        echo -e "after bgzipping, filename of interest is: --> ${VCF_ORIGINAL_INPUT}"
+    elif [[ ${VCF_ORIGINAL_INPUT##*.} == ".gz" ]]
+    then
+        echo -e "we are dealing with a VCF file ... with extension .vcf.gz"
         bcftools view --threads 2 -O z -o ${VCF_ORIGINAL_INPUT}.vcf.gz ${VCF_ORIGINAL_INPUT}
         bcftools index --tbi ${VCF_ORIGINAL_INPUT}.vcf.gz
         VCF_ORIGINAL_INPUT=${VCF_ORIGINAL_INPUT}.vcf.gz
@@ -99,7 +103,9 @@ else
     exit 1
 fi
 
+
 VCF=${VCF_ORIGINAL_INPUT}
+echo -e "filename of interest is: --> ${VCF}"
 
 if [[ 1 -eq 1 ]] ;then
 
@@ -120,13 +126,14 @@ if [[ 1 -eq 1 ]] ;then
     VCF_NO_INDELS_FOR_PHASER=${VCF/vcf.gz/noindels.vcf.gz}
     #cp ${VCF/vcf.gz/noindels.vcf.gz} ${VCF}
 
-    echo -e "get consecutive positions ... as tabulated text file for bcftools ..."
+    echo -e "\nget consecutive positions as tabulated text file for bcftools ..."
+    echo -e "cmd == python3 ${SCRIPT_GET_CONSPOS} ${VCF_NO_INDELS_FOR_PHASER} "
     python3 ${SCRIPT_GET_CONSPOS} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "$(basename ${SCRIPT_GET_CONSPOS})"
 
     if [[ $(cat ${VCF_NO_INDELS_FOR_PHASER}.consPos.txt | wc -l ) -lt 2 ]] ;
     then
-        echo -e "\nNo Consecutive Position found in VCF; ending Phasing section now"
+        echo -e "\nWARNING-WARNING: No Consecutive Position found in VCF; ending Phasing section now"
         echo -e "renaming input file to match expected outfile from phasing section\n"
         mycmd="cp ${VCF_ORIGINAL_INPUT} ${VCF_ORIGINAL_INPUT/.vcf.gz/.blocs.vcf.gz}"
         echo ${mycmd} ; eval ${mycmd}
@@ -137,17 +144,21 @@ if [[ 1 -eq 1 ]] ;then
         exit 0
     fi
 
-    echo -e "Subset VCF file with only the captured position from step above ..."
+    echo -e "\nSubset VCF file with only the captured position from step above ..."
+    echo -e "cmd == bcftools filter --threads 2 -O z -T ${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}"
     bcftools filter --threads 2 -O z -T ${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "bcftools filter #1"
     bcftools index --threads 2 --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz}
     check_ev $? "bcftools index #1"
 
-		echo -e "Subset VCF_NO_INDELS_FOR_PHASER file with only the position that are not consecutive ..."
+
+		echo -e "\nSubset VCF_NO_INDELS_FOR_PHASER file with only the position that are not consecutive ..."
+		echo -e "cmd == bcftools filter --threads 2 -O z -T ^${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}"
     bcftools filter --threads 2 -O z -T ^${VCF_NO_INDELS_FOR_PHASER}.consPos.txt -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER}
     check_ev $? "bcftools filter #2"
     bcftools index --threads 2 --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
     check_ev $? "bcftools index #2"
+
 
     ## As phASER dose not deal with HOMOZYGOUS, we need to filter out the homs from subByConsPos.vcf.gz VCF_NO_INDELS_FOR_PHASER and recheck of number of ConsPOs lt 2
     ## due to the edge case encounter with MMRF_1073, we need to exclude manually ALL the Homozygous variant as phaser
@@ -168,27 +179,30 @@ if [[ 1 -eq 1 ]] ;then
     #GT="A"
 
     VCF_SBCP=${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz}
-
-    echo -e "removing ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
+    echo -e "VCF_SBCP=${VCF_NO_INDELS_FOR_PHASER/vcf.gz/subByConsPos.vcf.gz}"
+    echo -e "\nremoving ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."
     bcftools filter -O z -e 'GT="AA"' -o ${VCF_SBCP/vcf.gz/hets.vcf.gz} ${VCF_SBCP}
     check_ev $? "bcftools filter out homz sites"
 
     VCF_HETS=${VCF_SBCP/vcf.gz/hets.vcf.gz}
     bcftools index --tbi ${VCF_HETS}
     check_ev $? "bcftools index"
+    echo -e "file created with no ALT-ALT, i.e. only HETS in the file:\t${VCF_HETS}"
 
-    echo -e "keeping ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."  1>&2
+
+    echo -e "\nkeeping ALT-ALT homozygous from subByConsPos VCF ...  using bcftools ..."  1>&2
     bcftools filter -O z -i 'GT="AA"' -o ${VCF_SBCP/vcf.gz/homs.vcf.gz} ${VCF_SBCP}
     check_ev $? "bcftools filter out homz sites"
 
     VCF_HOMS=${VCF_SBCP/vcf.gz/homs.vcf.gz}
     bcftools index --tbi ${VCF_HOMS}
     check_ev $? "bcftools index"
+    echo -e "file created with only HOM in the file:\t\t${VCF_HOMS}"
 
 
     if [[ $( bcftools view -H ${VCF_HOMS} | wc -l ) -gt 0 ]] ;
     then
-        echo -e "concat variants from homs.vcf.gz VCF with tempNoConsPos.vcf.gz VCF ... "  1>&2
+        echo -e "\nconcat variants from << homs.vcf.gz >> VCF with << tempNoConsPos.vcf.gz >> VCF ... "  1>&2
         bcftools concat -a --threads 2 -O z -o ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos_with_homs.vcf.gz} ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}  ${VCF_HOMS}
         check_ev $? "bcftools concat #3"
         # We reallocate the name of TempNoConsPos.vcf.gz as if we appended the HOMs to the end of the file having only the no Consecutive variants
@@ -197,14 +211,16 @@ if [[ 1 -eq 1 ]] ;then
 
         bcftools index --threads 2 -f --tbi ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}
         check_ev $? "bcftools index #3"
-    fi
+        echo -e "new file created with concatenation of HOM and TempNOconsecutivePositions (we overwrote the TempNoConsPos file actually): ${VCF_NO_INDELS_FOR_PHASER/vcf.gz/TempNoConsPos.vcf.gz}"
 
+    fi
 
 
     ## from now we assume that even if some variants were homozygous within the consecutives extracted varianats, not all of
     ## them will be and we run phASER from the file VCF named: VCF_HETS=${VCF_SBCP/vcf.gz/hets.vcf.gz}
     ## but we check if there is any variants left in the VCF (taht will take care of edge case found with MMRF_1073)
-
+    echo -e "\n####################\nprocessing HETS ...\n####################"
+    echo -e "file with HETS: ${VCF_HETS}"
     if [[ $(bcftools view -H  ${VCF_HETS} | wc -l ) -eq 0 ]] ;
     then
         echo -e "\nNo Variant Left after removing Homozygous ; ending Phasing section now"
@@ -222,7 +238,6 @@ if [[ 1 -eq 1 ]] ;then
         VCF_FOR_PHASER=${VCF_HETS}
         echo -e "vcf with hets only and subsConsPOS is: ${VCF_FOR_PHASER}"
     fi
-
 fi
 
 # # Despite the check above for the absence of HETS, looks like it only check if there is no variant at all instead of just
@@ -240,6 +255,7 @@ then
   echo "Exiting $0 script without having phASER ran. ev = 0" 1>&2
   exit 0
 fi
+
 ## https://stephanecastel.wordpress.com/2017/02/15/how-to-generate-ase-data-with-phaser/
 ## https://github.com/secastel/phaser/tree/master/phaser
 ##@@@@@@@@@@@@@
@@ -250,7 +266,7 @@ echo -e "RUNNING phASER ... "
 echo -e "Command:"
 #module load python/2.7.13
 VCF_IN=${VCF_FOR_PHASER}
-VCF_OUT_PHASER=phased_${VCF_IN}
+VCF_OUT_PHASER=phased_$(basename ${VCF_IN} )
 TEMP_DIR=$(dirname ${VCF_IN} )/temp_phASER
 mkdir -p ${TEMP_DIR}
 
@@ -261,7 +277,6 @@ eval ${mycmd} | tee log_for_phASER_$(basename ${VCF_OUT_PHASER} ).log
 check_ev $? "phASER using ${PHASER_EXE} with python-2.7.13"
 echo -e "PHASER output file: ${VCF_OUT_PHASER}"
 #module unload python/2.7.13
-
 
 
 echo -e "Annotation of the subByConPos VCF with the vcf outputted by Phaser in order to keep a vcf with both NORMAL and TUMOR sample" ; ## INDEED, phASER only phases ONE sample at a time and we provided only the TUMOR sample
@@ -282,7 +297,7 @@ VCF_IN=${VCF_OUT} ## can be vcf or block-compressed vcf
 VCF_OUT=${VCF_IN/vcf.gz/blocs.vcf}
 echo "python3  ${SCRIPT_PYTHON_RECOMPOSE_VARIANTS} --tumor-col 11 --normal-col 10 -i ${VCF_IN} -o ${VCF_OUT}"
 python3  ${SCRIPT_PYTHON_RECOMPOSE_VARIANTS} --tumor-col 11 --normal-col 10 -i ${VCF_IN} -o ${VCF_OUT}
-check_ev $? "python3 strelka2.recompose_phased_variants.py"
+check_ev $? "python3 DeepSomatic.recompose_phased_variants.py"
 
 
 echo -e "Block Size Distribution in new recomposed variants ..."
@@ -314,7 +329,7 @@ check_ev $? "bcftools concat ${VCF_OUT}"
 #bcftools index --tbi --threads 2 ${VCF_OUT}
 #check_ev $? "bcftools index ${VCF_OUT}"
 
-touch Completed_Recomposition_Strelka2_for_VCF_$(basename ${VCF_ORIGINAL_INPUT}).flag
+touch Completed_Recomposition_DeepSomatic_for_VCF_$(basename ${VCF_ORIGINAL_INPUT}).flag
 
 echo "${VCF_OUT}" 2>&1
 

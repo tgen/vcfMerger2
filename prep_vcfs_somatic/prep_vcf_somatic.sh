@@ -40,8 +40,8 @@ export DIR_PATH_TO_SCRIPTS="$( dirname `readlink -f $0` )"
 echo -e "DIR_PATH_TO_SCRIPTS=${DIR_PATH_TO_SCRIPTS}"
 
 ## CONSTANT VARIABLE : add of modify toolnames accordingly
-VALID_TOOLNAMES="lancet,  mutect2,  octopus,  strelka2, vardict, vardictjava, VarDictJava, or their corresponding abbreviations, LAN|LCT, MUT,
-OCT, SLK, VDJ|VDT, respectively [case Insensitive]"  ## if tools are later added, we will update this variable along
+VALID_TOOLNAMES="lancet,  lancet2, mutect2,  octopus, strelka2, vardict, vardictjava, VarDictJava, deepsomatic, or their corresponding abbreviations, LAN|LCT, MUT,
+OCT, SLK, VDJ|VDT, DPS, respectively [case Insensitive]"  ## if tools are later added, we will update this variable along
 # with the
 # function run_tool(), where the case statement will need to be updated.
 
@@ -68,7 +68,7 @@ type bcftools >/dev/null 2>&1 || { echo >&2 "Require \"bcftools\" executable but
 #if [[ $( echo "`bcftools --version-only  2>&1 | sed 's/+.*//g'` <  1.7 " | bc -l ) -eq 1  ]] ; then echo -e "ERROR: bcftools 1.7 or up Expected in PATH; Aborting " ; exit 1 ; fi
 
 # sourcing functions
-source ${DIR_PATH_TO_SCRIPTS}/prep_vcf_somatic_functions.sh
+source "${DIR_PATH_TO_SCRIPTS}/prep_vcf_somatic_functions.sh"
 ## init variables
 init_some_vars
 ## get options given by user

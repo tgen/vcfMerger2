@@ -3,11 +3,9 @@
 from itertools import groupby
 from operator import itemgetter
 from os import path
-from sys import exit,argv
+from sys import exit, argv
 import VCF
 import cyvcf2
-
-finput =""
 
 try:
 	## MUST BE A UNCOMPRESSED VCF file
@@ -15,7 +13,7 @@ try:
 except IndexError as ie:
 	exit("{}\nUSAGE: $0 $vcf_file ".format(ie))
 
-if not path.exists(finput) and not finput == "":
+if not path.exists(finput):
 	msg = "ERROR: FNF {}".format(finput)
 	raise IOError(msg)
 

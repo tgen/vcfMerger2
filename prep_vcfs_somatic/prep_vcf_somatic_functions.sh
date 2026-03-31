@@ -198,7 +198,7 @@ function delete_temporary_files(){
 function recap_input(){
 	#input recap
 	LI="${LI}\nCURR_DIR==\"${PWD}\""
-	echo -e "\n\n+------------------------------------------------+\n${LI[@]}\n+------------------------------------------------+\n\n"
+	echo -e "\n\n+------------------------------------------------+\n${LI[*]}\n+------------------------------------------------+\n\n"
 }
 
 function concatenate_snvs_indels(){
@@ -255,6 +255,130 @@ if ! options=`getopt -o hd:b:g:o:t: -l help,dir-work:,ref-genome:,tumor-sname:,n
 		shift
 	done
 	check_inputs
+}
+
+
+function deepsomatic_make_normal_vcf_file_from_normal_tags_in_tumor_vcf() {
+  local VCF=$1
+  local TUMOR_SAMPLE_NAME=$2
+  local NORMAL_SAMPLE_NAME=$3
+  if [[ ${NORMAL_SAMPLE_NAME} != "" ]]
+	then
+	  local NORMAL_VCF_OUT=${NORMAL_SAMPLE_NAME}_rebuilt_deepsomatic_pass.vcf.gz
+	else
+	  echo -e "ERROR: NORMAL SAMPLE NAME MUST BE PROVIDED to the function ${FUNCNAME}; Aborting creation of the normal deepsomatic VCF" 1>&2
+	  exit 1
+	fi
+	echo "DeepSomatic make normal VCF from tumor vcf ...\nusing VCF input :: ${VCF}" 1>&2
+	echo -e "Expected New normal deepsomatic VCF: ${NORMAL_VCF_OUT}" 1>&2
+	( \
+	bcftools head ${VCF} | sed "/^#CHROM/s/${TUMOR_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}/" ; \
+	bcftools query -f '%CHROM\t%POS\t%ID\t%REF\t%ALT\t%QUAL\t%FILTER\t\.\tGT:DP:AD:VAF\t[%GT:%NDP:%NAD:%NAF]\n' ${VCF} ) | \
+	bcftools view -O z -o ${NORMAL_VCF_OUT} &>/dev/null
+
+  bcftools index --force --tbi ${NORMAL_VCF_OUT} &>/dev/null
+  echo "${NORMAL_VCF_OUT}"
+}
+
+function check_and_update_sample_names_for_deepsomatic(){
+	##@@@@@@@@@@@@@@@@@@@@@@@
+	## CHECK SAMPLES NAMES
+	##@@@@@@@@@@@@@@@@@@@@@@@
+	## so far the sample name should be NORMAL, TUMOR or the SM tag from BAM file ;
+
+  echo "DeepSomatic VCF =  ${1}" 1>&2
+	local VCF=$1
+	local VCF_OUT=$(basename ${VCF} ".vcf").sname.vcf
+	echo -e "Here is the values of some Global Variable shared across script:" 1>&2
+	echo " in ${FUNCNAME} :  ${VCF} ::: ${TOOLNAME} ::: ${NORMAL_SNAME} ::: ${TUMOR_SNAME} " 1>&2
+
+  COL11_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f11`
+  local F1="${VCF%.*}"
+  local VCF_NORMAL_TEMP="${F1%.*}.normal.vcf.gz"
+  echo -e "VCF_NORMAL_TEMP == ${VCF_NORMAL_TEMP}" 1>&2
+  ## NOTE: REQUIREMENT: FORMAT FIELD must be with following tags in deepsomatic output vcf: GT:GQ:DP:AD:VAF:PL
+  VALUES_FOR_FORMAT_IN_NORMAL="./.:.:.:.,.:.:.,.,."
+
+  if [[ "${COL11_VALUE}" == "" ]]
+  then
+    COUNT_NAD_TAG=$( bcftools view -h ${VCF} | grep -c -E "##FORMAT=<ID=NAD" )
+    COUNT_NDP_TAG=$( bcftools view -h ${VCF} | grep -c -E "##FORMAT=<ID=NDP" )
+    COUNT_NAF_TAG=$( bcftools view -h ${VCF} | grep -c -E "##FORMAT=<ID=NAF" )
+    PRESENCE_TAG_NDP_IN_FORMAT=$( bcftools view -H ${VCF} | head -n 1 | cut -f9 | grep -c "NDP" )
+
+    if [[ ${COUNT_NDP_TAG} -eq 1 &&  ${COUNT_NAD_TAG} -eq 1 && ${COUNT_NAF_TAG} -eq 1 && ${PRESENCE_TAG_NDP_IN_FORMAT} -eq 1 ]]
+    then
+      echo -e "\nFound that DeepSomatic has information about the Normal sample in the FORMAT field. Found NDP, NAD, NAF in Header and in NDP TAG FORMAT record of the first record" 1>&2
+      VCF_NORMAL_TEMP=$( deepsomatic_make_normal_vcf_file_from_normal_tags_in_tumor_vcf ${VCF} ${TUMOR_SNAME} ${NORMAL_SNAME} )
+
+    else
+      echo -e "\nTAGs for Normal sample not found in VCF. Probably deepsomatic version less than v1.10" 1>&2
+      echo -e "Only one Sample in deepsomatic" 1>&2
+      echo -e "Adding NORMAL sample to the current Tumor VCF Manually with empty values ..." 1>&2
+      bcftools head "${VCF}" | sed "/#CHROM/s/FORMAT.*$/FORMAT\t${NORMAL_SNAME}/" | bcftools view -O z -o "${VCF_NORMAL_TEMP}"
+      check_ev $? "pipe to make normal VCF before merging with Tumor VCF"
+
+      echo -e "bcftools index --threads 2 \"${VCF_NORMAL_TEMP}\"" 1>&2
+      bcftools index --threads 2 "${VCF_NORMAL_TEMP}"
+      check_ev $? "FAILED indexing VCF ${VCF_NORMAL_TEMP}"
+    fi
+    ## Merging TUMOR and NORMAL vcfs
+    ## FORMAT FIELDS in the Original DeepSomatic VCF file: ----------------> GT:GQ:DP:AD:VAF:PL
+
+    local VCF_OUT="${VCF/.vcf.gz/.merge.vcf.gz}"
+    echo -e "###############\nMERGING STEP\n###############\nbcftools merge  --threads 2 -O v \"${VCF_NORMAL_TEMP}\" \"${VCF}\" |  bcftools view --threads 2 -Oz -o \"${VCF_OUT}\" " 1>&2
+    bcftools merge  --threads 2 -O v "${VCF_NORMAL_TEMP}" "${VCF}" |  bcftools view --threads 2 -Oz -o "${VCF_OUT}"
+    check_ev $? "bcftools merge normal_and_tumor vcfs"
+
+    local VCF="${VCF_OUT}"
+    bcftools index --threads 2 ${VCF}
+  fi
+  echo -e "\nAfter Merging step, the VCF now has two samples in it for deepsomatic. VCF filename is: ${VCF}\n" 1>&2
+
+	echo -e "## Checking the Sample names columns and swapping them if necessary (we assume that the VCF is a SOMATIC calls vcf )" 1>&2
+	COL10_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f10`
+	COL11_VALUE=`zcat -f ${VCF} | grep -m1 -E "^#CHROM" | cut -f11`
+
+	echo -e "\${COL10_VALUE} == ${COL10_VALUE}\n\${COL11_VALUE} == ${COL11_VALUE}" 1>&2
+
+  if [[ ( "${COL10_VALUE}" == "NORMAL" && "${COL11_VALUE}" == "TUMOR" ) ]] ;
+  then
+    echo -e "\tsample name in column 10 is  NORMAL and column 11 is named TUMOR" 1>&2
+    echo -e "\twe are updating the sample names appropriately here with the ones given by the user" 1>&2
+    cat  ${VCF}| sed "/^#CHROM/ s/NORMAL/${NORMAL_SNAME}/ ; /^#CHROM/ s/TUMOR/${TUMOR_SNAME}/" > temp_sname_${VCF}
+    mv temp_sname_${VCF} ${VCF_OUT}
+
+  elif [[ "${COL11_VALUE}" == "NORMAL" && "${COL10_VALUE}" == "TUMOR"  ]] ;
+  then
+    echo -e "\tsample name in column 10 is  TUMOR and column 11 is named NORMAL" 1>&2
+    echo -e "\tas we decided that column 10 should be NORMAL sample and column 11 the TUMOR one" 1>&2
+    echo -e "\twe RENAME and SWAPPED the sample names." 1>&2
+    cat ${VCF} | awk -v TUMORSNAME=${TUMOR_SNAME} -v NORMALSNAME=${NORMAL_SNAME} -F"\t" '{OFS="\t" ; if($1~/^##/){print ; next} else if ($1~/^#CHROM/){ sub("TUMOR",TUMORSNAME,$10) ; sub("NORMAL",NORMALSNAME,$11) ;tempCol=$10 ; $10=$11; $11=tempCol ; print } else { print } }' > temp_${TOOLNAME}.renamed_swapped_samples.vcf
+    check_ev $? "swap column 10 and 11"  1>&2
+    mv temp_${TOOLNAME}.renamed_swapped_samples.vcf ${VCF_OUT}
+
+  elif [[ ( "${COL11_VALUE}" == "${TUMOR_SNAME}" && "${COL10_VALUE}" == "${NORMAL_SNAME}" ) || ( "${COL10_VALUE}" == "${TUMOR_SNAME}" && "${COL11_VALUE}" == "${NORMAL_SNAME}" )   ]] ;
+  then
+    echo -e "At least the sample name in column 10 is either Tumor or Normal; As we want normal sample in Column 10, we check if it is the case ..." 1>&2
+    if [[ "${COL10_VALUE}" == "${TUMOR_SNAME}" ]]
+    then
+      echo "## we swap column 10 and 11 as we found that sample name in column 10 is the Tumor sample" 1>&2
+      (grep -E "^##" ${VCF} ; grep -vE "^##" ${VCF} | awk -F"\t" '{OFS="\t" ; TEMP=$10 ; $10=$11 ; $11=TEMP ; print }' ) > temp_swap_samples_column.${TOOLNAME}.vcf
+      if [[ $? -ne 0 ]] ; then echo -e "ERROR in swapping column; please check logs and your inputs to understand why it failed; Aborting LANCET post-processing; " ; fexit ; fi
+      mv temp_swap_samples_column.${TOOLNAME}.vcf ${VCF_OUT}
+    else
+      echo -e "## We found that sample in column 10 is the NORMAL sample; we do not swap the columns" 1>&2
+      cp ${VCF} ${VCF_OUT}
+    fi
+  else
+    echo -e "ERROR: ${TOOLNAME}'s Sample name in VCF do NOT match 'NORMAL' or 'TUMOR' names OR any expected names already present in the VCF, sample name that was normally captured from SM tag in the BAM file;
+    \nplease check your inputs; Aborting!" 1>&2
+    fexit
+  fi
+
+	## return value which is the vcf filename
+	echo -e "returned value for function: ${FUNCNAME}: << ${VCF_OUT} >> "  1>&2
+	echo "${VCF_OUT}"
 }
 
 
@@ -395,10 +519,11 @@ function make_vcf_upto_specs_for_VcfMerger(){
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	## updating ${TOOLNAME} VCF to specs for vcfMerger2
 	##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	local VCF=$1
+	local VCF=${1}
 	echo -e "## prep vcf for vcfMerger2 ..." 1>&2
 	fout_name=${VCF%.*}.prep.vcf
 	mycmd="python3 -W ignore ${PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER} -i ${VCF} --normal_column 10 --tumor_column 11 --outfilename ${fout_name}"
+	echo -e "${mycmd}" 1>&2
 	if [[ ${TH_AR} != "" ]] ;
 	then
 	    mycmd="${mycmd} --threshold_AR ${TH_AR}"
@@ -429,11 +554,12 @@ function phasing_consecutive_variants_in_strelka2(){
 	local BAM=$2
 	local TUMOR_SNAME=$3
 	local CPUS=$4
+	local DIR_PATH_TO_PHASER_EXE="$5"
 
 	echo "in ${FUNCNAME}:  ${VCF} and BAM file is ${BAM}" 1>&2
 	echo "## Phasing 0bp-apart consecutive variants ..."  1>&2
 
-    mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS}"
+    mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/strelka2/strelka2.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS} '${DIR_PATH_TO_PHASER_EXE}' "
 	echo ${mycmd} 1>&2 ;
 	eval ${mycmd} 1>&2 ;
 	check_ev $? "bash_look_blocs_substitution_in_${TOOLNAME} " 2>&1
@@ -441,6 +567,27 @@ function phasing_consecutive_variants_in_strelka2(){
 	echo "${VCF_OUT}"
 
 }
+
+function phasing_consecutive_variants_in_deepsomatic(){
+	## normalize the VCF using bcftools
+	local VCF=$1
+	local BAM=$2
+	local TUMOR_SNAME=$3
+	local CPUS=$4
+	local DIR_PATH_TO_PHASER_EXE="$5"
+
+	echo "in ${FUNCNAME}:  ${VCF} and BAM file is ${BAM}" 1>&2
+	echo -e "NAME OF THE INPUT VCF USED FOR PHASING DATA used with phASER: <<<<<     ${VCF}     >>>>>"
+	echo "## Phasing 0bp-apart consecutive variants ..."  1>&2
+  mycmd="bash  ${DIR_PATH_TO_SCRIPTS}/deepsomatic/deepsomatic.phasing_consecutives_variants_as_blocs.sh ${VCF} ${BAM} ${TUMOR_SNAME} ${CPUS} '${DIR_PATH_TO_PHASER_EXE}' "
+	echo ${mycmd} 1>&2 ;
+	eval ${mycmd} 1>&2 ;
+	check_ev $? "phasing_consecutive_variants_in_${TOOLNAME} " 2>&1
+	VCF_OUT=${VCF%.*}.blocs.vcf.gz
+	echo "${VCF_OUT}"
+
+}
+
 
 
 function rename_fields_in_vcf_header_octopus_specific(){
@@ -539,11 +686,13 @@ function final_msg(){
 
 function process_strelka2_vcf(){
 	local VCF=$1
+	local CPUS_PHASER=8
 	VCF=$( check_and_update_sample_names ${VCF} )
 	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
 	VCF=$( normalize_vcf ${VCF})
+	## extension of the normalized VCF: pass.sname.prep.norm.vcf
 	echo "after normalize ((((((   ${VCF}"  1>&2
-	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} 8
+	phasing_consecutive_variants_in_strelka2 ${VCF} ${BAM_FILE} ${TUMOR_SNAME} ${CPUS_PHASER} "${DIR_PATH_TO_PHASER_EXE}"
 	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
 	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
 	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
@@ -599,6 +748,57 @@ function process_vardictjava_vcf(){
 	final_msg ${VCF}
 }
 
+function bcftools_setGT(){
+  local VCF=$1
+  echo -e "\nINPUT VCF for function bcftools_setGT: ${VCF}"  1>&2
+  if [[ "${VCF##*.}" == "vcf" ]]
+  then
+    local VCF_OUTPUT="${VCF/%.vcf/.setgt.vcf.gz}"
+  elif [[ "${VCF##*.}" == "gz" ]]
+  then
+    local VCF_OUTPUT="${VCF/%.vcf.gz/.setgt.vcf.gz}"
+  else
+    local VCF_OUTPUT="${VCF}.setGT.vcf.gz"
+  fi
+  echo -e "\nsetGT using bcftools for making HETs" 1>&2
+  echo -e "CMD: bcftools +setGT ${VCF} -- -t q -i 'FMT/VAF<0.90' -n \"c:0/1\" 2>/dev/null | bcftools view -O z -o \"${VCF_OUTPUT}\"" 1>&2
+  bcftools +setGT ${VCF} -- -t q -i 'FMT/VAF<0.90' -n "c:0/1" 2>/dev/null | bcftools view -O z -o "${VCF_OUTPUT}"
+  check_ev $? "bcftools +setGT"
+  echo -e "VCF output after running +setGT: ${VCF_OUTPUT}" 1>&2
+  bcftools index --tbi "${VCF_OUTPUT}"
+  check_ev $? "bcftools index of the setGT VCF"
+  echo ${VCF_OUTPUT}
+}
+
+function process_deepsomatic_vcf(){
+	local VCF=$1
+	local CPUS_PHASER=8
+	echo -e "current directory: ${PWD}" 1>&2
+	echo -e "PATH to VCF ... ORIGINAL INPUT for Prep Steps : ${VCF}" 1>&2
+	cp ${VCF} ${VCF}.original_vcf_before_adding_normal_information
+	VCF=$( check_and_update_sample_names_for_deepsomatic ${VCF} )
+	echo -e "PATH to VCF  ... after check_and_update_sample_names_for_deepsomatic : ${VCF}\n" 1>&2
+	VCF=$( decompose "${VCF}" )
+	echo -e "PATH to VCF  ... after decompose : ${VCF}\n" 1>&2
+	VCF=$( bcftools_setGT "${VCF}" )
+	echo -e "PATH to VCF  ... after bcftools_setGT : ${VCF}\n" 1>&2
+	VCF=$( make_vcf_upto_specs_for_VcfMerger ${VCF} )
+	echo -e "PATH to VCF  ... after make_vcf_upto_specs_for_VcfMerger : ${VCF}\n" 1>&2
+	VCF=$( normalize_vcf ${VCF})
+	## extension of the normalized VCF: pass.vcf.gz.sname.decomp.prep.norm.vcf
+	echo -e "PATH to VCF  ... after normalize_vcf : ${VCF}\n" 1>&2
+	echo "after normalize ((((((   ${VCF}"  1>&2
+
+	phasing_consecutive_variants_in_deepsomatic ${VCF} ${BAM_FILE} ${TUMOR_SNAME} ${CPUS_PHASER} "${DIR_PATH_TO_PHASER_EXE}"
+	echo -e "Expected VCF after phasing_consecutive_variants_in_deepsomatic function: <<<   ${VCF}   >>>" 1>&2
+	echo "after recomposition ()()()()()()()()() ${VCF/.norm.vcf/.norm.blocs.vcf}"  1>&2
+	echo -e "expected vcf filename after phasing: ((((((((((((((((((((((((((((((((((((((((((("  1>&2
+
+	VCF=${VCF/.norm.vcf/.norm.blocs.vcf}
+	final_msg ${VCF}
+}
+
+
 function run_tool(){
 	local TOOLNAME=$( echo $1 | tr '[A-Z]' '[a-z]')
 	local VCF=$2
@@ -613,7 +813,7 @@ function run_tool(){
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/mutect2/mutect2.somatic.addFieldsForVcfMerger.py"
 			process_mutect2_vcf ${VCF}
 			;;
-		lancet|lct|lan)
+		lancet|lct|lan|lancet2)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/lancet/lancet.somatic.addFieldsForVcfMerger.py"
 			process_lancet_vcf ${VCF}
 			;;
@@ -625,6 +825,10 @@ function run_tool(){
 		vardict|vdt|vdj)
 			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/vardictjava/vardictjava.somatic.addFieldsForVcfMerger.py"
 			process_vardictjava_vcf ${VCF}
+			;;
+	  deepsomatic|dps)
+			PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/deepsomatic/deepsomatic.somatic.addFieldsForVcfMerger.py"
+			process_deepsomatic_vcf ${VCF}
 			;;
 		haplotypecaller|hc)
 		    PYTHON_SCRIPT_PREP_VCF_FOR_VCFMERGER="${DIR_PATH_TO_SCRIPTS}/haplotypecaller/haplotypecaller.germline.1s.addFieldsForVcfMerger.py"
@@ -651,14 +855,22 @@ function run_tool(){
 
 function main(){
 
+  echo -e "IS VAR DIR_PATH_TO_PHASER_EXE SET? ==>>>  $( env | grep "DIR_PATH_TO_PHASER_EXE")" 1>&2
+  if [[ "$( env | grep "DIR_PATH_TO_PHASER_EXE")" != "" ]] ; then
+    export PATH=${DIR_PATH_TO_PHASER_EXE}:${PATH}
+  else
+    export DIR_PATH_TO_PHASER_EXE=''
+  fi
 
+  echo -e "VCF_ALL_CALLS == ${VCF_ALL_CALLS}" 1>&2
 	## check if we deal with indels and snvs in separated vcf or in all-in-one vcf
 	if [[ ${VCF_ALL_CALLS} != "" ]] ;
 	then
 		checkFile ${VCF_ALL_CALLS}
 		VCF_ALL_CALLS=$(readlink -f ${VCF_ALL_CALLS})
 		echo "FULL PATH to current VCF is: ${VCF_ALL_CALLS}"
-		cd ${DIR_OUTPUT}
+		cd "${DIR_OUTPUT}"
+
 		if [[ ! -e $( basename ${VCF_ALL_CALLS}) ]]
 		then
 		    echo -e "CREATING SYMLINK in CURR DIR ${PWD}"
@@ -667,11 +879,27 @@ function main(){
 		VCF=$(basename ${VCF_ALL_CALLS}) ## make basename vcf the new VCF name
 		echo "processing vcf:  ${VCF}" 1>&2
 		## if vcf is compressed vcf with gz extension, we uncompressed it to process it; then we will delete the file once processed as it may be big
-		if [[ "${VCF##*.}" == "gz" ]] ;
+		if [[ ${TOOLNAME} != "deepsomatic" && ${TOOLNAME} != "dps" ]]
 		then
-			zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
-			VCF=$( basename -s ".gz" ${VCF})
-		fi
+      if [[ "${VCF##*.}" == "gz" ]] ;
+      then
+        echo -e "Decompressing the VCF << ${VCF} >>" 1>&2
+        zcat -f ${VCF} > $( basename -s ".gz" ${VCF})
+        VCF=$( readlink -f  $( basename -s ".gz" ${VCF}) )
+      fi
+    else
+      VCF=${VCF_ALL_CALLS} ## make basename vcf the new VCF name
+      if [[ "${VCF##*.}" != "gz" ]]
+      then
+        echo -e "bgzipppppping ${VCF}" 1>&2
+        bcftools view -Oz -o ${VCF}.gz ${VCF}
+        bcftools index --threads 2 ${VCF}.gz
+        VCF=${VCF}.gz
+      fi
+
+      echo -e "KEEPING the vcf.gz files to be used with bcftools merge" 1>&2 
+		  echo -e "processing vcf:  ${VCF}" 1>&2
+    fi
 		run_tool ${TOOLNAME} ${VCF} ${DIR_OUTPUT}
 		delete_temporary_files ${DELETE_TEMPS}
 	elif [[ ( ${VCF_SNVS_FILE} != "" && ${VCF_INDELS_FILE} != "" ) &&  ( -e ${VCF_SNVS_FILE} && -e ${VCF_INDELS_FILE} )  ]]

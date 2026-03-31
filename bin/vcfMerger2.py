@@ -841,8 +841,7 @@ def merging_prepped_vcfs(data, merged_vcf_outfilename, delim, lossy, dryrun, do_
             cpus = len(data.keys()) if len(data.keys()) > 2 else 2
             zvcf = str(merged_vcf_outfilename + ".gz")
             log.info("compressing vcf file using bcftools; final merged vcf name : " + zvcf)
-            mycmd = ["bcftools view --threads", cpus, "-O z -o ", zvcf, merged_vcf_outfilename, ";",
-                     "bcftools index --threads", cpus, "--tbi ", zvcf]
+            mycmd = ["bcftools view --threads", cpus, "-O z -o ", zvcf, merged_vcf_outfilename, ";", "bcftools index --threads", cpus, "--tbi ", zvcf]
             subprocess_cmd(" ".join(str(x) for x in mycmd))
 
 
@@ -862,8 +861,8 @@ def check_path_to_vcfs(lvcfs):
 
 def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outfilenames=None, lbeds=None, lbams=None,
                  germline=False, tumor_sname=None, normal_sname=None, germline_snames=None, merged_vcf_outfilename=None,
-                 filter_by_pass=False, filter_string_for_snpsift=None,
-                 path_jar_snpsift=None, ref_genome_fasta_dict=None, skip_merge=False, skip_prep_vcfs=False):
+                 filter_by_pass=False, filter_string_for_snpsift=None, path_jar_snpsift=None, ref_genome_fasta_dict=None,
+                 skip_merge=False, skip_prep_vcfs=False, dir_path_to_phaser=None):
     """
     Check the inputs such as vcf files, toolnames, precedence, and options
     :param lvcfs:
@@ -901,7 +900,9 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
     :param skip_merge:
     :type skip_merge:
     :param skip_prep_vcfs:
-    :type skip_prep_vcfs:
+    :type skip_prep_vcfs
+    :param dir_path_to_phaser:  PATH directory to the executable tool called phaser.py
+    :type dir_path_to_phaser: basestring
     :return:
     :rtype:
     """
@@ -1019,6 +1020,11 @@ def check_inputs(lvcfs, ltoolnames, ltpo=None, lacronyms=None, lprepped_vcf_outf
             "ERROR: Ambiguous inputs and options; germline and soamtic analyses are EXCLUSIVE ; use --germline option to stipulate processing germline calls and provide "
             "--germline-snames as well ; if only somatic, provide only tumor-sname and normal-sname")
         sys.exit(-1)
+    
+    if dir_path_to_phaser is not None and dir_path_to_phaser != "":
+        if not os.path.exists(dir_path_to_phaser):
+            log.error(f'Path where phaser.py should be was NOT FOUND; check the give path and modify << {dir_path_to_phaser} >>')
+            sys.exit(-1)
 
 
 def main(args, cmdline):
@@ -1170,6 +1176,12 @@ def main(args, cmdline):
         venn_title = args['venn_title']
         log.info("venn title will be: " + venn_title)
     
+    dir_path_to_phaser = ""
+    if args["dir_path_to_phaser"]:
+        dir_path_to_phaser = args['dir_path_to_phaser']
+        log.info("directory to phaser has been provided by user: " + dir_path_to_phaser)
+        os.environ['DIR_PATH_TO_PHASER_EXE'] = dir_path_to_phaser
+    
     dirout = os.curdir
     if args["dir_out"]:
         dirout = args["dir_out"]
@@ -1198,7 +1210,7 @@ def main(args, cmdline):
                  germline_snames=germline_snames, merged_vcf_outfilename=merged_vcf_outfilename,
                  filter_by_pass=filter_by_pass, filter_string_for_snpsift=filter_string_for_snpsift,
                  path_jar_snpsift=path_jar_snpsift, ref_genome_fasta_dict=ref_genome_fasta_dict,
-                 skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs)
+                 skip_merge=skip_merge, skip_prep_vcfs=skip_prep_vcfs, dir_path_to_phaser=dir_path_to_phaser)
     
     if "dragen_sv" in ltoolnames:
         check_if_executable_in_path(["main_dedup_sv.py"])
@@ -1347,7 +1359,7 @@ def make_parser_args():
     required.add_argument('-o', '--merged-vcf-outfilename',
                           required=isRequired,
                           action=UniqueStore,
-                          help='outfilename for the merge vcf (can be relative or full path)')
+                          help='outfilename for the merged vcf (can be relative or full path) with extension vcf. Do not add the ".gz" in the filename ')
     
     required.add_argument('--bams',
                           required=False,
@@ -1467,7 +1479,11 @@ def make_parser_args():
                           help="Default is empty string")
     
     optional.add_argument('-d', '--dir-out', '--dir-temp',
-                          help=' direcgtory where the outputs of vcfMerger2 will be written ',
+                          help=' directory where the outputs of vcfMerger2 will be written ',
+                          action=UniqueStore)
+    
+    optional.add_argument('--dir-path-to-phaser',
+                          help=' directory where the phaser.py executable is located; It is better to have phaser in your PATH. If not, then provide the absolute directory path to phaser.py',
                           action=UniqueStore)
     
     optional.add_argument('-n', '--dry-run',
@@ -1480,6 +1496,9 @@ def make_parser_args():
 
 
 def check_if_executable_in_path(list_executables):
+    """
+    check if executable are in PATH
+    """
     for executable in list_executables:
         if shutil.which(executable) is None:
             sys.exit(str(executable) + "  NOT IN PATH ; Aborting;")

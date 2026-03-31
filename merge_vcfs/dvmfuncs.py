@@ -230,7 +230,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 		for COLUMN in ["FILTER", "QUAL", "ID"]:
 			# ## # ##INFO=<ID=SEURAT_AR1,Number=1,Type=Float,Description="Allele frequency of ALT allele in normal">
 			stringline = ''.join(["##INFO=<ID=", toolname_or_acronym, "_", COLUMN,
-			                      ',Number=.,Type=String,Description=',
+			                      ',Number=1,Type=String,Description=',
 			                      '"Represents lossless data from tool ', vtdo.toolname, ' or (if given acronym: aka ', toolname_or_acronym,
 			                      'for column ', COLUMN, '">'])
 			lh.append(stringline)
@@ -251,7 +251,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			for i in range(1, numberOfSamples+1):
 				newField = '_'.join([toolname_or_acronym, "S"+str(i), FIELD])
 				# print(newField)
-				stringline = ''.join(["##INFO=<ID=", newField, ',Number=.,Type=String,Description=', '"lossless data from defined tool">'])
+				stringline = ''.join(["##INFO=<ID=", newField, ',Number=1,Type=String,Description=', '"lossless data from defined tool">'])
 				lh.append(stringline)
 
 	for item in vcfMerger_Format_Fields_Specific:
@@ -437,7 +437,8 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 		for idx_field in range(0, len(list_format_fields)):
 			prefix_name = "_".join([toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")])
 			value_associated_to_prefix_name = list_value_current_field[idx_field].strip("\n")
-			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
+			# currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field], str(value_associated_to_prefix_name))])])
+			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field].strip("\n"), str(value_associated_to_prefix_name))])])
 
 	return currentNewRebuiltINFO.strip(';')
 
@@ -517,10 +518,10 @@ def process_Unknown_field(field, totnum_samples, dicField, v):
 		:return: the updated dictField
 	"""
 	if field not in v.FORMAT:
-		log.debug("%" * 10 + " UNKOWN not FOUND in FORMAT " + "%" * 10)
+		log.debug("%" * 10 + " UNKNOWN not FOUND in FORMAT " + "%" * 10)
 		for i in range(totnum_samples):
 			if not len(dicField[i]) == 0:
-				dicField[i] = ":".join([dicField[i], str(".")])
+				dicField[i] = ":".join([force_dot_when_nan(field, dicField[i]), str(".")])
 			else:
 				dicField[i] = str(".")
 
@@ -535,16 +536,37 @@ def process_known_field(field, totnum_samples, dicField, v):
 	:param v: v stands for variant and is the object variant created by cyvcf2 module
 	:return: the updated dictField
 	"""
-	log.debug(v.format(field))
+	log.debug(f'field == {field} ---> v.format(field) == {v.format(field)}')
+	log.debug(f'field == {field} ---> len(v.format(field)) == {len(v.format(field))}')
 	nfor = v.format(field).tolist()  # ## return a numpy array  ; we need to manage this array for each recaptured field
 	log.debug("In process known for flag << " + field + " >> : " + str(nfor))
 	for i in range(len(nfor)):
 		if not len(dicField[i]) == 0:
-			dicField[i] = ":".join([dicField[i], str(','.join(str(e) for e in nfor[i] if e != ","))])
+			dicField[i] = ":".join([dicField[i], str(','.join(force_dot_when_nan(field, str(e)) for e in nfor[i] if e != ","))])
 		else:
-			dicField[i] = str(','.join(str(e) for e in nfor[i] if e != ","))
+			dicField[i] = str(','.join(force_dot_when_nan(field, str(e))  for e in nfor[i] if e != ","))
 		log.debug(str(dicField[i]))
 
+def force_dot_when_nan(field, s):
+	"""
+	param s: this is a string we need to check if equivalent to nan or the integer/float overflow
+	type s: string
+	"""
+	import numpy as np
+	CONSTANT_MIN_INT = np.iinfo(np.int32).min   ## expected value is: "-2147483648"
+	log.debug(f'in force_dot_when_nan function for field == {field} and with its = {s}')
+	if s == "nan":
+		return "."
+	if s == str(CONSTANT_MIN_INT) or s == str(CONSTANT_MIN_INT+1):
+		return "."
+	if "," in s:
+		new_s = ""
+		for item in s.split(','):
+			if item == str(CONSTANT_MIN_INT) or item == "nan" or str(CONSTANT_MIN_INT+1):
+				item = "."
+			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
+		s = new_s
+	return s
 
 def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, totnum_samples, tv, toolname, toolname_acronym=None):
 	"""
@@ -558,21 +580,23 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 	delim = ";"  # if len(currentNewRebuiltINFO) == 0 else ";" ;
 	if toolname_acronym is not None:
 		toolname = toolname_acronym
-
+	# log.info(f'toolname == {toolname} && field == {field}  &&   Var_rec == {tv}')
+	list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
+	
+	
 	for idx_col_sample in range(0, totnum_samples):  # ## loop over the column that represent the SAMPLES
-		list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
-		# for each recaptured values
 		prefix_name = "_".join([toolname, "S" + str(idx_col_sample+1), field])
-		value_associated_to_prefix_name = "."
-		for idx_field in range(0, len(list_values_current_field)):
-			if isinstance(list_values_current_field[idx_field], list):
-				value_associated_to_prefix_name = str(list_values_current_field[idx_field][0])
-			else:
-				value_associated_to_prefix_name = str(list_values_current_field[idx_field])
+		value_associated_to_prefix_name = list_values_current_field[idx_col_sample]
 
-			if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan":
-				value_associated_to_prefix_name = "."
+		if isinstance(value_associated_to_prefix_name, list):
+			value_associated_to_prefix_name = ','.join(map(str, value_associated_to_prefix_name))
 
+		if value_associated_to_prefix_name is None or value_associated_to_prefix_name == "nan" or value_associated_to_prefix_name == "":
+			value_associated_to_prefix_name = "."
+			if field == "GT":
+				value_associated_to_prefix_name = "./."
+		
+		value_associated_to_prefix_name = force_dot_when_nan(field, str(value_associated_to_prefix_name))
 		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
 
 	return currentNewRebuiltINFO.strip(';')
@@ -625,19 +649,28 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 	newINFO = renameINFO_IDS(wtv, get_acronym_for_current_tool(wtn, dico_map_tool_acronym))  # ## LV[0][0] is the toolname which has precedence for that current call
 
 	INFOfromOtherTools = ""
-	# print("\n" + "#" * 50 + "\nnew ------> ALT is :" + str(wtv.ALT))
 	# ## we process the Winner Tool first
 
 	if len(LV) == 1:
 		for field in wtv.FORMAT:
 			if field not in list_Fields_Format:  # ## we add the data that are not going to be in the new FORMAT
-				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn, get_acronym_for_current_tool(wtn,
-																																								   dico_map_tool_acronym))
+				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+				                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 
 	# ## Here we will capture the INFO field from the other tools because they came second in the list;
 	# ## we process the calls from the other tools
 	# ## we add their data from ALL the fields and column if lossless ; or just from their INFO field otherwise
+	addition_performed = False
 	for i in range(1, len(LV)):  # i represent the index of the variant in the list LV for current
+		
+		if not addition_performed:
+			for field in wtv.FORMAT:  ## we need this for loop to add the TAGs from FORMAT field into INFO for the winner tool (first tool in precedence) when more than one tool call the current variant wtv
+				if field not in list_Fields_Format:
+					INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+			                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
+			addition_performed = True
+				
+		
 		# position ; If we have only one tool which called that variant, we never enter this for loop;
 		tn = get_acronym_for_current_tool(LV[i][0], dico_map_tool_acronym)  # In the list of 2 elements, the first is the toolname to remember the file of origin
 		tv = LV[i][1]  # the second element is the variant object (tv stands for tool variant)
@@ -836,8 +869,8 @@ def make_venn(ltoolnames, lbeds, variantType="Snvs_and_Indels", venn_title="", s
 	if upsetBool:
 		vtype = "upset"
 		type_specific_additional_args = ["--ninter", "50",
-		                                 "--sbcolor", "#d8b365",
-		                                 "--mbcolor", "#5ab4ac",
+		                                 "--sbcolor", "'#d8b365'",
+		                                 "--mbcolor", "'#5ab4ac'",
 		                                 "--showzero",
 		                                 "--order", "freq", "--scriptonly"]
 		# type_specific_additional_args = type_specific_additional_args + ["nsets=2"]
