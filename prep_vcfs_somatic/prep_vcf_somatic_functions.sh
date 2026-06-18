@@ -309,6 +309,23 @@ function check_and_update_sample_names_for_deepsomatic(){
     if [[ ${COUNT_NDP_TAG} -eq 1 &&  ${COUNT_NAD_TAG} -eq 1 && ${COUNT_NAF_TAG} -eq 1 && ${PRESENCE_TAG_NDP_IN_FORMAT} -eq 1 ]]
     then
       echo -e "\nFound that DeepSomatic has information about the Normal sample in the FORMAT field. Found NDP, NAD, NAF in Header and in NDP TAG FORMAT record of the first record" 1>&2
+      if [[ $(bcftools view -h --threads 3 ${VCF} | grep -c -m 1 "ID=NAF,Number=R") -eq 1 ]]
+      then
+        ## a BUG in version DPS 1.10 exists; The NAF tag has been assigned Number=R instead of Number=A and that led to a bcftools failure.
+        ## Here we update the VCF header to replace Number=R with Number=A for the NAF tag ; If we need to do it for other tags we will add more replacements here.
+        ## Note: Number=A — One Value Per Alternate Allele   :::::   example: VAF, only list the ALTernate Alleles frequency
+        ## Note: Number=R — One Value Per Allele (Including Reference)  ::: example: AD compared to VAF list the number of reads with the REFerence allele
+        ## first we copy the VCF to make an intermediate name
+        rsync ${VCF} ${VCF}.tempFile
+        check_ev $? 'rsync deepsomatic v1.10 VCF'
+        ## replacing header values
+        bcftools view --threads 3 ${VCF}.tempFile | sed 's/ID=NAF,Number=R/ID=NAF,Number=A/' | bcftools view --threads 3 -O z -o ${VCF} --write-index
+        check_ev $? 'update NAF numbering value R to A in VCF header'
+        # removing temp file has the original file has been overwritten
+        rm ${VCF}.tempFile 1>&2
+        ## When Deepsomatic fixes that issue wew may remove the step above to speed thing up.
+      fi
+
       VCF_NORMAL_TEMP=$( deepsomatic_make_normal_vcf_file_from_normal_tags_in_tumor_vcf ${VCF} ${TUMOR_SNAME} ${NORMAL_SNAME} )
 
     else
