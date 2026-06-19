@@ -47,6 +47,13 @@ Here is a list of tools for which `vcfMerger2` has pre-processing steps in place
 - strelka2
 - vardict
 
+#### Other Commands needed in PATH (if you built a container)
+- awk
+- bgzip
+- rsync
+- tabix
+- .
+
 All these names are valid tool names that can be used with the mandatory option `--toolnames`
 
 ### License
