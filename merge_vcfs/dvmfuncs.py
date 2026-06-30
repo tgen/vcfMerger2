@@ -96,6 +96,18 @@ def addHeaderToOutVcf(t_obj, f):
 	log.info("in function addHeaderToOutVcf" + str(t_obj) + str(f))
 
 
+def add_tag_for_toolname_if_INFO_empty(toolname):
+	"""
+		In case we have no data or information in the INFO field for any of the tool, we generate a header line for each tools
+		even if there is information in the INFO field.
+		This was added because `deepsomatic` tool had no info in the INFO column and that generated an error with
+		`bcftools view` because the `DEEPSOMATIC_.` ID did not exist in the header despite the fact it existed in the records.
+		So has a workaround, we generate that ID for all the tool, for code update simplicity
+	"""
+	log.info('add by default the TAG toolname_. in case the tool does not have any information in the INFO field, but just a dot as allowed by VCF specifications')
+	return f'##INFO=<ID={toolname}_.,Number=1,Type=String,Description="tool had no information in the INFO field">'
+
+
 def prefix_headers_information_line_with_toolname(myHeaderString, toolname):
 	"""
 	Prefixing the Flags in the INFO fields with the name of the tool they come from
@@ -119,7 +131,7 @@ def prefix_headers_other_information_line_with_toolname(myHeaderString, toolname
 def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific, dico_map_tool_acronym, list_contig_from_fastadict_captured_as_is):
 	"""
 	Manage the Headers from all the input VCFs and recreate a brand new updated Header
-	:param: tuple of vcf2dict objects which containg ALL the information about each input vcfs
+	:param: tuple of `vcf2dict` objects which contains ALL the information about each input vcf
 	:param: String of the Command line captured by sys.argv value
 	:param: vcfMerger_Format_Fields_Specific is a list of strings with the strings being ready to be added to header lines
 	:param: vcfMerger_Info_Fields_Specific is a list of strings with the strings being ready to be added to header lines
@@ -225,6 +237,9 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			lh.append(prefix_headers_information_line_with_toolname(s, toolname_or_acronym))
 		for s in vtdo.header_other_info:
 			lh.append(prefix_headers_other_information_line_with_toolname(s, toolname_or_acronym))
+		# adding IDs in case INFO field is empty
+		lh.append(add_tag_for_toolname_if_INFO_empty(toolname_or_acronym))
+		
 		# ## if LOSSLESS, the column QUAL, FILTER, ID, and some others are ADDED to the variant record
 		# ## this creates NEW fields prefixed with the toolname
 		for COLUMN in ["FILTER", "QUAL", "ID"]:
@@ -402,7 +417,7 @@ def renameINFO_IDS(obj_variant, toolname):
 
 def addINFO_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, obj_variant, toolname):
 	"""
-	Get the Format field information from the remaining tools and add them to the newINFO column
+	Get the INFO field information from the remaining tools and add them to the newINFO column
 	:param obj_variant: cyvcf2 object represent the variant object
 	:param toolname: string name of the tool that called the variant
 	:param currentNewRebuiltINFO:
