@@ -1201,6 +1201,8 @@ def main(args, cmdline):
         dryrun = args["dry_run"]
         log.info("dry-run?:" + str(dryrun))
     
+    log.warning(f'IMPORTANT NOTE: To ensure correct merged vcf outputs, you MUST make sure that when passing the values to the `--toolnames` and `--vcfs` options, the order of the toolnames and the order or the toolname-specific vcf match. otherwise vcfMerger2 team is not responsible for the merging errors.')
+    
     # @@@@@@@@@
     #  MAIN  #
     # @@@@@@@@@
