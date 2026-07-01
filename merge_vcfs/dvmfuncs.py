@@ -95,7 +95,6 @@ def get_list_contig_from_fasta_dict_file(dicofilename):
 def addHeaderToOutVcf(t_obj, f):
 	log.info("in function addHeaderToOutVcf" + str(t_obj) + str(f))
 
-
 def prefix_headers_information_line_with_toolname(myHeaderString, toolname):
 	"""
 	Prefixing the Flags in the INFO fields with the name of the tool they come from
@@ -119,7 +118,7 @@ def prefix_headers_other_information_line_with_toolname(myHeaderString, toolname
 def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific, dico_map_tool_acronym, list_contig_from_fastadict_captured_as_is):
 	"""
 	Manage the Headers from all the input VCFs and recreate a brand new updated Header
-	:param: tuple of vcf2dict objects which containg ALL the information about each input vcfs
+	:param: tuple of `vcf2dict`  objects which contains ALL the information about each input vcf
 	:param: String of the Command line captured by sys.argv value
 	:param: vcfMerger_Format_Fields_Specific is a list of strings with the strings being ready to be added to header lines
 	:param: vcfMerger_Info_Fields_Specific is a list of strings with the strings being ready to be added to header lines
@@ -225,6 +224,7 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			lh.append(prefix_headers_information_line_with_toolname(s, toolname_or_acronym))
 		for s in vtdo.header_other_info:
 			lh.append(prefix_headers_other_information_line_with_toolname(s, toolname_or_acronym))
+		
 		# ## if LOSSLESS, the column QUAL, FILTER, ID, and some others are ADDED to the variant record
 		# ## this creates NEW fields prefixed with the toolname
 		for COLUMN in ["FILTER", "QUAL", "ID"]:
@@ -392,22 +392,29 @@ def isOfTYPE(ref, alt, v):  # we need to elaborate here ALL the possibilities to
 def renameINFO_IDS(obj_variant, toolname):
 	"""
 	Prefixing the Flags in the INFO fields with the name of the tool they come from
-	:param obj_variant: cyvcf2 object repreent the variant object
+	:param obj_variant: cyvcf2 object represent the variant object
 	:param toolname: string name of the tool that called the variant
 	:return: String
 	"""
+
+	if str(obj_variant).split("\t")[8-1] == ".":
+		# if the INFO field is empty, we need to report nothing for the current tool; We know that in the merged VCF, our INFO column will NEVER be empty since we will have at least the CC= and the TPCE flags
+		return ""
 	return re.sub(r"^", ''.join([toolname.upper(), "_"]), str(obj_variant).split("\t")[8-1].replace(
 		";", ''.join([";", toolname.upper(), "_"]))).strip(';')
 
 
 def addINFO_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, obj_variant, toolname):
 	"""
-	Get the Format field information from the remaining tools and add them to the newINFO column
+	Get the INFO field information from the remaining tools and add them to the newINFO column
 	:param obj_variant: cyvcf2 object represent the variant object
 	:param toolname: string name of the tool that called the variant
 	:param currentNewRebuiltINFO:
 	:return: NewCurrentRebuiltINFO_String
 	"""
+	if str(obj_variant).split("\t")[(8 - 1)] == ".":
+		# if the INFO field is empty (represented by a dot according to VCF specs), we return the current new rebuiltINFO.
+		return currentNewRebuiltINFO
 	# column_number=8 ; indice = column_number-1 ; # ## python is 0-based ; column 8 is INFO column in VCF
 	delim = "" if len(currentNewRebuiltINFO) == 0 else ";"
 	newInfoToAppend = re.sub(r"^", ''.join([toolname.upper(), "_"]),
@@ -455,13 +462,14 @@ def add_ID_FILTER_QUAL_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuil
 	# Columns 10 and beyond represent the format values for each sample in the VCF
 	delim = ";"
 	prefix_name_ID = "_".join([toolname, "ID"])
-	ID = str(tv).split("\t")[(3 - 1)][0]
+	ID = str(tv).split("\t")[(3 - 1)]
 	prefix_name_QUAL = "_".join([toolname, "QUAL"])
-	QUAL = str(tv).split("\t")[(6 - 1)][0]
+	QUAL = str(tv).split("\t")[(6 - 1)]
 	prefix_name_FILTER = "_".join([toolname, "FILTER"])
 	FILTER = str(tv).split("\t")[(7 - 1)].replace(";", ",")
-	
-	local_rebuilt = str(prefix_name_ID) + "=" + str(ID) + ";" + str(prefix_name_QUAL) + "=" + str(QUAL) + ";" + str(prefix_name_FILTER) + "=" + str(FILTER)
+	local_rebuilt = str(prefix_name_QUAL) + "=" + str(QUAL) + ";" + str(prefix_name_FILTER) + "=" + str(FILTER)
+	if ID != ".":
+		local_rebuilt = str(prefix_name_ID) + "=" + str(ID) + ";" + str(prefix_name_QUAL) + "=" + str(QUAL) + ";" + str(prefix_name_FILTER) + "=" + str(FILTER)
 	return delim.join([currentNewRebuiltINFO, local_rebuilt]).strip(';')
 
 
@@ -640,7 +648,7 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 
 	# LV = List Variant from each Tool @ the Same Position;  calls are from minimum 1 to maximum N tools at the same
 	# position;
-	wtn = LV[0][0]  # ## wtv stands for Winner Tool Name
+	wtn = LV[0][0]  # ## wtn stands for Winner Tool Name
 	wtv = LV[0][1]  # ## wtv stands for Winner Tool Variant (here Variant refers to the Object Variant Created by
 	# cyvcf2
 	# ## 1) we first deal with re-building INFO field
