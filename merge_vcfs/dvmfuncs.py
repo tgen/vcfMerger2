@@ -396,6 +396,10 @@ def renameINFO_IDS(obj_variant, toolname):
 	:param toolname: string name of the tool that called the variant
 	:return: String
 	"""
+
+	if str(obj_variant).split("\t")[8-1] == ".":
+		# if the INFO field is empty, we need to report nothing for the current tool; We know that in the merged VCF, our INFO column will NEVER be empty since we will have at least the CC= and the TPCE flags
+		return ""
 	return re.sub(r"^", ''.join([toolname.upper(), "_"]), str(obj_variant).split("\t")[8-1].replace(
 		";", ''.join([";", toolname.upper(), "_"]))).strip(';')
 
@@ -408,6 +412,9 @@ def addINFO_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, obj_
 	:param currentNewRebuiltINFO:
 	:return: NewCurrentRebuiltINFO_String
 	"""
+	if str(obj_variant).split("\t")[(8 - 1)] == ".":
+		# if the INFO field is empty (represented by a dot according to VCF specs), we return the current new rebuiltINFO.
+		return currentNewRebuiltINFO
 	# column_number=8 ; indice = column_number-1 ; # ## python is 0-based ; column 8 is INFO column in VCF
 	delim = "" if len(currentNewRebuiltINFO) == 0 else ";"
 	newInfoToAppend = re.sub(r"^", ''.join([toolname.upper(), "_"]),
@@ -455,13 +462,14 @@ def add_ID_FILTER_QUAL_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuil
 	# Columns 10 and beyond represent the format values for each sample in the VCF
 	delim = ";"
 	prefix_name_ID = "_".join([toolname, "ID"])
-	ID = str(tv).split("\t")[(3 - 1)][0]
+	ID = str(tv).split("\t")[(3 - 1)]
 	prefix_name_QUAL = "_".join([toolname, "QUAL"])
-	QUAL = str(tv).split("\t")[(6 - 1)][0]
+	QUAL = str(tv).split("\t")[(6 - 1)]
 	prefix_name_FILTER = "_".join([toolname, "FILTER"])
 	FILTER = str(tv).split("\t")[(7 - 1)].replace(";", ",")
-	
-	local_rebuilt = str(prefix_name_ID) + "=" + str(ID) + ";" + str(prefix_name_QUAL) + "=" + str(QUAL) + ";" + str(prefix_name_FILTER) + "=" + str(FILTER)
+	local_rebuilt = str(prefix_name_QUAL) + "=" + str(QUAL) + ";" + str(prefix_name_FILTER) + "=" + str(FILTER)
+	if ID != ".":
+		local_rebuilt = str(prefix_name_ID) + "=" + str(ID) + ";" + str(prefix_name_QUAL) + "=" + str(QUAL) + ";" + str(prefix_name_FILTER) + "=" + str(FILTER)
 	return delim.join([currentNewRebuiltINFO, local_rebuilt]).strip(';')
 
 
