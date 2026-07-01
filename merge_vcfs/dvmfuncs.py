@@ -118,7 +118,7 @@ def prefix_headers_other_information_line_with_toolname(myHeaderString, toolname
 def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_Fields_Specific, vcfMerger_Info_Fields_Specific, dico_map_tool_acronym, list_contig_from_fastadict_captured_as_is):
 	"""
 	Manage the Headers from all the input VCFs and recreate a brand new updated Header
-	:param: tuple of `vcf2dict` objects which contains ALL the information about each input vcf
+	:param: tuple of `vcf2dict`  objects which contains ALL the information about each input vcf
 	:param: String of the Command line captured by sys.argv value
 	:param: vcfMerger_Format_Fields_Specific is a list of strings with the strings being ready to be added to header lines
 	:param: vcfMerger_Info_Fields_Specific is a list of strings with the strings being ready to be added to header lines
@@ -392,7 +392,7 @@ def isOfTYPE(ref, alt, v):  # we need to elaborate here ALL the possibilities to
 def renameINFO_IDS(obj_variant, toolname):
 	"""
 	Prefixing the Flags in the INFO fields with the name of the tool they come from
-	:param obj_variant: cyvcf2 object repreent the variant object
+	:param obj_variant: cyvcf2 object represent the variant object
 	:param toolname: string name of the tool that called the variant
 	:return: String
 	"""
@@ -640,7 +640,7 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 
 	# LV = List Variant from each Tool @ the Same Position;  calls are from minimum 1 to maximum N tools at the same
 	# position;
-	wtn = LV[0][0]  # ## wtv stands for Winner Tool Name
+	wtn = LV[0][0]  # ## wtn stands for Winner Tool Name
 	wtv = LV[0][1]  # ## wtv stands for Winner Tool Variant (here Variant refers to the Object Variant Created by
 	# cyvcf2
 	# ## 1) we first deal with re-building INFO field
