@@ -95,19 +95,6 @@ def get_list_contig_from_fasta_dict_file(dicofilename):
 def addHeaderToOutVcf(t_obj, f):
 	log.info("in function addHeaderToOutVcf" + str(t_obj) + str(f))
 
-
-def add_tag_for_toolname_if_INFO_empty(toolname):
-	"""
-		In case we have no data or information in the INFO field for any of the tool, we generate a header line for each tools
-		even if there is information in the INFO field.
-		This was added because `deepsomatic` tool had no info in the INFO column and that generated an error with
-		`bcftools view` because the `DEEPSOMATIC_.` ID did not exist in the header despite the fact it existed in the records.
-		So has a workaround, we generate that ID for all the tool, for code update simplicity
-	"""
-	log.info('add by default the TAG toolname_. in case the tool does not have any information in the INFO field, but just a dot as allowed by VCF specifications')
-	return f'##INFO=<ID={toolname}_.,Number=1,Type=String,Description="tool had no information in the INFO field">'
-
-
 def prefix_headers_information_line_with_toolname(myHeaderString, toolname):
 	"""
 	Prefixing the Flags in the INFO fields with the name of the tool they come from
@@ -237,8 +224,6 @@ def create_new_header_for_merged_vcf(tuple_objs, command_line, vcfMerger_Format_
 			lh.append(prefix_headers_information_line_with_toolname(s, toolname_or_acronym))
 		for s in vtdo.header_other_info:
 			lh.append(prefix_headers_other_information_line_with_toolname(s, toolname_or_acronym))
-		# adding IDs in case INFO field is empty
-		lh.append(add_tag_for_toolname_if_INFO_empty(toolname_or_acronym))
 		
 		# ## if LOSSLESS, the column QUAL, FILTER, ID, and some others are ADDED to the variant record
 		# ## this creates NEW fields prefixed with the toolname
