@@ -664,8 +664,8 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 
 	if len(LV) == 1:
 		for field in wtv.FORMAT:
-			if field not in list_Fields_Format:  # ## we add the data that are not going to be in the new FORMAT
-				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+			# if field not in list_Fields_Format:  # ## we add the data that are not going to be in the new FORMAT
+			INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
 				                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 
 	# ## Here we will capture the INFO field from the other tools because they came second in the list;
@@ -676,8 +676,8 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 		
 		if not addition_performed:
 			for field in wtv.FORMAT:  ## we need this for loop to add the TAGs from FORMAT field into INFO for the winner tool (first tool in precedence) when more than one tool call the current variant wtv
-				if field not in list_Fields_Format:
-					INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+				#if field not in list_Fields_Format:
+				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
 			                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 			addition_performed = True
 				
