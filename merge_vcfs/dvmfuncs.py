@@ -444,6 +444,9 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 		for idx_field in range(0, len(list_format_fields)):
 			prefix_name = "_".join([toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")])
 			value_associated_to_prefix_name = list_value_current_field[idx_field].strip("\n")
+			if len(list_value_current_field) != len(list_format_fields):
+				raise ValueError("Length of list_value_current_field != length of list_format_fields")
+			
 			# currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field], str(value_associated_to_prefix_name))])])
 			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field].strip("\n"), str(value_associated_to_prefix_name))])])
 
@@ -570,7 +573,7 @@ def force_dot_when_nan(field, s):
 	if "," in s:
 		new_s = ""
 		for item in s.split(','):
-			if item == str(CONSTANT_MIN_INT) or item == "nan" or str(CONSTANT_MIN_INT+1):
+			if item == str(CONSTANT_MIN_INT) or item == "nan" or item == str(CONSTANT_MIN_INT+1):
 				item = "."
 			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
 		s = new_s
