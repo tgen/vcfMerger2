@@ -35,6 +35,7 @@ import sys
 import os
 import csv
 import subprocess
+import numpy as np
 
 from myGenotype import Genotype
 from natsort import natsorted
@@ -565,7 +566,6 @@ def force_dot_when_nan(field, s):
 	param s: this is a string we need to check if equivalent to nan or the integer/float overflow
 	type s: string
 	"""
-	import numpy as np
 	CONSTANT_MIN_INT = np.iinfo(np.int32).min   ## expected value is: "-2147483648"
 	log.debug(f'in force_dot_when_nan function for field == {field} and with its = {s}')
 	if s == "nan":
@@ -578,8 +578,9 @@ def force_dot_when_nan(field, s):
 			if item == str(CONSTANT_MIN_INT) or item == "nan" or item == str(CONSTANT_MIN_INT+1):
 				item = "."
 			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
-		s = new_s
+		return new_s
 	return s
+
 
 def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, totnum_samples, tv, toolname, toolname_acronym=None):
 	"""
@@ -615,7 +616,14 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 				value_associated_to_prefix_name = "./."
 		
 		value_associated_to_prefix_name = force_dot_when_nan(field, str(value_associated_to_prefix_name))
-		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
+
+		try:
+			value_associated_to_prefix_name_rounded = round(float(value_associated_to_prefix_name), 4)
+		except ValueError:
+			value_associated_to_prefix_name_rounded = value_associated_to_prefix_name
+		except TypeError:
+			value_associated_to_prefix_name_rounded = value_associated_to_prefix_name
+		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name_rounded)])])
 
 	return currentNewRebuiltINFO.strip(';')
 
