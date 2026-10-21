@@ -559,6 +559,7 @@ def process_known_field(field, totnum_samples, dicField, v):
 			dicField[i] = str(','.join(force_dot_when_nan(field, str(e))  for e in nfor[i] if e != ","))
 		log.debug(str(dicField[i]))
 
+
 def force_dot_when_nan(field, s):
 	"""
 	param s: this is a string we need to check if equivalent to nan or the integer/float overflow
@@ -593,12 +594,17 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 	if toolname_acronym is not None:
 		toolname = toolname_acronym
 	# log.info(f'toolname == {toolname} && field == {field}  &&   Var_rec == {tv}')
-	list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
-	
+	if field == "GT":
+		my_genotypes = [Genotype(li) for li in tv.genotypes ]
+		log.debug(f'my_genotypes :::: {str(my_genotypes)}')
+		list_values_current_field = my_genotypes
+	else:
+		list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
 	
 	for idx_col_sample in range(0, totnum_samples):  # ## loop over the column that represent the SAMPLES
 		prefix_name = "_".join([toolname, "S" + str(idx_col_sample+1), field])
 		value_associated_to_prefix_name = list_values_current_field[idx_col_sample]
+		log.debug(f'value_associated_to_prefix_name == {value_associated_to_prefix_name}')
 
 		if isinstance(value_associated_to_prefix_name, list):
 			value_associated_to_prefix_name = ','.join(map(str, value_associated_to_prefix_name))
