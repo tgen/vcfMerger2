@@ -35,6 +35,7 @@ import sys
 import os
 import csv
 import subprocess
+import numpy as np
 
 from myGenotype import Genotype
 from natsort import natsorted
@@ -440,10 +441,14 @@ def addFORMAT_FromSecondaryToolsToNewRebuiltINFO_Field(currentNewRebuiltINFO, tv
 		# first sample, column 11, the second sample, etc.
 		# log.info("VFF --> " + str(list_value_current_field))
 		log.debug(toolname + "  VFF --> " + str(list_value_current_field))
+		if len(list_value_current_field) != len(list_format_fields):
+			raise ValueError("Length of list_value_current_field != length of list_format_fields")
 
 		for idx_field in range(0, len(list_format_fields)):
 			prefix_name = "_".join([toolname, "S"+str(idx_col_sample), list_format_fields[idx_field].strip("\n")])
 			value_associated_to_prefix_name = list_value_current_field[idx_field].strip("\n")
+
+			
 			# currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field], str(value_associated_to_prefix_name))])])
 			currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), force_dot_when_nan(list_format_fields[idx_field].strip("\n"), str(value_associated_to_prefix_name))])])
 
@@ -555,12 +560,12 @@ def process_known_field(field, totnum_samples, dicField, v):
 			dicField[i] = str(','.join(force_dot_when_nan(field, str(e))  for e in nfor[i] if e != ","))
 		log.debug(str(dicField[i]))
 
+
 def force_dot_when_nan(field, s):
 	"""
 	param s: this is a string we need to check if equivalent to nan or the integer/float overflow
 	type s: string
 	"""
-	import numpy as np
 	CONSTANT_MIN_INT = np.iinfo(np.int32).min   ## expected value is: "-2147483648"
 	log.debug(f'in force_dot_when_nan function for field == {field} and with its = {s}')
 	if s == "nan":
@@ -570,11 +575,12 @@ def force_dot_when_nan(field, s):
 	if "," in s:
 		new_s = ""
 		for item in s.split(','):
-			if item == str(CONSTANT_MIN_INT) or item == "nan" or str(CONSTANT_MIN_INT+1):
+			if item == str(CONSTANT_MIN_INT) or item == "nan" or item == str(CONSTANT_MIN_INT+1):
 				item = "."
 			new_s = ",".join([ new_s, item] if len(new_s) > 0 else [ item ] )
-		s = new_s
+		return new_s
 	return s
+
 
 def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, totnum_samples, tv, toolname, toolname_acronym=None):
 	"""
@@ -589,12 +595,17 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 	if toolname_acronym is not None:
 		toolname = toolname_acronym
 	# log.info(f'toolname == {toolname} && field == {field}  &&   Var_rec == {tv}')
-	list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
-	
+	if field == "GT":
+		my_genotypes = [Genotype(li) for li in tv.genotypes ]
+		log.debug(f'my_genotypes :::: {str(my_genotypes)}')
+		list_values_current_field = my_genotypes
+	else:
+		list_values_current_field = tv.format(field).tolist()  # ## return a numpy array  ; we need to manage this array
 	
 	for idx_col_sample in range(0, totnum_samples):  # ## loop over the column that represent the SAMPLES
 		prefix_name = "_".join([toolname, "S" + str(idx_col_sample+1), field])
 		value_associated_to_prefix_name = list_values_current_field[idx_col_sample]
+		log.debug(f'value_associated_to_prefix_name == {value_associated_to_prefix_name}')
 
 		if isinstance(value_associated_to_prefix_name, list):
 			value_associated_to_prefix_name = ','.join(map(str, value_associated_to_prefix_name))
@@ -605,7 +616,14 @@ def process_extra_format_fields_from_winner_tool(currentNewRebuiltINFO, field, t
 				value_associated_to_prefix_name = "./."
 		
 		value_associated_to_prefix_name = force_dot_when_nan(field, str(value_associated_to_prefix_name))
-		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name)])])
+
+		try:
+			value_associated_to_prefix_name_rounded = round(float(value_associated_to_prefix_name), 4)
+		except ValueError:
+			value_associated_to_prefix_name_rounded = value_associated_to_prefix_name
+		except TypeError:
+			value_associated_to_prefix_name_rounded = value_associated_to_prefix_name
+		currentNewRebuiltINFO = delim.join([currentNewRebuiltINFO, "=".join([str(prefix_name), str(value_associated_to_prefix_name_rounded)])])
 
 	return currentNewRebuiltINFO.strip(';')
 
@@ -661,8 +679,8 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 
 	if len(LV) == 1:
 		for field in wtv.FORMAT:
-			if field not in list_Fields_Format:  # ## we add the data that are not going to be in the new FORMAT
-				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+			# if field not in list_Fields_Format:  # ## we add the data that are not going to be in the new FORMAT
+			INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
 				                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 
 	# ## Here we will capture the INFO field from the other tools because they came second in the list;
@@ -673,8 +691,8 @@ def rebuiltVariantLine(LV, dico_map_tool_acronym, lossless, list_Fields_Format, 
 		
 		if not addition_performed:
 			for field in wtv.FORMAT:  ## we need this for loop to add the TAGs from FORMAT field into INFO for the winner tool (first tool in precedence) when more than one tool call the current variant wtv
-				if field not in list_Fields_Format:
-					INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
+				#if field not in list_Fields_Format:
+				INFOfromOtherTools = process_extra_format_fields_from_winner_tool(INFOfromOtherTools, field, totnum_samples, wtv, wtn,
 			                                                                  get_acronym_for_current_tool(wtn, dico_map_tool_acronym))
 			addition_performed = True
 				
